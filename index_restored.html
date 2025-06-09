@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lightning Ledgerz</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      color: white;
+      overflow-x: hidden;
+    }
+    body {
+      position: relative;
+      z-index: 0;
+    }
+    .video-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .video-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(0, 0, 0, 0.6);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #dc2626;
+    }
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding: 0 20px;
+    }
+    h1 {
+      font-size: 3rem;
+      text-shadow: 2px 2px 6px black;
+    }
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 4px black;
+    }
+    .cta {
+      background: red;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .packages {
+      position: absolute;
+      bottom: 30px;
+      left: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pkg {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px 15px;
+      border: 2px solid red;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    .pkg span {
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="video-container">
+    <iframe src="https://streamable.com/e/3rir7g?autoplay=1&muted=1&loop=1" 
+      allow="autoplay"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <header>
+    <div class="logo">Lightning Ledgerz</div>
+    <nav>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a href="#profile">My Profile</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Lightning Ledgerz</h1>
+    <p>Budget. Save. Build.</p>
+    <button class="cta">Contact Us</button>
+  </main>
+
+  <div class="packages">
+    <div class="pkg"><span>⚡</span>Basic Package</div>
+    <div class="pkg"><span>✨</span>Gold Package</div>
+    <div class="pkg"><span>💎</span>Diamond Package</div>
+  </div>
+
+</body>
+</html>
