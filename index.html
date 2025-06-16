@@ -1,135 +1,953 @@
+    .profile-content {
+                grid-template-columns: 1fr;
+            }
 
-<!DOCTYPE html>
+            .quick-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lightning Ledgerz</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      color: white;
-      overflow-x: hidden;
-    }
-    body {
-      position: relative;
-      z-index: 0;
-    }
-    .video-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      overflow: hidden;
-    }
-    .video-container iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 40px;
-      background: rgba(0, 0, 0, 0.6);
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 100;
-    }
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #dc2626;
-    }
-    nav a {
-      margin-left: 20px;
-      text-decoration: none;
-      color: white;
-      font-weight: bold;
-    }
-    main {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-      padding: 0 20px;
-    }
-    h1 {
-      font-size: 3rem;
-      text-shadow: 2px 2px 6px black;
-    }
-    p {
-      font-size: 1.2rem;
-      margin-bottom: 20px;
-      text-shadow: 1px 1px 4px black;
-    }
-    .cta {
-      background: red;
-      color: white;
-      padding: 12px 25px;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .packages {
-      position: absolute;
-      bottom: 30px;
-      left: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .pkg {
-      background: rgba(0, 0, 0, 0.5);
-      padding: 10px 15px;
-      border: 2px solid red;
-      border-radius: 6px;
-      font-weight: bold;
-    }
-    .pkg span {
-      margin-right: 8px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lightning Ledgerz - Budget. Save. Build.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Video Background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .video-background iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100vw;
+            min-height: 100vh;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .video-background iframe.active {
+            opacity: 1;
+        }
+
+        /* Lightning Flash Overlay */
+        .lightning-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ff3333;
+            z-index: -1;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .lightning-flash.flash {
+            animation: lightningFlash 0.3s ease-out;
+        }
+
+        @keyframes lightningFlash {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        /* Dark Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff3333;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: #ff3333;
+        }
+
+        .cart-icon {
+            font-size: 1.2rem;
+            background: #ff3333;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #ccc;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff3333, #ff6666);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 51, 51, 0.6);
+            background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
+        }
+
+        /* Package Sidebar */
+        .package-sidebar {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .package-btn {
+            padding: 1rem 1.5rem;
+            border: 2px solid #fff;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+
+        .package-btn:hover {
+            transform: translateX(10px);
+        }
+
+        .package-btn.basic:hover {
+            background: #ff3333;
+            border-color: #ff3333;
+            box-shadow: 0 0 20px #ff3333;
+        }
+
+        .package-btn.gold:hover {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #000;
+            border-color: #ffd700;
+            box-shadow: 0 0 20px #ffd700;
+        }
+
+        .package-btn.diamond:hover {
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            color: #000;
+            border-color: #fff;
+            box-shadow: 0 0 20px #fff;
+        }
+
+        /* Sections */
+        .section {
+            min-height: 100vh;
+            padding: 6rem 2rem 2rem;
+            background: rgba(0, 0, 0, 0.9);
+            margin-top: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #ff3333;
+        }
+
+        /* Services Section */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
+            border: 1px solid #ff3333;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(255, 51, 51, 0.3);
+        }
+
+        .service-card h3 {
+            color: #ff3333;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .about-photo {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #ff3333, #000);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Contact Form */
+        .contact-form {
+            max-width: 600px;
+            margin: 3rem auto;
+            background: rgba(255, 51, 51, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #ff3333;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #ff3333;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #333;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff3333;
+            box-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #111;
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #ff3333;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h3 {
+            color: #ff3333;
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .promo-section {
+            background: rgba(255, 51, 51, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .promo-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .promo-btn {
+            background: #ff3333;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Profile Section */
+        .profile-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .profile-card {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
+            border: 1px solid #ff3333;
+            border-radius: 15px;
+            padding: 2rem;
+        }
+
+        .profile-card h3 {
+            color: #ff3333;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .profile-info p {
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        /* QuickBooks Integration */
+        .quickbooks-section {
+            text-align: center;
+        }
+
+        .qb-status {
+            margin-bottom: 2rem;
+        }
+
+        .qb-disconnected,
+        .qb-connected {
+            padding: 1.5rem;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .qb-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .qb-connect-btn {
+            background: linear-gradient(45deg, #0077C5, #004080);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .qb-connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 119, 197, 0.4);
+        }
+
+        .qb-disconnect-btn {
+            background: #ff3333;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 1rem;
+        }
+
+        .qb-benefits {
+            text-align: left;
+            margin-top: 2rem;
+        }
+
+        .qb-benefits h4 {
+            color: #ff3333;
+            margin-bottom: 1rem;
+        }
+
+        .qb-benefits ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .qb-benefits li {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .qb-connected-info {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4CAF50;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .qb-connected-info p {
+            color: #4CAF50;
+            margin: 0.5rem 0;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            background: rgba(255, 51, 51, 0.2);
+            color: #fff;
+            border: 1px solid #ff3333;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 51, 51, 0.4);
+            transform: translateY(-2px);
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .nav-links a {
+                font-size: 0.9rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .package-sidebar {
+                left: 10px;
+                bottom: 10px;
+            }
+
+            .package-btn {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 4rem 1rem 2rem;
+            }
+
+            nav {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .package-sidebar {
+                position: relative;
+                left: auto;
+                bottom: auto;
+                flex-direction: row;
+                justify-content: center;
+                margin: 2rem 0;
+            }
+
+            .package-btn {
+                flex: 1;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Video Background -->
+    <div class="video-background" id="videoBackground">
+        <!-- Single video for demo - in production you'd rotate through multiple videos -->
+        <iframe src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1" frameborder="0" allowfullscreen class="active"></iframe>
+    </div>
 
-  <div class="video-container">
-    <iframe src="https://streamable.com/e/3rir7g?autoplay=1&muted=1&loop=1" 
-      allow="autoplay"
-      allowfullscreen>
-    </iframe>
-  </div>
+    <!-- Lightning Flash -->
+    <div class="lightning-flash" id="lightningFlash"></div>
 
-  <header>
-    <div class="logo">Lightning Ledgerz</div>
+    <!-- Dark Overlay -->
+    <div class="overlay"></div>
+
+    <!-- Navigation -->
     <nav>
-      <a href="#services">Services</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-      <a href="#profile">My Profile</a>
+        <div class="logo" onclick="goHome()">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUgMzVIMzVWMzBIMzBWMjVIMjVWMjBIMjBWMTVIMTVWMTBIMTBWNUg1VjM1WiIgZmlsbD0iI0ZGMzMzMyIvPgo8cGF0aCBkPSJNMTAgMzBIMzBWMjVIMjVWMjBIMjBWMTVIMTVWMTBIMTBWMzBaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTUgMTVIMjVWMjBIMjBWMjVIMTVWMTVaIiBmaWxsPSIjRkYzMzMzIi8+CjxwYXRoIGQ9Ik0yNSAxNUgzMFYyMEgyNVYxNVoiIGZpbGw9IiNGRjMzMzMiLz4KPHA+</svg>" alt="Lightning Ledgerz">
+            <span>Lightning Ledgerz</span>
+        </div>
+        <div class="nav-links">
+            <a onclick="scrollToSection('services')">Services</a>
+            <a onclick="scrollToSection('about')">About</a>
+            <a onclick="scrollToSection('contact')">Contact</a>
+            <a onclick="scrollToSection('profile')">My Profile</a>
+            <div class="cart-icon" onclick="openCheckout()">🛒</div>
+        </div>
     </nav>
-  </header>
 
-  <main>
-    <h1>Lightning Ledgerz</h1>
-    <p>Budget. Save. Build.</p>
-    <button class="cta">Contact Us</button>
-  </main>
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Lightning Ledgerz</h1>
+        <p>Budget. Save. Build.</p>
+        <a href="#" class="cta-button" onclick="openContactModal()">Contact Us</a>
+    </section>
 
-  <div class="packages">
-    <div class="pkg"><span>⚡</span>Basic Package</div>
-    <div class="pkg"><span>✨</span>Gold Package</div>
-    <div class="pkg"><span>💎</span>Diamond Package</div>
-  </div>
+    <!-- Package Sidebar -->
+    <div class="package-sidebar">
+        <div class="package-btn basic" onclick="openPackageModal('Basic Package - $199/mo')">
+            ⚡ Basic Package
+        </div>
+        <div class="package-btn gold" onclick="openPackageModal('Gold Package - $499/mo')">
+            ✨ Gold Package
+        </div>
+        <div class="package-btn diamond" onclick="openPackageModal('Diamond Package - $999/mo')">
+            💎 Diamond Package
+        </div>
+    </div>
 
+    <!-- Services Section -->
+    <section id="services" class="section">
+        <div class="container">
+            <h2>Our Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Fractional CFO</h3>
+                    <p>Strategic financial leadership without the full-time cost. Get expert CFO guidance tailored to your business needs.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Budget Optimization</h3>
+                    <p>Lightning-fast budget analysis and optimization. Turn 8-hour processes into 7-minute solutions.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Financial Strategy</h3>
+                    <p>Investment banking expertise applied to your business. Strategic planning that drives real results.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2>About Zac Prizant</h2>
+            <div class="about-content">
+                <div class="about-photo">
+                    Photo Placeholder
+                </div>
+                <div class="about-text">
+                    <p>Zac Prizant is a Cornell and Johnson Graduate, and elite endurance athlete who ran across the country with his twin brother from San Francisco to NYC. After closing $500M+ in investment banking and private equity deals, he launched Lightning Ledgerz to bring fractional CFO strategy to the masses.</p>
+                    
+                    <p>Zac's background spans entertainment, real estate, logistics, and tech. He once automated 60+ property budgets at The Siegel Group, reducing processing time from 8 hours to just 7 minutes.</p>
+                    
+                    <p>He now surfs in San Diego and coaches clients with the intensity of a champion and the heart of a brother.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            <form class="contact-form" onsubmit="submitContact(event)">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="cta-button">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile" class="section">
+        <div class="container">
+            <h2>My Profile</h2>
+            <div class="profile-content">
+                <div class="profile-card">
+                    <h3>Account Information</h3>
+                    <div class="profile-info">
+                        <p><strong>Plan:</strong> <span id="userPlan">Basic Package</span></p>
+                        <p><strong>Status:</strong> <span style="color: #4CAF50;">Active</span></p>
+                        <p><strong>Next Billing:</strong> July 16, 2025</p>
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <h3>QuickBooks Integration</h3>
+                    <div class="quickbooks-section">
+                        <div class="qb-status" id="qbStatus">
+                            <div class="qb-disconnected">
+                                <div class="qb-icon">📊</div>
+                                <p>Connect your QuickBooks account for seamless financial management</p>
+                                <button class="qb-connect-btn" onclick="connectQuickBooks()">
+                                    Connect QuickBooks
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="qb-benefits">
+                            <h4>Benefits of QuickBooks Integration:</h4>
+                            <ul>
+                                <li>✅ Automatic data sync</li>
+                                <li>⚡ Lightning-fast budget analysis</li>
+                                <li>📈 Real-time financial insights</li>
+                                <li>🔄 Automated report generation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <h3>Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="scheduleCall()">
+                            📞 Schedule CFO Call
+                        </button>
+                        <button class="action-btn" onclick="requestAnalysis()">
+                            📊 Request Budget Analysis
+                        </button>
+                        <button class="action-btn" onclick="viewReports()">
+                            📈 View Reports
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Contact Us</h3>
+                <button class="close-btn" onclick="closeModal('contactModal')">&times;</button>
+            </div>
+            <form onsubmit="submitQuickContact(event)">
+                <div class="form-group">
+                    <label for="quickEmail">Email</label>
+                    <input type="email" id="quickEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="quickPhone">Phone</label>
+                    <input type="tel" id="quickPhone" required>
+                </div>
+                <p style="margin: 1rem 0;">Schedule a call with Zac Prizant at zprizant@lightningledgerz.com</p>
+                <button type="submit" class="cta-button">Schedule Call</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="packageTitle">Package Purchase</h3>
+                <button class="close-btn" onclick="closeModal('checkoutModal')">&times;</button>
+            </div>
+            <form onsubmit="processPayment(event)">
+                <div class="form-group">
+                    <label for="cardName">Name on Card</label>
+                    <input type="text" id="cardName" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardNumber">Card Number</label>
+                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="expiry">Expiry</label>
+                        <input type="text" id="expiry" placeholder="MM/YY" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="text" id="cvv" placeholder="123" required>
+                    </div>
+                </div>
+                
+                <div class="promo-section">
+                    <label for="promoCode">Promo Code</label>
+                    <div class="promo-input">
+                        <input type="text" id="promoCode" placeholder="Enter code">
+                        <button type="button" class="promo-btn" onclick="applyPromo()">Apply</button>
+                    </div>
+                    <div id="promoMessage"></div>
+                </div>
+
+                <div style="margin: 1rem 0; padding: 1rem; background: rgba(255,51,51,0.1); border-radius: 8px;">
+                    <p><strong>Total: $<span id="totalAmount">199</span>/month</strong></p>
+                    <small>Plans auto-renew monthly. If you're not happy after 4 months, you'll get 2 months refunded.</small>
+                </div>
+
+                <button type="submit" class="cta-button">Complete Purchase</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Video rotation (simplified for demo)
+        let currentVideo = 0;
+        const videos = [
+            'https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1'
+            // Add more video URLs here for rotation
+        ];
+
+        function rotateVideos() {
+            const flash = document.getElementById('lightningFlash');
+            flash.classList.add('flash');
+            
+            setTimeout(() => {
+                flash.classList.remove('flash');
+            }, 300);
+        }
+
+        // Rotate videos every 10 seconds
+        setInterval(rotateVideos, 10000);
+
+        // Smooth scrolling
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Modal functions
+        function openContactModal() {
+            document.getElementById('contactModal').classList.add('active');
+        }
+
+        function openPackageModal(packageName) {
+            document.getElementById('packageTitle').textContent = packageName;
+            const price = packageName.includes('Basic') ? 199 : packageName.includes('Gold') ? 499 : 999;
+            document.getElementById('totalAmount').textContent = price;
+            document.getElementById('checkoutModal').classList.add('active');
+        }
+
+        function openCheckout() {
+            document.getElementById('checkoutModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Promo code functionality
+        function applyPromo() {
+            const promoCode = document.getElementById('promoCode').value;
+            const promoMessage = document.getElementById('promoMessage');
+            const totalElement = document.getElementById('totalAmount');
+            const currentTotal = parseInt(totalElement.textContent);
+
+            if (promoCode === 'ACTIVE10') {
+                const discountedTotal = Math.round(currentTotal * 0.9);
+                totalElement.textContent = discountedTotal;
+                promoMessage.innerHTML = '<p style="color: #4CAF50;">✓ 10% discount applied!</p>';
+            } else if (promoCode) {
+                promoMessage.innerHTML = '<p style="color: #ff3333;">Invalid promo code</p>';
+            }
+        }
+
+        // Form submissions
+        function submitContact(event) {
+            event.preventDefault();
+            alert('Thank you for your message! We\'ll get back to you soon.');
+            event.target.reset();
+        }
+
+        function submitQuickContact(event) {
+            event.preventDefault();
+            alert('Thank you! We\'ll send you a calendar link to schedule your call with Zac.');
+            closeModal('contactModal');
+        }
+
+        function processPayment(event) {
+            event.preventDefault();
+            alert('Payment processed successfully! Welcome to Lightning Ledgerz!');
+            closeModal('checkoutModal');
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let modal of modals) {
+                if (event.target === modal) {
+                    modal.classList.remove('active');
+                }
+            }
+        }
+
+        // Package button animations
+        document.querySelectorAll('.package-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
 </body>
 </html>
