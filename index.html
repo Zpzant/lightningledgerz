@@ -606,7 +606,7 @@
         }
     </style>
 </head>
-<body>
+<body id="top">
     <!-- Video Background -->
     <div class="video-background" id="videoBackground">
         <!-- Single video for demo - in production you'd rotate through multiple videos -->
@@ -618,10 +618,14 @@
 
     <!-- Navigation -->
     <nav>
-       <a href="#" class="logo" style="display: flex; align-items: center; text-decoration: none;">
+       <a href="#top" class="logo" style="display: flex; align-items: center; text-decoration: none;">
     <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz" style="height: 40px; margin-right: 10px;">
     <span style="font-size: 1.5rem; font-weight: bold; color: white;">Lightning Ledgerz</span>
 </a>
+
+    <div class="call-button">
+    <a href="tel:+17025502513">(702) 550-2513</a>
+</div>
         <div class="nav-links">
             <a onclick="scrollToSection('services')">Services</a>
             <a onclick="scrollToSection('about')">About</a>
@@ -650,45 +654,104 @@
         </div>
     </div>
 
-    <!-- Services Section -->
-    <section id="services" class="section">
-        <div class="container">
-            <h2>Our Services</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <h3>Fractional CFO</h3>
-                    <p>Strategic financial leadership without the full-time cost. Get expert CFO guidance tailored to your business needs.</p>
-                </div>
-                <div class="service-card">
-                    <h3>Budget Optimization</h3>
-                    <p>Lightning-fast budget analysis and optimization. Turn 8-hour processes into 7-minute solutions.</p>
-                </div>
-                <div class="service-card">
-                    <h3>Financial Strategy</h3>
-                    <p>Investment banking expertise applied to your business. Strategic planning that drives real results.</p>
-                </div>
+    <!-- Packages Section -->
+    <section id="packages" class="packages">
+        <h3>Our Service Packages</h3>
+        <div class="package-grid">
+            <div class="package-card basic" onclick="createLightningEffect(this)">
+                <h4>⚡ Basic Package</h4>
+                <div class="package-price">Starting at $799</div>
+                <ul class="package-features">
+                    <li>One-time comprehensive budget creation</li>
+                    <li>Monthly financial reporting</li>
+                    <li>Basic financial analysis</li>
+                    <li>Email support</li>
+                    <li>Budget optimization recommendations</li>
+                </ul>
+                <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a>
+            </div>
+
+            <div class="package-card premium" onclick="createSparkleEffect(this)">
+                <h4>⭐ Premium Package</h4>
+                <div class="package-price">Call for Custom Quote</div>
+                <ul class="package-features">
+                    <li>Everything in Basic Package</li>
+                    <li>Weekly strategic calls</li>
+                    <li>Advanced financial modeling</li>
+                    <li>Cash flow optimization</li>
+                    <li>KPI dashboard creation</li>
+                    <li>Priority support</li>
+                </ul>
+                <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a>
+            </div>
+
+            <div class="package-card diamond" onclick="createDiamondEffect(this)">
+                <h4>💎 Diamond Package</h4>
+                <div class="package-price">Call for Custom Quote</div>
+                <ul class="package-features">
+                    <li>Full-time fractional CFO services</li>
+                    <li>Complete strategic planning</li>
+                    <li>Investment & funding guidance</li>
+                    <li>Board meeting preparation</li>
+                    <li>M&A transaction support</li>
+                    <li>Direct phone access</li>
+                    <li>Custom financial systems</li>
+                </ul>
+                <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a>
             </div>
         </div>
     </section>
 
     <!-- About Section -->
-    <section id="about" class="section">
-        <div class="container">
-            <h2>About Zac Prizant</h2>
-            <div class="about-content">
-                <div class="about-photo">
-                    Photo Placeholder
-                </div>
-                <div class="about-text">
-                    <p>Zac Prizant is a Cornell and Johnson Graduate, and elite endurance athlete who ran across the country with his twin brother from San Francisco to NYC. After closing $500M+ in investment banking and private equity deals, he launched Lightning Ledgerz to bring fractional CFO strategy to the masses.</p>
-                    
-                    <p>Zac's background spans entertainment, real estate, logistics, and tech. He once automated 60+ property budgets at The Siegel Group, reducing processing time from 8 hours to just 7 minutes.</p>
-                    
-                    <p>He now surfs in San Diego and coaches clients with the intensity of a champion and the heart of a brother.</p>
+    <section id="about" class="about">
+        <div class="about-content">
+            <div class="about-image">
+                <img src="zachary-prizant-photo.jpg" alt="Zachary Prizant, Founder of Lightning Ledgerz">
+            </div>
+            <div class="about-text">
+                <h3>About Zachary Prizant</h3>
+                <p>With over a decade of experience in investment banking and private equity, I've had the privilege of closing over $500 million in deals at Valtus Capital Group across various industries. My expertise spans from high-level strategic transactions to operational efficiency improvements.</p>
+                
+                <p>At The Siegel Group, I revolutionized their budgeting process, reducing the time from 8 hours per budget to just 7 minutes across more than 60 properties. At MGM, I automated performance systems that dramatically improved operational efficiency. These improvements freed up countless hours for strategic decision-making and growth initiatives.</p>
+                
+                <p>As the founder of the C-Suite division at Professional Tax Alliance, I've served as a fractional CFO for companies across logistics, law, IT, and entertainment industries. Each engagement has reinforced my belief that every business, regardless of size, can benefit from expert financial leadership.</p>
+                
+                <p>I started Lightning Ledgerz because I believe all businesses deserve access to strategic financial guidance. Whether you're trying to understand where your company is heading, identify cost-saving opportunities, or free up time to focus on core business activities, professional financial leadership can transform your operations.</p>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number">$500M+</div>
+                        <div class="stat-label">Deals Closed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">60+</div>
+                        <div class="stat-label">Properties Optimized</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">8hrs→7min</div>
+                        <div class="stat-label">Budget Time Reduced</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Industries Served</div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="contact-info">
+                <h4>Contact Lightning Ledgerz</h4>
+                <p><strong>Phone:</strong> <a href="tel:+13303015742" style="color: #dc2626; text-decoration: none;">(702) 530-2269‬</a></p>
+                <p><strong>Email:</strong> <a href="mailto:zprizant@lightningledgerz.com" style="color: #dc2626; text-decoration: none;">zprizant@lightningledgerz.com</a></p>
+                <p><strong>Website:</strong> lightningledgerz.com</p>
+            </div>
+            <p style="margin-top: 30px; color: #9ca3af;">&copy; 2025 Lightning Ledgerz. All rights reserved.</p>
+        </div>
+    </footer>
 
     <!-- Contact Section -->
     <section id="contact" class="section">
