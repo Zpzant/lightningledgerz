@@ -129,7 +129,21 @@
         .nav-links a:hover {
             color: #ff3333;
         }
+.call-button a {
+            color: #ff3333;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            border: 2px solid #ff3333;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
 
+        .call-button a:hover {
+            background: #ff3333;
+            color: #fff;
+        }
         .cart-icon {
     font-size: 1.2rem;
     background: none;
@@ -655,10 +669,11 @@
     </div>
 
     <!-- Packages Section -->
-    <section id="packages" class="packages">
+<section id="packages" class="packages">
+    <div class="container">
         <h3>Our Service Packages</h3>
         <div class="package-grid">
-            <div class="package-card basic" onclick="createLightningEffect(this)">
+            <div class="package-card basic">
                 <h4>⚡ Basic Package</h4>
                 <div class="package-price">Starting at $799</div>
                 <ul class="package-features">
@@ -668,10 +683,10 @@
                     <li>Email support</li>
                     <li>Budget optimization recommendations</li>
                 </ul>
-                <a href="tel:+7025502513" class="btn btn-primary">Call for Pricing</a>
+                <a href="tel:+17025502513" class="btn btn-primary">Call for Pricing</a>
             </div>
 
-            <div class="package-card premium" onclick="createSparkleEffect(this)">
+            <div class="package-card premium">
                 <h4>⭐ Premium Package</h4>
                 <div class="package-price">Call for Custom Quote</div>
                 <ul class="package-features">
@@ -685,7 +700,7 @@
                 <a href="tel:+17025502513" class="btn btn-primary">Call for Pricing</a>
             </div>
 
-            <div class="package-card diamond" onclick="createDiamondEffect(this)">
+            <div class="package-card diamond">
                 <h4>💎 Diamond Package</h4>
                 <div class="package-price">Call for Custom Quote</div>
                 <ul class="package-features">
@@ -700,16 +715,18 @@
                 <a href="tel:+17025502513" class="btn btn-primary">Call for Pricing</a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- About Section -->
-    <section id="about" class="about">
+<!-- About Section -->
+<section id="about" class="about">
+    <div class="container">
+        <h3>About Zachary Prizant</h3>
         <div class="about-content">
             <div class="about-image">
-                <img src="zachary-prizant-photo.jpg" alt="Zachary Prizant, Founder of Lightning Ledgerz">
+                <img src="https://via.placeholder.com/400x400/ff3333/ffffff?text=Zachary+Prizant" alt="Zachary Prizant, Founder of Lightning Ledgerz">
             </div>
             <div class="about-text">
-                <h3>About Zachary Prizant</h3>
                 <p>With over a decade of experience in investment banking and private equity, I've had the privilege of closing over $500 million in deals at Valtus Capital Group across various industries. My expertise spans from high-level strategic transactions to operational efficiency improvements.</p>
                 
                 <p>At The Siegel Group, I revolutionized their budgeting process, reducing the time from 8 hours per budget to just 7 minutes across more than 60 properties. At MGM, I automated performance systems that dramatically improved operational efficiency. These improvements freed up countless hours for strategic decision-making and growth initiatives.</p>
@@ -738,8 +755,8 @@
                 </div>
             </div>
         </div>
-    </section>
-
+    </div>
+</section>
     <!-- Footer -->
     <footer id="contact">
         <div class="footer-content">
