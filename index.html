@@ -131,13 +131,12 @@
         }
 
         .cart-icon {
-            font-size: 1.2rem;
-            background: #ff3333;
-            padding: 0.5rem;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
+    font-size: 1.2rem;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
 
         .cart-icon:hover {
             transform: scale(1.1);
@@ -619,10 +618,10 @@
 
     <!-- Navigation -->
     <nav>
-       <div class="logo" onclick="goHome()">
-    <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="height: 40px; margin-right: 10px;">
-    <span style="color: white; font-weight: bold; font-size: 1.4rem;">Lightning Ledgerz</span>
-</div>
+       <a href="#" class="logo" style="display: flex; align-items: center; text-decoration: none;">
+    <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz" style="height: 40px; margin-right: 10px;">
+    <span style="font-size: 1.5rem; font-weight: bold; color: white;">Lightning Ledgerz</span>
+</a>
         <div class="nav-links">
             <a onclick="scrollToSection('services')">Services</a>
             <a onclick="scrollToSection('about')">About</a>
@@ -634,7 +633,7 @@
 
     <!-- Hero Section -->
    <section class="hero">
-    <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz" style="max-width: 300px; height: auto; margin-bottom: 2rem;">
+    <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz" style="max-width: 350px; height: auto; margin-bottom: 2rem;">
     <a href="#" class="cta-button" onclick="openContactModal()">Contact Us</a>
 </section>
 
