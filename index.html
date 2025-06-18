@@ -1,906 +1,901 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lightning Ledgerz - Budget. Save. Build.</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Arial', sans-serif;
-      background: #000;
-      color: #fff;
-      overflow-x: hidden;
-    }
-
-    .video-background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -2;
-      overflow: hidden;
-    }
-
-    .video-background iframe {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      min-width: 100vw;
-      min-height: 100vh;
-      width: auto;
-      height: auto;
-      transform: translate(-50%, -50%);
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-    }
-
-    .video-background iframe.active {
-      opacity: 1;
-    }
-
-    .lightning-flash {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: #ff3333;
-      z-index: -1;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .lightning-flash.flash {
-      animation: lightningFlash 0.3s ease-out;
-    }
-
-    @keyframes lightningFlash {
-      0% { opacity: 0; }
-      50% { opacity: 0.8; }
-      100% { opacity: 0; }
-    }
-
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: -1;
-    }
-
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
-      padding: 1rem 2rem;
-      z-index: 1000;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #ff3333;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      align-items: center;
-    }
-
-    .nav-links a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s ease;
-      cursor: pointer;
-    }
-
-    .nav-links a:hover {
-      color: #ff3333;
-    }
-
-    .call-button a {
-      color: #ff3333;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 1.1rem;
-      padding: 0.5rem 1rem;
-      border: 2px solid #ff3333;
-      border-radius: 25px;
-      transition: all 0.3s ease;
-    }
-
-    .call-button a:hover {
-      background: #ff3333;
-      color: #fff;
-    }
-
-    .cart-icon {
-      font-size: 1.2rem;
-      background: none;
-      padding: 0;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-
-    .cart-icon:hover {
-      transform: scale(1.1);
-    }
-
-    .hero {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 0 2rem;
-    }
-
-    .hero h1 {
-      font-size: 4rem;
-      font-weight: bold;
-      margin-bottom: 1rem;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    }
-
-    .hero p {
-      font-size: 1.5rem;
-      margin-bottom: 2rem;
-      color: #ccc;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    }
-
-    .cta-button {
-      background: linear-gradient(45deg, #ff3333, #ff6666);
-      color: white;
-      padding: 1rem 2rem;
-      border: none;
-      border-radius: 50px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      display: inline-block;
-      box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
-    }
-
-    .cta-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255, 51, 51, 0.6);
-      background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
-    }
-
-    .package-sidebar {
-      position: fixed;
-      left: 20px;
-      bottom: 20px;
-      z-index: 999;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .package-btn {
-      padding: 1rem 1.5rem;
-      border: 2px solid #fff;
-      background: rgba(0, 0, 0, 0.8);
-      color: #fff;
-      border-radius: 25px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: bold;
-      backdrop-filter: blur(10px);
-    }
-
-    .package-btn:hover {
-      transform: translateX(10px);
-    }
-
-    .package-btn.basic:hover {
-      background: #ff3333;
-      border-color: #ff3333;
-      box-shadow: 0 0 20px #ff3333;
-    }
-
-    .package-btn.gold:hover {
-      background: linear-gradient(45deg, #ffd700, #ffed4e);
-      color: #000;
-      border-color: #ffd700;
-      box-shadow: 0 0 20px #ffd700;
-    }
-
-    .package-btn.diamond:hover {
-      background: linear-gradient(45deg, #fff, #e0e0e0);
-      color: #000;
-      border-color: #fff;
-      box-shadow: 0 0 20px #fff;
-    }
-
-    .section {
-      min-height: 100vh;
-      padding: 6rem 2rem 2rem;
-      background: rgba(0, 0, 0, 0.9);
-      margin-top: 100vh;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .section h2 {
-      font-size: 3rem;
-      margin-bottom: 2rem;
-      text-align: center;
-      color: #ff3333;
-    }
-
-    /* ✅ GRADIENT FIX: Updated backgrounds for packages and about sections */\n
-    #packages.packages, #about.about {
-      background: linear-gradient(to bottom right, #1a1a1a, #000000, #1a0000);
-      color: white;
-    }
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-      margin-top: 3rem;
-    }
-
-    .service-card {
-      background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
-      border: 1px solid #ff3333;
-      border-radius: 15px;
-      padding: 2rem;
-      text-align: center;
-      transition: transform 0.3s ease;
-    }
-
-    .service-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 10px 30px rgba(255, 51, 51, 0.3);
-    }
-
-    .service-card h3 {
-      color: #ff3333;
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
-    }
-
-    .about-content {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 3rem;
-      align-items: center;
-      margin-top: 3rem;
-    }
-
-    .about-photo {
-      width: 100%;
-      height: 400px;
-      background: linear-gradient(135deg, #ff3333, #000);
-      border-radius: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      color: #fff;
-    }
-
-    .about-text {
-      font-size: 1.1rem;
-      line-height: 1.8;
-    }
-
-    .contact-form {
-      max-width: 600px;
-      margin: 3rem auto;
-      background: rgba(255, 51, 51, 0.1);
-      padding: 2rem;
-      border-radius: 15px;
-      border: 1px solid #ff3333;
-    }
-
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      color: #ff3333;
-      font-weight: bold;
-    }
-
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 1rem;
-      border: 1px solid #333;
-      background: rgba(0, 0, 0, 0.8);
-      color: #fff;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: #ff3333;
-      box-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 2000;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: #111;
-      padding: 2rem;
-      border-radius: 15px;
-      border: 2px solid #ff3333;
-      max-width: 500px;
-      width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-
-    .modal-header h3 {
-      color: #ff3333;
-      font-size: 1.5rem;
-    }
-
-    .close-btn {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-
-    .promo-section {
-      background: rgba(255, 51, 51, 0.1);
-      padding: 1rem;
-      border-radius: 8px;
-      margin: 1rem 0;
-    }
-
-    .promo-input {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-
-    .promo-btn {
-      background: #ff3333;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .profile-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2rem;
-      margin-top: 3rem;
-    }
-
-    .profile-card {
-      background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
-      border: 1px solid #ff3333;
-      border-radius: 15px;
-      padding: 2rem;
-    }
-
-    .profile-card h3 {
-      color: #ff3333;
-      margin-bottom: 1.5rem;
-      font-size: 1.5rem;
-    }
-
-    .profile-info p {
-      margin-bottom: 0.8rem;
-      font-size: 1.1rem;
-    }
-
-    .quickbooks-section {
-      text-align: center;
-    }
-
-    .qb-status {
-      margin-bottom: 2rem;
-    }
-
-    .qb-disconnected,
-    .qb-connected {
-      padding: 1.5rem;
-      border-radius: 10px;
-      background: rgba(0, 0, 0, 0.3);
-    }
-
-    .qb-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    .qb-connect-btn {
-      background: linear-gradient(45deg, #0077C5, #004080);
-      color: white;
-      padding: 1rem 2rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 1rem;
-    }
-
-    .qb-connect-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 119, 197, 0.4);
-    }
-
-    .qb-disconnect-btn {
-      background: #ff3333;
-      color: white;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-left: 1rem;
-    }
-
-    .qb-benefits {
-      text-align: left;
-      margin-top: 2rem;
-    }
-
-    .qb-benefits h4 {
-      color: #ff3333;
-      margin-bottom: 1rem;
-    }
-
-    .qb-benefits ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .qb-benefits li {
-      margin-bottom: 0.5rem;
-      font-size: 1rem;
-    }
-
-    .qb-connected-info {
-      background: rgba(76, 175, 80, 0.2);
-      border: 1px solid #4CAF50;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-    }
-
-    .qb-connected-info p {
-      color: #4CAF50;
-      margin: 0.5rem 0;
-    }
-    .quick-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .action-btn {
-      background: rgba(255, 51, 51, 0.2);
-      color: #fff;
-      border: 1px solid #ff3333;
-      padding: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 1rem;
-    }
-
-    .action-btn:hover {
-      background: rgba(255, 51, 51, 0.4);
-      transform: translateY(-2px);
-    }
-
-    @media (max-width: 768px) {
-      .nav-links {
-        gap: 1rem;
-      }
-
-      .nav-links a {
-        font-size: 0.9rem;
-      }
-
-      .hero h1 {
-        font-size: 2.5rem;
-      }
-
-      .hero p {
-        font-size: 1.2rem;
-      }
-
-      .package-sidebar {
-        left: 10px;
-        bottom: 10px;
-      }
-
-      .package-btn {
-        padding: 0.8rem 1rem;
-        font-size: 0.9rem;
-      }
-
-      .about-content {
-        grid-template-columns: 1fr;
-      }
-
-      .stats {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .section {
-        padding: 4rem 1rem 2rem;
-      }
-
-      nav {
-        padding: 1rem;
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      .profile-content {
-        grid-template-columns: 1fr;
-      }
-
-      .quick-actions {
-        flex-direction: column;
-      }
-
-      .action-btn {
-        font-size: 0.9rem;
-        padding: 0.8rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .package-sidebar {
-        position: relative;
-        left: auto;
-        bottom: auto;
-        flex-direction: row;
-        justify-content: center;
-        margin: 2rem 0;
-      }
-
-      .package-btn {
-        flex: 1;
-        text-align: center;
-      }
-
-      .hero img {
-        max-width: 250px;
-      }
-
-      .section h2 {
-        font-size: 2rem;
-      }
-
-      .packages h3,
-      .about h3 {
-        font-size: 2rem;
-      }
-    }
-  </style>
-</head>
-<body id="top">
-  <!-- Video Background -->
-  <div class="video-background" id="videoBackground">
-    <iframe src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1" frameborder="0" allowfullscreen class="active"></iframe>
-  </div>
-
-  <!-- Lightning Flash -->
-  <div class="lightning-flash" id="lightningFlash"></div>
-
-  <!-- Navigation -->
-  <nav>
-    <a href="#top" class="logo" style="display: flex; align-items: center; text-decoration: none;">
-      <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz" style="height: 40px; margin-right: 10px;">
-      <span style="font-size: 1.5rem; font-weight: bold; color: white;">Lightning Ledgerz</span>
-    </a>
-
-    <div class="call-button">
-      <a href="tel:+17025502513">(702) 550-2513</a>
-    </div>
-
-    <div class="nav-links">
-      <a onclick="scrollToSection('packages')">Services</a>
-      <a onclick="scrollToSection('about')">About</a>
-      <a onclick="scrollToSection('contact')">Contact</a>
-      <a onclick="scrollToSection('profile')">My Profile</a>
-      <div class="cart-icon" onclick="openCheckout()">🛒</div>
-    </div>
-  </nav>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz" style="max-width: 350px; height: auto; margin-bottom: 2rem;">
-    <h1>Budget. Save. Build.</h1>
-    <p>Professional financial leadership for every business</p>
-    <a href="#" class="cta-button" onclick="openContactModal()">Contact Us</a>
-  </section>
-
-  <!-- Package Sidebar -->
-  <div class="package-sidebar">
-    <div class="package-btn basic" onclick="openPackageModal('Basic Package - $799/mo')">
-      ⚡ Basic Package
-    </div>
-    <div class="package-btn gold" onclick="openPackageModal('Gold Package - $999/mo')">
-      ✨ Gold Package
-    </div>
-    <div class="package-btn diamond" onclick="openPackageModal('Diamond Package - $1999/mo')">
-      💎 Diamond Package
-    </div>
-  </div>
-
-  <!-- Packages Section -->
-  <section id="packages" class="packages">
-    <div class="container">
-      <h3>Our Service Packages</h3>
-      <div class="package-grid">
-        <div class="package-card basic">
-          <h4>⚡ Basic Package</h4>
-          <div class="package-price">Starting at $799</div>
-          <ul class="package-features">
-            <li>One-time comprehensive budget creation</li>
-            <li>Monthly financial reporting</li>
-            <li>Basic financial analysis</li>
-            <li>Email support</li>
-            <li>Budget optimization recommendations</li>
-          </ul>
-          <a href="tel:+17025502513" class="btn btn-primary">Call for Pricing</a>
-        </div>
-
-        <div class="package-card premium">
-          <h4>⭐ Premium Package</h4>
-          <div class="package-price">Call for Custom Quote</div>
-          <ul class="package-features">
-            <li>Everything in Basic Package</li>
-            <li>Weekly strategic calls</li>
-            <li>Advanced financial modeling</li>
-            <li>Cash flow optimization</li>
-            <li>KPI dashboard creation</li>
-            <li>Priority support</li>
-          </ul>
-          <a href="tel:+17025502513" class="btn btn-primary">Call for Pricing</a>
-        </div>
-
-        <div class="package-card diamond">
-          <h4>💎 Diamond Package</h4>
-          <div class="package-price">Call for Custom Quote</div>
-          <ul class="package-features">
-            <li>Full-time fractional CFO services</li>
-            <li>Complete strategic planning</li>
-            <li>Investment & funding guidance</li>
-            <li>Board meeting preparation</li>
-            <li>M&A transaction support</li>
-            <li>Direct phone access</li>
-            <li>Custom financial systems</li>
-          </ul>
-          <a href="tel:+17025502513" class="btn btn-primary">Call for Pricing</a>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- About Section -->
-  <section id="about" class="about">
-    <div class="container">
-      <h3>About Zachary Prizant</h3>
-      <div class="about-content">
-        <div class="about-image">
-          <img src="https://via.placeholder.com/400x400/ff3333/ffffff?text=Zachary+Prizant" alt="Zachary Prizant, Founder of Lightning Ledgerz">
-        </div>
-        <div class="about-text">
-          <p>With over a decade of experience in investment banking and private equity, I've had the privilege of closing over $500 million in deals at Valtus Capital Group across various industries. My expertise spans from high-level strategic transactions to operational efficiency improvements.</p>
-
-          <p>At The Siegel Group, I revolutionized their budgeting process, reducing the time from 8 hours per budget to just 7 minutes across more than 60 properties. At MGM, I automated performance systems that dramatically improved operational efficiency. These improvements freed up countless hours for strategic decision-making and growth initiatives.</p>
-
-          <p>As the founder of the C-Suite division at Professional Tax Alliance, I've served as a fractional CFO for companies across logistics, law, IT, and entertainment industries. Each engagement has reinforced my belief that every business, regardless of size, can benefit from expert financial leadership.</p>
-
-          <p>I started Lightning Ledgerz because I believe all businesses deserve access to strategic financial guidance. Whether you're trying to understand where your company is heading, identify cost-saving opportunities, or free up time to focus on core business activities, professional financial leadership can transform your operations.</p>
-
-          <div class="stats">
-            <div class="stat-item">
-              <div class="stat-number">$500M+</div>
-              <div class="stat-label">Deals Closed</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">60+</div>
-              <div class="stat-label">Properties Optimized</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">8hrs→7min</div>
-              <div class="stat-label">Budget Time Reduced</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">4</div>
-              <div class="stat-label">Industries Served</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact Section -->
-  <section id="contact" class="section">
-    <div class="container">
-      <h2>Get In Touch</h2>
-      <form class="contact-form" onsubmit="submitContact(event)">
-        <div class="form-group">
-          <label for="name">Name</label>
-          <input type="text" id="name" name="name" required>
-        </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-          <label for="phone">Phone</label>
-          <input type="tel" id="phone" name="phone" required>
-        </div>
-        <div class="form-group">
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="5" required></textarea>
-        </div>
-        <button type="submit" class="cta-button">Send Message</button>
-      </form>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer id="contact">
-    <div class="footer-content">
-      <div class="contact-info">
-        <h4>Contact Lightning Ledgerz</h4>
-        <p><strong>Phone:</strong> <a href="tel:+17025502513" style="color: #dc2626; text-decoration: none;">(702) 550-2513‬</a></p>
-        <p><strong>Email:</strong> <a href="mailto:zprizant@lightningledgerz.com" style="color: #dc2626; text-decoration: none;">zprizant@lightningledgerz.com</a></p>
-        <p><strong>Website:</strong> lightningledgerz.com</p>
-      </div>
-      <p style="margin-top: 30px; color: #9ca3af;">&copy; 2025 Lightning Ledgerz. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <!-- JavaScript -->
-  <script>
-    // Lightning Flash Rotation
-    let currentVideo = 0;
-    const flash = document.getElementById('lightningFlash');
-
-    function rotateVideos() {
-      flash.classList.add('flash');
-      setTimeout(() => flash.classList.remove('flash'), 300);
-    }
-
-    setInterval(rotateVideos, 10000);
-
-    function scrollToSection(id) {
-      const section = document.getElementById(id);
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-
-    function openContactModal() {
-      document.getElementById('contactModal').classList.add('active');
-    }
-
-    function openPackageModal(packageName) {
-      document.getElementById('packageTitle').textContent = packageName;
-      const price = packageName.includes('Basic') ? 199 : packageName.includes('Gold') ? 499 : 999;
-      document.getElementById('totalAmount').textContent = price;
-      document.getElementById('checkoutModal').classList.add('active');
-    }
-
-    function openCheckout() {
-      document.getElementById('checkoutModal').classList.add('active');
-    }
-
-    function closeModal(modalId) {
-      document.getElementById(modalId).classList.remove('active');
-    }
-
-    function applyPromo() {
-      const promoCode = document.getElementById('promoCode').value;
-      const promoMessage = document.getElementById('promoMessage');
-      const totalElement = document.getElementById('totalAmount');
-      const currentTotal = parseInt(totalElement.textContent);
-
-      if (promoCode === 'ACTIVE10') {
-        const discountedTotal = Math.round(currentTotal * 0.9);
-        totalElement.textContent = discountedTotal;
-        promoMessage.innerHTML = '<p style=\"color: #4CAF50;\">✓ 10% discount applied!</p>';
-      } else if (promoCode) {
-        promoMessage.innerHTML = '<p style=\"color: #ff3333;\">Invalid promo code</p>';
-      }
-    }
-
-    function submitContact(event) {
-      event.preventDefault();
-      alert(\"Thank you for your message! We'll get back to you soon.\");
-      event.target.reset();
-    }
-
-    function submitQuickContact(event) {
-      event.preventDefault();
-      alert(\"Thank you! We'll send you a calendar link to schedule your call.\");
-      closeModal('contactModal');
-    }
-
-    function processPayment(event) {
-      event.preventDefault();
-      alert('Payment processed successfully! Welcome to Lightning Ledgerz!');
-      closeModal('checkoutModal');
-    }
-
-    window.onclick = function(event) {
-      const modals = document.getElementsByClassName('modal');
-      for (let modal of modals) {
-        if (event.target === modal) {
-          modal.classList.remove('active');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lightning Ledgerz - Budget. Save. Build.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-      }
-    }
 
-    document.querySelectorAll('.package-btn').forEach(btn => {
-      btn.addEventListener('click', function () {
-        this.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-          this.style.transform = '';
-        }, 150);
-      });
-    });
-  </script>
-</body>
-</html>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Video Background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .video-background iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100vw;
+            min-height: 100vh;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .video-background iframe.active {
+            opacity: 1;
+        }
+
+        /* Lightning Flash Overlay */
+        .lightning-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ff3333;
+            z-index: -1;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .lightning-flash.flash {
+            animation: lightningFlash 0.3s ease-out;
+        }
+
+        @keyframes lightningFlash {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        /* Dark Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff3333;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: #ff3333;
+        }
+
+        .cart-icon {
+            font-size: 1.2rem;
+            background: #ff3333;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #ccc;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff3333, #ff6666);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 51, 51, 0.6);
+            background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
+        }
+
+        /* Package Sidebar */
+        .package-sidebar {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .package-btn {
+            padding: 1rem 1.5rem;
+            border: 2px solid #fff;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+
+        .package-btn:hover {
+            transform: translateX(10px);
+        }
+
+        .package-btn.basic:hover {
+            background: #ff3333;
+            border-color: #ff3333;
+            box-shadow: 0 0 20px #ff3333;
+        }
+
+        .package-btn.gold:hover {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #000;
+            border-color: #ffd700;
+            box-shadow: 0 0 20px #ffd700;
+        }
+
+        .package-btn.diamond:hover {
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            color: #000;
+            border-color: #fff;
+            box-shadow: 0 0 20px #fff;
+        }
+
+        /* Sections */
+        .section {
+            min-height: 100vh;
+            padding: 6rem 2rem 2rem;
+            background: rgba(0, 0, 0, 0.9);
+            margin-top: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #ff3333;
+        }
+
+        /* Package Section */
+        .package-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .package-card {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
+            border: 2px solid #ff3333;
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .package-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(255, 51, 51, 0.4);
+        }
+
+        .package-card h3 {
+            color: #ff3333;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .package-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .package-features {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .package-features li {
+            margin-bottom: 0.8rem;
+            padding-left: 1rem;
+            position: relative;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .package-features li:before {
+            content: "⚡";
+            position: absolute;
+            left: -0.5rem;
+            color: #ff3333;
+            font-weight: bold;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff3333, #ff6666);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 51, 51, 0.6);
+            background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
+        }
+
+        /* Special package effects */
+        .package-card.premium:hover {
+            border-color: #ffd700;
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.4);
+        }
+
+        .package-card.premium h3 {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .package-card.diamond:hover {
+            border-color: #fff;
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.4);
+        }
+
+        .package-card.diamond h3 {
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .about-photo {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #ff3333, #000);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Contact Form */
+        .contact-form {
+            max-width: 600px;
+            margin: 3rem auto;
+            background: rgba(255, 51, 51, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #ff3333;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #ff3333;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #333;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff3333;
+            box-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #111;
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #ff3333;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h3 {
+            color: #ff3333;
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .promo-section {
+            background: rgba(255, 51, 51, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .promo-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .promo-btn {
+            background: #ff3333;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Profile Section */
+        .profile-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .profile-card {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
+            border: 1px solid #ff3333;
+            border-radius: 15px;
+            padding: 2rem;
+        }
+
+        .profile-card h3 {
+            color: #ff3333;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .profile-info p {
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        /* QuickBooks Integration */
+        .quickbooks-section {
+            text-align: center;
+        }
+
+        .qb-status {
+            margin-bottom: 2rem;
+        }
+
+        .qb-disconnected,
+        .qb-connected {
+            padding: 1.5rem;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .qb-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .qb-connect-btn {
+            background: linear-gradient(45deg, #0077C5, #004080);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .qb-connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 119, 197, 0.4);
+        }
+
+        .qb-disconnect-btn {
+            background: #ff3333;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 1rem;
+        }
+
+        .qb-benefits {
+            text-align: left;
+            margin-top: 2rem;
+        }
+
+        .qb-benefits h4 {
+            color: #ff3333;
+            margin-bottom: 1rem;
+        }
+
+        .qb-benefits ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .qb-benefits li {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .qb-connected-info {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4CAF50;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .qb-connected-info p {
+            color: #4CAF50;
+            margin: 0.5rem 0;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            background: rgba(255, 51, 51, 0.2);
+            color: #fff;
+            border: 1px solid #ff3333;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 51, 51, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .nav-links a {
+                font-size: 0.9rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .package-sidebar {
+                left: 10px;
+                bottom: 10px;
+            }
+
+            .package-btn {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-content {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+
+            .section {
+                padding: 4rem 1rem 2rem;
+            }
+
+            nav {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .package-sidebar {
+                position: relative;
+                left: auto;
+                bottom: auto;
+                flex-direction: row;
+                justify-content: center;
+                margin: 2rem 0;
+            }
+
+            .package-btn {
+                flex: 1;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <div class="video-background" id="videoBackground">
+        <!-- Single video for demo - in production you'd rotate through multiple videos -->
+        <iframe src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1" frameborder="0" allowfullscreen class="active"></iframe>
+    </div>
+
+    <!-- Lightning Flash -->
+    <div class="lightning-flash" id="lightningFlash"></div>
+
+    <!-- Dark Overlay -->
+    <div class="overlay"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo" onclick="goHome()">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUgMzVIMzVWMzBIMzBWMjVIMjVWMjBIMjBWMTVIMTVWMTBIMTBWNUg1VjM1WiIgZmlsbD0iI0ZGMzMzMyIvPgo8cGF0aCBkPSJNMTAgMzBIMzBWMjVIMjVWMjBIMjBWMTVIMTVWMTBIMTBWMzBaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTUgMTVIMjVWMjBIMjBWMjVIMTVWMTVaIiBmaWxsPSIjRkYzMzMzIi8+CjxwYXRoIGQ9Ik0yNSAxNUgzMFYyMEgyNVYxNVoiIGZpbGw9IiNGRjMzMzMiLz4KPHA+</svg>" alt="Lightning Ledgerz">
+            <span>Lightning Ledgerz</span>
+        </div>
+        <div class="nav-links">
+            <a onclick="scrollToSection('services')">Services</a>
+            <a onclick="scrollToSection('about')">About</a>
+            <a onclick="scrollToSection('contact')">Contact</a>
+            <a onclick="scrollToSection('profile')">My Profile</a>
+            <div class="cart-icon" onclick="openCheckout()">🛒</div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Lightning Ledgerz</h1>
+        <p>Budget. Save. Build.</p>
+        <a href="#" class="cta-button" onclick="openContactModal()">Contact Us</a>
+    </section>
+
+    <!-- Package Sidebar -->
+    <div class="package-sidebar">
+        <div class="package-btn basic" onclick="openPackageModal('Basic Package - $799')">
+            ⚡ Basic Package
+        </div>
+        <div class="package-btn gold" onclick="openPackageModal('Gold Package - Custom Quote')">
+            ✨ Gold Package
+        </div>
+        <div class="package-btn diamond" onclick="openPackageModal('Diamond Package - Custom Quote')">
+            💎 Diamond Package
+        </div>
+    </div>
+
+    <!-- Packages Section -->
+    <section id="services" class="section">
+        <div class="container">
+            <h2>Our Service Packages</h2>
+            <div class="package-grid">
+                <div class="package-card basic" onclick="createLightningEffect(this)">
+                    <h3>⚡ Basic Package</h3>
+                    <div class="package-price">Starting at $799</div>
+                    <ul class="package-features">
+                        <li>One-time comprehensive budget creation</li>
+                        <li>Monthly financial reporting</li>
+                        <li>Basic financial analysis</li>
+                        <li>Email support</li>
+                        <li>Budget optimization recommendations</li>
+                    </ul>
+                    <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a>
+                </div>
+                <div class="package-card premium" onclick="createSparkleEffect(this)">
+                    <h3>⭐ Gold Package</h3>
+                    <div class="package-price">Call for Custom Quote</div>
+                    <ul class="package-features">
+                        <li>Everything in Basic Package</li>
+                        <li>Weekly strategic calls</li>
+                        <li>Advanced financial modeling</li>
+                        <li>Cash flow optimization</li>
+                        <li>KPI dashboard creation</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a>
+                </div>
+                <div class="package-card diamond" onclick="createDiamondEffect(this)">
+                    <h3>💎 Diamond Package</h3>
+                    <div class="package-price">Call for Custom Quote</div>
+                    <ul class="package-features">
+                        <li>Full-time fractional CFO services</li>
+                        <li>Complete strategic planning</li>
+                        <li>Investment & funding guidance</li>
+                        <li>Board meeting preparation</li>
+                        <li>M&A transaction support</li>
+                        <li>Direct phone access</li>
+                        <li>Custom financial systems</li>
+                    </ul>
+                    <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2>About Zac Prizant</h2>
+            <div class="about-content">
+                <div class="about-photo">
+                    Photo Placeholder
+                </div>
+                <div class="about-text">
+                    <p>Zac Prizant is a Cornell and Johnson Graduate, and elite endurance athlete who ran across the country with his twin brother from San Francisco to NYC. After closing $500M+ in investment banking and private equity deals, he launched Lightning Ledgerz to bring fractional CFO strategy to the masses.</p>
+                    
+                    <p>Zac's background spans entertainment, real estate, logistics, and tech. He once automated 60+ property budgets at The Siegel Group, reducing processing time from 8 hours to just 7 minutes.</p>
+                    
+                    <p>He now surfs in San Diego and coaches clients with the intensity of a champion and the heart of a brother.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            <form class="contact-form" onsubmit="submitContact(event)">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="cta-button">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile" class="section">
+        <div class="container">
+            <h2>My Profile</h2>
+            <div class="profile-content">
+                <div class="profile-card">
+                    <h3>Account Information</h3>
+                    <div class="profile-info">
+                        <p><strong>Plan:</strong> <span id="userPlan">Basic Package</span></p>
+                        <p><strong>Status:</strong> <span style="color: #4CAF50;">Active</span></p>
+                        <p><strong>Next Billing:</strong> July 16, 2025</p>
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <h3>QuickBooks Integration</h3>
+                    <div class="quickbooks-section">
+                        <div class="qb-status" id="qbStatus">
+                            <div class="qb-disconnected">
+                                <div class="qb-icon">📊</div>
+                                <p>Connect your QuickBooks account for seamless financial management</p>
+                                <button class="qb-connect-btn" onclick="connectQuickBooks()">
+                                    Connect QuickBooks
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="qb-benefits">
+                            <h4>Benefits of QuickBooks Integration:</h4>
+                            <ul>
+                                <li>✅ Automatic data sync</li>
+                                <li>⚡ Lightning-fast budget analysis</li>
+                                <li>📈 Real-time financial insights</li>
+                                <li>🔄 Automated report generation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <h3>Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="scheduleCall()">
+                            📞 Schedule CFO Call
+                        </button>
+                        <button class="action-btn" onclick="requestAnalysis()">
+                            📊 Request Budget Analysis
+                        </button>
+                        <button class="action-btn" onclick="viewReports()">
+                            📈 View Reports
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-
