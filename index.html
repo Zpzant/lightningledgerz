@@ -363,12 +363,23 @@
             margin-top: 3rem;
         }
 
-        ..about-photo {
+       .about-photo {
     background: transparent;
     text-align: center;
     padding: 1rem;
+    border: 3px solid #ff3333; /* ✅ Red border */
+    border-radius: 15px;
+    overflow: hidden;
+    max-width: 400px; /* Optional: limits too-wide display */
+    margin: 0 auto;   /* Centers it horizontally */
 }
-        }
+        .about-photo img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    display: block;
+    object-fit: cover;
+}
 
         .about-text {
             font-size: 1.1rem;
