@@ -364,24 +364,23 @@
         }
 
        .about-photo {
-   background: transparent;
+    background: transparent;
     text-align: center;
-    padding: 0; /* remove inner padding */
+    padding: 0;
     border: 3px solid #ff3333;
-    border-radius: 0; /* remove outer rounding */
+    border-radius: 15px; /* ✅ rounded border restored */
     overflow: hidden;
     max-width: 400px;
     margin: 0 auto;
-    height: 400px; /* force height if needed */
-}
-        .about-photo img {
-    width: 100%;
-    height: 100%;
-    border-radius: 0; /* remove inner rounding */
-    display: block;
-    object-fit: cover;
 }
 
+.about-photo img {
+    width: 100%;
+    height: auto; /* ✅ image keeps natural height */
+    border-radius: 15px; /* ✅ image border matches container */
+    display: block;
+    object-fit: contain; /* ✅ show full image */
+}
         .about-text {
             font-size: 1.1rem;
             line-height: 1.8;
@@ -734,23 +733,23 @@
 
     <!-- Package Sidebar -->
     <div class="package-sidebar">
-        <div class="package-btn basic" onclick="openPackageModal('Basic Package - $799')">
-            ⚡ Basic Package
-        </div>
-        <div class="package-btn gold" onclick="openPackageModal('Gold Package - Custom Quote')">
-            ✨ Gold Package
-        </div>
-        <div class="package-btn diamond" onclick="openPackageModal('Diamond Package - Custom Quote')">
-            💎 Diamond Package
-        </div>
+    <div class="package-btn basic" onclick="scrollToPackage('basic-package')">
+        ⚡ Basic Package
     </div>
+    <div class="package-btn gold" onclick="scrollToPackage('gold-package')">
+        ✨ Gold Package
+    </div>
+    <div class="package-btn diamond" onclick="scrollToPackage('diamond-package')">
+        💎 Diamond Package
+    </div>
+</div>
 
     <!-- Packages Section -->
     <section id="services" class="section">
         <div class="container">
             <h2>Our Service Packages</h2>
             <div class="package-grid">
-                <div class="package-card basic" onclick="createLightningEffect(this)">
+                <div id="basic-package" class="package-card basic" onclick="createLightningEffect(this)">
                     <h3>⚡ Basic Package</h3>
                     <div class="package-price">Starting at $799</div>
                     <ul class="package-features">
@@ -762,7 +761,7 @@
                     </ul>
                     <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a>
                 </div>
-                <div class="package-card premium" onclick="createSparkleEffect(this)">
+               <div id="gold-package" class="package-card gold" onclick="createSparkleEffect(this)">
                     <h3>✨ Gold Package</h3>
                     <div class="package-price">Call for Custom Quote</div>
                     <ul class="package-features">
@@ -775,7 +774,7 @@
                     </ul>
                     <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a>
                 </div>
-                <div class="package-card diamond" onclick="createDiamondEffect(this)">
+                <div id="diamond-package" class="package-card diamond" onclick="createDiamondEffect(this)">
                     <h3>💎 Diamond Package</h3>
                     <div class="package-price">Call for Custom Quote</div>
                     <ul class="package-features">
@@ -899,3 +898,22 @@
     <div id="contactModal" class="modal">
         <div class="modal-content">
             <div class="modal-
+                <script>
+    function scrollToPackage(id) {
+    const target = document.getElementById(id);
+    document.querySelectorAll('.package-card').forEach(el => {
+        el.classList.remove('highlighted');
+    });
+    if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+        target.classList.add('highlighted');
+        setTimeout(() => {
+            target.classList.remove('highlighted');
+        }, 2000); // removes highlight after 2 seconds
+    }
+}
+</script>
+
+</body>
+</html>
+
