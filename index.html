@@ -695,6 +695,16 @@
                 text-align: center;
             }
         }
+        .package-card.highlighted {
+  outline: 3px solid #ff3333;
+  animation: pulse 0.3s ease-in-out 2;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
     </style>
 </head>
 <body>
@@ -728,7 +738,7 @@
     <section class="hero">
        <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="max-width: 350px; width: 80%; height: auto;">
         <p style="max-width: 800px; margin: 1rem auto;">
-  Supercharge your business with better budgeting, performance tracking, and strategic planning. From one-time budgets to full-time CFO support — we deliver results at lightning speed.
+  From supercharched budgets to full-time CFO support — we deliver results at lightning speed.
 </p>
         <a href="#contact" class="cta-button">Contact Us</a>
     </section>
@@ -896,26 +906,29 @@
         </div>
     </section>
 
-    <!-- Contact Modal -->
-    <div id="contactModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-
-                <script>
-    function scrollToPackage(id) {
-    const target = document.getElementById(id);
-    document.querySelectorAll('.package-card').forEach(el => {
-        el.classList.remove('highlighted');
-    });
-    if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-        target.classList.add('highlighted');
-        setTimeout(() => {
-            target.classList.remove('highlighted');
-        }, 2000); // removes highlight after 2 seconds
-    }
+   <!-- Contact Modal -->
+<div id="contactModal" class="modal">
+  <div class="modal-content">
+    <!-- your modal content if needed -->
+  </div>
+</div>
+
+<script>
+function scrollToPackage(id) {
+  const target = document.getElementById(id);
+  document.querySelectorAll('.package-card').forEach(el => {
+    el.classList.remove('highlighted');
+  });
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth' });
+    target.classList.add('highlighted');
+    setTimeout(() => {
+      target.classList.remove('highlighted');
+    }, 2000);
+  }
 }
 </script>
-
+    
 </body>
 </html>
 
