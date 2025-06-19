@@ -364,19 +364,20 @@
         }
 
        .about-photo {
-    background: transparent;
+   background: transparent;
     text-align: center;
-    padding: 1rem;
-    border: 3px solid #ff3333; /* ✅ Red border */
-    border-radius: 15px;
+    padding: 0; /* remove inner padding */
+    border: 3px solid #ff3333;
+    border-radius: 0; /* remove outer rounding */
     overflow: hidden;
-    max-width: 400px; /* Optional: limits too-wide display */
-    margin: 0 auto;   /* Centers it horizontally */
+    max-width: 400px;
+    margin: 0 auto;
+    height: 400px; /* force height if needed */
 }
         .about-photo img {
     width: 100%;
-    height: auto;
-    border-radius: 12px;
+    height: 100%;
+    border-radius: 0; /* remove inner rounding */
     display: block;
     object-fit: cover;
 }
