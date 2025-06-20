@@ -786,22 +786,31 @@
                     </ul>
                     <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a>
                 </div>
-                <div id="diamond-package" class="package-card diamond" onclick="createDiamondEffect(this)">
-                    <h3>💎 Diamond Package</h3>
-                    <div class="package-price">Call for Custom Quote</div>
-                    <ul class="package-features">
-                        <li>Full-time fractional CFO services</li>
-                        <li>Complete strategic planning</li>
-                        <li>Investment & funding guidance</li>
-                        <li>Board meeting preparation</li>
-                        <li>M&A transaction support</li>
-                        <li>Direct phone access</li>
-                        <li>Custom financial systems</li>
-                    </ul>
-                    <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a>
-                </div>
-            </div>
-        </div>
+               <a href="https://buy.stripe.com/dRm9ATbHIdsk5ap0zTbsc00" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit;">
+  <div id="diamond-package" class="package-card diamond" onclick="createDiamondEffect(this)">
+      <h3>💎 Diamond Package</h3>
+
+      <!-- This span won't trigger the link because of pointer-events -->
+      <div style="pointer-events: none;">
+          <div class="package-price">Call for Custom Quote</div>
+      </div>
+
+      <ul class="package-features">
+          <li>Full-time fractional CFO services</li>
+          <li>Complete strategic planning</li>
+          <li>Investment & funding guidance</li>
+          <li>Board meeting preparation</li>
+          <li>M&A transaction support</li>
+          <li>Direct phone access</li>
+          <li>Custom financial systems</li>
+      </ul>
+
+      <!-- This button also won't trigger the link because of pointer-events -->
+      <div style="pointer-events: none;">
+          <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a>
+      </div>
+  </div>
+</a>
     </section>
 
     <!-- About Section -->
