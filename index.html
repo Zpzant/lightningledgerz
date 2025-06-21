@@ -1098,15 +1098,12 @@ function handleSignIn() {
   // TODO: Replace with Firebase or backend session check
 }
 </script>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+<script>
   const firebaseConfig = {
     apiKey: "AIzaSyAYFYeNmXN9HCouOfYFnI3ch20ynPXN62Q",
     authDomain: "lightning-ledgerz.firebaseapp.com",
@@ -1117,10 +1114,58 @@ function handleSignIn() {
     measurementId: "G-R5G9397ZTX"
   };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  document.getElementById("signup-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("signup-email").value;
+    const password = document.getElementById("signup-password").value;
+    const plan = document.querySelector('input[name="package"]:checked')?.value || "Basic";
+
+    try {
+      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      await db.collection("users").doc(cred.user.uid).set({
+        email: email,
+        package: plan
+      });
+      alert("✅ Signup successful!");
+    } catch (err) {
+      alert("❌ Signup failed: " + err.message);
+    }
+  });
+
+  document.getElementById("signin-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("signin-email").value;
+    const password = document.getElementById("signin-password").value;
+
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+      alert("✅ Logged in!");
+    } catch (err) {
+      alert("❌ Login failed: " + err.message);
+    }
+  });
+
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      const docSnap = await db.collection("users").doc(user.uid).get();
+      const data = docSnap.data();
+
+      if (data?.package === "Basic") {
+        document.getElementById("basic-section")?.style.setProperty("display", "block");
+      } else if (data?.package === "Gold") {
+        document.getElementById("gold-section")?.style.setProperty("display", "block");
+      } else if (data?.package === "Diamond") {
+        document.getElementById("diamond-section")?.style.setProperty("display", "block");
+      }
+    }
+  });
 </script>
+
+
 </body>
 </html>
 
