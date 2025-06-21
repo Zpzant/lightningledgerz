@@ -1044,8 +1044,8 @@ function scrollToPackage(id) {
 <div id="signup-modal" class="auth-modal hidden">
   <div class="auth-box">
     <h2>Sign Up</h2>
-    <input type="text" id="signup-username" placeholder="Username" required>
-    <input type="password" id="signup-password" placeholder="Password" required>
+    <input type="email" id="signup-email" placeholder="Email" />
+    <input type="password" id="signup-password" placeholder="Password" />
     <button onclick="handleSignUp()">Create Account</button>
   </div>
 </div>
@@ -1054,8 +1054,8 @@ function scrollToPackage(id) {
 <div id="signin-modal" class="auth-modal hidden">
   <div class="auth-box">
     <h2>Sign In</h2>
-    <input type="text" id="signin-username" placeholder="Username" required>
-    <input type="password" id="signin-password" placeholder="Password" required>
+   <input type="email" id="signin-email" placeholder="Email" />
+    <input type="password" id="signin-password" placeholder="Password" />
     <button onclick="handleSignIn()">Log In</button>
   </div>
 </div>
@@ -1098,7 +1098,29 @@ function handleSignIn() {
   // TODO: Replace with Firebase or backend session check
 }
 </script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAYFYeNmXN9HCouOfYFnI3ch20ynPXN62Q",
+    authDomain: "lightning-ledgerz.firebaseapp.com",
+    projectId: "lightning-ledgerz",
+    storageBucket: "lightning-ledgerz.firebasestorage.app",
+    messagingSenderId: "49377688541",
+    appId: "1:49377688541:web:a2d77636b04134ca615434",
+    measurementId: "G-R5G9397ZTX"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 </body>
 </html>
 
