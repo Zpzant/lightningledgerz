@@ -719,6 +719,59 @@
   50% { transform: scale(1.03); }
   100% { transform: scale(1); }
 }
+        /* Dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* "Get Started" link style */
+.dropdown-toggle {
+    color: #fff;
+    cursor: pointer;
+    font-weight: 500;
+    padding: 0.5rem;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.dropdown-toggle:hover {
+    color: #ff3333;
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 120%;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.95);
+    min-width: 150px;
+    z-index: 999;
+    border: 1px solid #ff3333;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(255, 51, 51, 0.3);
+}
+
+/* Dropdown link style */
+.dropdown-menu a {
+    color: #fff;
+    padding: 0.8rem 1rem;
+    display: block;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+/* Hover effect on dropdown links */
+.dropdown-menu a:hover {
+    background-color: #ff3333;
+    color: #000;
+}
+
+/* Reveal the menu on hover */
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
     </style>
 </head>
 <body>
@@ -743,7 +796,13 @@
            <a href="#services">Services</a>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
-            <a href="#profile">My Profile</a>
+            <div class="dropdown">
+  <a class="dropdown-toggle">Get Started</a>
+  <div class="dropdown-menu">
+    <a href="#signup">Sign Up</a>
+    <a href="#signin">Sign In</a>
+  </div>
+</div>
           <a class="cart-icon" href="https://your-payment-link.com" target="_blank" rel="noopener noreferrer">🛒</a>
         </div>
     </nav>
