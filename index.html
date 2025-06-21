@@ -211,15 +211,21 @@
             border-color: #ffd700;
             box-shadow: 0 0 20px #ffd700;
         }
-.gold-package-title {
-    color: gold;
+/* Gold Package Title: Gold Gradient Text */
+#gold-package h3 {
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: bold;
 }
 
-.gold-package-container {
-    border: 2px solid gold;
-    box-shadow: 0 0 15px gold;
+/* Gold Package Hover: Glowing Gold Border */
+#gold-package:hover {
+    border-color: #ffd700;
+    box-shadow: 0 0 20px #ffd700;
+    transition: all 0.3s ease;
 }
-
         .package-btn.diamond:hover {
             background: linear-gradient(45deg, #fff, #e0e0e0);
             color: #000;
