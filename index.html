@@ -114,16 +114,17 @@
         }
     
         /* Hero Section */
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 2rem;
-        }
-
+.hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 2rem 0 2rem; /* 👈 pushes content below fixed nav */
+    position: relative;
+    z-index: 1;
+}
         .hero h1 {
             font-size: 4rem;
             font-weight: bold;
