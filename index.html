@@ -1051,7 +1051,52 @@ function scrollToPackage(id) {
     </form>
   </div>
 </div>
+<h2 id="welcome-username" style="display:none;"></h2>
 
+<div id="onboarding-container" style="display:none;">
+  <h3>Step 1/5: What are you looking for?</h3>
+  <div id="service-options">
+    <div onclick="selectService(this, 'Bookkeeping')" class="option">Bookkeeping</div>
+    <div onclick="selectService(this, 'Payroll')" class="option">Payroll</div>
+    <div onclick="selectService(this, 'Taxes')" class="option">Taxes</div>
+    <div onclick="selectService(this, 'Forecasting')" class="option">Forecasting</div>
+    <div onclick="selectService(this, 'CFO Advisory')" class="option">CFO Advisory</div>
+  </div>
+  <button onclick="recommendTier()">Next</button>
+</div>
+
+<div id="package-recommendation" style="display:none;">
+  <h3>You Need the: <span id="recommended-tier"></span> Package</h3>
+  <div class="package-sidebar" id="basic">Basic</div>
+  <div class="package-sidebar" id="gold">Gold</div>
+  <div class="package-sidebar" id="diamond">Diamond</div>
+  <button onclick="showProfileSteps()">Purchase</button>
+</div>
+
+<div id="profile-steps" style="display:none;">
+  <h3>Step 2/5: Are you an individual or company?</h3>
+  <select id="user-type">
+    <option>Individual</option>
+    <option>Company</option>
+  </select>
+
+  <h3>Step 3/5: What industry are you in?</h3>
+  <select id="industry">
+    <option>Real Estate</option>
+    <option>Ecommerce</option>
+    <option>Freelancer</option>
+    <option>Tech Startup</option>
+    <option>Other</option>
+  </select>
+
+  <h3>Step 4/5: Upload Financial Documents</h3>
+  <input type="file" multiple>
+  <button onclick="connectQuickBooks()">Connect QuickBooks</button>
+
+  <h3>Step 5/5: Upload your avatar or company logo</h3>
+  <input type="file">
+  <button onclick="finishOnboarding()">Finish</button>
+</div>
 <!-- SIGN IN Modal -->
 <div id="signin-modal" class="auth-modal hidden">
   <div class="auth-box">
@@ -1140,33 +1185,50 @@ function handleSignIn() {
     }
   });
 
-  document.getElementById("signin-form")?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = document.getElementById("signin-email").value;
-    const password = document.getElementById("signin-password").value;
+ document.getElementById("signup-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("signup-email").value;
+  const password = document.getElementById("signup-password").value;
 
-    try {
-      await auth.signInWithEmailAndPassword(email, password);
-      alert("✅ Logged in!");
-    } catch (err) {
-      alert("❌ Login failed: " + err.message);
+  try {
+    const userCred = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCred.user;
+
+    await setDoc(doc(db, "users", user.uid), {
+      email: email,
+      onboardingComplete: false
+    });
+
+    document.getElementById("signup-form").style.display = "none";
+    document.getElementById("welcome-username").textContent = `Welcome, ${email}`;
+    document.getElementById("onboarding-container").style.display = "block";
+  } catch (error) {
+    alert("Signup error: " + error.message);
+  }
+});
+
+  onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const docSnap = await getDoc(doc(db, "users", user.uid));
+    const userData = docSnap.data();
+
+    const welcomeEl = document.getElementById("welcome-username");
+    welcomeEl.textContent = `Welcome, ${user.email}`;
+    welcomeEl.style.display = "block";
+
+    // Start onboarding
+    document.getElementById("onboarding-container").style.display = "block";
+
+    // Optionally show their purchased package content
+    if (userData?.package === "Basic") {
+      document.getElementById("basic-section")?.style.display = "block";
+    } else if (userData?.package === "Gold") {
+      document.getElementById("gold-section")?.style.display = "block";
+    } else if (userData?.package === "Diamond") {
+      document.getElementById("diamond-section")?.style.display = "block";
     }
-  });
-
-  auth.onAuthStateChanged(async (user) => {
-    if (user) {
-      const docSnap = await db.collection("users").doc(user.uid).get();
-      const data = docSnap.data();
-
-      if (data?.package === "Basic") {
-        document.getElementById("basic-section")?.style.setProperty("display", "block");
-      } else if (data?.package === "Gold") {
-        document.getElementById("gold-section")?.style.setProperty("display", "block");
-      } else if (data?.package === "Diamond") {
-        document.getElementById("diamond-section")?.style.setProperty("display", "block");
-      }
-    }
-  });
+  }
+});
 </script>
 
 
