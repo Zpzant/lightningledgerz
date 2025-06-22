@@ -1210,22 +1210,20 @@ function handleSignIn() {
   onAuthStateChanged(auth, async (user) => {
   if (user) {
     const docSnap = await getDoc(doc(db, "users", user.uid));
-    const userData = docSnap.data();
+    const userData = docSnap.exists() ? docSnap.data() : {};
 
     const welcomeEl = document.getElementById("welcome-username");
     welcomeEl.textContent = `Welcome, ${user.email}`;
     welcomeEl.style.display = "block";
 
-    // Start onboarding
-    document.getElementById("onboarding-container").style.display = "block";
-
-    // Optionally show their purchased package content
-    if (userData?.package === "Basic") {
-      document.getElementById("basic-section")?.style.display = "block";
-    } else if (userData?.package === "Gold") {
-      document.getElementById("gold-section")?.style.display = "block";
-    } else if (userData?.package === "Diamond") {
-      document.getElementById("diamond-section")?.style.display = "block";
+    if (!userData.package) {
+      // 🚨 No package found — show onboarding
+      document.getElementById("onboarding-container").style.display = "block";
+    } else {
+      // ✅ User has a package — show content
+      document.getElementById("basic-section").style.display = userData.package === "Basic" ? "block" : "none";
+      document.getElementById("gold-section").style.display = userData.package === "Gold" ? "block" : "none";
+      document.getElementById("diamond-section").style.display = userData.package === "Diamond" ? "block" : "none";
     }
   }
 });
