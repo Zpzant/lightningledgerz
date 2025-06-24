@@ -840,10 +840,63 @@
     <section class="hero">
        <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="max-width: 350px; width: 80%; height: auto;">
         <p style="max-width: 800px; margin: 1rem auto;">
-  From supercharched budgets to full-time CFO support — we deliver results at lightning speed.
+  From supercharged budgets to full — we deliver results at lightning speed.
 </p>
         <a href="#contact" class="cta-button">Contact Us</a>
     </section>
+<!-- Onboarding Section -->
+<section class="onboarding-section" id="onboardingSection" style="display:none;">
+  <div class="onboarding-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+
+    <!-- 👇 Your onboarding steps go here -->
+
+    <h3>Step 1/5: What are you looking for?</h3>
+    <div id="service-options">
+      <div onclick="selectService(this, 'Bookkeeping')" class="option">Bookkeeping</div>
+      <div onclick="selectService(this, 'Payroll')" class="option">Payroll</div>
+      <div onclick="selectService(this, 'Taxes')" class="option">Taxes</div>
+      <div onclick="selectService(this, 'Forecasting')" class="option">Forecasting</div>
+      <div onclick="selectService(this, 'CFO Advisory')" class="option">CFO Advisory</div>
+    </div>
+    <button onclick="recommendTier()">Next</button>
+
+    <div id="package-recommendation" style="display:none;">
+      <h3>You Need the: <span id="recommended-tier"></span> Package</h3>
+      <div class="package-sidebar" id="basic">Basic</div>
+      <div class="package-sidebar" id="gold">Gold</div>
+      <div class="package-sidebar" id="diamond">Diamond</div>
+      <button onclick="showProfileSteps()">Purchase</button>
+    </div>
+
+    <div id="profile-steps" style="display:none;">
+      <h3>Step 2/5: Are you an individual or company?</h3>
+      <select id="user-type">
+        <option>Individual</option>
+        <option>Company</option>
+      </select>
+
+      <h3>Step 3/5: What industry are you in?</h3>
+      <select id="industry">
+        <option>Real Estate</option>
+        <option>Ecommerce</option>
+        <option>Freelancer</option>
+        <option>Tech Startup</option>
+        <option>Other</option>
+      </select>
+
+      <h3>Step 4/5: Upload Financial Documents</h3>
+      <input type="file" multiple>
+      <button onclick="connectQuickBooks()">Connect QuickBooks</button>
+
+      <h3>Step 5/5: Upload your avatar or company logo</h3>
+      <input type="file">
+      <button onclick="finishOnboarding()">Finish</button>
+    </div>
+  </div>
+</section>
 
     <!-- Package Sidebar -->
     <div class="package-sidebar">
@@ -1053,50 +1106,6 @@ function scrollToPackage(id) {
 </div>
 <h2 id="welcome-username" style="display:none;"></h2>
 
-<div id="onboarding-container" style="display:none;">
-  <h3>Step 1/5: What are you looking for?</h3>
-  <div id="service-options">
-    <div onclick="selectService(this, 'Bookkeeping')" class="option">Bookkeeping</div>
-    <div onclick="selectService(this, 'Payroll')" class="option">Payroll</div>
-    <div onclick="selectService(this, 'Taxes')" class="option">Taxes</div>
-    <div onclick="selectService(this, 'Forecasting')" class="option">Forecasting</div>
-    <div onclick="selectService(this, 'CFO Advisory')" class="option">CFO Advisory</div>
-  </div>
-  <button onclick="recommendTier()">Next</button>
-</div>
-
-<div id="package-recommendation" style="display:none;">
-  <h3>You Need the: <span id="recommended-tier"></span> Package</h3>
-  <div class="package-sidebar" id="basic">Basic</div>
-  <div class="package-sidebar" id="gold">Gold</div>
-  <div class="package-sidebar" id="diamond">Diamond</div>
-  <button onclick="showProfileSteps()">Purchase</button>
-</div>
-
-<div id="profile-steps" style="display:none;">
-  <h3>Step 2/5: Are you an individual or company?</h3>
-  <select id="user-type">
-    <option>Individual</option>
-    <option>Company</option>
-  </select>
-
-  <h3>Step 3/5: What industry are you in?</h3>
-  <select id="industry">
-    <option>Real Estate</option>
-    <option>Ecommerce</option>
-    <option>Freelancer</option>
-    <option>Tech Startup</option>
-    <option>Other</option>
-  </select>
-
-  <h3>Step 4/5: Upload Financial Documents</h3>
-  <input type="file" multiple>
-  <button onclick="connectQuickBooks()">Connect QuickBooks</button>
-
-  <h3>Step 5/5: Upload your avatar or company logo</h3>
-  <input type="file">
-  <button onclick="finishOnboarding()">Finish</button>
-</div>
 <!-- SIGN IN Modal -->
 <div id="signin-modal" class="auth-modal hidden">
   <div class="auth-box">
