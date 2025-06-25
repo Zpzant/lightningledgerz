@@ -1274,6 +1274,36 @@ function handleMyProfileClick(event) {
   });
 }
 </script>
+<script>
+  function handleMyProfileClick(event) {
+    event.preventDefault();
+    const user = firebase.auth().currentUser;
+
+    if (!user) {
+      alert("Please sign in first.");
+      return;
+    }
+
+    firebase.firestore().collection("users").doc(user.uid).get().then(docSnap => {
+      if (!docSnap.exists()) {
+        alert("User data not found.");
+        return;
+      }
+
+      const data = docSnap.data();
+      const hasPackage = !!data.package;
+
+      if (hasPackage) {
+        // ✅ User has purchased a package — go to profile
+        document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
+      } else {
+        // 🚨 No purchase — show onboarding
+        document.getElementById("onboardingSection").style.display = "block";
+        document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
+      }
+    });
+  }
+</script>
 
 </body>
 </html>
