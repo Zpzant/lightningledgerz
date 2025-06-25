@@ -833,7 +833,7 @@
   <div class="dropdown-menu">
     <a href="#signup">Sign Up</a>
     <a href="#signin">Sign In</a>
-    <a href="#profile">My Profile</a> <!-- ← This line is new -->
+    <a href="#profile" onclick="handleMyProfileClick(event)">My Profile</a>
   </div>
 </div>
     </nav>
@@ -842,7 +842,7 @@
     <section class="hero">
        <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="max-width: 350px; width: 80%; height: auto;">
         <p style="max-width: 800px; margin: 1rem auto;">
-  From supercharged budgets to full — we deliver results at lightning speed.
+  From supercharged budgets to strategy — we deliver results at lightning speed.
 </p>
         <a href="#contact" class="cta-button">Contact Us</a>
     </section>
@@ -1026,7 +1026,6 @@
                     <div class="profile-info">
                         <p><strong>Plan:</strong> <span id="userPlan">Basic Package</span></p>
                         <p><strong>Status:</strong> <span style="color: #4CAF50;">Active</span></p>
-                        <p><strong>Next Billing:</strong> July 16, 2025</p>
                     </div>
                 </div>
 
@@ -1187,10 +1186,15 @@ function handleSignIn() {
     try {
   const cred = await auth.createUserWithEmailAndPassword(email, password);
 
-  await db.collection("users").doc(cred.user.uid).set({
-    email: email,
-    package: plan
-  });
+ const billingDate = new Date();
+billingDate.setDate(billingDate.getDate() + 30); // 30 days from now
+const formattedDate = billingDate.toISOString().split("T")[0]; // yyyy-mm-dd
+
+await db.collection("users").doc(cred.user.uid).set({
+  email: email,
+  package: plan,
+  nextBilling: formattedDate
+});
 
   alert("✅ Signup successful!");
 
@@ -1246,7 +1250,30 @@ function handleSignIn() {
   }
 });
 </script>
+<script>
+function handleMyProfileClick(event) {
+  event.preventDefault();
+  const user = firebase.auth().currentUser;
 
+  if (!user) {
+    alert("Please sign in first.");
+    return;
+  }
+
+  // Check Firestore for their package
+  firebase.firestore().collection("users").doc(user.uid).get().then(docSnap => {
+    const data = docSnap.data();
+    const hasPackage = data && data.package;
+
+    if (hasPackage) {
+      document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
+    } else {
+      document.getElementById("onboardingSection").style.display = "block";
+      document.getElementById("onboardingSection").scrollIntoView({ behavior: "smooth" });
+    }
+  });
+}
+</script>
 
 </body>
 </html>
