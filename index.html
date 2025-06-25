@@ -833,7 +833,9 @@
   <div class="dropdown-menu">
     <a href="#signup">Sign Up</a>
     <a href="#signin">Sign In</a>
+    <a href="#profile">My Profile</a> <!-- ← This line is new -->
   </div>
+</div>
     </nav>
 
     <!-- Hero Section -->
@@ -1183,17 +1185,24 @@ function handleSignIn() {
     const plan = document.querySelector('input[name="package"]:checked')?.value || "Basic";
 
     try {
-      const cred = await auth.createUserWithEmailAndPassword(email, password);
-      await db.collection("users").doc(cred.user.uid).set({
-        email: email,
-        package: plan
-      });
-      alert("✅ Signup successful!");
-    } catch (err) {
-      alert("❌ Signup failed: " + err.message);
-    }
+  const cred = await auth.createUserWithEmailAndPassword(email, password);
+
+  await db.collection("users").doc(cred.user.uid).set({
+    email: email,
+    package: plan
   });
 
+  alert("✅ Signup successful!");
+
+  // Show onboarding and start progress
+  document.getElementById("loginForm").style.display = "none";
+  document.getElementById("onboardingSection").style.display = "block";
+  document.getElementById("onboardingSection").scrollIntoView({ behavior: "smooth" });
+  updateProgressBar(1);
+} catch (error) {
+  console.error("Signup error:", error);
+  alert("Signup failed: " + error.message);
+}
  document.getElementById("signup-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("signup-email").value;
