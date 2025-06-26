@@ -1017,6 +1017,74 @@
     </section>
 
     <!-- Profile Section -->
+    <section id="profile">
+  <div id="authWarning" style="display:none; color:red; font-weight:bold;">Please sign in or sign up.</div>
+
+  <div id="onboardingSection" style="display: none;">
+    <!-- Onboarding questions go here -->
+  </div>
+
+  <div id="profileContent" style="display: none;">
+    <p><strong>Plan:</strong> <span id="userPlan">Loading...</span></p>
+    <p><strong>Status:</strong> <span style="color: #4CAF50;">Active</span></p>
+  </div>
+</section>
+
+<!-- ✅ Welcome Name Display -->
+<div id="welcomeName" style="text-align: center; margin-top: 10px; display: none;"></div>
+
+<script>
+  async function handleMyProfileClick(event) {
+    event.preventDefault();
+
+    const profileWrapper = document.getElementById("profile");
+    profileWrapper.style.display = "block"; // ✅ Ensure section is visible
+
+    const user = auth.currentUser;
+    const authWarning = document.getElementById("authWarning");
+    const onboarding = document.getElementById("onboardingSection");
+    const profile = document.getElementById("profileContent");
+
+    if (!user) {
+      onboarding.style.display = "none";
+      profile.style.display = "none";
+      authWarning.style.display = "block";
+      profileWrapper.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+
+    const docSnap = await getDoc(doc(db, "users", user.uid));
+    const data = docSnap.exists() ? docSnap.data() : {};
+    const hasPackage = !!data.package;
+    const hasCompletedOnboarding =
+      data.firstName && data.lastName && data.industry && data.userType;
+
+    if (hasPackage || hasCompletedOnboarding) {
+      onboarding.style.display = "none";
+      authWarning.style.display = "none";
+      profile.style.display = "block";
+    } else {
+      onboarding.style.display = "block";
+      authWarning.style.display = "none";
+      profile.style.display = "none";
+    }
+
+    profileWrapper.scrollIntoView({ behavior: "smooth" });
+  }
+
+  // ✅ Show welcome name when logged in
+  onAuthStateChanged(auth, async (user) => {
+    const welcomeEl = document.getElementById("welcomeName");
+    if (user) {
+      const docSnap = await getDoc(doc(db, "users", user.uid));
+      const data = docSnap.exists() ? docSnap.data() : {};
+      welcomeEl.textContent = `Welcome, ${data.firstName || "User"}`;
+      welcomeEl.style.display = "block";
+    } else {
+      welcomeEl.style.display = "none";
+    }
+  });
+</script>
     <section id="profile" class="section">
         <div class="container">
             <h2>My Profile</h2>
