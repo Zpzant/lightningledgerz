@@ -1111,12 +1111,12 @@ function scrollToPackage(id) {
 <div id="signin-modal" class="auth-modal hidden">
   <div class="auth-box">
     <h2>Sign In</h2>
-    <form id="signin-form">
-      <input type="email" id="signin-email" placeholder="Email" required />
-      <input type="password" id="signin-password" placeholder="Password" required />
-      <button type="submit">Log In</button>
-    </form>
-       <button id="forgot-password" type="button" class="text-sm text-blue-400 underline mt-2">Forgot Password?</button>
+   <form id="signin-form">
+  <input type="email" id="signin-email" placeholder="Email" required />
+  <input type="password" id="signin-password" placeholder="Password" />
+  <button type="submit">Log In</button>
+  <button id="forgot-password" type="button" class="text-sm text-blue-400 underline mt-2">Forgot Password?</button>
+</form>
   </div>
 </div>
 <script>
@@ -1178,11 +1178,11 @@ function handleSignIn() {
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-document.getElementById("forgot-password")?.addEventListener("click", async () => {
-  const email = document.getElementById("login-email")?.value.trim();
+document.getElementById("forgot-password").addEventListener("click", async () => {
+  const email = document.getElementById("signin-email").value.trim();
 
   if (!email) {
-    alert("Please enter your email above before resetting your password.");
+    alert("Please enter your email to reset your password.");
     return;
   }
 
@@ -1190,7 +1190,7 @@ document.getElementById("forgot-password")?.addEventListener("click", async () =
     await auth.sendPasswordResetEmail(email);
     alert("✅ Password reset email sent!");
   } catch (error) {
-    alert("Failed to send reset email: " + error.message);
+    alert("❌ Failed to send reset email: " + error.message);
   }
 });
     
