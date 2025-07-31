@@ -1178,6 +1178,22 @@ function handleSignIn() {
   const auth = firebase.auth();
   const db = firebase.firestore();
 
+document.getElementById("forgot-password")?.addEventListener("click", async () => {
+  const email = document.getElementById("login-email")?.value.trim();
+
+  if (!email) {
+    alert("Please enter your email above before resetting your password.");
+    return;
+  }
+
+  try {
+    await auth.sendPasswordResetEmail(email);
+    alert("✅ Password reset email sent!");
+  } catch (error) {
+    alert("Failed to send reset email: " + error.message);
+  }
+});
+    
   document.getElementById("signup-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const firstName = document.getElementById("signup-firstname").value.trim();
