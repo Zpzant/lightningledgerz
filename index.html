@@ -18,7 +18,6 @@
             overflow-x: hidden;
         }
 
-        /* Video Background */
         .video-background {
             position: fixed;
             top: 0;
@@ -46,7 +45,6 @@
             opacity: 1;
         }
 
-        /* Lightning Flash Overlay */
         .lightning-flash {
             position: fixed;
             top: 0;
@@ -59,17 +57,6 @@
             pointer-events: none;
         }
 
-        .lightning-flash.flash {
-            animation: lightningFlash 0.3s ease-out;
-        }
-
-        @keyframes lightningFlash {
-            0% { opacity: 0; }
-            50% { opacity: 0.8; }
-            100% { opacity: 0; }
-        }
-
-        /* Dark Overlay */
         .overlay {
             position: fixed;
             top: 0;
@@ -80,7 +67,6 @@
             z-index: -1;
         }
 
-        /* Navigation */
         nav {
             position: fixed;
             top: 0;
@@ -112,19 +98,19 @@
         .nav-links a:hover {
             color: #ff3333;
         }
-    
-        /* Hero Section */
-.hero {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 120px 2rem 0 2rem; /* 👈 pushes content below fixed nav */
-    position: relative;
-    z-index: 1;
-}
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 2rem 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
         .hero h1 {
             font-size: 4rem;
             font-weight: bold;
@@ -160,7 +146,6 @@
             background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
         }
 
-        /* Package Sidebar */
         .package-sidebar {
             position: fixed;
             left: 20px;
@@ -199,21 +184,7 @@
             border-color: #ffd700;
             box-shadow: 0 0 20px #ffd700;
         }
-/* Gold Package Title: Gold Gradient Text */
-#gold-package h3 {
-    background: linear-gradient(45deg, #ffd700, #ffed4e);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: bold;
-}
 
-/* Gold Package Hover: Glowing Gold Border */
-#gold-package:hover {
-    border-color: #ffd700;
-    box-shadow: 0 0 20px #ffd700;
-    transition: all 0.3s ease;
-}
         .package-btn.diamond:hover {
             background: linear-gradient(45deg, #fff, #e0e0e0);
             color: #000;
@@ -221,7 +192,6 @@
             box-shadow: 0 0 20px #fff;
         }
 
-        /* Sections */
         .section {
             min-height: 100vh;
             padding: 6rem 2rem 2rem;
@@ -241,7 +211,6 @@
             color: #ff3333;
         }
 
-        /* Package Section */
         .package-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -271,6 +240,19 @@
             margin-bottom: 1rem;
             font-size: 1.8rem;
             font-weight: bold;
+        }
+
+        #gold-package h3 {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        #gold-package:hover {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px #ffd700;
         }
 
         .package-price {
@@ -331,32 +313,6 @@
             background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
         }
 
-        /* Special package effects */
-        .package-card.premium:hover {
-            border-color: #ffd700;
-            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.4);
-        }
-
-        .package-card.premium h3 {
-            background: linear-gradient(45deg, #ffd700, #ffed4e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .package-card.diamond:hover {
-            border-color: #fff;
-            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.4);
-        }
-
-        .package-card.diamond h3 {
-            background: linear-gradient(45deg, #fff, #e0e0e0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* About Section */
         .about-content {
             display: grid;
             grid-template-columns: 1fr 2fr;
@@ -365,30 +321,30 @@
             margin-top: 3rem;
         }
 
-       .about-photo {
-    background: transparent;
-    text-align: center;
-    padding: 0;
-    border: 3px solid #ff3333;
-    border-radius: 15px; /* ✅ rounded border restored */
-    overflow: hidden;
-    max-width: 400px;
-    margin: 0 auto;
-}
+        .about-photo {
+            background: transparent;
+            text-align: center;
+            padding: 0;
+            border: 3px solid #ff3333;
+            border-radius: 15px;
+            overflow: hidden;
+            max-width: 400px;
+            margin: 0 auto;
+        }
 
-.about-photo img {
-    width: 100%;
-    height: auto; /* ✅ image keeps natural height */
-    border-radius: 15px; /* ✅ image border matches container */
-    display: block;
-    object-fit: contain; /* ✅ show full image */
-}
+        .about-photo img {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            display: block;
+            object-fit: contain;
+        }
+
         .about-text {
             font-size: 1.1rem;
             line-height: 1.8;
         }
 
-        /* Contact Form */
         .contact-form {
             max-width: 600px;
             margin: 3rem auto;
@@ -427,78 +383,6 @@
             box-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
         }
 
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: #111;
-            padding: 2rem;
-            border-radius: 15px;
-            border: 2px solid #ff3333;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .modal-header h3 {
-            color: #ff3333;
-            font-size: 1.5rem;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .promo-section {
-            background: rgba(255, 51, 51, 0.1);
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }
-
-        .promo-input {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .promo-btn {
-            background: #ff3333;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        /* Profile Section */
         .profile-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -524,859 +408,720 @@
             font-size: 1.1rem;
         }
 
-        /* QuickBooks Integration */
-        .quickbooks-section {
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-toggle {
+            color: #fff;
+            cursor: pointer;
+            font-weight: 500;
+            padding: 0.5rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .dropdown-toggle:hover {
+            color: #ff3333;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 120%;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.95);
+            min-width: 150px;
+            z-index: 999;
+            border: 1px solid #ff3333;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(255, 51, 51, 0.3);
+        }
+
+        .dropdown-menu a {
+            color: #fff;
+            padding: 0.8rem 1rem;
+            display: block;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #ff3333;
+            color: #000;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .auth-box {
+            background: #111;
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 2px solid #ff3333;
             text-align: center;
+            max-width: 400px;
+            width: 90%;
         }
 
-        .qb-status {
-            margin-bottom: 2rem;
+        .auth-box h2 {
+            color: #ff3333;
+            margin-bottom: 1.5rem;
         }
 
-        .qb-disconnected,
-        .qb-connected {
+        .auth-box input {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            margin: 1rem 0;
+            border: 1px solid #333;
+            border-radius: 0.5rem;
+            background: #222;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .auth-box button {
+            background: linear-gradient(45deg, #ff3333, #ff6666);
+            border: none;
+            padding: 0.75rem 2rem;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .auth-box button:hover {
+            background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
+            transform: translateY(-2px);
+        }
+
+        .auth-box .text-link {
+            color: #ff6666;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .upload-area {
+            background: rgba(0, 0, 0, 0.3);
             padding: 1.5rem;
             border-radius: 10px;
-            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed #ff3333;
         }
 
-        .qb-icon {
-            font-size: 3rem;
+        .upload-area input[type="file"] {
+            width: 100%;
+            padding: 0.5rem;
             margin-bottom: 1rem;
-        }
-
-        .qb-connect-btn {
-            background: linear-gradient(45deg, #0077C5, #004080);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
-        }
-
-        .qb-connect-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 119, 197, 0.4);
-        }
-
-        .qb-disconnect-btn {
-            background: #ff3333;
-            color: white;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 1rem;
-        }
-
-        .qb-benefits {
-            text-align: left;
-            margin-top: 2rem;
-        }
-
-        .qb-benefits h4 {
-            color: #ff3333;
-            margin-bottom: 1rem;
-        }
-
-        .qb-benefits ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .qb-benefits li {
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-
-        .qb-connected-info {
-            background: rgba(76, 175, 80, 0.2);
-            border: 1px solid #4CAF50;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-
-        .qb-connected-info p {
-            color: #4CAF50;
-            margin: 0.5rem 0;
-        }
-
-        /* Quick Actions */
-        .quick-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .action-btn {
-            background: rgba(255, 51, 51, 0.2);
             color: #fff;
-            border: 1px solid #ff3333;
+        }
+
+        .document-item {
+            background: rgba(0, 0, 0, 0.5);
             padding: 1rem;
             border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
         }
 
-        .action-btn:hover {
-            background: rgba(255, 51, 51, 0.4);
-            transform: translateY(-2px);
+        .document-item strong {
+            color: #ff3333;
         }
-        
+
+        .document-item p {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 0.3rem;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
         @media (max-width: 768px) {
-            .nav-links {
-                gap: 1rem;
-            }
-
-            .nav-links a {
-                font-size: 0.9rem;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero p {
-                font-size: 1.2rem;
-            }
-
-            .package-sidebar {
-                left: 10px;
-                bottom: 10px;
-            }
-
-            .package-btn {
-                padding: 0.8rem 1rem;
-                font-size: 0.9rem;
-            }
-
             .about-content {
                 grid-template-columns: 1fr;
             }
-
             .profile-content {
                 grid-template-columns: 1fr;
             }
-
-            .quick-actions {
-                flex-direction: column;
-            }
-
-            .action-btn {
-                font-size: 0.9rem;
-                padding: 0.8rem;
-            }
-
-            .section {
-                padding: 4rem 1rem 2rem;
-            }
-
-            nav {
-                padding: 1rem;
+            .hero h1 {
+                font-size: 2.5rem;
             }
         }
-
-        @media (max-width: 480px) {
-            .package-sidebar {
-                position: relative;
-                left: auto;
-                bottom: auto;
-                flex-direction: row;
-                justify-content: center;
-                margin: 2rem 0;
-            }
-
-            .package-btn {
-                flex: 1;
-                text-align: center;
-            }
-        }
-        .package-card.highlighted {
-  outline: 3px solid #ff3333;
-  animation: pulse 0.3s ease-in-out 2;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-  100% { transform: scale(1); }
-}
-        /* Dropdown container */
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-/* "Get Started" link style */
-.dropdown-toggle {
-    color: #fff;
-    cursor: pointer;
-    font-weight: 500;
-    padding: 0.5rem;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.dropdown-toggle:hover {
-    color: #ff3333;
-}
-
-/* Dropdown menu styling */
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 120%;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.95);
-    min-width: 150px;
-    z-index: 999;
-    border: 1px solid #ff3333;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(255, 51, 51, 0.3);
-}
-
-/* Dropdown link style */
-.dropdown-menu a {
-    color: #fff;
-    padding: 0.8rem 1rem;
-    display: block;
-    text-decoration: none;
-    transition: background 0.3s ease;
-}
-
-/* Hover effect on dropdown links */
-.dropdown-menu a:hover {
-    background-color: #ff3333;
-    color: #000;
-}
-
-/* Reveal the menu on hover */
-.dropdown:hover .dropdown-menu {
-    display: block;
-}
-        .auth-modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.auth-box {
-  background: #111;
-  padding: 2rem;
-  border-radius: 1rem;
-  text-align: center;
-  max-width: 400px;
-  width: 100%;
-}
-
-.auth-box input {
-  display: block;
-  width: 100%;
-  padding: 0.75rem;
-  margin: 1rem 0;
-  border: none;
-  border-radius: 0.5rem;
-  background: #222;
-  color: #fff;
-}
-
-.auth-box button {
-  background: #ffd700;
-  border: none;
-  padding: 0.75rem 2rem;
-  color: #000;
-  font-weight: bold;
-  border-radius: 0.5rem;
-  cursor: pointer;
-}
-
-.hidden {
-  display: none;
-}
     </style>
 </head>
 <body>
-    <!-- Video Background -->
     <div class="video-background" id="videoBackground">
-        <!-- Single video for demo - in production you'd rotate through multiple videos -->
         <iframe src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1" frameborder="0" allowfullscreen class="active"></iframe>
     </div>
 
-    <!-- Lightning Flash -->
     <div class="lightning-flash" id="lightningFlash"></div>
-
-    <!-- Dark Overlay -->
     <div class="overlay"></div>
 
-    <!-- Navigation -->
-<nav>
- <a href="#top" class="logo">
-  <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="height: 55px;">
-</a>
+    <nav>
+        <a href="#top" class="logo">
+            <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="height: 55px;">
+        </a>
         <div class="nav-links">
-           <a href="#services">Services</a>
+            <a href="#services">Services</a>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
             <div class="dropdown">
-  <a class="dropdown-toggle">Get Started</a>
-  <div class="dropdown-menu">
-    <a href="#signup">Sign Up</a>
-    <a href="#signin">Sign In</a>
-    <a href="#profile" onclick="handleMyProfileClick(event)">My Profile</a>
-  </div>
-</div>
+                <a class="dropdown-toggle">Get Started</a>
+                <div class="dropdown-menu">
+                    <a href="#signup" onclick="showSignUp(event)">Sign Up</a>
+                    <a href="#signin" onclick="showSignIn(event)">Sign In</a>
+                    <a href="#profile" onclick="handleMyProfileClick(event)">My Profile</a>
+                </div>
+            </div>
+        </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="hero">
-       <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="max-width: 350px; width: 80%; height: auto;">
+        <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="max-width: 350px; width: 80%; height: auto;">
         <p style="max-width: 800px; margin: 1rem auto;">
-  From supercharged budgets to strategy — we deliver results at lightning speed.
-</p>
+            From supercharged budgets to strategy — we deliver results at lightning speed.
+        </p>
         <a href="#contact" class="cta-button">Contact Us</a>
     </section>
 
-    <!-- Package Sidebar -->
     <div class="package-sidebar">
-    <div class="package-btn basic" onclick="scrollToPackage('basic-package')">
-        ⚡ Basic Package
+        <div class="package-btn basic" onclick="scrollToPackage('basic-package')">⚡ Basic Package</div>
+        <div class="package-btn gold" onclick="scrollToPackage('gold-package')">✨ Gold Package</div>
+        <div class="package-btn diamond" onclick="scrollToPackage('diamond-package')">💎 Diamond Package</div>
     </div>
-    <div class="package-btn gold" onclick="scrollToPackage('gold-package')">
-        ✨ Gold Package
-    </div>
-    <div class="package-btn diamond" onclick="scrollToPackage('diamond-package')">
-        💎 Diamond Package
-    </div>
-</div>
 
-    <!-- Packages Section -->
     <section id="services" class="section">
         <div class="container">
-  <h2>Our Service Packages</h2>
-  <div class="package-grid">
+            <h2>Our Service Packages</h2>
+            <div class="package-grid">
+                <div id="basic-package" class="package-card basic">
+                    <h3>⚡ Basic Package</h3>
+                    <div class="package-price">Starting at $799</div>
+                    <ul class="package-features">
+                        <li>One-time comprehensive budget creation</li>
+                        <li>Monthly financial reporting</li>
+                        <li>Basic financial analysis</li>
+                        <li>Email support</li>
+                        <li>Budget optimization recommendations</li>
+                    </ul>
+                    <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a><br><br>
+                    <a href="https://buy.stripe.com/dRmfZheTUbkcgT7fuNbsc02" target="_blank" class="btn btn-primary">Buy Now</a>
+                </div>
 
-    <!-- BASIC PACKAGE -->
-    <div id="basic-package" class="package-card basic" onclick="createLightningEffect(this)">
-      <h3>⚡ Basic Package</h3>
-      <div class="package-price">Starting at $799</div>
-      <ul class="package-features">
-        <li>One-time comprehensive budget creation</li>
-        <li>Monthly financial reporting</li>
-        <li>Basic financial analysis</li>
-        <li>Email support</li>
-        <li>Budget optimization recommendations</li>
-      </ul>
-      <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a><br><br>
-      <a href="https://buy.stripe.com/dRmfZheTUbkcgT7fuNbsc02" target="_blank" class="btn btn-primary">Buy Now</a>
-    </div>
+                <div id="gold-package" class="package-card gold">
+                    <h3>✨ Gold Package</h3>
+                    <div class="package-price">Call for Custom Quote</div>
+                    <ul class="package-features">
+                        <li>Everything in Basic Package</li>
+                        <li>Weekly strategic calls</li>
+                        <li>Advanced financial modeling</li>
+                        <li>Cash flow optimization</li>
+                        <li>KPI dashboard creation</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a><br><br>
+                    <a href="https://buy.stripe.com/28E28r1348805apeqJbsc01" target="_blank" class="btn btn-primary">Buy Now</a>
+                </div>
 
-    <!-- GOLD PACKAGE -->
-    <div id="gold-package" class="package-card gold" onclick="createSparkleEffect(this)">
-      <h3>✨ Gold Package</h3>
-      <div class="package-price">Call for Custom Quote</div>
-      <ul class="package-features">
-        <li>Everything in Basic Package</li>
-        <li>Weekly strategic calls</li>
-        <li>Advanced financial modeling</li>
-        <li>Cash flow optimization</li>
-        <li>KPI dashboard creation</li>
-        <li>Priority support</li>
-      </ul>
-      <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a><br><br>
-      <a href="https://buy.stripe.com/28E28r1348805apeqJbsc01" target="_blank" class="btn btn-primary">Buy Now</a>
-    </div>
-
-    <!-- DIAMOND PACKAGE -->
-    <div id="diamond-package" class="package-card diamond" onclick="createDiamondEffect(this)">
-      <h3>💎 Diamond Package</h3>
-      <div class="package-price">Call for Custom Quote</div>
-      <ul class="package-features">
-        <li>Full-time fractional CFO services</li>
-        <li>Complete strategic planning</li>
-        <li>Investment & funding guidance</li>
-        <li>Board meeting preparation</li>
-        <li>M&A transaction support</li>
-        <li>Direct phone access</li>
-        <li>Custom financial systems</li>
-      </ul>
-      <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a><br><br>
-      <a href="https://buy.stripe.com/dRm9ATbHIdsk5ap0zTbsc00" target="_blank" class="btn btn-primary">Buy Now</a>
-    </div>
-
-  </div>
-</div>
+                <div id="diamond-package" class="package-card diamond">
+                    <h3>💎 Diamond Package</h3>
+                    <div class="package-price">Call for Custom Quote</div>
+                    <ul class="package-features">
+                        <li>Full-time fractional CFO services</li>
+                        <li>Complete strategic planning</li>
+                        <li>Investment & funding guidance</li>
+                        <li>Board meeting preparation</li>
+                        <li>M&A transaction support</li>
+                        <li>Direct phone access</li>
+                        <li>Custom financial systems</li>
+                    </ul>
+                    <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a><br><br>
+                    <a href="https://buy.stripe.com/dRm9ATbHIdsk5ap0zTbsc00" target="_blank" class="btn btn-primary">Buy Now</a>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <!-- About Section -->
     <section id="about" class="section">
         <div class="container">
             <h2>About Our Founder</h2>
             <div class="about-content">
                 <div class="about-photo">
-  <img src="zac_mps.jpg" alt="Zac Prizant Headshot" class="headshot-img">
-</div>
+                    <img src="zac_mps.jpg" alt="Zac Prizant Headshot">
+                </div>
                 <div class="about-text">
                     <p>Zac Prizant is a Cornell University and Cornell SC Johnson School Graduate School of Management alumnus, and elite endurance athlete who ran 3,000 miles across the country with his twin brother from San Francisco to NYC. After closing $500M+ in investment banking and private equity deals, Zac managed a portfolio of 60+ hotels, transforming an antiquated eight-hour-per-budget procedure into a seven-minute one.</p>
-                    
                     <p>He went on to serve as a fractional CFO for businesses in various industries ranging from logistics, to law, entertainment, and tech. He launched Lightning Ledgerz to bring elite budgeting and strategy to the masses.</p>
-                    
                     <p>He now trains jiu jitsu in Las Vegas and coaches clients with the intensity of a champion and the heart of a brother.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
     <section id="contact" class="section">
         <div class="container">
             <h2>Get In Touch</h2>
             <form action="https://formspree.io/f/manjdppp" method="POST" class="contact-form">
-    <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" required>
-    </div>
-    <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
-    </div>
-    <div class="form-group">
-        <label for="phone">Phone</label>
-        <input type="tel" id="phone" name="phone">
-    </div>
-    <div class="form-group">
-        <label for="message">Message</label>
-        <textarea id="message" name="message" rows="5" required></textarea>
-    </div>
-    <button type="submit" class="cta-button">Send Message</button>
-</form>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="cta-button">Send Message</button>
+            </form>
         </div>
     </section>
 
-    <!-- Profile Section -->
-    <section id="profile">
-  <div id="authWarning" style="display:none; color:red; font-weight:bold;">Please sign in or sign up.</div>
-
-  <div id="profileContent" style="display: none;">
-    <p><strong>Plan:</strong> <span id="userPlan">Loading...</span></p>
-    <p><strong>Status:</strong> <span style="color: #4CAF50;">Active</span></p>
-  </div>
-</section>
-
-<!-- ✅ Welcome Name Display -->
-<div id="welcomeName" style="text-align: center; margin-top: 10px; display: none;"></div>
-
-<script>
-  function handleMyProfileClick(event) {
-    event.preventDefault();
-    const user = firebase.auth().currentUser;
-
-    if (!user) {
-      alert("Please sign in first.");
-      return;
-    }
-
-    firebase.firestore().collection("users").doc(user.uid).get().then(docSnap => {
-      if (!docSnap.exists()) {
-        alert("User data not found.");
-        return;
-      }
-
-      const data = docSnap.data();
-      const hasPackage = !!data.package;
-
-      // Always show profile section
-      document.getElementById("profile").style.display = "block";
-
-      if (hasPackage) {
-        // Scroll directly to upload section
-        const uploadEl = document.getElementById("uploadSection");
-        if (uploadEl) {
-          uploadEl.scrollIntoView({ behavior: "smooth" });
-          uploadEl.style.background = "#222"; // subtle highlight
-          setTimeout(() => uploadEl.style.background = "transparent", 2000);
-        } else {
-          alert("Upload section not found.");
-        }
-      } else {
-        document.getElementById("onboardingSection").style.display = "block";
-        document.getElementById("onboardingSection").scrollIntoView({ behavior: "smooth" });
-      }
-    });
-  }
-</script>
-    <section id="profile" class="section">
+    <section id="profile" class="section" style="display: none;">
         <div class="container">
             <h2>My Profile</h2>
+            <div id="welcomeMessage" style="text-align: center; font-size: 1.5rem; margin-bottom: 2rem; color: #ff3333;"></div>
+            
             <div class="profile-content">
                 <div class="profile-card">
                     <h3>Account Information</h3>
                     <div class="profile-info">
-                        <p><strong>Plan:</strong> <span id="userPlan">Basic Package</span></p>
+                        <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+                        <p><strong>Plan:</strong> <span id="userPlan">No package selected</span></p>
                         <p><strong>Status:</strong> <span style="color: #4CAF50;">Active</span></p>
                     </div>
+                    <button class="btn btn-primary" onclick="signOutUser()" style="margin-top: 1rem;">Sign Out</button>
                 </div>
 
                 <div class="profile-card">
-                    <h3>QuickBooks Integration</h3>
-                    <div class="quickbooks-section">
-                        <div class="qb-status" id="qbStatus">
-                            <div class="qb-disconnected">
-                                <div class="qb-icon">📊</div>
-                                <p>Connect your QuickBooks account for seamless financial management</p>
-                                <button class="qb-connect-btn" onclick="connectQuickBooks()">
-                                    Connect QuickBooks
-                                </button>
+                    <h3>Upload Documents</h3>
+                    <div class="upload-area">
+                        <input type="file" id="fileUpload" accept=".pdf,.xlsx,.xls,.csv" multiple>
+                        <button class="btn btn-primary" onclick="uploadDocuments()">Upload Files</button>
+                        <div id="uploadProgress" style="margin-top: 1rem; display: none;">
+                            <div style="background: #333; height: 20px; border-radius: 10px; overflow: hidden;">
+                                <div id="uploadBar" style="background: #ff3333; height: 100%; width: 0%; transition: width 0.3s;"></div>
                             </div>
-                        </div>
-                        
-                        <div class="qb-benefits">
-                            <h4>Benefits of QuickBooks Integration:</h4>
-                            <ul>
-                                <li>✅ Automatic data sync</li>
-                                <li>⚡ Lightning-fast budget analysis</li>
-                                <li>📈 Real-time financial insights</li>
-                                <li>🔄 Automated report generation</li>
-                            </ul>
+                            <p id="uploadStatus" style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem;"></p>
                         </div>
                     </div>
-                </div>
-
-                <div class="profile-card">
-                    <h3>Quick Actions</h3>
-                    <div class="quick-actions">
-                        <button class="action-btn" onclick="scheduleCall()">
-                            📞 Schedule CFO Call
-                        </button>
-                        <button class="action-btn" onclick="requestAnalysis()">
-                            📊 Request Budget Analysis
-                        </button>
-                        <button class="action-btn" onclick="viewReports()">
-                            📈 View Reports
-                        </button>
+                    
+                    <h4 style="margin-top: 2rem; color: #ff3333;">Your Documents</h4>
+                    <div id="documentsList" style="margin-top: 1rem;">
+                        <p style="color: #888;">Loading documents...</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-   <!-- Contact Modal -->
-<div id="contactModal" class="modal">
-  <div class="modal-content">
-    <!-- your modal content if needed -->
-  </div>
-</div>
-
-<script>
-function scrollToPackage(id) {
-  const target = document.getElementById(id);
-  document.querySelectorAll('.package-card').forEach(el => {
-    el.classList.remove('highlighted');
-  });
-  if (target) {
-    target.scrollIntoView({ behavior: 'smooth' });
-    target.classList.add('highlighted');
-    setTimeout(() => {
-      target.classList.remove('highlighted');
-    }, 2000);
-  }
-}
-</script>
-  <!-- SIGN UP Modal -->
-<div id="signup-modal" class="auth-modal hidden">
-  <div class="auth-box">
-    <h2>Sign Up</h2>
-    <form id="signup-form">
-      <input type="text" id="signup-firstname" placeholder="First Name" required />
-      <input type="text" id="signup-lastname" placeholder="Last Name" required />
-      <input type="email" id="signup-email" placeholder="Email" required />
-      <input type="password" id="signup-password" placeholder="Password" required />
-      <button type="submit">Create Account</button>
-
-    </form>
-  </div>
-</div>
-
-<!-- SIGN IN Modal -->
-<div id="signin-modal" class="auth-modal hidden">
-  <div class="auth-box">
-    <h2>Sign In</h2>
-   <form id="signin-form">
-  <input type="email" id="signin-email" placeholder="Email" required />
-  <input type="password" id="signin-password" placeholder="Password" />
-  <button type="submit">Log In</button>
-  <button id="forgot-password" type="button" class="text-sm text-blue-400 underline mt-2">Forgot Password?</button>
-</form>
-  </div>
-</div>
-<script>
-document.querySelectorAll('a[href="#signup"]').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('signup-modal').classList.remove('hidden');
-  });
-});
-
-document.querySelectorAll('a[href="#signin"]').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('signin-modal').classList.remove('hidden');
-  });
-});
-
-// Close modals when clicking outside
-window.addEventListener('click', (e) => {
-  ['signup-modal', 'signin-modal'].forEach(id => {
-    const modal = document.getElementById(id);
-    if (e.target === modal) {
-      modal.classList.add('hidden');
-    }
-  });
-});
-
-function handleSignUp() {
-  const username = document.getElementById('signup-username').value;
-  const password = document.getElementById('signup-password').value;
-  alert(`Pretend we're signing up ${username} with password ${password}`);
-  // TODO: Replace with Firebase or backend call
-}
-
-function handleSignIn() {
-  const username = document.getElementById('signin-username').value;
-  const password = document.getElementById('signin-password').value;
-  alert(`Pretend we're signing in ${username}`);
-  // TODO: Replace with Firebase or backend session check
-}
-</script>
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAYFYeNmXN9HCouOfYFnI3ch20ynPXN62Q",
-    authDomain: "lightning-ledgerz.firebaseapp.com",
-    projectId: "lightning-ledgerz",
-    storageBucket: "lightning-ledgerz.firebasestorage.app",
-    messagingSenderId: "49377688541",
-    appId: "1:49377688541:web:a2d77636b04134ca615434",
-    measurementId: "G-R5G9397ZTX"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-
-document.getElementById("forgot-password").addEventListener("click", async () => {
-  const email = document.getElementById("signin-email").value.trim();
-
-  if (!email) {
-    alert("Please enter your email to reset your password.");
-    return;
-  }
-
-  try {
-    await auth.sendPasswordResetEmail(email);
-    alert("✅ Password reset email sent!");
-  } catch (error) {
-    alert("❌ Failed to send reset email: " + error.message);
-  }
-});
-    
-  document.getElementById("signup-form")?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const firstName = document.getElementById("signup-firstname").value.trim();
-const lastName = document.getElementById("signup-lastname").value.trim();
-const email = document.getElementById("signup-email").value.trim();
-const password = document.getElementById("signup-password").value;
-const plan = document.querySelector('input[name="package"]:checked')?.value || "Basic";
-
-try {
-  const cred = await auth.createUserWithEmailAndPassword(email, password);
-  // ... existing code ...
-} catch (error) {
-  if (error.code === "auth/email-already-in-use") {
-    alert("❌ This email is already in use. Please log in or reset your password.");
-  } else {
-    alert("Signup failed: " + error.message);
-  }
-}
-
-  alert("✅ Signup successful!");
-
-  // Show onboarding and start progress
-  document.getElementById("loginForm").style.display = "none";
-  document.getElementById("onboardingSection").style.display = "block";
-  document.getElementById("onboardingSection").scrollIntoView({ behavior: "smooth" });
-  updateProgressBar(1);
-} catch (error) {
-  console.error("Signup error:", error);
-  alert("Signup failed: " + error.message);
-}
- document.getElementById("signup-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = document.getElementById("signup-email").value;
-  const password = document.getElementById("signup-password").value;
-
-  try {
-    const userCred = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCred.user;
-
-    await setDoc(doc(db, "users", user.uid), {
-      email: email,
-      onboardingComplete: false
-    });
-
-    document.getElementById("signup-form").style.display = "none";
-    document.getElementById("welcome-username").textContent = `Welcome, ${email}`;
-    document.getElementById("onboarding-container").style.display = "block";
-  } catch (error) {
-    alert("Signup error: " + error.message);
-  }
-});
-
-  onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    const docSnap = await getDoc(doc(db, "users", user.uid));
-    const userData = docSnap.exists() ? docSnap.data() : {};
-
-    const greetEl = document.getElementById("navbarGreeting");
-    if (greetEl && userData.firstName) {
-      greetEl.textContent = `Hi, ${userData.firstName}`;
-      greetEl.classList.remove("hidden");
-    }
-  }
-});
-
-    if (!userData.package) {
-      // 🚨 No package found — show onboarding
-      document.getElementById("onboarding-container").style.display = "block";
-    } else {
-      // ✅ User has a package — show content
-      document.getElementById("basic-section").style.display = userData.package === "Basic" ? "block" : "none";
-      document.getElementById("gold-section").style.display = userData.package === "Gold" ? "block" : "none";
-      document.getElementById("diamond-section").style.display = userData.package === "Diamond" ? "block" : "none";
-    }
-  }
-});
-</script>
-<script>
-function handleMyProfileClick(event) {
-  event.preventDefault();
-  const user = firebase.auth().currentUser;
-
-  if (!user) {
-    alert("Please sign in first.");
-    return;
-  }
-
-  // Check Firestore for their package
-  firebase.firestore().collection("users").doc(user.uid).get().then(docSnap => {
-    const data = docSnap.data();
-    const hasPackage = data && data.package;
-
-    if (hasPackage) {
-      document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
-    } else {
-      document.getElementById("onboardingSection").style.display = "block";
-      document.getElementById("onboardingSection").scrollIntoView({ behavior: "smooth" });
-    }
-  });
-}
-</script>
-<script>
-  function handleMyProfileClick(event) {
-    event.preventDefault();
-    const user = firebase.auth().currentUser;
-
-    if (!user) {
-      alert("Please sign in first.");
-      return;
-    }
-
-    firebase.firestore().collection("users").doc(user.uid).get().then(docSnap => {
-      if (!docSnap.exists()) {
-        alert("User data not found.");
-        return;
-      }
-
-      const data = docSnap.data();
-      const hasPackage = !!data.package;
-
-      if (hasPackage) {
-        // ✅ User has purchased a package — go to profile
-        document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
-      } else {
-        // 🚨 No purchase — show onboarding
-        document.getElementById("onboardingSection").style.display = "block";
-        document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
-      }
-    });
-  }
-</script>
-<!-- Onboarding Section -->
-<section class="onboarding-section" id="onboardingSection">
-  <div class="onboarding-container">
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    <div id="signup-modal" class="auth-modal hidden">
+        <div class="auth-box">
+            <h2>Sign Up</h2>
+            <form id="signup-form">
+                <input type="text" id="signup-firstname" placeholder="First Name" required />
+                <input type="text" id="signup-lastname" placeholder="Last Name" required />
+                <input type="email" id="signup-email" placeholder="Email" required />
+                <input type="password" id="signup-password" placeholder="Password (min 6 characters)" required />
+                <button type="submit">Create Account</button>
+            </form>
+            <a class="text-link" onclick="switchToSignIn()">Already have an account? Sign in</a>
+        </div>
     </div>
 
-    <!-- 👇 Your onboarding steps go here -->
-
-    <h3>Step 1/5: What are you looking for?</h3>
-    <div id="service-options">
-      <div onclick="selectService(this, 'Bookkeeping')" class="option">Bookkeeping</div>
-      <div onclick="selectService(this, 'Payroll')" class="option">Payroll</div>
-      <div onclick="selectService(this, 'Taxes')" class="option">Taxes</div>
-      <div onclick="selectService(this, 'Forecasting')" class="option">Forecasting</div>
-      <div onclick="selectService(this, 'CFO Advisory')" class="option">CFO Advisory</div>
-    </div>
-    <button onclick="recommendTier()">Next</button>
-
-    <div id="package-recommendation" style="display:none;">
-      <h3>You Need the: <span id="recommended-tier"></span> Package</h3>
-      <div class="package-sidebar" id="basic">Basic</div>
-      <div class="package-sidebar" id="gold">Gold</div>
-      <div class="package-sidebar" id="diamond">Diamond</div>
-      <button onclick="showProfileSteps()">Purchase</button>
+    <div id="signin-modal" class="auth-modal hidden">
+        <div class="auth-box">
+            <h2>Sign In</h2>
+            <form id="signin-form">
+                <input type="email" id="signin-email" placeholder="Email" required />
+                <input type="password" id="signin-password" placeholder="Password" required />
+                <button type="submit">Log In</button>
+            </form>
+            <a class="text-link" id="forgot-password">Forgot Password?</a><br>
+            <a class="text-link" onclick="switchToSignUp()">Need an account? Sign up</a>
+        </div>
     </div>
 
-    <div id="profile-steps" style="display:none;">
-      <h3>Step 2/5: Are you an individual or company?</h3>
-      <select id="user-type">
-        <option>Individual</option>
-        <option>Company</option>
-      </select>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 
-      <h3>Step 3/5: What industry are you in?</h3>
-      <select id="industry">
-        <option>Real Estate</option>
-        <option>Ecommerce</option>
-        <option>Freelancer</option>
-        <option>Tech Startup</option>
-        <option>Other</option>
-      </select>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAYFYeNmXN9HCouOfYFnI3ch20ynPXN62Q",
+            authDomain: "lightning-ledgerz.firebaseapp.com",
+            projectId: "lightning-ledgerz",
+            storageBucket: "lightning-ledgerz.firebasestorage.app",
+            messagingSenderId: "49377688541",
+            appId: "1:49377688541:web:a2d77636b04134ca615434",
+            measurementId: "G-R5G9397ZTX"
+        };
 
-      <h3>Step 4/5: Upload Financial Documents</h3>
-      <input type="file" multiple>
-      <button onclick="connectQuickBooks()">Connect QuickBooks</button>
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
 
-      <h3>Step 5/5: Upload your avatar or company logo</h3>
-      <input type="file">
-      <button onclick="finishOnboarding()">Finish</button>
-    </div>
-  </div>
-</section>
+        // Modal functions
+        function showSignUp(e) {
+            e.preventDefault();
+            document.getElementById('signup-modal').classList.remove('hidden');
+        }
+
+        function showSignIn(e) {
+            e.preventDefault();
+            document.getElementById('signin-modal').classList.remove('hidden');
+        }
+
+        function switchToSignIn() {
+            document.getElementById('signup-modal').classList.add('hidden');
+            document.getElementById('signin-modal').classList.remove('hidden');
+        }
+
+        function switchToSignUp() {
+            document.getElementById('signin-modal').classList.add('hidden');
+            document.getElementById('signup-modal').classList.remove('hidden');
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target.id === 'signup-modal') {
+                document.getElementById('signup-modal').classList.add('hidden');
+            }
+            if (e.target.id === 'signin-modal') {
+                document.getElementById('signin-modal').classList.add('hidden');
+            }
+        });
+
+        // Sign Up
+        document.getElementById("signup-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const firstName = document.getElementById("signup-firstname").value.trim();
+            const lastName = document.getElementById("signup-lastname").value.trim();
+            const email = document.getElementById("signup-email").value.trim();
+            const password = document.getElementById("signup-password").value;
+
+            try {
+                const cred = await auth.createUserWithEmailAndPassword(email, password);
+                
+                await db.collection("users").doc(cred.user.uid).set({
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    package: null,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert("Account created successfully! Welcome to Lightning Ledgerz.");
+                document.getElementById("signup-modal").classList.add('hidden');
+                
+            } catch (error) {
+                if (error.code === "auth/email-already-in-use") {
+                    alert("This email is already registered. Please sign in instead.");
+                } else if (error.code === "auth/weak-password") {
+                    alert("Password should be at least 6 characters long.");
+                } else {
+                    alert("Signup failed: " + error.message);
+                }
+            }
+        });
+
+        // Sign In
+        document.getElementById("signin-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("signin-email").value.trim();
+            const password = document.getElementById("signin-password").value;
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                alert("Welcome back!");
+                document.getElementById("signin-modal").classList.add('hidden');
+            } catch (error) {
+                if (error.code === "auth/user-not-found") {
+                    alert("No account found with this email. Please sign up first.");
+                } else if (error.code === "auth/wrong-password") {
+                    alert("Incorrect password. Please try again.");
+                } else {
+                    alert("Login failed: " + error.message);
+                }
+            }
+        });
+
+        // Forgot Password
+        document.getElementById("forgot-password").addEventListener("click", async () => {
+            const email = document.getElementById("signin-email").value.trim();
+
+            if (!email) {
+                alert("Please enter your email address first.");
+                return;
+            }
+
+            try {
+                await auth.sendPasswordResetEmail(email);
+                alert("Password reset email sent! Check your inbox.");
+            } catch (error) {
+                alert("Failed to send reset email: " + error.message);
+            }
+        });
+
+        // Auth State Observer
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                const docSnap = await db.collection("users").doc(user.uid).get();
+                const userData = docSnap.data();
+
+                if (userData) {
+                    const welcomeMsg = document.getElementById("welcomeMessage");
+                    if (welcomeMsg) {
+                        welcomeMsg.textContent = `Welcome, ${userData.firstName}!`;
+                    }
+
+                    const emailEl = document.getElementById("userEmail");
+                    if (emailEl) {
+                        emailEl.textContent = userData.email;
+                    }
+
+                    const planEl = document.getElementById("userPlan");
+                    if (planEl) {
+                        planEl.textContent = userData.package || "No package selected";
+                    }
+
+                    loadUserDocuments(user.uid);
+                }
+            } else {
+                const welcomeMsg = document.getElementById("welcomeMessage");
+                if (welcomeMsg) {
+                    welcomeMsg.textContent = "";
+                }
+            }
+        });
+
+        // Upload Documents
+        async function uploadDocuments() {
+            const user = auth.currentUser;
+            if (!user) {
+                alert("Please log in first!");
+                return;
+            }
+
+            const fileInput = document.getElementById("fileUpload");
+            const files = fileInput.files;
+
+            if (files.length === 0) {
+                alert("Please select files to upload");
+                return;
+            }
+
+            const progressDiv = document.getElementById("uploadProgress");
+            const progressBar = document.getElementById("uploadBar");
+            const statusText = document.getElementById("uploadStatus");
+            progressDiv.style.display = "block";
+
+            try {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    statusText.textContent = `Uploading ${file.name}...`;
+                    
+                    const filePath = `users/${user.uid}/documents/${Date.now()}_${file.name}`;
+                    const storageRef = storage.ref(filePath);
+                    const uploadTask = storageRef.put(file);
+                    
+                    await new Promise((resolve, reject) => {
+                        uploadTask.on('state_changed',
+                            (snapshot) => {
+                                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                progressBar.style.width = progress + '%';
+                            },
+                            (error) => reject(error),
+                            async () => {
+                                const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                                
+                                await db.collection("users").doc(user.uid).collection("documents").add({
+                                    name: file.name,
+                                    url: downloadURL,
+                                    path: filePath,
+                                    size: file.size,
+                                    type: file.type,
+                                    uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
+                                });
+                                
+                                resolve();
+                            }
+                        );
+                    });
+                }
+
+                alert("All files uploaded successfully!");
+                fileInput.value = "";
+                progressDiv.style.display = "none";
+                progressBar.style.width = "0%";
+                statusText.textContent = "";
+                
+                loadUserDocuments(user.uid);
+
+            } catch (error) {
+                console.error("Upload error:", error);
+                alert("Upload failed: " + error.message);
+                progressDiv.style.display = "none";
+            }
+        }
+
+        // Load User Documents
+        async function loadUserDocuments(userId) {
+            const docsList = document.getElementById("documentsList");
+            if (!docsList) return;
+
+            try {
+                const snapshot = await db.collection("users").doc(userId).collection("documents")
+                    .orderBy("uploadedAt", "desc")
+                    .get();
+
+                if (snapshot.empty) {
+                    docsList.innerHTML = '<p style="color: #888;">No documents uploaded yet</p>';
+                    return;
+                }
+
+                let html = '';
+                
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const fileSize = (data.size / 1024).toFixed(2);
+                    const date = data.uploadedAt ? data.uploadedAt.toDate().toLocaleDateString() : 'N/A';
+                    
+                    html += `
+                        <div class="document-item">
+                            <div>
+                                <strong>${data.name}</strong>
+                                <p>${fileSize} KB • ${date}</p>
+                            </div>
+                            <div class="document-actions">
+                                <a href="${data.url}" target="_blank" class="btn btn-primary btn-small">View</a>
+                                <button onclick="deleteDocument('${doc.id}')" class="btn btn-primary btn-small">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                docsList.innerHTML = html;
+
+            } catch (error) {
+                console.error("Error loading documents:", error);
+                docsList.innerHTML = '<p style="color: red;">Error loading documents</p>';
+            }
+        }
+
+        // Delete Document
+        async function deleteDocument(docId) {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            if (!confirm("Are you sure you want to delete this document?")) {
+                return;
+            }
+
+            try {
+                const docRef = db.collection("users").doc(user.uid).collection("documents").doc(docId);
+                const docSnap = await docRef.get();
+                const data = docSnap.data();
+
+                const storageRef = storage.ref(data.path);
+                await storageRef.delete();
+
+                await docRef.delete();
+
+                alert("Document deleted successfully!");
+                loadUserDocuments(user.uid);
+
+            } catch (error) {
+                console.error("Delete error:", error);
+                alert("Failed to delete document: " + error.message);
+            }
+        }
+
+        // Sign Out
+        function signOutUser() {
+            auth.signOut().then(() => {
+                alert("Signed out successfully!");
+                document.getElementById("profile").style.display = "none";
+                window.location.href = "#top";
+            });
+        }
+
+        // Handle My Profile Click
+        function handleMyProfileClick(event) {
+            event.preventDefault();
+            const user = auth.currentUser;
+
+            if (!user) {
+                alert("Please sign in first.");
+                showSignIn(event);
+                return;
+            }
+
+            document.getElementById("profile").style.display = "block";
+            document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
+        }
+
+        // Scroll to Package
+        function scrollToPackage(id) {
+            const target = document.getElementById(id);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Make functions globally available
+        window.uploadDocuments = uploadDocuments;
+        window.deleteDocument = deleteDocument;
+        window.signOutUser = signOutUser;
+        window.handleMyProfileClick = handleMyProfileClick;
+        window.scrollToPackage = scrollToPackage;
+        window.showSignUp = showSignUp;
+        window.showSignIn = showSignIn;
+        window.switchToSignIn = switchToSignIn;
+        window.switchToSignUp = switchToSignUp;
+    </script>
 </body>
 </html>
