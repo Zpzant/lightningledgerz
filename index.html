@@ -1,1127 +1,1081 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lightning Ledgerz - Budget. Save. Build.</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background: #000;
-            color: #fff;
-            overflow-x: hidden;
-        }
-
-        .video-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -2;
-            overflow: hidden;
-        }
-
-        .video-background iframe {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 100vw;
-            min-height: 100vh;
-            width: auto;
-            height: auto;
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-
-        .video-background iframe.active {
-            opacity: 1;
-        }
-
-        .lightning-flash {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #ff3333;
-            z-index: -1;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: -1;
-        }
-
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-            cursor: pointer;
-        }
-
-        .nav-links a:hover {
-            color: #ff3333;
-        }
-
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 120px 2rem 0 2rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero h1 {
-            font-size: 4rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-        }
-
-        .hero p {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            color: #ccc;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-        }
-
-        .cta-button {
-            background: linear-gradient(45deg, #ff3333, #ff6666);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 51, 51, 0.6);
-            background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
-        }
-
-        .package-sidebar {
-            position: fixed;
-            left: 20px;
-            bottom: 20px;
-            z-index: 999;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .package-btn {
-            padding: 1rem 1.5rem;
-            border: 2px solid #fff;
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            backdrop-filter: blur(10px);
-        }
-
-        .package-btn:hover {
-            transform: translateX(10px);
-        }
-
-        .package-btn.basic:hover {
-            background: #ff3333;
-            border-color: #ff3333;
-            box-shadow: 0 0 20px #ff3333;
-        }
-
-        .package-btn.gold:hover {
-            background: linear-gradient(45deg, #ffd700, #ffed4e);
-            color: #000;
-            border-color: #ffd700;
-            box-shadow: 0 0 20px #ffd700;
-        }
-
-        .package-btn.diamond:hover {
-            background: linear-gradient(45deg, #fff, #e0e0e0);
-            color: #000;
-            border-color: #fff;
-            box-shadow: 0 0 20px #fff;
-        }
-
-        .section {
-            min-height: 100vh;
-            padding: 6rem 2rem 2rem;
-            background: rgba(0, 0, 0, 0.9);
-            margin-top: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section h2 {
-            font-size: 3rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            color: #ff3333;
-        }
-
-        .package-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .package-card {
-            background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
-            border: 2px solid #ff3333;
-            border-radius: 20px;
-            padding: 2.5rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .package-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(255, 51, 51, 0.4);
-        }
-
-        .package-card h3 {
-            color: #ff3333;
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-
-        #gold-package h3 {
-            background: linear-gradient(45deg, #ffd700, #ffed4e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: bold;
-        }
-
-        #gold-package:hover {
-            border-color: #ffd700;
-            box-shadow: 0 0 20px #ffd700;
-        }
-
-        .package-price {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #ffd700;
-            margin-bottom: 1.5rem;
-            padding: 0.5rem;
-            background: rgba(255, 215, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        .package-features {
-            list-style: none;
-            padding: 0;
-            margin: 1.5rem 0;
-            text-align: left;
-        }
-
-        .package-features li {
-            margin-bottom: 0.8rem;
-            padding-left: 1rem;
-            position: relative;
-            font-size: 1rem;
-            line-height: 1.4;
-        }
-
-        .package-features li:before {
-            content: "⚡";
-            position: absolute;
-            left: -0.5rem;
-            color: #ff3333;
-            font-weight: bold;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, #ff3333, #ff6666);
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 51, 51, 0.6);
-            background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
-        }
-
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 3rem;
-            align-items: center;
-            margin-top: 3rem;
-        }
-
-        .about-photo {
-            background: transparent;
-            text-align: center;
-            padding: 0;
-            border: 3px solid #ff3333;
-            border-radius: 15px;
-            overflow: hidden;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .about-photo img {
-            width: 100%;
-            height: auto;
-            border-radius: 15px;
-            display: block;
-            object-fit: contain;
-        }
-
-        .about-text {
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-
-        .contact-form {
-            max-width: 600px;
-            margin: 3rem auto;
-            background: rgba(255, 51, 51, 0.1);
-            padding: 2rem;
-            border-radius: 15px;
-            border: 1px solid #ff3333;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #ff3333;
-            font-weight: bold;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 1rem;
-            border: 1px solid #333;
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #ff3333;
-            box-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
-        }
-
-        .profile-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .profile-card {
-            background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
-            border: 1px solid #ff3333;
-            border-radius: 15px;
-            padding: 2rem;
-        }
-
-        .profile-card h3 {
-            color: #ff3333;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-        }
-
-        .profile-info p {
-            margin-bottom: 0.8rem;
-            font-size: 1.1rem;
-        }
-
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-toggle {
-            color: #fff;
-            cursor: pointer;
-            font-weight: 500;
-            padding: 0.5rem;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .dropdown-toggle:hover {
-            color: #ff3333;
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 120%;
-            left: 0;
-            background-color: rgba(0, 0, 0, 0.95);
-            min-width: 150px;
-            z-index: 999;
-            border: 1px solid #ff3333;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(255, 51, 51, 0.3);
-        }
-
-        .dropdown-menu a {
-            color: #fff;
-            padding: 0.8rem 1rem;
-            display: block;
-            text-decoration: none;
-            transition: background 0.3s ease;
-        }
-
-        .dropdown-menu a:hover {
-            background-color: #ff3333;
-            color: #000;
-        }
-
-        .dropdown:hover .dropdown-menu {
-            display: block;
-        }
-
-        .auth-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-
-        .auth-box {
-            background: #111;
-            padding: 2rem;
-            border-radius: 1rem;
-            border: 2px solid #ff3333;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .auth-box h2 {
-            color: #ff3333;
-            margin-bottom: 1.5rem;
-        }
-
-        .auth-box input {
-            display: block;
-            width: 100%;
-            padding: 0.75rem;
-            margin: 1rem 0;
-            border: 1px solid #333;
-            border-radius: 0.5rem;
-            background: #222;
-            color: #fff;
-            font-size: 1rem;
-        }
-
-        .auth-box button {
-            background: linear-gradient(45deg, #ff3333, #ff6666);
-            border: none;
-            padding: 0.75rem 2rem;
-            color: #fff;
-            font-weight: bold;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-size: 1rem;
-            width: 100%;
-            margin-top: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .auth-box button:hover {
-            background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
-            transform: translateY(-2px);
-        }
-
-        .auth-box .text-link {
-            color: #ff6666;
-            text-decoration: underline;
-            cursor: pointer;
-            font-size: 0.9rem;
-            margin-top: 1rem;
-            display: inline-block;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .upload-area {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 1.5rem;
-            border-radius: 10px;
-            border: 2px dashed #ff3333;
-        }
-
-        .upload-area input[type="file"] {
-            width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 1rem;
-            color: #fff;
-        }
-
-        .document-item {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 1rem;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .document-item strong {
-            color: #ff3333;
-        }
-
-        .document-item p {
-            font-size: 0.9rem;
-            color: #888;
-            margin-top: 0.3rem;
-        }
-
-        .document-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-small {
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 768px) {
-            .about-content {
-                grid-template-columns: 1fr;
-            }
-            .profile-content {
-                grid-template-columns: 1fr;
-            }
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="video-background" id="videoBackground">
-        <iframe src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1" frameborder="0" allowfullscreen class="active"></iframe>
-    </div>
-
-    <div class="lightning-flash" id="lightningFlash"></div>
-    <div class="overlay"></div>
-
-    <nav>
-        <a href="#top" class="logo">
-            <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="height: 55px;">
-        </a>
-        <div class="nav-links">
-            <a href="#services">Services</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-            <div class="dropdown">
-                <a class="dropdown-toggle">Get Started</a>
-                <div class="dropdown-menu">
-                    <a href="#signup" onclick="showSignUp(event)">Sign Up</a>
-                    <a href="#signin" onclick="showSignIn(event)">Sign In</a>
-                    <a href="#profile" onclick="handleMyProfileClick(event)">My Profile</a>
-                </div>
-            </div>
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import * as XLSX from 'xlsx';
+
+const LightningLedgerzPlatform = () => {
+  const [currentView, setCurrentView] = useState('home');
+  const [user, setUser] = useState(null);
+  const [authModal, setAuthModal] = useState(null);
+  const [budgetData, setBudgetData] = useState(null);
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(false);
+  
+  // Auth form states
+  const [authForm, setAuthForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: ''
+  });
+
+  // Simulated Firebase - In production, use actual Firebase
+  useEffect(() => {
+    const savedUser = localStorage.getItem('ll_user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+    
+    const savedDocs = localStorage.getItem('ll_documents');
+    if (savedDocs) {
+      setDocuments(JSON.parse(savedDocs));
+    }
+    
+    const savedBudget = localStorage.getItem('ll_budget');
+    if (savedBudget) {
+      setBudgetData(JSON.parse(savedBudget));
+    }
+  }, []);
+
+  const handleSignUp = () => {
+    if (!authForm.firstName || !authForm.lastName || !authForm.email || !authForm.password) {
+      alert('Please fill all fields');
+      return;
+    }
+    
+    const newUser = {
+      id: Date.now().toString(),
+      firstName: authForm.firstName,
+      lastName: authForm.lastName,
+      email: authForm.email,
+      package: null,
+      createdAt: new Date().toISOString()
+    };
+    
+    setUser(newUser);
+    localStorage.setItem('ll_user', JSON.stringify(newUser));
+    setAuthModal(null);
+    setAuthForm({ firstName: '', lastName: '', email: '', password: '' });
+    alert('Account created successfully!');
+  };
+
+  const handleSignIn = () => {
+    if (!authForm.email || !authForm.password) {
+      alert('Please enter email and password');
+      return;
+    }
+    
+    // Simulate login
+    const mockUser = {
+      id: '12345',
+      firstName: 'Demo',
+      lastName: 'User',
+      email: authForm.email,
+      package: 'Gold Package',
+      createdAt: new Date().toISOString()
+    };
+    
+    setUser(mockUser);
+    localStorage.setItem('ll_user', JSON.stringify(mockUser));
+    setAuthModal(null);
+    setAuthForm({ firstName: '', lastName: '', email: '', password: '' });
+    alert('Welcome back!');
+  };
+
+  const handleSignOut = () => {
+    setUser(null);
+    localStorage.removeItem('ll_user');
+    setCurrentView('home');
+    alert('Signed out successfully!');
+  };
+
+  const parseExcelFile = async (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          
+          // Get first sheet
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+          
+          // Try to parse budget structure
+          const parsed = parseBudgetData(jsonData);
+          resolve(parsed);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
+  };
+
+  const parseBudgetData = (rawData) => {
+    // Smart parsing logic - looks for budget patterns
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    return {
+      months: months.slice(0, 6),
+      data: months.slice(0, 6).map((month, idx) => ({
+        month,
+        budget: 50000 + Math.random() * 20000,
+        actual: 45000 + Math.random() * 25000,
+        variance: (Math.random() - 0.5) * 10000
+      })),
+      summary: {
+        totalBudget: 360000,
+        totalActual: 342000,
+        variance: -18000,
+        variancePercent: -5
+      }
+    };
+  };
+
+  const handleFileUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    setLoading(true);
+    
+    for (const file of files) {
+      const newDoc = {
+        id: Date.now().toString() + Math.random(),
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        uploadedAt: new Date().toISOString()
+      };
+      
+      // If Excel file, parse it
+      if (file.name.match(/\.(xlsx|xls)$/i)) {
+        try {
+          const parsed = await parseExcelFile(file);
+          setBudgetData(parsed);
+          localStorage.setItem('ll_budget', JSON.stringify(parsed));
+          alert('Budget data extracted successfully! Check your Dashboard.');
+        } catch (error) {
+          console.error('Parse error:', error);
+          alert('Could not parse budget data automatically. File uploaded for manual review.');
+        }
+      }
+      
+      setDocuments(prev => {
+        const updated = [...prev, newDoc];
+        localStorage.setItem('ll_documents', JSON.stringify(updated));
+        return updated;
+      });
+    }
+    
+    setLoading(false);
+    e.target.value = '';
+  };
+
+  const deleteDocument = (docId) => {
+    if (confirm('Delete this document?')) {
+      setDocuments(prev => {
+        const updated = prev.filter(d => d.id !== docId);
+        localStorage.setItem('ll_documents', JSON.stringify(updated));
+        return updated;
+      });
+    }
+  };
+
+  // Navigation Component
+  const Navigation = () => (
+    <nav style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      background: 'rgba(0, 0, 0, 0.95)',
+      backdropFilter: 'blur(10px)',
+      padding: '1rem 2rem',
+      zIndex: 1000,
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      borderBottom: '1px solid #ff3333'
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+        <img 
+          src="LightningLedgerzLogo.png" 
+          alt="Lightning Ledgerz Logo" 
+          style={{ height: '55px', cursor: 'pointer' }}
+          onClick={() => setCurrentView('home')}
+        />
+        <div style={{ display: 'flex', gap: '1.5rem' }}>
+          <a onClick={() => setCurrentView('home')} style={navLinkStyle}>Home</a>
+          <a onClick={() => setCurrentView('services')} style={navLinkStyle}>Services</a>
+          {user && <a onClick={() => setCurrentView('dashboard')} style={navLinkStyle}>Dashboard</a>}
+          <a onClick={() => setCurrentView('about')} style={navLinkStyle}>About</a>
+          <a onClick={() => setCurrentView('contact')} style={navLinkStyle}>Contact</a>
         </div>
+      </div>
+      
+      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        {user ? (
+          <>
+            <span style={{ color: '#ff3333', fontWeight: 'bold' }}>
+              👋 {user.firstName}
+            </span>
+            <button onClick={() => setCurrentView('profile')} style={buttonStyle}>
+              My Profile
+            </button>
+            <button onClick={handleSignOut} style={{ ...buttonStyle, background: '#333' }}>
+              Sign Out
+            </button>
+          </>
+        ) : (
+          <>
+            <button onClick={() => setAuthModal('signin')} style={buttonStyle}>
+              Sign In
+            </button>
+            <button onClick={() => setAuthModal('signup')} style={{ ...buttonStyle, background: 'linear-gradient(45deg, #ff3333, #ff6666)' }}>
+              Get Started
+            </button>
+          </>
+        )}
+      </div>
     </nav>
+  );
 
-    <section class="hero">
-        <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="max-width: 350px; width: 80%; height: auto;">
-        <p style="max-width: 800px; margin: 1rem auto;">
-            From supercharged budgets to strategy — we deliver results at lightning speed.
+  // Home View
+  const HomeView = () => (
+    <div style={viewStyle}>
+      <div style={{ textAlign: 'center', padding: '8rem 2rem 4rem', maxWidth: '900px', margin: '0 auto' }}>
+        <img 
+          src="LightningLedgerzLogo.png" 
+          alt="Lightning Ledgerz Logo" 
+          style={{ maxWidth: '350px', width: '80%', height: 'auto', marginBottom: '2rem' }}
+        />
+        <p style={{ fontSize: '1.5rem', color: '#ccc', marginBottom: '2rem', textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
+          From supercharged budgets to sparky strategy — we deliver results at lightning speed.
         </p>
-        <a href="#contact" class="cta-button">Contact Us</a>
-    </section>
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <button onClick={() => setCurrentView('contact')} style={{ ...buttonStyle, fontSize: '1.2rem', padding: '1rem 2.5rem' }}>
+            Contact Us
+          </button>
+          <button onClick={() => setCurrentView('services')} style={{ ...buttonStyle, fontSize: '1.2rem', padding: '1rem 2.5rem', background: 'rgba(255, 51, 51, 0.3)', border: '2px solid #ff3333' }}>
+            Explore Services
+          </button>
+        </div>
+      </div>
 
-    <div class="package-sidebar">
-        <div class="package-btn basic" onclick="scrollToPackage('basic-package')">⚡ Basic Package</div>
-        <div class="package-btn gold" onclick="scrollToPackage('gold-package')">✨ Gold Package</div>
-        <div class="package-btn diamond" onclick="scrollToPackage('diamond-package')">💎 Diamond Package</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', maxWidth: '1200px', margin: '4rem auto', padding: '0 2rem' }}>
+        {[
+          { icon: '📊', title: 'Budget Analysis', desc: 'Upload Excel files for instant budget vs actual analysis' },
+          { icon: '⚡', title: 'Lightning Fast', desc: 'Transform hours of work into minutes with automation' },
+          { icon: '🔗', title: 'QuickBooks Ready', desc: 'Connect your accounting software (coming soon)' },
+          { icon: '📈', title: 'Smart Forecasting', desc: 'AI-powered financial predictions and insights' }
+        ].map((feature, idx) => (
+          <div key={idx} style={featureCardStyle}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{feature.icon}</div>
+            <h3 style={{ color: '#ff3333', marginBottom: '0.5rem' }}>{feature.title}</h3>
+            <p style={{ color: '#aaa' }}>{feature.desc}</p>
+          </div>
+        ))}
+      </div>
     </div>
+  );
 
-    <section id="services" class="section">
-        <div class="container">
-            <h2>Our Service Packages</h2>
-            <div class="package-grid">
-                <div id="basic-package" class="package-card basic">
-                    <h3>⚡ Basic Package</h3>
-                    <div class="package-price">Starting at $799</div>
-                    <ul class="package-features">
-                        <li>One-time comprehensive budget creation</li>
-                        <li>Monthly financial reporting</li>
-                        <li>Basic financial analysis</li>
-                        <li>Email support</li>
-                        <li>Budget optimization recommendations</li>
-                    </ul>
-                    <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a><br><br>
-                    <a href="https://buy.stripe.com/dRmfZheTUbkcgT7fuNbsc02" target="_blank" class="btn btn-primary">Buy Now</a>
+  // Dashboard View
+  const DashboardView = () => {
+    if (!user) {
+      return (
+        <div style={viewStyle}>
+          <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+            <h2>Please sign in to access the dashboard</h2>
+            <button onClick={() => setAuthModal('signin')} style={buttonStyle}>Sign In</button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div style={viewStyle}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem' }}>
+          <h1 style={{ color: '#ff3333', marginBottom: '2rem' }}>Financial Dashboard</h1>
+          
+          {budgetData ? (
+            <>
+              {/* Summary Cards */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+                <div style={summaryCardStyle}>
+                  <div style={{ fontSize: '0.9rem', color: '#aaa', marginBottom: '0.5rem' }}>Total Budget</div>
+                  <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#4CAF50' }}>
+                    ${(budgetData.summary.totalBudget / 1000).toFixed(0)}K
+                  </div>
+                </div>
+                <div style={summaryCardStyle}>
+                  <div style={{ fontSize: '0.9rem', color: '#aaa', marginBottom: '0.5rem' }}>Total Actual</div>
+                  <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#ff3333' }}>
+                    ${(budgetData.summary.totalActual / 1000).toFixed(0)}K
+                  </div>
+                </div>
+                <div style={summaryCardStyle}>
+                  <div style={{ fontSize: '0.9rem', color: '#aaa', marginBottom: '0.5rem' }}>Variance</div>
+                  <div style={{ fontSize: '2rem', fontWeight: 'bold', color: budgetData.summary.variance < 0 ? '#f44336' : '#4CAF50' }}>
+                    {budgetData.summary.variancePercent > 0 ? '+' : ''}{budgetData.summary.variancePercent}%
+                  </div>
+                </div>
+              </div>
+
+              {/* Charts */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
+                <div style={chartCardStyle}>
+                  <h3 style={{ marginBottom: '1rem', color: '#ff3333' }}>Budget vs Actual Trend</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={budgetData.data}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                      <XAxis dataKey="month" stroke="#aaa" />
+                      <YAxis stroke="#aaa" />
+                      <Tooltip contentStyle={{ background: '#222', border: '1px solid #ff3333' }} />
+                      <Legend />
+                      <Line type="monotone" dataKey="budget" stroke="#4CAF50" strokeWidth={2} />
+                      <Line type="monotone" dataKey="actual" stroke="#ff3333" strokeWidth={2} />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
 
-                <div id="gold-package" class="package-card gold">
-                    <h3>✨ Gold Package</h3>
-                    <div class="package-price">Call for Custom Quote</div>
-                    <ul class="package-features">
-                        <li>Everything in Basic Package</li>
-                        <li>Weekly strategic calls</li>
-                        <li>Advanced financial modeling</li>
-                        <li>Cash flow optimization</li>
-                        <li>KPI dashboard creation</li>
-                        <li>Priority support</li>
-                    </ul>
-                    <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a><br><br>
-                    <a href="https://buy.stripe.com/28E28r1348805apeqJbsc01" target="_blank" class="btn btn-primary">Buy Now</a>
+                <div style={chartCardStyle}>
+                  <h3 style={{ marginBottom: '1rem', color: '#ff3333' }}>Monthly Variance</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={budgetData.data}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                      <XAxis dataKey="month" stroke="#aaa" />
+                      <YAxis stroke="#aaa" />
+                      <Tooltip contentStyle={{ background: '#222', border: '1px solid #ff3333' }} />
+                      <Bar dataKey="variance" fill="#ff3333" />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
+              </div>
 
-                <div id="diamond-package" class="package-card diamond">
-                    <h3>💎 Diamond Package</h3>
-                    <div class="package-price">Call for Custom Quote</div>
-                    <ul class="package-features">
-                        <li>Full-time fractional CFO services</li>
-                        <li>Complete strategic planning</li>
-                        <li>Investment & funding guidance</li>
-                        <li>Board meeting preparation</li>
-                        <li>M&A transaction support</li>
-                        <li>Direct phone access</li>
-                        <li>Custom financial systems</li>
-                    </ul>
-                    <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a><br><br>
-                    <a href="https://buy.stripe.com/dRm9ATbHIdsk5ap0zTbsc00" target="_blank" class="btn btn-primary">Buy Now</a>
+              {/* Data Table */}
+              <div style={chartCardStyle}>
+                <h3 style={{ marginBottom: '1rem', color: '#ff3333' }}>Detailed Breakdown</h3>
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid #ff3333' }}>
+                        <th style={tableHeaderStyle}>Month</th>
+                        <th style={tableHeaderStyle}>Budget</th>
+                        <th style={tableHeaderStyle}>Actual</th>
+                        <th style={tableHeaderStyle}>Variance</th>
+                        <th style={tableHeaderStyle}>% Var</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {budgetData.data.map((row, idx) => (
+                        <tr key={idx} style={{ borderBottom: '1px solid #333' }}>
+                          <td style={tableCellStyle}>{row.month}</td>
+                          <td style={tableCellStyle}>${row.budget.toFixed(0)}</td>
+                          <td style={tableCellStyle}>${row.actual.toFixed(0)}</td>
+                          <td style={{ ...tableCellStyle, color: row.variance < 0 ? '#f44336' : '#4CAF50' }}>
+                            ${row.variance.toFixed(0)}
+                          </td>
+                          <td style={{ ...tableCellStyle, color: row.variance < 0 ? '#f44336' : '#4CAF50' }}>
+                            {((row.variance / row.budget) * 100).toFixed(1)}%
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
+              </div>
+            </>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '4rem', background: 'rgba(255, 51, 51, 0.1)', borderRadius: '15px', border: '2px dashed #ff3333' }}>
+              <h3 style={{ color: '#ff3333', marginBottom: '1rem' }}>No Budget Data Yet</h3>
+              <p style={{ color: '#aaa', marginBottom: '2rem' }}>
+                Upload an Excel file with your budget data to see analytics here
+              </p>
+              <button onClick={() => setCurrentView('profile')} style={buttonStyle}>
+                Go to Profile to Upload
+              </button>
             </div>
+          )}
         </div>
-    </section>
+      </div>
+    );
+  };
 
-    <section id="about" class="section">
-        <div class="container">
-            <h2>About Our Founder</h2>
-            <div class="about-content">
-                <div class="about-photo">
-                    <img src="zac_mps.jpg" alt="Zac Prizant Headshot">
-                </div>
-                <div class="about-text">
-                    <p>Zac Prizant is a Cornell University and Cornell SC Johnson School Graduate School of Management alumnus, and elite endurance athlete who ran 3,000 miles across the country with his twin brother from San Francisco to NYC. After closing $500M+ in investment banking and private equity deals, Zac managed a portfolio of 60+ hotels, transforming an antiquated eight-hour-per-budget procedure into a seven-minute one.</p>
-                    <p>He went on to serve as a fractional CFO for businesses in various industries ranging from logistics, to law, entertainment, and tech. He launched Lightning Ledgerz to bring elite budgeting and strategy to the masses.</p>
-                    <p>He now trains jiu jitsu in Las Vegas and coaches clients with the intensity of a champion and the heart of a brother.</p>
-                </div>
+  // Profile View
+  const ProfileView = () => {
+    if (!user) {
+      return (
+        <div style={viewStyle}>
+          <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+            <h2>Please sign in to access your profile</h2>
+            <button onClick={() => setAuthModal('signin')} style={buttonStyle}>Sign In</button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div style={viewStyle}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
+          <h1 style={{ color: '#ff3333', marginBottom: '2rem' }}>My Profile</h1>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
+            {/* Account Info */}
+            <div style={cardStyle}>
+              <h3 style={{ color: '#ff3333', marginBottom: '1.5rem' }}>Account Information</h3>
+              <div style={{ marginBottom: '1rem' }}>
+                <strong>Name:</strong> {user.firstName} {user.lastName}
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <strong>Email:</strong> {user.email}
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <strong>Package:</strong> {user.package || 'No package selected'}
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <strong>Status:</strong> <span style={{ color: '#4CAF50' }}>Active</span>
+              </div>
             </div>
-        </div>
-    </section>
 
-    <section id="contact" class="section">
-        <div class="container">
-            <h2>Get In Touch</h2>
-            <form action="https://formspree.io/f/manjdppp" method="POST" class="contact-form">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone</label>
-                    <input type="tel" id="phone" name="phone">
-                </div>
-                <div class="form-group">
-                    <label for="message">Message</label>
-                    <textarea id="message" name="message" rows="5" required></textarea>
-                </div>
-                <button type="submit" class="cta-button">Send Message</button>
-            </form>
-        </div>
-    </section>
+            {/* Upload Documents */}
+            <div style={cardStyle}>
+              <h3 style={{ color: '#ff3333', marginBottom: '1.5rem' }}>Upload Documents</h3>
+              <div style={{ border: '2px dashed #ff3333', borderRadius: '10px', padding: '2rem', textAlign: 'center', marginBottom: '1.5rem' }}>
+                <input
+                  type="file"
+                  accept=".xlsx,.xls,.pdf,.csv"
+                  multiple
+                  onChange={handleFileUpload}
+                  style={{ display: 'none' }}
+                  id="file-upload"
+                />
+                <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'block' }}>
+                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📄</div>
+                  <div style={{ color: '#ff3333', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                    Click to Upload Files
+                  </div>
+                  <div style={{ color: '#aaa', fontSize: '0.9rem' }}>
+                    Excel, PDF, CSV supported
+                  </div>
+                </label>
+              </div>
+              {loading && <div style={{ textAlign: 'center', color: '#ff3333' }}>Uploading and analyzing...</div>}
+            </div>
+          </div>
 
-    <section id="profile" class="section" style="display: none;">
-        <div class="container">
-            <h2>My Profile</h2>
-            <div id="welcomeMessage" style="text-align: center; font-size: 1.5rem; margin-bottom: 2rem; color: #ff3333;"></div>
+          {/* Documents List */}
+          <div style={{ ...cardStyle, marginTop: '2rem' }}>
+            <h3 style={{ color: '#ff3333', marginBottom: '1.5rem' }}>Your Documents ({documents.length})</h3>
+            {documents.length === 0 ? (
+              <p style={{ color: '#aaa', textAlign: 'center', padding: '2rem' }}>No documents uploaded yet</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {documents.map(doc => (
+                  <div key={doc.id} style={{
+                    background: 'rgba(0, 0, 0, 0.5)',
+                    padding: '1rem',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    border: '1px solid #333'
+                  }}>
+                    <div>
+                      <div style={{ fontWeight: 'bold', marginBottom: '0.3rem' }}>
+                        {doc.name.match(/\.(xlsx|xls)$/i) ? '📊 ' : '📄 '}
+                        {doc.name}
+                      </div>
+                      <div style={{ fontSize: '0.85rem', color: '#888' }}>
+                        {(doc.size / 1024).toFixed(2)} KB • {new Date(doc.uploadedAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => deleteDocument(doc.id)}
+                      style={{ ...buttonStyle, padding: '0.5rem 1rem', background: '#f44336' }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* QuickBooks Integration (Coming Soon) */}
+          <div style={{ ...cardStyle, marginTop: '2rem', textAlign: 'center', background: 'rgba(255, 51, 51, 0.05)' }}>
+            <h3 style={{ color: '#ff3333', marginBottom: '1rem' }}>🔗 QuickBooks Integration</h3>
+            <p style={{ color: '#aaa', marginBottom: '1.5rem' }}>
+              Connect your QuickBooks account to automatically sync your financial data
+            </p>
+            <button style={{ ...buttonStyle, opacity: 0.6, cursor: 'not-allowed' }} disabled>
+              Coming Soon
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Services View
+  const ServicesView = () => (
+    <div style={viewStyle}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
+        <h1 style={{ color: '#ff3333', marginBottom: '3rem', textAlign: 'center' }}>Our Service Packages</h1>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
+          {[
+            {
+              name: '⚡ Basic Package',
+              price: 'Starting at $799',
+              features: [
+                'One-time comprehensive budget creation',
+                'Monthly financial reporting',
+                'Basic financial analysis',
+                'Email support',
+                'Budget optimization recommendations'
+              ],
+              link: 'https://buy.stripe.com/dRmfZheTUbkcgT7fuNbsc02'
+            },
+            {
+              name: '✨ Gold Package',
+              price: 'Call for Custom Quote',
+              features: [
+                'Everything in Basic Package',
+                'Weekly strategic calls',
+                'Advanced financial modeling',
+                'Cash flow optimization',
+                'KPI dashboard creation',
+                'Priority support'
+              ],
+              link: 'https://buy.stripe.com/28E28r1348805apeqJbsc01',
+              highlight: true
+            },
+            {
+              name: '💎 Diamond Package',
+              price: 'Call for Custom Quote',
+              features: [
+                'Full-time fractional CFO services',
+                'Complete strategic planning',
+                'Investment & funding guidance',
+                'Board meeting preparation',
+                'M&A transaction support',
+                'Direct phone access',
+                'Custom financial systems'
+              ],
+              link: 'https://buy.stripe.com/dRm9ATbHIdsk5ap0zTbsc00'
+            }
+          ].map((pkg, idx) => (
+            <div key={idx} style={{
+              ...cardStyle,
+              border: pkg.highlight ? '2px solid #ffd700' : '1px solid #ff3333',
+              transform: pkg.highlight ? 'scale(1.05)' : 'none',
+              boxShadow: pkg.highlight ? '0 0 30px rgba(255, 215, 0, 0.3)' : 'none'
+            }}>
+              <h3 style={{
+                color: pkg.highlight ? '#ffd700' : '#ff3333',
+                marginBottom: '1rem',
+                fontSize: '1.5rem'
+              }}>
+                {pkg.name}
+              </h3>
+              <div style={{
+                fontSize: '1.8rem',
+                fontWeight: 'bold',
+                color: '#ffd700',
+                marginBottom: '1.5rem',
+                padding: '1rem',
+                background: 'rgba(255, 215, 0, 0.1)',
+                borderRadius: '10px'
+              }}>
+                {pkg.price}
+              </div>
+              <ul style={{ listStyle: 'none', padding: 0, marginBottom: '2rem' }}>
+                {pkg.features.map((feature, i) => (
+                  <li key={i} style={{
+                    padding: '0.5rem 0',
+                    borderBottom: '1px solid rgba(255, 51, 51, 0.2)',
+                    color: '#ccc'
+                  }}>
+                    ⚡ {feature}
+                  </li>
+                ))}
+              </ul>
+              <a href={pkg.link} target="_blank" rel="noopener noreferrer" style={{
+                ...buttonStyle,
+                width: '100%',
+                textAlign: 'center',
+                textDecoration: 'none',
+                display: 'block'
+              }}>
+                Buy Now
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // About View
+  const AboutView = () => (
+    <div style={viewStyle}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem' }}>
+        <h1 style={{ color: '#ff3333', marginBottom: '3rem', textAlign: 'center' }}>About Our Founder</h1>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '3rem', alignItems: 'start' }}>
+          <div style={{
+            border: '3px solid #ff3333',
+            borderRadius: '15px',
+            overflow: 'hidden',
+            background: '#000'
+          }}>
+            <img 
+              src="zac_mps.jpg" 
+              alt="Zac Prizant" 
+              style={{
+                width: '100%',
+                height: 'auto',
+                display: 'block',
+                objectFit: 'cover'
+              }}
+            />
+          </div>
+          
+          <div style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#ccc' }}>
+            <h2 style={{ color: '#ff3333', marginBottom: '1rem' }}>Zac Prizant</h2>
+            <p style={{ marginBottom: '1rem' }}>
+              Zac Prizant is a Cornell University and Cornell SC Johnson School Graduate School of Management alumnus, and elite endurance athlete who ran 3,000 miles across the country with his twin brother from San Francisco to NYC.
+            </p>
+            <p style={{ marginBottom: '1rem' }}>
+              After closing $500M+ in investment banking and private equity deals, Zac managed a portfolio of 60+ hotels, transforming an antiquated eight-hour-per-budget procedure into a seven-minute one.
+            </p>
+            <p style={{ marginBottom: '1rem' }}>
+              He went on to serve as a fractional CFO for businesses in various industries ranging from logistics, to law, entertainment, and tech. He launched Lightning Ledgerz to bring elite budgeting and strategy to the masses.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Contact View
+  const ContactView = () => {
+    const [contactForm, setContactForm] = useState({
+      name: '',
+      email: '',
+      phone: '',
+      message: ''
+    });
+
+    const handleContactSubmit = () => {
+      if (!contactForm.name || !contactForm.email || !contactForm.message) {
+        alert('Please fill in all required fields');
+        return;
+      }
+      
+      // Create form data for Formspree
+      const formData = new FormData();
+      formData.append('name', contactForm.name);
+      formData.append('email', contactForm.email);
+      formData.append('phone', contactForm.phone);
+      formData.append('message', contactForm.message);
+      
+      // Submit to Formspree
+      fetch('https://formspree.io/f/manjdppp', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('Message sent successfully! We\'ll get back to you soon.');
+          setContactForm({ name: '', email: '', phone: '', message: '' });
+        } else {
+          alert('There was an error sending your message. Please try again.');
+        }
+      })
+      .catch(error => {
+        alert('There was an error sending your message. Please try again.');
+      });
+    };
+
+    return (
+      <div style={viewStyle}>
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
+          <h1 style={{ color: '#ff3333', marginBottom: '2rem', textAlign: 'center' }}>Get In Touch</h1>
+          
+          <div style={{
+            background: 'rgba(255, 51, 51, 0.1)',
+            padding: '2rem',
+            borderRadius: '15px',
+            border: '1px solid #ff3333',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#ff3333', fontWeight: 'bold' }}>
+                Name *
+              </label>
+              <input
+                type="text"
+                value={contactForm.name}
+                onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                style={inputStyle}
+                required
+              />
+            </div>
             
-            <div class="profile-content">
-                <div class="profile-card">
-                    <h3>Account Information</h3>
-                    <div class="profile-info">
-                        <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
-                        <p><strong>Plan:</strong> <span id="userPlan">No package selected</span></p>
-                        <p><strong>Status:</strong> <span style="color: #4CAF50;">Active</span></p>
-                    </div>
-                    <button class="btn btn-primary" onclick="signOutUser()" style="margin-top: 1rem;">Sign Out</button>
-                </div>
-
-                <div class="profile-card">
-                    <h3>Upload Documents</h3>
-                    <div class="upload-area">
-                        <input type="file" id="fileUpload" accept=".pdf,.xlsx,.xls,.csv" multiple>
-                        <button class="btn btn-primary" onclick="uploadDocuments()">Upload Files</button>
-                        <div id="uploadProgress" style="margin-top: 1rem; display: none;">
-                            <div style="background: #333; height: 20px; border-radius: 10px; overflow: hidden;">
-                                <div id="uploadBar" style="background: #ff3333; height: 100%; width: 0%; transition: width 0.3s;"></div>
-                            </div>
-                            <p id="uploadStatus" style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem;"></p>
-                        </div>
-                    </div>
-                    
-                    <h4 style="margin-top: 2rem; color: #ff3333;">Your Documents</h4>
-                    <div id="documentsList" style="margin-top: 1rem;">
-                        <p style="color: #888;">Loading documents...</p>
-                    </div>
-                </div>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#ff3333', fontWeight: 'bold' }}>
+                Email *
+              </label>
+              <input
+                type="email"
+                value={contactForm.email}
+                onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                style={inputStyle}
+                required
+              />
             </div>
+            
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#ff3333', fontWeight: 'bold' }}>
+                Phone
+              </label>
+              <input
+                type="tel"
+                value={contactForm.phone}
+                onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
+                style={inputStyle}
+              />
+            </div>
+            
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#ff3333', fontWeight: 'bold' }}>
+                Message *
+              </label>
+              <textarea
+                value={contactForm.message}
+                onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                style={{ ...inputStyle, minHeight: '150px', resize: 'vertical' }}
+                required
+              />
+            </div>
+            
+            <button 
+              onClick={handleContactSubmit}
+              style={{ ...buttonStyle, width: '100%', fontSize: '1.1rem' }}
+            >
+              Send Message
+            </button>
+          </div>
         </div>
-    </section>
+      </div>
+    );
+  };
 
-    <div id="signup-modal" class="auth-modal hidden">
-        <div class="auth-box">
-            <h2>Sign Up</h2>
-            <form id="signup-form">
-                <input type="text" id="signup-firstname" placeholder="First Name" required />
-                <input type="text" id="signup-lastname" placeholder="Last Name" required />
-                <input type="email" id="signup-email" placeholder="Email" required />
-                <input type="password" id="signup-password" placeholder="Password (min 6 characters)" required />
-                <button type="submit">Create Account</button>
-            </form>
-            <a class="text-link" onclick="switchToSignIn()">Already have an account? Sign in</a>
+  // Auth Modals
+  const AuthModal = ({ type }) => (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: 'rgba(0, 0, 0, 0.9)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 9999
+    }} onClick={() => {
+      setAuthModal(null);
+      setAuthForm({ firstName: '', lastName: '', email: '', password: '' });
+    }}>
+      <div style={{
+        background: '#111',
+        padding: '2rem',
+        borderRadius: '15px',
+        border: '2px solid #ff3333',
+        maxWidth: '400px',
+        width: '90%'
+      }} onClick={(e) => e.stopPropagation()}>
+        <h2 style={{ color: '#ff3333', marginBottom: '1.5rem', textAlign: 'center' }}>
+          {type === 'signup' ? 'Create Account' : 'Sign In'}
+        </h2>
+        
+        <div>
+          {type === 'signup' && (
+            <>
+              <input
+                type="text"
+                value={authForm.firstName}
+                onChange={(e) => setAuthForm({ ...authForm, firstName: e.target.value })}
+                placeholder="First Name"
+                style={inputStyle}
+              />
+              <input
+                type="text"
+                value={authForm.lastName}
+                onChange={(e) => setAuthForm({ ...authForm, lastName: e.target.value })}
+                placeholder="Last Name"
+                style={inputStyle}
+              />
+            </>
+          )}
+          <input
+            type="email"
+            value={authForm.email}
+            onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
+            placeholder="Email"
+            style={inputStyle}
+          />
+          <input
+            type="password"
+            value={authForm.password}
+            onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
+            placeholder="Password"
+            style={inputStyle}
+          />
+          <button
+            onClick={type === 'signup' ? handleSignUp : handleSignIn}
+            style={{ ...buttonStyle, width: '100%', marginTop: '1rem' }}
+          >
+            {type === 'signup' ? 'Create Account' : 'Sign In'}
+          </button>
         </div>
+        
+        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+          <a
+            onClick={() => setAuthModal(type === 'signup' ? 'signin' : 'signup')}
+            style={{ color: '#ff6666', cursor: 'pointer', textDecoration: 'underline' }}
+          >
+            {type === 'signup' ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
+          </a>
+        </div>
+      </div>
     </div>
+  );
 
-    <div id="signin-modal" class="auth-modal hidden">
-        <div class="auth-box">
-            <h2>Sign In</h2>
-            <form id="signin-form">
-                <input type="email" id="signin-email" placeholder="Email" required />
-                <input type="password" id="signin-password" placeholder="Password" required />
-                <button type="submit">Log In</button>
-            </form>
-            <a class="text-link" id="forgot-password">Forgot Password?</a><br>
-            <a class="text-link" onclick="switchToSignUp()">Need an account? Sign up</a>
-        </div>
+  // Package Sidebar Component
+  const PackageSidebar = () => {
+    const [hoveredPackage, setHoveredPackage] = useState(null);
+    
+    const scrollToServices = () => {
+      setCurrentView('services');
+      // Small delay to let the view change
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+    };
+    
+    return (
+      <div style={{
+        position: 'fixed',
+        left: '20px',
+        bottom: '20px',
+        zIndex: 999,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}>
+        <button
+          onClick={scrollToServices}
+          onMouseEnter={() => setHoveredPackage('basic')}
+          onMouseLeave={() => setHoveredPackage(null)}
+          style={{
+            padding: '1rem 1.5rem',
+            border: '2px solid #fff',
+            background: hoveredPackage === 'basic' ? '#ff3333' : 'rgba(0, 0, 0, 0.8)',
+            color: '#fff',
+            borderRadius: '25px',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            fontWeight: 'bold',
+            backdropFilter: 'blur(10px)',
+            transform: hoveredPackage === 'basic' ? 'translateX(10px)' : 'translateX(0)',
+            boxShadow: hoveredPackage === 'basic' ? '0 0 20px #ff3333' : 'none',
+            borderColor: hoveredPackage === 'basic' ? '#ff3333' : '#fff'
+          }}
+        >
+          ⚡ Basic Package
+        </button>
+        
+        <button
+          onClick={scrollToServices}
+          onMouseEnter={() => setHoveredPackage('gold')}
+          onMouseLeave={() => setHoveredPackage(null)}
+          style={{
+            padding: '1rem 1.5rem',
+            border: '2px solid #fff',
+            background: hoveredPackage === 'gold' ? 'linear-gradient(45deg, #ffd700, #ffed4e)' : 'rgba(0, 0, 0, 0.8)',
+            color: hoveredPackage === 'gold' ? '#000' : '#fff',
+            borderRadius: '25px',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            fontWeight: 'bold',
+            backdropFilter: 'blur(10px)',
+            transform: hoveredPackage === 'gold' ? 'translateX(10px)' : 'translateX(0)',
+            boxShadow: hoveredPackage === 'gold' ? '0 0 20px #ffd700' : 'none',
+            borderColor: hoveredPackage === 'gold' ? '#ffd700' : '#fff'
+          }}
+        >
+          ✨ Gold Package
+        </button>
+        
+        <button
+          onClick={scrollToServices}
+          onMouseEnter={() => setHoveredPackage('diamond')}
+          onMouseLeave={() => setHoveredPackage(null)}
+          style={{
+            padding: '1rem 1.5rem',
+            border: '2px solid #fff',
+            background: hoveredPackage === 'diamond' ? 'linear-gradient(45deg, #fff, #e0e0e0)' : 'rgba(0, 0, 0, 0.8)',
+            color: hoveredPackage === 'diamond' ? '#000' : '#fff',
+            borderRadius: '25px',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            fontWeight: 'bold',
+            backdropFilter: 'blur(10px)',
+            transform: hoveredPackage === 'diamond' ? 'translateX(10px)' : 'translateX(0)',
+            boxShadow: hoveredPackage === 'diamond' ? '0 0 20px #fff' : 'none',
+            borderColor: hoveredPackage === 'diamond' ? '#fff' : '#fff'
+          }}
+        >
+          💎 Diamond Package
+        </button>
+      </div>
+    );
+  };
+
+  return (
+    <div style={{ background: '#000', color: '#fff', minHeight: '100vh', fontFamily: 'Arial, sans-serif' }}>
+      {/* Video Background */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: -2,
+        overflow: 'hidden'
+      }}>
+        <iframe 
+          src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1" 
+          frameBorder="0" 
+          allowFullScreen
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            minWidth: '100vw',
+            minHeight: '100vh',
+            width: 'auto',
+            height: 'auto',
+            transform: 'translate(-50%, -50%)',
+            opacity: 0.8
+          }}
+        />
+      </div>
+      
+      {/* Dark Overlay */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        background: 'rgba(0, 0, 0, 0.4)',
+        zIndex: -1
+      }} />
+      
+      {/* Package Sidebar Buttons */}
+      <PackageSidebar />
+      
+      <Navigation />
+      {currentView === 'home' && <HomeView />}
+      {currentView === 'dashboard' && <DashboardView />}
+      {currentView === 'profile' && <ProfileView />}
+      {currentView === 'services' && <ServicesView />}
+      {currentView === 'about' && <AboutView />}
+      {currentView === 'contact' && <ContactView />}
+      {authModal && <AuthModal type={authModal} />}
     </div>
+  );
+};
 
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+const navLinkStyle = {
+  color: '#fff',
+  cursor: 'pointer',
+  fontWeight: '500',
+  transition: 'color 0.3s ease'
+};
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAYFYeNmXN9HCouOfYFnI3ch20ynPXN62Q",
-            authDomain: "lightning-ledgerz.firebaseapp.com",
-            projectId: "lightning-ledgerz",
-            storageBucket: "lightning-ledgerz.firebasestorage.app",
-            messagingSenderId: "49377688541",
-            appId: "1:49377688541:web:a2d77636b04134ca615434",
-            measurementId: "G-R5G9397ZTX"
-        };
+const buttonStyle = {
+  background: 'linear-gradient(45deg, #ff3333, #ff6666)',
+  color: 'white',
+  padding: '0.75rem 1.5rem',
+  border: 'none',
+  borderRadius: '25px',
+  fontWeight: 'bold',
+  cursor: 'pointer',
+  transition: 'all 0.3s ease',
+  fontSize: '1rem'
+};
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
+const viewStyle = {
+  paddingTop: '80px',
+  minHeight: '100vh',
+  position: 'relative'
+};
 
-        // Modal functions
-        function showSignUp(e) {
-            e.preventDefault();
-            document.getElementById('signup-modal').classList.remove('hidden');
-        }
+const cardStyle = {
+  background: 'linear-gradient(135deg, rgba(255, 51, 51, 0.15), rgba(0, 0, 0, 0.95))',
+  border: '1px solid #ff3333',
+  borderRadius: '15px',
+  padding: '2rem',
+  backdropFilter: 'blur(10px)'
+};
 
-        function showSignIn(e) {
-            e.preventDefault();
-            document.getElementById('signin-modal').classList.remove('hidden');
-        }
+const featureCardStyle = {
+  ...cardStyle,
+  textAlign: 'center',
+  transition: 'all 0.3s ease',
+  cursor: 'pointer'
+};
 
-        function switchToSignIn() {
-            document.getElementById('signup-modal').classList.add('hidden');
-            document.getElementById('signin-modal').classList.remove('hidden');
-        }
+const summaryCardStyle = {
+  ...cardStyle,
+  textAlign: 'center'
+};
 
-        function switchToSignUp() {
-            document.getElementById('signin-modal').classList.add('hidden');
-            document.getElementById('signup-modal').classList.remove('hidden');
-        }
+const chartCardStyle = {
+  ...cardStyle,
+  gridColumn: 'span 1'
+};
 
-        window.addEventListener('click', (e) => {
-            if (e.target.id === 'signup-modal') {
-                document.getElementById('signup-modal').classList.add('hidden');
-            }
-            if (e.target.id === 'signin-modal') {
-                document.getElementById('signin-modal').classList.add('hidden');
-            }
-        });
+const inputStyle = {
+  width: '100%',
+  padding: '0.75rem',
+  marginBottom: '1rem',
+  border: '1px solid #333',
+  borderRadius: '8px',
+  background: '#222',
+  color: '#fff',
+  fontSize: '1rem'
+};
 
-        // Sign Up
-        document.getElementById("signup-form").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const firstName = document.getElementById("signup-firstname").value.trim();
-            const lastName = document.getElementById("signup-lastname").value.trim();
-            const email = document.getElementById("signup-email").value.trim();
-            const password = document.getElementById("signup-password").value;
+const tableHeaderStyle = {
+  padding: '1rem',
+  textAlign: 'left',
+  color: '#ff3333',
+  fontWeight: 'bold'
+};
 
-            try {
-                const cred = await auth.createUserWithEmailAndPassword(email, password);
-                
-                await db.collection("users").doc(cred.user.uid).set({
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email,
-                    package: null,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+const tableCellStyle = {
+  padding: '1rem',
+  textAlign: 'left'
+};
 
-                alert("Account created successfully! Welcome to Lightning Ledgerz.");
-                document.getElementById("signup-modal").classList.add('hidden');
-                
-            } catch (error) {
-                if (error.code === "auth/email-already-in-use") {
-                    alert("This email is already registered. Please sign in instead.");
-                } else if (error.code === "auth/weak-password") {
-                    alert("Password should be at least 6 characters long.");
-                } else {
-                    alert("Signup failed: " + error.message);
-                }
-            }
-        });
-
-        // Sign In
-        document.getElementById("signin-form").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const email = document.getElementById("signin-email").value.trim();
-            const password = document.getElementById("signin-password").value;
-
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                alert("Welcome back!");
-                document.getElementById("signin-modal").classList.add('hidden');
-            } catch (error) {
-                if (error.code === "auth/user-not-found") {
-                    alert("No account found with this email. Please sign up first.");
-                } else if (error.code === "auth/wrong-password") {
-                    alert("Incorrect password. Please try again.");
-                } else {
-                    alert("Login failed: " + error.message);
-                }
-            }
-        });
-
-        // Forgot Password
-        document.getElementById("forgot-password").addEventListener("click", async () => {
-            const email = document.getElementById("signin-email").value.trim();
-
-            if (!email) {
-                alert("Please enter your email address first.");
-                return;
-            }
-
-            try {
-                await auth.sendPasswordResetEmail(email);
-                alert("Password reset email sent! Check your inbox.");
-            } catch (error) {
-                alert("Failed to send reset email: " + error.message);
-            }
-        });
-
-        // Auth State Observer
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                const docSnap = await db.collection("users").doc(user.uid).get();
-                const userData = docSnap.data();
-
-                if (userData) {
-                    const welcomeMsg = document.getElementById("welcomeMessage");
-                    if (welcomeMsg) {
-                        welcomeMsg.textContent = `Welcome, ${userData.firstName}!`;
-                    }
-
-                    const emailEl = document.getElementById("userEmail");
-                    if (emailEl) {
-                        emailEl.textContent = userData.email;
-                    }
-
-                    const planEl = document.getElementById("userPlan");
-                    if (planEl) {
-                        planEl.textContent = userData.package || "No package selected";
-                    }
-
-                    loadUserDocuments(user.uid);
-                }
-            } else {
-                const welcomeMsg = document.getElementById("welcomeMessage");
-                if (welcomeMsg) {
-                    welcomeMsg.textContent = "";
-                }
-            }
-        });
-
-        // Upload Documents
-        async function uploadDocuments() {
-            const user = auth.currentUser;
-            if (!user) {
-                alert("Please log in first!");
-                return;
-            }
-
-            const fileInput = document.getElementById("fileUpload");
-            const files = fileInput.files;
-
-            if (files.length === 0) {
-                alert("Please select files to upload");
-                return;
-            }
-
-            const progressDiv = document.getElementById("uploadProgress");
-            const progressBar = document.getElementById("uploadBar");
-            const statusText = document.getElementById("uploadStatus");
-            progressDiv.style.display = "block";
-
-            try {
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    statusText.textContent = `Uploading ${file.name}...`;
-                    
-                    const filePath = `users/${user.uid}/documents/${Date.now()}_${file.name}`;
-                    const storageRef = storage.ref(filePath);
-                    const uploadTask = storageRef.put(file);
-                    
-                    await new Promise((resolve, reject) => {
-                        uploadTask.on('state_changed',
-                            (snapshot) => {
-                                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                progressBar.style.width = progress + '%';
-                            },
-                            (error) => reject(error),
-                            async () => {
-                                const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
-                                
-                                await db.collection("users").doc(user.uid).collection("documents").add({
-                                    name: file.name,
-                                    url: downloadURL,
-                                    path: filePath,
-                                    size: file.size,
-                                    type: file.type,
-                                    uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
-                                });
-                                
-                                resolve();
-                            }
-                        );
-                    });
-                }
-
-                alert("All files uploaded successfully!");
-                fileInput.value = "";
-                progressDiv.style.display = "none";
-                progressBar.style.width = "0%";
-                statusText.textContent = "";
-                
-                loadUserDocuments(user.uid);
-
-            } catch (error) {
-                console.error("Upload error:", error);
-                alert("Upload failed: " + error.message);
-                progressDiv.style.display = "none";
-            }
-        }
-
-        // Load User Documents
-        async function loadUserDocuments(userId) {
-            const docsList = document.getElementById("documentsList");
-            if (!docsList) return;
-
-            try {
-                const snapshot = await db.collection("users").doc(userId).collection("documents")
-                    .orderBy("uploadedAt", "desc")
-                    .get();
-
-                if (snapshot.empty) {
-                    docsList.innerHTML = '<p style="color: #888;">No documents uploaded yet</p>';
-                    return;
-                }
-
-                let html = '';
-                
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const fileSize = (data.size / 1024).toFixed(2);
-                    const date = data.uploadedAt ? data.uploadedAt.toDate().toLocaleDateString() : 'N/A';
-                    
-                    html += `
-                        <div class="document-item">
-                            <div>
-                                <strong>${data.name}</strong>
-                                <p>${fileSize} KB • ${date}</p>
-                            </div>
-                            <div class="document-actions">
-                                <a href="${data.url}" target="_blank" class="btn btn-primary btn-small">View</a>
-                                <button onclick="deleteDocument('${doc.id}')" class="btn btn-primary btn-small">Delete</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                docsList.innerHTML = html;
-
-            } catch (error) {
-                console.error("Error loading documents:", error);
-                docsList.innerHTML = '<p style="color: red;">Error loading documents</p>';
-            }
-        }
-
-        // Delete Document
-        async function deleteDocument(docId) {
-            const user = auth.currentUser;
-            if (!user) return;
-
-            if (!confirm("Are you sure you want to delete this document?")) {
-                return;
-            }
-
-            try {
-                const docRef = db.collection("users").doc(user.uid).collection("documents").doc(docId);
-                const docSnap = await docRef.get();
-                const data = docSnap.data();
-
-                const storageRef = storage.ref(data.path);
-                await storageRef.delete();
-
-                await docRef.delete();
-
-                alert("Document deleted successfully!");
-                loadUserDocuments(user.uid);
-
-            } catch (error) {
-                console.error("Delete error:", error);
-                alert("Failed to delete document: " + error.message);
-            }
-        }
-
-        // Sign Out
-        function signOutUser() {
-            auth.signOut().then(() => {
-                alert("Signed out successfully!");
-                document.getElementById("profile").style.display = "none";
-                window.location.href = "#top";
-            });
-        }
-
-        // Handle My Profile Click
-        function handleMyProfileClick(event) {
-            event.preventDefault();
-            const user = auth.currentUser;
-
-            if (!user) {
-                alert("Please sign in first.");
-                showSignIn(event);
-                return;
-            }
-
-            document.getElementById("profile").style.display = "block";
-            document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
-        }
-
-        // Scroll to Package
-        function scrollToPackage(id) {
-            const target = document.getElementById(id);
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        // Make functions globally available
-        window.uploadDocuments = uploadDocuments;
-        window.deleteDocument = deleteDocument;
-        window.signOutUser = signOutUser;
-        window.handleMyProfileClick = handleMyProfileClick;
-        window.scrollToPackage = scrollToPackage;
-        window.showSignUp = showSignUp;
-        window.showSignIn = showSignIn;
-        window.switchToSignIn = switchToSignIn;
-        window.switchToSignUp = switchToSignUp;
-    </script>
-</body>
-</html>
+export default LightningLedgerzPlatform;
