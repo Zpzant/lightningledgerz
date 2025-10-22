@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lightning Ledgerz - Budget. Save. Build.</title>
+
+    <!-- Chart.js for dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         * {
             margin: 0;
@@ -97,6 +104,50 @@
 
         .nav-links a:hover {
             color: #ff3333;
+        }
+
+        /* User Welcome Section in Nav */
+        .user-welcome {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 51, 51, 0.1);
+            border-radius: 25px;
+            border: 1px solid #ff3333;
+        }
+
+        .user-avatar-nav {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: rgba(255, 51, 51, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .membership-badge {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .badge-basic {
+            background: #ff3333;
+            box-shadow: 0 0 10px #ff3333;
+        }
+
+        .badge-gold {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            box-shadow: 0 0 10px #ffd700;
+        }
+
+        .badge-diamond {
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            box-shadow: 0 0 10px #fff;
         }
 
         .hero {
@@ -255,6 +306,19 @@
             box-shadow: 0 0 20px #ffd700;
         }
 
+        #diamond-package h3 {
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        #diamond-package:hover {
+            border-color: #fff;
+            box-shadow: 0 0 20px #fff;
+        }
+
         .package-price {
             font-size: 1.5rem;
             font-weight: bold;
@@ -311,6 +375,199 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(255, 51, 51, 0.6);
             background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Dashboard Styles */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
+            border: 1px solid #ff3333;
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 51, 51, 0.3);
+        }
+
+        .stat-card h3 {
+            color: #ff3333;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .stat-value.positive {
+            color: #4caf50;
+        }
+
+        .stat-value.negative {
+            color: #f44336;
+        }
+
+        .stat-value.neutral {
+            color: #ffd700;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            border-radius: 15px;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .progress-fill.over-budget {
+            background: linear-gradient(90deg, #f44336, #ff5722);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 2rem 0;
+        }
+
+        .alert-box {
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-box.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+        }
+
+        .alert-box.warning {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid #ffc107;
+        }
+
+        .alert-box.error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+        }
+
+        /* Avatar Builder Styles */
+        .avatar-builder {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff3333;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .avatar-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .avatar-option {
+            margin-bottom: 1rem;
+        }
+
+        .avatar-option label {
+            display: block;
+            color: #ff3333;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .avatar-option select,
+        .avatar-option input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .avatar-preview-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .avatar-preview {
+            background: rgba(255, 51, 51, 0.05);
+            border: 2px solid #ff3333;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .avatar-preview h4 {
+            color: #ff3333;
+            margin-bottom: 1rem;
+        }
+
+        .avatar-display {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .pose-previews {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .pose-preview {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ff3333;
+            border-radius: 10px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pose-preview:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.5);
         }
 
         .about-content {
@@ -475,8 +732,10 @@
             border-radius: 1rem;
             border: 2px solid #ff3333;
             text-align: center;
-            max-width: 400px;
+            max-width: 500px;
             width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .auth-box h2 {
@@ -525,7 +784,7 @@
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         .upload-area {
@@ -567,9 +826,44 @@
             gap: 0.5rem;
         }
 
-        .btn-small {
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #ff3333;
+        }
+
+        .tab-button {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .tab-button.active {
+            color: #ff3333;
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #ff3333;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         @media (max-width: 768px) {
@@ -581,6 +875,12 @@
             }
             .hero h1 {
                 font-size: 2.5rem;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .avatar-preview-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -601,12 +901,22 @@
             <a href="#services">Services</a>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
+
+            <!-- User Welcome Section (Hidden when not logged in) -->
+            <div id="userWelcomeNav" class="user-welcome hidden">
+                <div class="user-avatar-nav" id="navAvatarContainer"></div>
+                <span id="welcomeText">Welcome Back, User</span>
+                <span class="membership-badge badge-basic" id="membershipBadge"></span>
+            </div>
+
             <div class="dropdown">
                 <a class="dropdown-toggle">Get Started</a>
                 <div class="dropdown-menu">
                     <a href="#signup" onclick="showSignUp(event)">Sign Up</a>
                     <a href="#signin" onclick="showSignIn(event)">Sign In</a>
                     <a href="#profile" onclick="handleMyProfileClick(event)">My Profile</a>
+                    <a href="#dashboard" onclick="handleDashboardClick(event)">Dashboard</a>
+                    <a id="adminLink" href="#admin" onclick="handleAdminClick(event)" class="hidden">Admin</a>
                 </div>
             </div>
         </div>
@@ -630,50 +940,323 @@
         <div class="container">
             <h2>Our Service Packages</h2>
             <div class="package-grid">
-                <div id="basic-package" class="package-card basic">
+                <div id="basic-package" class="package-card basic" onclick="selectPackage('basic')">
                     <h3>⚡ Basic Package</h3>
-                    <div class="package-price">Starting at $799</div>
+                    <div class="package-price">$29/month</div>
                     <ul class="package-features">
-                        <li>One-time comprehensive budget creation</li>
-                        <li>Monthly financial reporting</li>
-                        <li>Basic financial analysis</li>
-                        <li>Email support</li>
-                        <li>Budget optimization recommendations</li>
+                        <li>Live Financial Dashboard</li>
+                        <li>File Upload System (PDF, Excel)</li>
+                        <li>Basic Analytics & Charts</li>
+                        <li>Budget Tracking</li>
+                        <li>Spending Categories</li>
+                        <li>Email Support</li>
                     </ul>
-                    <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a><br><br>
-                    <a href="https://buy.stripe.com/dRmfZheTUbkcgT7fuNbsc02" target="_blank" class="btn btn-primary">Buy Now</a>
+                    <button class="btn btn-primary" onclick="selectPackage('basic', event)">Select Basic</button>
                 </div>
 
-                <div id="gold-package" class="package-card gold">
+                <div id="gold-package" class="package-card gold" onclick="selectPackage('gold')">
                     <h3>✨ Gold Package</h3>
-                    <div class="package-price">Call for Custom Quote</div>
+                    <div class="package-price">$49/month</div>
                     <ul class="package-features">
-                        <li>Everything in Basic Package</li>
-                        <li>Weekly strategic calls</li>
-                        <li>Advanced financial modeling</li>
-                        <li>Cash flow optimization</li>
-                        <li>KPI dashboard creation</li>
-                        <li>Priority support</li>
+                        <li>Everything in Basic</li>
+                        <li>Auto-Generated PowerPoint Decks</li>
+                        <li>Year-over-year analysis</li>
+                        <li>AI-generated insights</li>
+                        <li>Custom brand colors</li>
+                        <li>Advanced Analytics</li>
+                        <li>Priority Support</li>
                     </ul>
-                    <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a><br><br>
-                    <a href="https://buy.stripe.com/28E28r1348805apeqJbsc01" target="_blank" class="btn btn-primary">Buy Now</a>
+                    <button class="btn btn-primary" onclick="selectPackage('gold', event)">Select Gold</button>
                 </div>
 
-                <div id="diamond-package" class="package-card diamond">
+                <div id="diamond-package" class="package-card diamond" onclick="selectPackage('diamond')">
                     <h3>💎 Diamond Package</h3>
-                    <div class="package-price">Call for Custom Quote</div>
+                    <div class="package-price">$99/month</div>
                     <ul class="package-features">
-                        <li>Full-time fractional CFO services</li>
-                        <li>Complete strategic planning</li>
-                        <li>Investment & funding guidance</li>
-                        <li>Board meeting preparation</li>
-                        <li>M&A transaction support</li>
-                        <li>Direct phone access</li>
-                        <li>Custom financial systems</li>
+                        <li>Everything in Gold</li>
+                        <li>QuickBooks Integration</li>
+                        <li>Automatic data sync</li>
+                        <li>Real-time financial updates</li>
+                        <li>1-on-1 Coaching Sessions</li>
+                        <li>Custom Reports</li>
+                        <li>Direct Phone Support</li>
                     </ul>
-                    <a href="tel:+13303015742" class="btn btn-primary">Call for Pricing</a><br><br>
-                    <a href="https://buy.stripe.com/dRm9ATbHIdsk5ap0zTbsc00" target="_blank" class="btn btn-primary">Buy Now</a>
+                    <button class="btn btn-primary" onclick="selectPackage('diamond', event)">Select Diamond</button>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DASHBOARD SECTION -->
+    <section id="dashboard" class="section hidden">
+        <div class="container">
+            <h2>Financial Dashboard</h2>
+            <div id="dashboardContent">
+                <p style="text-align: center;">Loading dashboard...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROFILE SECTION -->
+    <section id="profile" class="section hidden">
+        <div class="container">
+            <h2>My Profile</h2>
+
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchProfileTab('account')">Account</button>
+                <button class="tab-button" onclick="switchProfileTab('avatar')">Avatar</button>
+                <button class="tab-button" onclick="switchProfileTab('documents')">Documents</button>
+                <button class="tab-button" onclick="switchProfileTab('powerpoint')" id="pptTab" class="hidden">PowerPoint</button>
+                <button class="tab-button" onclick="switchProfileTab('quickbooks')" id="qbTab" class="hidden">QuickBooks</button>
+            </div>
+
+            <!-- Account Tab -->
+            <div id="tab-account" class="tab-content active">
+                <div class="profile-content">
+                    <div class="profile-card">
+                        <h3>Account Information</h3>
+                        <div class="profile-info">
+                            <p><strong>Name:</strong> <span id="userFullName">Loading...</span></p>
+                            <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+                            <p><strong>Username:</strong> <span id="userUsername">Not set</span></p>
+                            <p><strong>Plan:</strong> <span id="userPlan">basic</span></p>
+                            <p><strong>Status:</strong> <span style="color: #4CAF50;">Active</span></p>
+                        </div>
+                        <button class="btn btn-primary" onclick="signOutUser()" style="margin-top: 1rem;">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Avatar Tab -->
+            <div id="tab-avatar" class="tab-content">
+                <div class="avatar-builder">
+                    <h3 style="color: #ff3333; margin-bottom: 1rem;">Customize Your Avatar</h3>
+
+                    <div class="form-group">
+                        <label>Avatar Type:</label>
+                        <select id="avatar-type" onchange="toggleAvatarType()">
+                            <option value="custom">Custom Avatar</option>
+                            <option value="logo">Company Logo</option>
+                        </select>
+                    </div>
+
+                    <div id="logo-upload-section" class="hidden">
+                        <div class="form-group">
+                            <label>Upload Company Logo:</label>
+                            <input type="file" id="logo-file" accept="image/*">
+                            <button class="btn btn-primary" onclick="uploadLogo()">Upload Logo</button>
+                        </div>
+                    </div>
+
+                    <div id="custom-avatar-section">
+                        <div class="avatar-options">
+                            <div class="avatar-option">
+                                <label>Gender:</label>
+                                <select id="avatar-gender" onchange="updateAvatarPreview()">
+                                    <option value="nonbinary">Non-binary</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Skin Tone:</label>
+                                <select id="avatar-skin" onchange="updateAvatarPreview()">
+                                    <option value="light">Light</option>
+                                    <option value="medium-light">Medium Light</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="medium-dark">Medium Dark</option>
+                                    <option value="dark">Dark</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Eye Color:</label>
+                                <select id="avatar-eyes" onchange="updateAvatarPreview()">
+                                    <option value="brown" selected>Brown</option>
+                                    <option value="blue">Blue</option>
+                                    <option value="green">Green</option>
+                                    <option value="hazel">Hazel</option>
+                                    <option value="gray">Gray</option>
+                                    <option value="amber">Amber</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Hair Style:</label>
+                                <select id="avatar-hair-style" onchange="updateAvatarPreview()">
+                                    <option value="short" selected>Short</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="long">Long</option>
+                                    <option value="bald">Bald</option>
+                                    <option value="buzz-cut">Buzz Cut</option>
+                                    <option value="pixie">Pixie</option>
+                                    <option value="bob">Bob</option>
+                                    <option value="ponytail">Ponytail</option>
+                                    <option value="bun">Bun</option>
+                                    <option value="braids">Braids</option>
+                                    <option value="afro">Afro</option>
+                                    <option value="dreadlocks">Dreadlocks</option>
+                                    <option value="curly">Curly</option>
+                                    <option value="wavy">Wavy</option>
+                                    <option value="straight">Straight</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Hair Color:</label>
+                                <select id="avatar-hair-color" onchange="updateAvatarPreview()">
+                                    <option value="brown" selected>Brown</option>
+                                    <option value="black">Black</option>
+                                    <option value="blonde">Blonde</option>
+                                    <option value="red">Red</option>
+                                    <option value="gray">Gray</option>
+                                    <option value="white">White</option>
+                                    <option value="blue">Blue</option>
+                                    <option value="purple">Purple</option>
+                                    <option value="pink">Pink</option>
+                                    <option value="green">Green</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Body Type:</label>
+                                <select id="avatar-body" onchange="updateAvatarPreview()">
+                                    <option value="slim">Slim</option>
+                                    <option value="athletic">Athletic</option>
+                                    <option value="average" selected>Average</option>
+                                    <option value="muscular">Muscular</option>
+                                    <option value="curvy">Curvy</option>
+                                    <option value="plus-size">Plus Size</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Outfit Type:</label>
+                                <select id="avatar-outfit" onchange="updateAvatarPreview()">
+                                    <option value="business-suit" selected>Business Suit</option>
+                                    <option value="blazer">Blazer</option>
+                                    <option value="dress-shirt">Dress Shirt</option>
+                                    <option value="t-shirt">T-Shirt</option>
+                                    <option value="dress-professional">Professional Dress</option>
+                                    <option value="dress-casual">Casual Dress</option>
+                                    <option value="skirt-professional">Professional Skirt</option>
+                                    <option value="skirt-casual">Casual Skirt</option>
+                                    <option value="casual-wear">Casual Wear</option>
+                                    <option value="formal-wear">Formal Wear</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Outfit Color:</label>
+                                <select id="avatar-outfit-color" onchange="updateAvatarPreview()">
+                                    <option value="navy" selected>Navy</option>
+                                    <option value="black">Black</option>
+                                    <option value="gray">Gray</option>
+                                    <option value="white">White</option>
+                                    <option value="red">Red</option>
+                                    <option value="blue">Blue</option>
+                                    <option value="green">Green</option>
+                                    <option value="purple">Purple</option>
+                                    <option value="pink">Pink</option>
+                                    <option value="beige">Beige</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Design Theme:</label>
+                                <select id="avatar-theme" onchange="updateAvatarPreview()">
+                                    <option value="lightning" selected>⚡ Lightning</option>
+                                    <option value="fire">🔥 Fire</option>
+                                    <option value="star">⭐ Star</option>
+                                    <option value="crown">👑 Crown</option>
+                                    <option value="rocket">🚀 Rocket</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="avatar-preview-container">
+                            <div class="avatar-preview">
+                                <h4>Main Avatar</h4>
+                                <div class="avatar-display" id="avatar-preview"></div>
+                            </div>
+
+                            <div class="avatar-preview">
+                                <h4>Poses Preview</h4>
+                                <div class="pose-previews">
+                                    <div class="pose-preview" id="pose-standing" title="Standing"></div>
+                                    <div class="pose-preview" id="pose-waving" title="Waving"></div>
+                                    <div class="pose-preview" id="pose-analyzing" title="Analyzing"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="saveAvatarCustomization()" style="margin-top: 1rem;">Save Avatar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents Tab -->
+            <div id="tab-documents" class="tab-content">
+                <div class="profile-card">
+                    <h3>Upload Documents</h3>
+                    <div class="upload-area">
+                        <input type="file" id="fileUpload" accept=".pdf,.xlsx,.xls,.csv" multiple>
+                        <button class="btn btn-primary" onclick="uploadDocuments()">Upload Files</button>
+                        <div id="uploadProgress" style="margin-top: 1rem; display: none;">
+                            <div style="background: #333; height: 20px; border-radius: 10px; overflow: hidden;">
+                                <div id="uploadBar" style="background: #ff3333; height: 100%; width: 0%; transition: width 0.3s;"></div>
+                            </div>
+                            <p id="uploadStatus" style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem;"></p>
+                        </div>
+                    </div>
+
+                    <h4 style="margin-top: 2rem; color: #ff3333;">Your Documents</h4>
+                    <div id="documentsList" style="margin-top: 1rem;">
+                        <p style="color: #888;">Loading documents...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PowerPoint Tab (Gold/Diamond Only) -->
+            <div id="tab-powerpoint" class="tab-content">
+                <div class="profile-card">
+                    <h3>Generate PowerPoint Deck</h3>
+                    <p>Create professional pitch decks with your financial data</p>
+                    <button class="btn btn-primary" onclick="generatePowerPoint()" style="margin-top: 1rem;">Generate Deck</button>
+
+                    <h4 style="margin-top: 2rem; color: #ff3333;">Your PowerPoint Files</h4>
+                    <div id="powerpointList" style="margin-top: 1rem;">
+                        <p style="color: #888;">No files generated yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QuickBooks Tab (Diamond Only) -->
+            <div id="tab-quickbooks" class="tab-content">
+                <div class="profile-card">
+                    <h3>QuickBooks Integration</h3>
+                    <div id="quickbooksStatus">
+                        <p>Status: Not Connected</p>
+                        <button class="btn btn-primary" onclick="connectQuickBooks()" style="margin-top: 1rem;">Connect QuickBooks</button>
+                    </div>
+                    <div id="quickbooksConnected" class="hidden">
+                        <p style="color: #4caf50;">✓ QuickBooks Connected</p>
+                        <p>Last sync: <span id="lastSync">Never</span></p>
+                        <button class="btn btn-primary" onclick="syncQuickBooks()" style="margin-top: 1rem;">Sync Now</button>
+                        <button class="btn btn-small" onclick="disconnectQuickBooks()" style="margin-top: 1rem;">Disconnect</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ADMIN SECTION -->
+    <section id="admin" class="section hidden">
+        <div class="container">
+            <h2>Admin Dashboard</h2>
+            <div id="adminContent">
+                <p style="text-align: center;">Loading admin data...</p>
             </div>
         </div>
     </section>
@@ -719,50 +1302,14 @@
         </div>
     </section>
 
-    <section id="profile" class="section" style="display: none;">
-        <div class="container">
-            <h2>My Profile</h2>
-            <div id="welcomeMessage" style="text-align: center; font-size: 1.5rem; margin-bottom: 2rem; color: #ff3333;"></div>
-            
-            <div class="profile-content">
-                <div class="profile-card">
-                    <h3>Account Information</h3>
-                    <div class="profile-info">
-                        <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
-                        <p><strong>Plan:</strong> <span id="userPlan">No package selected</span></p>
-                        <p><strong>Status:</strong> <span style="color: #4CAF50;">Active</span></p>
-                    </div>
-                    <button class="btn btn-primary" onclick="signOutUser()" style="margin-top: 1rem;">Sign Out</button>
-                </div>
-
-                <div class="profile-card">
-                    <h3>Upload Documents</h3>
-                    <div class="upload-area">
-                        <input type="file" id="fileUpload" accept=".pdf,.xlsx,.xls,.csv" multiple>
-                        <button class="btn btn-primary" onclick="uploadDocuments()">Upload Files</button>
-                        <div id="uploadProgress" style="margin-top: 1rem; display: none;">
-                            <div style="background: #333; height: 20px; border-radius: 10px; overflow: hidden;">
-                                <div id="uploadBar" style="background: #ff3333; height: 100%; width: 0%; transition: width 0.3s;"></div>
-                            </div>
-                            <p id="uploadStatus" style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem;"></p>
-                        </div>
-                    </div>
-                    
-                    <h4 style="margin-top: 2rem; color: #ff3333;">Your Documents</h4>
-                    <div id="documentsList" style="margin-top: 1rem;">
-                        <p style="color: #888;">Loading documents...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
+    <!-- SIGN UP MODAL -->
     <div id="signup-modal" class="auth-modal hidden">
         <div class="auth-box">
             <h2>Sign Up</h2>
             <form id="signup-form">
                 <input type="text" id="signup-firstname" placeholder="First Name" required />
                 <input type="text" id="signup-lastname" placeholder="Last Name" required />
+                <input type="text" id="signup-username" placeholder="Username (optional)" />
                 <input type="email" id="signup-email" placeholder="Email" required />
                 <input type="password" id="signup-password" placeholder="Password (min 6 characters)" required />
                 <button type="submit">Create Account</button>
@@ -771,6 +1318,7 @@
         </div>
     </div>
 
+    <!-- SIGN IN MODAL -->
     <div id="signin-modal" class="auth-modal hidden">
         <div class="auth-box">
             <h2>Sign In</h2>
@@ -784,344 +1332,10 @@
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <!-- Avatar Builder Script -->
+    <script src="avatar-builder.js"></script>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAYFYeNmXN9HCouOfYFnI3ch20ynPXN62Q",
-            authDomain: "lightning-ledgerz.firebaseapp.com",
-            projectId: "lightning-ledgerz",
-            storageBucket: "lightning-ledgerz.firebasestorage.app",
-            messagingSenderId: "49377688541",
-            appId: "1:49377688541:web:a2d77636b04134ca615434",
-            measurementId: "G-R5G9397ZTX"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
-
-        // Modal functions
-        function showSignUp(e) {
-            e.preventDefault();
-            document.getElementById('signup-modal').classList.remove('hidden');
-        }
-
-        function showSignIn(e) {
-            e.preventDefault();
-            document.getElementById('signin-modal').classList.remove('hidden');
-        }
-
-        function switchToSignIn() {
-            document.getElementById('signup-modal').classList.add('hidden');
-            document.getElementById('signin-modal').classList.remove('hidden');
-        }
-
-        function switchToSignUp() {
-            document.getElementById('signin-modal').classList.add('hidden');
-            document.getElementById('signup-modal').classList.remove('hidden');
-        }
-
-        window.addEventListener('click', (e) => {
-            if (e.target.id === 'signup-modal') {
-                document.getElementById('signup-modal').classList.add('hidden');
-            }
-            if (e.target.id === 'signin-modal') {
-                document.getElementById('signin-modal').classList.add('hidden');
-            }
-        });
-
-        // Sign Up
-        document.getElementById("signup-form").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const firstName = document.getElementById("signup-firstname").value.trim();
-            const lastName = document.getElementById("signup-lastname").value.trim();
-            const email = document.getElementById("signup-email").value.trim();
-            const password = document.getElementById("signup-password").value;
-
-            try {
-                const cred = await auth.createUserWithEmailAndPassword(email, password);
-                
-                await db.collection("users").doc(cred.user.uid).set({
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email,
-                    package: null,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                alert("Account created successfully! Welcome to Lightning Ledgerz.");
-                document.getElementById("signup-modal").classList.add('hidden');
-                
-            } catch (error) {
-                if (error.code === "auth/email-already-in-use") {
-                    alert("This email is already registered. Please sign in instead.");
-                } else if (error.code === "auth/weak-password") {
-                    alert("Password should be at least 6 characters long.");
-                } else {
-                    alert("Signup failed: " + error.message);
-                }
-            }
-        });
-
-        // Sign In
-        document.getElementById("signin-form").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const email = document.getElementById("signin-email").value.trim();
-            const password = document.getElementById("signin-password").value;
-
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                alert("Welcome back!");
-                document.getElementById("signin-modal").classList.add('hidden');
-            } catch (error) {
-                if (error.code === "auth/user-not-found") {
-                    alert("No account found with this email. Please sign up first.");
-                } else if (error.code === "auth/wrong-password") {
-                    alert("Incorrect password. Please try again.");
-                } else {
-                    alert("Login failed: " + error.message);
-                }
-            }
-        });
-
-        // Forgot Password
-        document.getElementById("forgot-password").addEventListener("click", async () => {
-            const email = document.getElementById("signin-email").value.trim();
-
-            if (!email) {
-                alert("Please enter your email address first.");
-                return;
-            }
-
-            try {
-                await auth.sendPasswordResetEmail(email);
-                alert("Password reset email sent! Check your inbox.");
-            } catch (error) {
-                alert("Failed to send reset email: " + error.message);
-            }
-        });
-
-        // Auth State Observer
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                const docSnap = await db.collection("users").doc(user.uid).get();
-                const userData = docSnap.data();
-
-                if (userData) {
-                    const welcomeMsg = document.getElementById("welcomeMessage");
-                    if (welcomeMsg) {
-                        welcomeMsg.textContent = `Welcome, ${userData.firstName}!`;
-                    }
-
-                    const emailEl = document.getElementById("userEmail");
-                    if (emailEl) {
-                        emailEl.textContent = userData.email;
-                    }
-
-                    const planEl = document.getElementById("userPlan");
-                    if (planEl) {
-                        planEl.textContent = userData.package || "No package selected";
-                    }
-
-                    loadUserDocuments(user.uid);
-                }
-            } else {
-                const welcomeMsg = document.getElementById("welcomeMessage");
-                if (welcomeMsg) {
-                    welcomeMsg.textContent = "";
-                }
-            }
-        });
-
-        // Upload Documents
-        async function uploadDocuments() {
-            const user = auth.currentUser;
-            if (!user) {
-                alert("Please log in first!");
-                return;
-            }
-
-            const fileInput = document.getElementById("fileUpload");
-            const files = fileInput.files;
-
-            if (files.length === 0) {
-                alert("Please select files to upload");
-                return;
-            }
-
-            const progressDiv = document.getElementById("uploadProgress");
-            const progressBar = document.getElementById("uploadBar");
-            const statusText = document.getElementById("uploadStatus");
-            progressDiv.style.display = "block";
-
-            try {
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    statusText.textContent = `Uploading ${file.name}...`;
-                    
-                    const filePath = `users/${user.uid}/documents/${Date.now()}_${file.name}`;
-                    const storageRef = storage.ref(filePath);
-                    const uploadTask = storageRef.put(file);
-                    
-                    await new Promise((resolve, reject) => {
-                        uploadTask.on('state_changed',
-                            (snapshot) => {
-                                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                progressBar.style.width = progress + '%';
-                            },
-                            (error) => reject(error),
-                            async () => {
-                                const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
-                                
-                                await db.collection("users").doc(user.uid).collection("documents").add({
-                                    name: file.name,
-                                    url: downloadURL,
-                                    path: filePath,
-                                    size: file.size,
-                                    type: file.type,
-                                    uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
-                                });
-                                
-                                resolve();
-                            }
-                        );
-                    });
-                }
-
-                alert("All files uploaded successfully!");
-                fileInput.value = "";
-                progressDiv.style.display = "none";
-                progressBar.style.width = "0%";
-                statusText.textContent = "";
-                
-                loadUserDocuments(user.uid);
-
-            } catch (error) {
-                console.error("Upload error:", error);
-                alert("Upload failed: " + error.message);
-                progressDiv.style.display = "none";
-            }
-        }
-
-        // Load User Documents
-        async function loadUserDocuments(userId) {
-            const docsList = document.getElementById("documentsList");
-            if (!docsList) return;
-
-            try {
-                const snapshot = await db.collection("users").doc(userId).collection("documents")
-                    .orderBy("uploadedAt", "desc")
-                    .get();
-
-                if (snapshot.empty) {
-                    docsList.innerHTML = '<p style="color: #888;">No documents uploaded yet</p>';
-                    return;
-                }
-
-                let html = '';
-                
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const fileSize = (data.size / 1024).toFixed(2);
-                    const date = data.uploadedAt ? data.uploadedAt.toDate().toLocaleDateString() : 'N/A';
-                    
-                    html += `
-                        <div class="document-item">
-                            <div>
-                                <strong>${data.name}</strong>
-                                <p>${fileSize} KB • ${date}</p>
-                            </div>
-                            <div class="document-actions">
-                                <a href="${data.url}" target="_blank" class="btn btn-primary btn-small">View</a>
-                                <button onclick="deleteDocument('${doc.id}')" class="btn btn-primary btn-small">Delete</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                docsList.innerHTML = html;
-
-            } catch (error) {
-                console.error("Error loading documents:", error);
-                docsList.innerHTML = '<p style="color: red;">Error loading documents</p>';
-            }
-        }
-
-        // Delete Document
-        async function deleteDocument(docId) {
-            const user = auth.currentUser;
-            if (!user) return;
-
-            if (!confirm("Are you sure you want to delete this document?")) {
-                return;
-            }
-
-            try {
-                const docRef = db.collection("users").doc(user.uid).collection("documents").doc(docId);
-                const docSnap = await docRef.get();
-                const data = docSnap.data();
-
-                const storageRef = storage.ref(data.path);
-                await storageRef.delete();
-
-                await docRef.delete();
-
-                alert("Document deleted successfully!");
-                loadUserDocuments(user.uid);
-
-            } catch (error) {
-                console.error("Delete error:", error);
-                alert("Failed to delete document: " + error.message);
-            }
-        }
-
-        // Sign Out
-        function signOutUser() {
-            auth.signOut().then(() => {
-                alert("Signed out successfully!");
-                document.getElementById("profile").style.display = "none";
-                window.location.href = "#top";
-            });
-        }
-
-        // Handle My Profile Click
-        function handleMyProfileClick(event) {
-            event.preventDefault();
-            const user = auth.currentUser;
-
-            if (!user) {
-                alert("Please sign in first.");
-                showSignIn(event);
-                return;
-            }
-
-            document.getElementById("profile").style.display = "block";
-            document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
-        }
-
-        // Scroll to Package
-        function scrollToPackage(id) {
-            const target = document.getElementById(id);
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        // Make functions globally available
-        window.uploadDocuments = uploadDocuments;
-        window.deleteDocument = deleteDocument;
-        window.signOutUser = signOutUser;
-        window.handleMyProfileClick = handleMyProfileClick;
-        window.scrollToPackage = scrollToPackage;
-        window.showSignUp = showSignUp;
-        window.showSignIn = showSignIn;
-        window.switchToSignIn = switchToSignIn;
-        window.switchToSignUp = switchToSignUp;
-    </script>
+    <!-- Main Application Script -->
+    <script src="app.js"></script>
 </body>
 </html>
