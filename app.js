@@ -124,12 +124,46 @@ document.getElementById("forgot-password").addEventListener("click", async () =>
     }
 
     try {
-        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: 'https://lightningledgerz.com/index.html'
+        });
         if (error) throw error;
         alert("Password reset email sent! Check your inbox.");
     } catch (error) {
         console.error("Reset error:", error);
         alert("Failed to send reset email: " + error.message);
+    }
+});
+
+// Password Reset Form Handler
+document.getElementById("reset-password-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const newPassword = document.getElementById("new-password").value;
+    const confirmPassword = document.getElementById("confirm-password").value;
+
+    if (newPassword !== confirmPassword) {
+        alert("Passwords don't match!");
+        return;
+    }
+
+    if (newPassword.length < 6) {
+        alert("Password must be at least 6 characters long.");
+        return;
+    }
+
+    try {
+        const { error } = await supabase.auth.updateUser({
+            password: newPassword
+        });
+
+        if (error) throw error;
+
+        alert("Password updated successfully! You are now signed in.");
+        document.getElementById("reset-password-modal").classList.add('hidden');
+        window.location.href = "#profile";
+    } catch (error) {
+        console.error("Password update error:", error);
+        alert("Failed to update password: " + error.message);
     }
 });
 
@@ -156,7 +190,26 @@ async function signOutUser() {
 // AUTH STATE MANAGEMENT
 // =====================================================
 
+// Check if user arrived via password reset link
+window.addEventListener('load', () => {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const type = hashParams.get('type');
+
+    if (type === 'recovery') {
+        // User clicked password reset link - show reset modal
+        document.getElementById('reset-password-modal').classList.remove('hidden');
+    }
+});
+
 supabase.auth.onAuthStateChange(async (event, session) => {
+    console.log('Auth event:', event);
+
+    // Show password reset modal when user clicks reset link
+    if (event === 'PASSWORD_RECOVERY') {
+        document.getElementById('reset-password-modal').classList.remove('hidden');
+        return;
+    }
+
     if (session?.user) {
         currentUser = session.user;
         await loadUserProfile();
