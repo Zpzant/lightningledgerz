@@ -165,10 +165,11 @@ document.getElementById("forgot-password").addEventListener("click", async () =>
 
     try {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: 'https://lightningledgerz.com/index.html'
+            redirectTo: window.location.origin + '/index.html'
         });
         if (error) throw error;
-        alert("Password reset email sent! Check your inbox.");
+        alert("Password reset email sent! Check your inbox (or spam folder).\n\nClick the link in the email within 1 hour to reset your password.");
+        document.getElementById("signin-modal").classList.add('hidden');
     } catch (error) {
         console.error("Reset error:", error);
         alert("Failed to send reset email: " + error.message);
@@ -192,18 +193,35 @@ document.getElementById("reset-password-form").addEventListener("submit", async 
     }
 
     try {
-        const { error } = await supabase.auth.updateUser({
+        // First check if we have a valid session
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log("Current session during password reset:", session);
+
+        if (!session) {
+            alert("Your password reset link has expired. Please request a new password reset email.");
+            document.getElementById("reset-password-modal").classList.add('hidden');
+            return;
+        }
+
+        // Update the password
+        const { data, error } = await supabase.auth.updateUser({
             password: newPassword
         });
 
         if (error) throw error;
 
+        console.log("Password updated successfully:", data);
         alert("Password updated successfully! You are now signed in.");
         document.getElementById("reset-password-modal").classList.add('hidden');
-        window.location.href = "#profile";
+
+        // Wait for profile to load, then redirect
+        setTimeout(() => {
+            window.location.href = "#profile";
+        }, 500);
+
     } catch (error) {
         console.error("Password update error:", error);
-        alert("Failed to update password: " + error.message);
+        alert("Failed to update password: " + error.message + "\n\nPlease try requesting a new password reset link.");
     }
 });
 
