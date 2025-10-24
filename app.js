@@ -82,6 +82,23 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
         alert("Account created successfully! Welcome to Lightning Ledgerz.");
         document.getElementById("signup-modal").classList.add('hidden');
 
+        // Wait for auth state to load profile, then redirect
+        setTimeout(() => {
+            if (currentUserProfile) {
+                // Navigate to profile page to set up avatar
+                document.getElementById("services").style.display = "none";
+                document.getElementById("about").style.display = "none";
+                document.getElementById("contact").style.display = "none";
+                document.getElementById("dashboard").classList.add('hidden');
+                document.getElementById("admin").classList.add('hidden');
+                document.getElementById("profile").classList.remove('hidden');
+                window.location.href = "#profile";
+
+                // Auto-switch to avatar tab for new users
+                switchProfileTab('avatar');
+            }
+        }, 1000);
+
     } catch (error) {
         console.error("Signup error:", error);
         if (error.message.includes('already registered')) {
@@ -106,8 +123,26 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
 
         if (error) throw error;
 
-        alert("Welcome back!");
+        // Close sign-in modal
         document.getElementById("signin-modal").classList.add('hidden');
+
+        // The onAuthStateChange will load the profile automatically
+        // Then we'll navigate to the profile page
+        setTimeout(() => {
+            if (currentUserProfile) {
+                alert(`Welcome back, ${currentUserProfile.first_name}!`);
+
+                // Navigate to profile page
+                document.getElementById("services").style.display = "none";
+                document.getElementById("about").style.display = "none";
+                document.getElementById("contact").style.display = "none";
+                document.getElementById("dashboard").classList.add('hidden');
+                document.getElementById("admin").classList.add('hidden');
+                document.getElementById("profile").classList.remove('hidden');
+                window.location.href = "#profile";
+            }
+        }, 1000);
+
     } catch (error) {
         console.error("Login error:", error);
         alert("Login failed: " + error.message);
