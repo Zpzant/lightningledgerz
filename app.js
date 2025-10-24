@@ -130,7 +130,12 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
         // Then we'll navigate to the profile page
         setTimeout(() => {
             if (currentUserProfile) {
-                alert(`Welcome back, ${currentUserProfile.first_name}!`);
+                // Use first name, username, or email as fallback
+                const displayName = currentUserProfile.first_name ||
+                                   currentUserProfile.username ||
+                                   currentUserProfile.email.split('@')[0];
+
+                alert(`Welcome back, ${displayName}!`);
 
                 // Navigate to profile page
                 document.getElementById("services").style.display = "none";
@@ -289,7 +294,12 @@ async function updateNavigationWithUser() {
     const badge = document.getElementById('membershipBadge');
     const navAvatarContainer = document.getElementById('navAvatarContainer');
 
-    welcomeText.textContent = `Welcome Back, ${currentUserProfile.first_name}`;
+    // Use first name, username, or email as fallback
+    const displayName = currentUserProfile.first_name ||
+                       currentUserProfile.username ||
+                       currentUserProfile.email.split('@')[0];
+
+    welcomeText.textContent = `Welcome Back, ${displayName}`;
 
     // Set badge color based on tier
     badge.className = 'membership-badge';
