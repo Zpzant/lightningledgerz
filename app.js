@@ -456,7 +456,36 @@ async function handleAdminClick(event) {
 function scrollToPackage(id) {
     const target = document.getElementById(id);
     if (target) {
+        // First make sure services section is visible
+        document.getElementById("services").style.display = "block";
+
+        // Remove highlight from all package cards
+        document.querySelectorAll('.package-card').forEach(card => {
+            card.classList.remove('highlighted');
+            card.style.transform = '';
+            card.style.boxShadow = '';
+        });
+
+        // Scroll to the package
         target.scrollIntoView({ behavior: 'smooth' });
+
+        // Add highlight effect to the selected package
+        setTimeout(() => {
+            target.style.transform = 'translateY(-15px) scale(1.05)';
+            if (id === 'basic-package') {
+                target.style.boxShadow = '0 20px 40px rgba(255, 51, 51, 0.6)';
+            } else if (id === 'gold-package') {
+                target.style.boxShadow = '0 20px 40px rgba(255, 215, 0, 0.6)';
+            } else if (id === 'diamond-package') {
+                target.style.boxShadow = '0 20px 40px rgba(255, 255, 255, 0.6)';
+            }
+
+            // Remove highlight after 2 seconds
+            setTimeout(() => {
+                target.style.transform = '';
+                target.style.boxShadow = '';
+            }, 2000);
+        }, 300);
     }
 }
 
