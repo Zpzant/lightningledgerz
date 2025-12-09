@@ -1015,7 +1015,6 @@
                 <button class="tab-button active" onclick="switchProfileTab('account')">Account</button>
                 <button class="tab-button" onclick="switchProfileTab('avatar')">Avatar</button>
                 <button class="tab-button" onclick="switchProfileTab('documents')">Documents</button>
-                <button class="tab-button" onclick="switchProfileTab('referrals')">Referrals</button>
                 <button class="tab-button" onclick="switchProfileTab('powerpoint')" id="pptTab" class="hidden">PowerPoint</button>
                 <button class="tab-button" onclick="switchProfileTab('quickbooks')" id="qbTab" class="hidden">QuickBooks</button>
             </div>
@@ -1224,39 +1223,6 @@
                     <h4 style="margin-top: 2rem; color: #ff3333;">Your Documents</h4>
                     <div id="documentsList" style="margin-top: 1rem;">
                         <p style="color: #888;">Loading documents...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Referrals Tab -->
-            <div id="tab-referrals" class="tab-content">
-                <div class="profile-card">
-                    <h3>Share & Earn Rewards</h3>
-                    <p>Invite friends and get 2 FREE months! They get 1 FREE month too.</p>
-
-                    <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255, 51, 51, 0.1); border-radius: 10px; border: 1px solid #ff3333;">
-                        <p style="font-weight: bold; margin-bottom: 1rem;">Your Referral Link:</p>
-                        <div style="display: flex; gap: 1rem; align-items: center;">
-                            <input type="text" id="referralLink" readonly style="flex: 1; padding: 0.75rem; background: rgba(0, 0, 0, 0.5); border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 0.9rem;">
-                            <button class="btn btn-primary btn-small" onclick="copyReferralLink()">Copy</button>
-                        </div>
-                        <p style="margin-top: 1rem; color: #888; font-size: 0.9rem;" id="referralCode"></p>
-                    </div>
-
-                    <div style="margin-top: 2rem;">
-                        <h4 style="color: #ff3333; margin-bottom: 1rem;">Share on Social Media</h4>
-                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                            <button class="btn btn-primary" onclick="shareOnTwitter()">Share on Twitter</button>
-                            <button class="btn btn-primary" onclick="shareOnLinkedIn()">Share on LinkedIn</button>
-                            <button class="btn btn-primary" onclick="shareViaEmail()">Share via Email</button>
-                        </div>
-                    </div>
-
-                    <div style="margin-top: 2rem;">
-                        <h4 style="color: #ff3333; margin-bottom: 1rem;">Your Referrals</h4>
-                        <div id="referralsList">
-                            <p style="color: #888;">Loading referrals...</p>
-                        </div>
                     </div>
                 </div>
             </div>
