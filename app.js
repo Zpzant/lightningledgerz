@@ -1397,3 +1397,73 @@ window.generatePowerPoint = generatePowerPoint;
 window.connectQuickBooks = connectQuickBooks;
 window.syncQuickBooks = syncQuickBooks;
 window.disconnectQuickBooks = disconnectQuickBooks;
+
+// =====================================================
+// GUEST PREVIEW MODE
+// =====================================================
+
+function previewFeatures(event) {
+    if (event) event.preventDefault();
+
+    // Set up demo profile for preview
+    currentUserProfile = {
+        first_name: 'Demo',
+        last_name: 'User',
+        email: 'demo@lightningledgerz.com',
+        username: 'demo_user',
+        package_tier: 'diamond', // Show all features
+        is_admin: false
+    };
+
+    // Update profile page with demo data
+    document.getElementById('userFullName').textContent = 'Demo User';
+    document.getElementById('userEmail').textContent = 'demo@lightningledgerz.com';
+    document.getElementById('userUsername').textContent = 'demo_user';
+    document.getElementById('userPlan').textContent = 'DIAMOND (Preview)';
+
+    // Show all tabs for preview
+    document.getElementById('pptTab').classList.remove('hidden');
+    document.getElementById('qbTab').classList.remove('hidden');
+
+    // Hide other sections
+    document.getElementById("services").style.display = "none";
+    document.getElementById("about").style.display = "none";
+    document.getElementById("contact").style.display = "none";
+    document.getElementById("dashboard").classList.add('hidden');
+    document.getElementById("admin").classList.add('hidden');
+
+    // Show profile section
+    document.getElementById("profile").classList.remove('hidden');
+    window.location.href = "#profile";
+
+    // Initialize avatar preview
+    if (typeof updateAvatarPreview === 'function') {
+        updateAvatarPreview();
+    }
+
+    // Show demo documents
+    document.getElementById('documentsList').innerHTML = `
+        <div class="document-item">
+            <div>
+                <strong>sample_budget.pdf</strong>
+                <p>PDF • 245 KB • Uploaded: Demo</p>
+            </div>
+            <div class="document-actions">
+                <button class="btn btn-small btn-primary">View</button>
+            </div>
+        </div>
+        <div class="document-item">
+            <div>
+                <strong>financials_2024.xlsx</strong>
+                <p>Excel • 128 KB • Uploaded: Demo</p>
+            </div>
+            <div class="document-actions">
+                <button class="btn btn-small btn-primary">View</button>
+            </div>
+        </div>
+    `;
+
+    alert('Preview Mode: Explore all features! Sign up to save your data.');
+}
+
+window.previewFeatures = previewFeatures;

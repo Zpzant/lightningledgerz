@@ -924,6 +924,7 @@
                     <a href="#signup" onclick="showSignUp(event)">Sign Up</a>
                     <a href="#signin" onclick="showSignIn(event)">Sign In</a>
                     <a href="#profile" onclick="handleMyProfileClick(event)">My Profile</a>
+                    <a href="#profile" onclick="previewFeatures(event)">Preview Features (Guest)</a>
                     <a href="dashboard.html" target="_blank">Dashboard</a>
                     <a id="adminLink" href="#admin" onclick="handleAdminClick(event)" class="hidden">Admin</a>
                 </div>
@@ -949,7 +950,7 @@
         <div class="container">
             <h2>Our Service Packages</h2>
             <div class="package-grid">
-                <div id="basic-package" class="package-card basic" onclick="selectPackage('basic')">
+                <div id="basic-package" class="package-card basic">
                     <h3>⚡ Basic Package</h3>
                     <div class="package-price">$29/month</div>
                     <ul class="package-features">
@@ -960,10 +961,10 @@
                         <li>Spending Categories</li>
                         <li>Email Support</li>
                     </ul>
-                    <button class="btn btn-primary" onclick="selectPackage('basic', event)">Select Basic</button>
+                    <a href="https://buy.stripe.com/dRmfZheTUbkcgT7fuNbsc02" target="_blank" class="btn btn-primary">Buy Now</a>
                 </div>
 
-                <div id="gold-package" class="package-card gold" onclick="selectPackage('gold')">
+                <div id="gold-package" class="package-card gold">
                     <h3>✨ Gold Package</h3>
                     <div class="package-price">$49/month</div>
                     <ul class="package-features">
@@ -975,10 +976,10 @@
                         <li>Advanced Analytics</li>
                         <li>Priority Support</li>
                     </ul>
-                    <button class="btn btn-primary" onclick="selectPackage('gold', event)">Select Gold</button>
+                    <a href="https://buy.stripe.com/28E28r1348805apeqJbsc01" target="_blank" class="btn btn-primary">Buy Now</a>
                 </div>
 
-                <div id="diamond-package" class="package-card diamond" onclick="selectPackage('diamond')">
+                <div id="diamond-package" class="package-card diamond">
                     <h3>💎 Diamond Package</h3>
                     <div class="package-price">$99/month</div>
                     <ul class="package-features">
@@ -990,7 +991,7 @@
                         <li>Custom Reports</li>
                         <li>Direct Phone Support</li>
                     </ul>
-                    <button class="btn btn-primary" onclick="selectPackage('diamond', event)">Select Diamond</button>
+                    <a href="https://buy.stripe.com/dRm9ATbHIdsk5ap0zTbsc00" target="_blank" class="btn btn-primary">Buy Now</a>
                 </div>
             </div>
         </div>
