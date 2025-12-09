@@ -11,6 +11,15 @@
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <!-- PDF.js for PDF processing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- XLSX for Excel processing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+
+    <!-- PPTX-Gen for PowerPoint generation -->
+    <script src="https://cdn.jsdelivr.net/npm/pptxgen@3.12.0/dist/pptxgen.umd.min.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -915,7 +924,7 @@
                     <a href="#signup" onclick="showSignUp(event)">Sign Up</a>
                     <a href="#signin" onclick="showSignIn(event)">Sign In</a>
                     <a href="#profile" onclick="handleMyProfileClick(event)">My Profile</a>
-                    <a href="#dashboard" onclick="handleDashboardClick(event)">Dashboard</a>
+                    <a href="dashboard.html" target="_blank">Dashboard</a>
                     <a id="adminLink" href="#admin" onclick="handleAdminClick(event)" class="hidden">Admin</a>
                 </div>
             </div>
@@ -1347,6 +1356,14 @@
 
     <!-- Avatar Builder Script -->
     <script src="avatar-builder.js"></script>
+
+    <!-- New Lightning Ledgerz Modules -->
+    <script src="presentation-builder.js"></script>
+    <script src="data-synthesizer.js"></script>
+    <script src="avatar-system-enhanced.js"></script>
+    <script src="ai-financial-analyst.js"></script>
+    <script src="referral-system.js"></script>
+    <script src="advanced-features.js"></script>
 
     <!-- Main Application Script -->
     <script src="app.js"></script>
