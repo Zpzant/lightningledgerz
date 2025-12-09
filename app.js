@@ -135,7 +135,7 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
                                    currentUserProfile.username ||
                                    currentUserProfile.email.split('@')[0];
 
-                alert(`Welcome back, ${displayName}!`);
+                alert(`Hi, ${displayName}! Welcome back.`);
 
                 // Navigate to profile page
                 document.getElementById("services").style.display = "none";
@@ -317,7 +317,7 @@ async function updateNavigationWithUser() {
                        currentUserProfile.username ||
                        currentUserProfile.email.split('@')[0];
 
-    welcomeText.textContent = `Welcome Back, ${displayName}`;
+    welcomeText.textContent = `Hi, ${displayName}!`;
 
     // Set badge color based on tier
     badge.className = 'membership-badge';
