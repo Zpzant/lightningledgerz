@@ -36,6 +36,25 @@ function switchToSignUp() {
     document.getElementById('signup-modal').classList.remove('hidden');
 }
 
+// Google Sign In
+async function signInWithGoogle() {
+    try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin + '/index.html'
+            }
+        });
+
+        if (error) throw error;
+
+        // OAuth will redirect to Google, then back to your site
+    } catch (error) {
+        console.error("Google sign in error:", error);
+        alert("Google sign in failed: " + error.message);
+    }
+}
+
 // Close modals when clicking outside
 window.addEventListener('click', (e) => {
     if (e.target.id === 'signup-modal') {
@@ -1407,6 +1426,7 @@ window.showSignUp = showSignUp;
 window.showSignIn = showSignIn;
 window.switchToSignIn = switchToSignIn;
 window.switchToSignUp = switchToSignUp;
+window.signInWithGoogle = signInWithGoogle;
 window.signOutUser = signOutUser;
 window.handleMyProfileClick = handleMyProfileClick;
 window.handleDashboardClick = handleDashboardClick;
