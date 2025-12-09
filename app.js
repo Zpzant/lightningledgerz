@@ -114,14 +114,33 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("signin-email").value.trim();
     const password = document.getElementById("signin-password").value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+
+    // Show loading state
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Signing in...';
+    submitBtn.disabled = true;
 
     try {
+        console.log("Attempting sign in for:", email);
+
         const { data, error } = await supabase.auth.signInWithPassword({
             email: email,
             password: password
         });
 
-        if (error) throw error;
+        console.log("Sign in response:", { data, error });
+
+        if (error) {
+            // Handle specific error cases
+            if (error.message.includes('Invalid login credentials')) {
+                throw new Error('Invalid email or password. Please try again.');
+            } else if (error.message.includes('Email not confirmed')) {
+                throw new Error('Please check your email and click the confirmation link first.');
+            } else {
+                throw error;
+            }
+        }
 
         // Close sign-in modal
         document.getElementById("signin-modal").classList.add('hidden');
@@ -145,12 +164,19 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
                 document.getElementById("admin").classList.add('hidden');
                 document.getElementById("profile").classList.remove('hidden');
                 window.location.href = "#profile";
+            } else {
+                // Profile didn't load yet, still show success
+                alert(`Hi! Welcome back. Loading your profile...`);
             }
-        }, 1000);
+        }, 1500);
 
     } catch (error) {
         console.error("Login error:", error);
         alert("Login failed: " + error.message);
+    } finally {
+        // Reset button state
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
     }
 });
 
