@@ -317,7 +317,7 @@ async function updateNavigationWithUser() {
                        currentUserProfile.username ||
                        currentUserProfile.email.split('@')[0];
 
-    welcomeText.textContent = `Welcome Back, ${displayName}`;
+    welcomeText.textContent = `Hi, ${displayName}`;
 
     // Set badge color based on tier
     badge.className = 'membership-badge';
@@ -518,6 +518,8 @@ function switchProfileTab(tabName) {
         loadAvatar(supabase, currentUser.id);
     } else if (tabName === 'documents') {
         loadUserDocuments();
+    } else if (tabName === 'referrals') {
+        loadReferralData();
     } else if (tabName === 'powerpoint') {
         loadPowerPointHistory();
     } else if (tabName === 'quickbooks') {
@@ -1397,3 +1399,140 @@ window.generatePowerPoint = generatePowerPoint;
 window.connectQuickBooks = connectQuickBooks;
 window.syncQuickBooks = syncQuickBooks;
 window.disconnectQuickBooks = disconnectQuickBooks;
+
+// =====================================================
+// REFERRAL SYSTEM FUNCTIONS
+// =====================================================
+
+const referralSystem = new ReferralSystem();
+
+async function loadReferralData() {
+    if (!currentUser) return;
+
+    try {
+        // Get or create referral link
+        const { data: existingReferral, error: fetchError } = await supabase
+            .from('referrals')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .single();
+
+        let referralData;
+        if (fetchError || !existingReferral) {
+            // Create new referral
+            const username = currentUserProfile?.username || currentUserProfile?.first_name || 'User';
+            referralData = await referralSystem.setupReferralLink(currentUser.id, username);
+        } else {
+            referralData = {
+                code: existingReferral.referral_code,
+                url: existingReferral.referral_url,
+                shareText: referralSystem.generateShareMessage(
+                    currentUserProfile?.username || currentUserProfile?.first_name || 'User',
+                    existingReferral.referral_code
+                )
+            };
+        }
+
+        // Display referral link
+        document.getElementById('referralLink').value = referralData.url;
+        document.getElementById('referralCode').textContent = `Your Code: ${referralData.code}`;
+
+        // Store share text for social sharing
+        window.referralShareText = referralData.shareText;
+        window.referralUrl = referralData.url;
+
+        // Load referral stats
+        await loadReferralStats();
+
+    } catch (error) {
+        console.error('Error loading referral data:', error);
+    }
+}
+
+async function loadReferralStats() {
+    if (!currentUser) return;
+
+    try {
+        const { data: referrals, error } = await supabase
+            .from('referral_tracking')
+            .select(`
+                *,
+                referred:profiles!referral_tracking_referred_id_fkey(first_name, last_name, email)
+            `)
+            .eq('referrer_id', currentUser.id);
+
+        if (error) throw error;
+
+        const referralsList = document.getElementById('referralsList');
+
+        if (!referrals || referrals.length === 0) {
+            referralsList.innerHTML = '<p style="color: #888;">No referrals yet. Share your link to get started!</p>';
+            return;
+        }
+
+        let html = '<div style="display: flex; flex-direction: column; gap: 1rem;">';
+
+        for (const ref of referrals) {
+            const name = ref.referred ? `${ref.referred.first_name} ${ref.referred.last_name}` : 'User';
+            const date = new Date(ref.created_at).toLocaleDateString();
+            const status = ref.reward_status === 'awarded' ? '✅ Reward Claimed' : '⏳ Pending';
+
+            html += `
+                <div style="padding: 1rem; background: rgba(255, 51, 51, 0.05); border-radius: 8px; border: 1px solid #333;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>${name}</strong>
+                            <p style="color: #888; font-size: 0.9rem; margin-top: 0.3rem;">Joined: ${date}</p>
+                        </div>
+                        <span style="color: ${ref.reward_status === 'awarded' ? '#4caf50' : '#ffa500'}; font-size: 0.9rem;">${status}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        html += '</div>';
+        referralsList.innerHTML = html;
+
+    } catch (error) {
+        console.error('Error loading referral stats:', error);
+    }
+}
+
+function copyReferralLink() {
+    const linkInput = document.getElementById('referralLink');
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999); // For mobile devices
+
+    navigator.clipboard.writeText(linkInput.value).then(() => {
+        alert('Referral link copied to clipboard!');
+    }).catch(err => {
+        console.error('Error copying text:', err);
+        // Fallback
+        document.execCommand('copy');
+        alert('Referral link copied!');
+    });
+}
+
+function shareOnTwitter() {
+    const text = window.referralShareText || 'Join me on Lightning Ledgerz!';
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank', 'width=600,height=400');
+}
+
+function shareOnLinkedIn() {
+    const url = window.referralUrl || window.location.origin;
+    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+    window.open(linkedInUrl, '_blank', 'width=600,height=400');
+}
+
+function shareViaEmail() {
+    const subject = 'Join me on Lightning Ledgerz - Get 1 FREE Month!';
+    const body = window.referralShareText || 'Check out Lightning Ledgerz!';
+    const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoUrl;
+}
+
+window.copyReferralLink = copyReferralLink;
+window.shareOnTwitter = shareOnTwitter;
+window.shareOnLinkedIn = shareOnLinkedIn;
+window.shareViaEmail = shareViaEmail;
