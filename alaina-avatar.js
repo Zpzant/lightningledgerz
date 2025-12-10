@@ -118,11 +118,39 @@ class AlainaAvatar {
             transition: transform 0.3s ease;
         `;
 
+        // Change Avatar label on hover
+        const changeAvatarLabel = document.createElement('div');
+        changeAvatarLabel.className = 'change-avatar-label';
+        changeAvatarLabel.textContent = 'Change Avatar';
+        changeAvatarLabel.style.cssText = `
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #ffd700;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 10001;
+            border: 1px solid #ff6699;
+        `;
+        this.container.appendChild(changeAvatarLabel);
+
         avatar.addEventListener('mouseenter', () => {
             avatar.style.transform = 'scale(1.03)';
+            changeAvatarLabel.style.opacity = '1';
         });
         avatar.addEventListener('mouseleave', () => {
             avatar.style.transform = 'scale(1)';
+            changeAvatarLabel.style.opacity = '0';
         });
         avatar.addEventListener('click', () => {
             this.toggleSpeech();
@@ -587,13 +615,13 @@ class AlainaAvatar {
                 <circle cx="100" cy="54" r="1" fill="#ffccdd" opacity="0.7"/>
             </g>
 
-            <!-- GORGEOUS FLOWING BLONDE HAIR -->
+            <!-- GORGEOUS RAPUNZEL-STYLE FLOWING BLONDE HAIR -->
             <g class="alaina-hair-flow">
-                <!-- Hair behind head (back layer) -->
-                <path d="M 35 55 Q 25 70 25 95 Q 28 120 35 140"
+                <!-- LONG flowing hair behind - Rapunzel style -->
+                <path d="M 35 55 Q 20 85 15 130 Q 10 180 20 220 Q 25 250 35 260"
+                    stroke="url(#alainaHairMain)" stroke-width="22" fill="none" stroke-linecap="round"/>
+                <path d="M 105 55 Q 120 85 125 130 Q 130 180 120 220 Q 115 250 105 260"
                     stroke="url(#alainaHairMain)" stroke-width="20" fill="none" stroke-linecap="round"/>
-                <path d="M 105 55 Q 115 70 115 95 Q 112 120 105 140"
-                    stroke="url(#alainaHairMain)" stroke-width="18" fill="none" stroke-linecap="round"/>
 
                 <!-- Main hair crown -->
                 <path d="M 40 48
@@ -613,38 +641,63 @@ class AlainaAvatar {
                 <path d="M 48 25 Q 55 22 62 26 Q 65 30 62 35" fill="url(#alainaHairMain)" opacity="0.9"/>
                 <path d="M 78 26 Q 85 22 92 25 Q 95 28 90 33" fill="url(#alainaHairMain)" opacity="0.9"/>
 
-                <!-- Flowing side piece with lightning tip -->
-                <path d="M 100 48
-                         Q 118 40 128 20
-                         Q 125 35 115 45"
-                    fill="url(#alainaHairMain)"/>
+                <!-- Flowing side piece - LONG flowing down -->
+                <path d="M 100 48 Q 115 60 120 90 Q 128 140 125 190 Q 120 230 112 250"
+                    stroke="url(#alainaHairMain)" stroke-width="16" fill="none" stroke-linecap="round"/>
 
-                <!-- Lightning bolt hair tip - magical! -->
+                <!-- Hair flowing down left side - EXTRA LONG -->
+                <path d="M 40 48 Q 25 70 18 110 Q 12 160 15 210 Q 20 245 30 260"
+                    stroke="url(#alainaHairMain)" stroke-width="16" fill="none" stroke-linecap="round"/>
+
+                <!-- Beautiful hair wave sections -->
+                <path d="M 22 180 Q 15 200 20 220" stroke="url(#alainaHairMain)" stroke-width="12" fill="none" stroke-linecap="round"/>
+                <path d="M 118 180 Q 125 200 120 220" stroke="url(#alainaHairMain)" stroke-width="11" fill="none" stroke-linecap="round"/>
+
+                <!-- Lightning bolt hair tips - LEFT SIDE - magical! -->
                 <g class="alaina-hair-tip" filter="url(#alainaGlow)">
-                    <path d="M 128 20
-                             L 138 0
-                             L 130 5
-                             L 135 -12
-                             L 122 10
-                             L 130 8
+                    <path d="M 30 260
+                             L 20 268
+                             L 28 265
+                             L 18 278
+                             L 32 268
+                             L 26 270
+                             L 35 262
                              Z"
                         fill="url(#hairTip)"/>
                 </g>
 
-                <!-- Hair flowing down left side -->
-                <path d="M 40 48 Q 28 60 22 85 Q 18 110 25 135"
-                    stroke="url(#alainaHairMain)" stroke-width="14" fill="none" stroke-linecap="round"/>
+                <!-- Lightning bolt hair tips - RIGHT SIDE - magical! -->
+                <g class="alaina-hair-tip" filter="url(#alainaGlow)">
+                    <path d="M 105 260
+                             L 118 268
+                             L 108 265
+                             L 122 278
+                             L 105 268
+                             L 112 270
+                             L 102 262
+                             Z"
+                        fill="url(#hairTip)"/>
+                </g>
 
-                <!-- Beautiful hair wave curls at ends -->
-                <path d="M 25 135 Q 15 145 20 155 Q 28 150 30 140"
-                    fill="url(#alainaHairMain)"/>
-                <path d="M 105 140 Q 115 150 112 162 Q 105 158 102 145"
-                    fill="url(#alainaHairMain)"/>
+                <!-- Lightning bolt hair tip - TOP RIGHT flowing piece -->
+                <g class="alaina-hair-tip" filter="url(#alainaGlow)">
+                    <path d="M 112 250
+                             L 125 252
+                             L 115 255
+                             L 130 260
+                             L 112 258
+                             L 120 256
+                             Z"
+                        fill="url(#hairTip)"/>
+                </g>
 
                 <!-- Hair highlights -->
                 <path d="M 50 5 Q 70 -5 90 5" stroke="url(#alainaHairHighlight)" stroke-width="5" fill="none" opacity="0.7"/>
                 <path d="M 55 18 Q 70 12 85 18" stroke="#ffffee" stroke-width="2.5" fill="none" opacity="0.5"/>
-                <path d="M 30 80 Q 28 95 32 110" stroke="#ffffcc" stroke-width="3" fill="none" opacity="0.4"/>
+                <path d="M 22 100 Q 18 130 22 160" stroke="#ffffcc" stroke-width="4" fill="none" opacity="0.4"/>
+                <path d="M 118 100 Q 122 130 118 160" stroke="#ffffcc" stroke-width="4" fill="none" opacity="0.4"/>
+                <path d="M 20 200 Q 18 220 25 240" stroke="#fffacd" stroke-width="3" fill="none" opacity="0.5"/>
+                <path d="M 120 200 Q 122 220 115 240" stroke="#fffacd" stroke-width="3" fill="none" opacity="0.5"/>
             </g>
 
             <!-- BEAUTIFUL TIARA/CROWN -->

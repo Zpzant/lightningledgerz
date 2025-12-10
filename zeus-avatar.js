@@ -125,11 +125,39 @@ class ZeusAvatar {
             transition: transform 0.3s ease;
         `;
 
+        // Change Avatar label on hover
+        const changeAvatarLabel = document.createElement('div');
+        changeAvatarLabel.className = 'change-avatar-label';
+        changeAvatarLabel.textContent = 'Change Avatar';
+        changeAvatarLabel.style.cssText = `
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #ffd700;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 10001;
+            border: 1px solid #8866ff;
+        `;
+        this.container.appendChild(changeAvatarLabel);
+
         avatar.addEventListener('mouseenter', () => {
             avatar.style.transform = 'scale(1.03)';
+            changeAvatarLabel.style.opacity = '1';
         });
         avatar.addEventListener('mouseleave', () => {
             avatar.style.transform = 'scale(1)';
+            changeAvatarLabel.style.opacity = '0';
         });
         avatar.addEventListener('click', () => {
             this.toggleSpeech();

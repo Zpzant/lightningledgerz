@@ -165,11 +165,39 @@ class ZacAvatar {
             transition: transform 0.3s ease;
         `;
 
+        // Change Avatar label on hover
+        const changeAvatarLabel = document.createElement('div');
+        changeAvatarLabel.className = 'change-avatar-label';
+        changeAvatarLabel.textContent = 'Change Avatar';
+        changeAvatarLabel.style.cssText = `
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #ffd700;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 10001;
+            border: 1px solid #ff3333;
+        `;
+        this.container.appendChild(changeAvatarLabel);
+
         avatar.addEventListener('mouseenter', () => {
             avatar.style.transform = 'scale(1.03)';
+            changeAvatarLabel.style.opacity = '1';
         });
         avatar.addEventListener('mouseleave', () => {
             avatar.style.transform = 'scale(1)';
+            changeAvatarLabel.style.opacity = '0';
         });
         avatar.addEventListener('click', () => {
             if (this.walkthroughStep < this.walkthroughMessages.length) {
@@ -1000,13 +1028,14 @@ class ZacAvatar {
             <!-- Nose highlight -->
             <ellipse cx="78" cy="54" rx="2" ry="3" fill="#f8dcc8" opacity="0.4"/>
 
-            <!-- GOATEE - Flynn's signature facial hair -->
-            <!-- Soul patch -->
-            <ellipse cx="80" cy="84" rx="4" ry="3" fill="url(#goatee)" opacity="0.8"/>
-            <!-- Chin stubble -->
-            <path d="M 72 80 Q 80 88 88 80" stroke="url(#goatee)" stroke-width="2" fill="none" opacity="0.4"/>
-            <!-- Light stubble around jaw -->
-            <ellipse cx="80" cy="82" rx="15" ry="8" fill="url(#goatee)" opacity="0.15"/>
+            <!-- 5 O'CLOCK SHADOW - Light stubble across jaw -->
+            <!-- Chin area stubble -->
+            <ellipse cx="80" cy="82" rx="18" ry="10" fill="url(#goatee)" opacity="0.12"/>
+            <!-- Jaw line stubble -->
+            <path d="M 52 65 Q 65 80 80 85 Q 95 80 108 65" fill="url(#goatee)" opacity="0.08"/>
+            <!-- Cheek stubble -->
+            <ellipse cx="55" cy="68" rx="8" ry="6" fill="url(#goatee)" opacity="0.1"/>
+            <ellipse cx="105" cy="68" rx="8" ry="6" fill="url(#goatee)" opacity="0.1"/>
 
             <!-- MOUTH - Flynn's signature smirk -->
             ${pose === 'thumbsup' ? `
