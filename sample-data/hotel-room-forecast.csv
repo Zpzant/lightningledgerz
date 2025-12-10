@@ -1,0 +1,6 @@
+Room Category,Total Rooms,Base Rate,Jan Occ,Feb Occ,Mar Occ,Apr Occ,May Occ,Jun Occ,Jul Occ,Aug Occ,Sep Occ,Oct Occ,Nov Occ,Dec Occ,Avg Occ,Annual Revenue
+Standard King,60,149,0.48,0.52,0.65,0.70,0.73,0.80,0.86,0.83,0.70,0.68,0.55,0.76,0.69,2273796
+Standard Double,40,139,0.45,0.48,0.62,0.68,0.70,0.78,0.84,0.82,0.68,0.65,0.52,0.74,0.66,1349784
+Deluxe Suite,30,249,0.40,0.42,0.55,0.60,0.65,0.72,0.78,0.75,0.60,0.58,0.45,0.68,0.60,1636740
+Executive Suite,15,349,0.32,0.35,0.48,0.52,0.55,0.65,0.72,0.68,0.52,0.48,0.38,0.60,0.52,997659
+Presidential Suite,5,599,0.25,0.28,0.38,0.42,0.48,0.58,0.65,0.60,0.42,0.40,0.30,0.52,0.44,479962

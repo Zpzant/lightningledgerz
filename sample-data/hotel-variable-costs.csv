@@ -1,0 +1,32 @@
+Cost Category,Per Occupied Room,Percent of Room Rev,Annual Total,Notes
+Housekeeping,28.50,16.5%,1098855,"Daily room cleaning and turnover"
+Laundry,8.75,5.1%,337313,"Linens, towels, guest laundry"
+Guest Amenities,12.00,7.0%,462600,"Toiletries, coffee, water bottles"
+Minibar Restock,4.50,2.6%,173475,"Daily restocking of minibar items"
+Electricity (per room),15.00,8.7%,578250,"HVAC, lighting, in-room devices"
+Water (per room),6.50,3.8%,250575,"Showers, sinks, toilets"
+Gas (per room),3.25,1.9%,125288,"Water heating, kitchen"
+Total Variable Cost,78.50,45.5%,3026356,"Total per occupied room night"
+
+ANCILLARY REVENUE PER OCCUPIED ROOM
+Pet Fees (12% of rooms),4.25,2.5%,164150,"$35/night - 12% of rooms have pets"
+Parking (65% of guests),16.25,9.4%,626438,"$25/day - 65% utilization"
+Room Service,6.75,3.9%,260190,"$45 avg check - 15% order rate"
+Restaurant,17.10,9.9%,659061,"$38 avg - 45% dine in"
+Bar,7.70,4.5%,296835,"$22 avg - 35% visit"
+Spa,22.50,13.0%,867375,"$125 avg - 18% use"
+Late Checkout,4.00,2.3%,154200,"$50 fee - 8% of checkouts"
+Early Checkin,1.50,0.9%,57825,"$30 fee - 5% of checkins"
+Total Ancillary,80.05,46.4%,3086074,"Additional revenue per occupied room"
+
+SEASONAL UTILITY ADJUSTMENTS
+Summer (Jun-Aug),Multiplier: 1.35,,"HVAC runs longer, higher electricity"
+Winter (Dec-Feb),Multiplier: 1.15,,"Heating costs increase"
+Spring/Fall,Multiplier: 1.00,,"Baseline utility usage"
+
+OCCUPANCY ASSUMPTIONS
+Weekday Occupancy,65%,,"Monday-Thursday average"
+Weekend Occupancy,85%,,"Friday-Sunday average"
+Holiday Occupancy,95%,,"Major holidays and events"
+Low Season,70% of base,,"January, February, November"
+Peak Season,125% of base,,"June, July, August, December"

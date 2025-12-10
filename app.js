@@ -369,6 +369,7 @@ async function updateNavigationWithUser() {
     const welcomeText = document.getElementById('welcomeText');
     const badge = document.getElementById('membershipBadge');
     const navAvatarContainer = document.getElementById('navAvatarContainer');
+    const navElement = document.querySelector('nav');
 
     // Use first name, username, or email as fallback
     const displayName = currentUserProfile.first_name ||
@@ -377,14 +378,19 @@ async function updateNavigationWithUser() {
 
     welcomeText.textContent = `Hi, ${displayName}!`;
 
-    // Set badge color based on tier
+    // Set badge color and nav theme based on tier
     badge.className = 'membership-badge';
+    navElement.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
+
     if (currentUserProfile.package_tier === 'basic') {
         badge.classList.add('badge-basic');
+        navElement.classList.add('tier-basic');
     } else if (currentUserProfile.package_tier === 'gold') {
         badge.classList.add('badge-gold');
+        navElement.classList.add('tier-gold');
     } else if (currentUserProfile.package_tier === 'diamond') {
         badge.classList.add('badge-diamond');
+        navElement.classList.add('tier-diamond');
     }
 
     // Load and display avatar
@@ -421,6 +427,11 @@ function hideUserWelcome() {
     const logoSection = document.getElementById('companyLogoSection');
     if (logoSection) {
         logoSection.classList.remove('visible');
+    }
+    // Remove tier theming from nav
+    const navElement = document.querySelector('nav');
+    if (navElement) {
+        navElement.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
     }
 
     // Reset dropdown menu items for logged-out state
@@ -607,7 +618,27 @@ async function handleAdminClick(event) {
 function scrollToPackage(id) {
     const target = document.getElementById(id);
     if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
+        // Remove highlighted class from all packages
+        document.querySelectorAll('.package-card').forEach(card => {
+            card.classList.remove('highlighted');
+        });
+
+        // Add highlighted class to target package
+        target.classList.add('highlighted');
+
+        // Fade the package sidebar
+        const sidebar = document.querySelector('.package-sidebar');
+        if (sidebar) {
+            sidebar.classList.add('faded');
+        }
+
+        // Scroll to target
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Remove highlight after 5 seconds
+        setTimeout(() => {
+            target.classList.remove('highlighted');
+        }, 5000);
     }
 }
 
@@ -1677,6 +1708,11 @@ function startTypingAnimation(elementId, text) {
 
 // Start typing animations when PPT showcase is visible
 function initPPTShowcaseAnimations() {
+    const isMobile = window.innerWidth <= 768;
+
+    // Lower threshold for mobile devices
+    const threshold = isMobile ? 0.1 : 0.3;
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -1686,11 +1722,28 @@ function initPPTShowcaseAnimations() {
                 setTimeout(() => startTypingAnimation('typing-strategy', aiTypingTexts.strategy), 1500);
             }
         });
-    }, { threshold: 0.3 });
+    }, { threshold: threshold, rootMargin: '50px' });
 
     const showcase = document.getElementById('ppt-showcase-section');
     if (showcase) {
         observer.observe(showcase);
+    }
+
+    // Fallback for mobile - start animations after scroll delay
+    if (isMobile) {
+        let typingStarted = false;
+        window.addEventListener('scroll', () => {
+            if (!typingStarted && showcase) {
+                const rect = showcase.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    typingStarted = true;
+                    startTypingAnimation('typing-exec', aiTypingTexts.exec);
+                    setTimeout(() => startTypingAnimation('typing-financial', aiTypingTexts.financial), 500);
+                    setTimeout(() => startTypingAnimation('typing-market', aiTypingTexts.market), 1000);
+                    setTimeout(() => startTypingAnimation('typing-strategy', aiTypingTexts.strategy), 1500);
+                }
+            }
+        }, { passive: true });
     }
 }
 
@@ -1986,3 +2039,75 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.toggleMobileMenu = toggleMobileMenu;
+
+// =====================================================
+// TEST MODE - Simulate different tier accounts
+// =====================================================
+// Use these functions in browser console to test different tier theming:
+// testTier('basic') - Red theme
+// testTier('gold') - Gold theme
+// testTier('diamond') - Diamond/white theme
+
+function testTier(tier) {
+    // Create mock user profile
+    const mockProfile = {
+        username: `Test_${tier}_User`,
+        first_name: `Test ${tier.charAt(0).toUpperCase() + tier.slice(1)}`,
+        email: `test_${tier}@lightningledgerz.com`,
+        package_tier: tier,
+        xp_points: tier === 'diamond' ? 5000 : tier === 'gold' ? 2500 : 500,
+        level: tier === 'diamond' ? 10 : tier === 'gold' ? 5 : 2
+    };
+
+    // Set global profile
+    currentUserProfile = mockProfile;
+    currentUser = { id: 'test-user-' + tier };
+
+    // Update nav with the mock profile
+    const userWelcomeNav = document.getElementById('userWelcomeNav');
+    const welcomeText = document.getElementById('welcomeText');
+    const badge = document.getElementById('membershipBadge');
+    const navElement = document.querySelector('nav');
+
+    if (userWelcomeNav) userWelcomeNav.classList.remove('hidden');
+    if (welcomeText) welcomeText.textContent = `Hi, ${mockProfile.first_name}!`;
+
+    // Hide sign up/sign in options
+    const dropdownSignUp = document.getElementById('dropdownSignUp');
+    const dropdownSignIn = document.getElementById('dropdownSignIn');
+    const dropdownLogout = document.getElementById('dropdownLogout');
+    if (dropdownSignUp) dropdownSignUp.classList.add('hidden');
+    if (dropdownSignIn) dropdownSignIn.classList.add('hidden');
+    if (dropdownLogout) dropdownLogout.classList.remove('hidden');
+
+    // Set badge and nav theme
+    if (badge) {
+        badge.className = 'membership-badge';
+        badge.classList.add(`badge-${tier}`);
+    }
+
+    if (navElement) {
+        navElement.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
+        navElement.classList.add(`tier-${tier}`);
+    }
+
+    console.log(`%c✓ Test mode activated: ${tier.toUpperCase()} tier`,
+        `color: ${tier === 'gold' ? '#ffd700' : tier === 'diamond' ? '#fff' : '#ff3333'}; font-size: 16px; font-weight: bold;`);
+    console.log('Mock profile:', mockProfile);
+
+    // Show the appropriate avatar
+    if (window.avatarSelector) {
+        window.avatarSelector.showCurrentAvatar();
+    }
+
+    return `Test ${tier} account activated. Look at the nav bar to see the theme change!`;
+}
+
+// Quick test functions
+window.testBasic = () => testTier('basic');
+window.testGold = () => testTier('gold');
+window.testDiamond = () => testTier('diamond');
+window.testTier = testTier;
+
+console.log('%c⚡ Lightning Ledgerz Test Mode Available', 'color: #ff3333; font-size: 14px; font-weight: bold;');
+console.log('Run testBasic(), testGold(), or testDiamond() in console to test different tiers.');
