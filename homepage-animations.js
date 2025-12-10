@@ -29,21 +29,48 @@ class GraphCarousel {
         this.container = document.createElement('div');
         this.container.id = 'graph-carousel';
         this.container.style.cssText = `
-            position: absolute;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%);
             width: 90%;
             max-width: 1100px;
-            z-index: 10;
-            padding: 0;
+            margin: 0 auto;
+            padding: 40px 0;
         `;
 
-        // Find hero section and append
-        const hero = document.querySelector('.hero');
-        if (hero) {
-            hero.style.position = 'relative';
-            hero.appendChild(this.container);
+        // Create a section to hold the carousel after services
+        const carouselSection = document.createElement('div');
+        carouselSection.id = 'graph-carousel-section';
+        carouselSection.style.cssText = `
+            background: rgba(0, 0, 0, 0.95);
+            padding: 60px 20px;
+            margin-top: 0;
+        `;
+
+        // Add a heading
+        const heading = document.createElement('h2');
+        heading.textContent = 'Real-Time Financial Insights';
+        heading.style.cssText = `
+            color: #ff3333;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        `;
+        carouselSection.appendChild(heading);
+
+        const subheading = document.createElement('p');
+        subheading.textContent = 'See how Lightning Ledgerz transforms your data into actionable insights';
+        subheading.style.cssText = `
+            color: #888;
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        `;
+        carouselSection.appendChild(subheading);
+
+        carouselSection.appendChild(this.container);
+
+        // Insert after the services section
+        const servicesSection = document.getElementById('services');
+        if (servicesSection) {
+            servicesSection.parentNode.insertBefore(carouselSection, servicesSection.nextSibling);
         }
 
         // Create inner wrapper
