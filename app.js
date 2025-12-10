@@ -68,11 +68,15 @@ window.addEventListener('click', (e) => {
 // Sign Up
 document.getElementById("signup-form").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const companyName = document.getElementById("signup-company").value.trim();
     const firstName = document.getElementById("signup-firstname").value.trim();
     const lastName = document.getElementById("signup-lastname").value.trim();
-    const username = document.getElementById("signup-username").value.trim();
     const email = document.getElementById("signup-email").value.trim();
     const password = document.getElementById("signup-password").value;
+
+    // Calculate trial end date (15 days from now)
+    const trialEndDate = new Date();
+    trialEndDate.setDate(trialEndDate.getDate() + 15);
 
     try {
         // Create auth user
@@ -83,7 +87,7 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
 
         if (authError) throw authError;
 
-        // Create profile
+        // Create profile with company name and trial
         const { error: profileError } = await supabase
             .from('profiles')
             .insert([{
@@ -91,8 +95,9 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
                 email: email,
                 first_name: firstName,
                 last_name: lastName,
-                username: username || null,
-                package_tier: 'basic',
+                company_name: companyName,
+                package_tier: 'trial',
+                trial_end_date: trialEndDate.toISOString(),
                 is_admin: email === 'zpzant@gmail.com'
             }]);
 
