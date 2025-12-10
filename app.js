@@ -401,6 +401,17 @@ async function updateNavigationWithUser() {
     if (currentUserProfile.is_admin) {
         document.getElementById('adminLink').classList.remove('hidden');
     }
+
+    // Update dropdown menu items for logged-in state
+    const dropdownSignUp = document.getElementById('dropdownSignUp');
+    const dropdownSignIn = document.getElementById('dropdownSignIn');
+    const dropdownPreview = document.getElementById('dropdownPreview');
+    const dropdownLogout = document.getElementById('dropdownLogout');
+
+    if (dropdownSignUp) dropdownSignUp.classList.add('hidden');
+    if (dropdownSignIn) dropdownSignIn.classList.add('hidden');
+    if (dropdownPreview) dropdownPreview.classList.add('hidden');
+    if (dropdownLogout) dropdownLogout.classList.remove('hidden');
 }
 
 function hideUserWelcome() {
@@ -411,6 +422,17 @@ function hideUserWelcome() {
     if (logoSection) {
         logoSection.classList.remove('visible');
     }
+
+    // Reset dropdown menu items for logged-out state
+    const dropdownSignUp = document.getElementById('dropdownSignUp');
+    const dropdownSignIn = document.getElementById('dropdownSignIn');
+    const dropdownPreview = document.getElementById('dropdownPreview');
+    const dropdownLogout = document.getElementById('dropdownLogout');
+
+    if (dropdownSignUp) dropdownSignUp.classList.remove('hidden');
+    if (dropdownSignIn) dropdownSignIn.classList.remove('hidden');
+    if (dropdownPreview) dropdownPreview.classList.remove('hidden');
+    if (dropdownLogout) dropdownLogout.classList.add('hidden');
 }
 
 // Update profile page with user data
@@ -573,8 +595,19 @@ function switchProfileTab(tabName) {
     });
 
     // Show selected tab
-    document.getElementById(`tab-${tabName}`).classList.add('active');
-    event.target.classList.add('active');
+    const tabContent = document.getElementById(`tab-${tabName}`);
+    if (tabContent) {
+        tabContent.classList.add('active');
+    }
+
+    // Find and activate the correct button
+    const buttons = document.querySelectorAll('.tab-button');
+    buttons.forEach(btn => {
+        if (btn.textContent.toLowerCase().includes(tabName.toLowerCase()) ||
+            btn.getAttribute('onclick')?.includes(tabName)) {
+            btn.classList.add('active');
+        }
+    });
 
     // Load data for specific tabs
     if (tabName === 'avatar') {

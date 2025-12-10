@@ -1165,12 +1165,13 @@
             <div class="dropdown">
                 <a class="dropdown-toggle">Get Started</a>
                 <div class="dropdown-menu">
-                    <a href="#signup" onclick="showSignUp(event)">Sign Up</a>
-                    <a href="#signin" onclick="showSignIn(event)">Sign In</a>
+                    <a href="#signup" onclick="showSignUp(event)" id="dropdownSignUp">Sign Up</a>
+                    <a href="#signin" onclick="showSignIn(event)" id="dropdownSignIn">Sign In</a>
                     <a href="#profile" onclick="handleMyProfileClick(event)">My Profile</a>
-                    <a href="#profile" onclick="previewFeatures(event)">Preview Features (Guest)</a>
+                    <a href="#profile" onclick="previewFeatures(event)" id="dropdownPreview">Preview Features (Guest)</a>
                     <a href="dashboard.html" target="_blank">Dashboard</a>
                     <a id="adminLink" href="#admin" onclick="handleAdminClick(event)" class="hidden">Admin</a>
+                    <a href="#" onclick="signOutUser(); return false;" id="dropdownLogout" class="hidden" style="color: #ff3333; border-top: 1px solid rgba(255,51,51,0.3);">Sign Out</a>
                 </div>
             </div>
         </div>

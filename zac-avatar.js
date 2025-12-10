@@ -647,6 +647,12 @@ document.addEventListener('DOMContentLoaded', () => {
             zacAvatar.startWalkthrough();
             localStorage.setItem('zac_walkthrough_seen', 'true');
         }, 2500);
+    } else {
+        // Always show Zac on the homepage after walkthrough is seen
+        setTimeout(() => {
+            zacAvatar.show();
+            zacAvatar.speak("Welcome back! Click me if you need help.", "Ready to assist!");
+        }, 1500);
     }
 });
 
