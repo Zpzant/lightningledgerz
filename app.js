@@ -173,7 +173,12 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
                                    currentUserProfile.username ||
                                    currentUserProfile.email.split('@')[0];
 
-                alert(`Hi, ${displayName}! Welcome back.`);
+                // Use Zac to welcome the user instead of alert
+                if (window.zacAvatar) {
+                    window.zacAvatar.welcomeBack(displayName);
+                } else {
+                    alert(`Hi, ${displayName}! Welcome back.`);
+                }
 
                 // Navigate to profile page
                 document.getElementById("services").style.display = "none";
@@ -185,7 +190,9 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
                 window.location.href = "#profile";
             } else {
                 // Profile didn't load yet, still show success
-                alert(`Hi! Welcome back. Loading your profile...`);
+                if (window.zacAvatar) {
+                    window.zacAvatar.show();
+                }
             }
         }, 1500);
 
@@ -695,7 +702,12 @@ async function uploadDocuments() {
             progressBar.style.width = progress + '%';
         }
 
-        alert("All files uploaded successfully!");
+        // Use Zac to celebrate the upload
+        if (window.zacAvatar) {
+            window.zacAvatar.celebrateUpload();
+        } else {
+            alert("All files uploaded successfully!");
+        }
         fileInput.value = "";
         progressDiv.style.display = "none";
         progressBar.style.width = "0%";
