@@ -6,6 +6,89 @@
 class PowerPointTemplates {
     constructor() {
         this.selectedTemplate = null;
+        this.selectedLayout = 'title';
+
+        // Content generation settings
+        this.settings = {
+            detailLevel: 50, // 0-100: 0=bullet points only, 100=full paragraphs
+            pageCount: 'auto', // 'auto' or number 1-20
+            contentDensity: 'balanced', // 'minimal', 'balanced', 'detailed'
+            includeCharts: true,
+            includeImages: true,
+            imageStyle: 'professional' // 'professional', 'creative', 'minimal'
+        };
+
+        // Pitch deck questionnaire data
+        this.pitchDeckData = null;
+
+        // High-quality stock image library (Unsplash-style categories)
+        this.imageLibrary = {
+            skylines: [
+                'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920',
+                'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1920',
+                'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1920',
+                'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1920',
+                'https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?w=1920'
+            ],
+            business: [
+                'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=1920',
+                'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920',
+                'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1920',
+                'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1920',
+                'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1920'
+            ],
+            finance: [
+                'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1920',
+                'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=1920',
+                'https://images.unsplash.com/photo-1565514020179-026b92b2d5b2?w=1920',
+                'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1920',
+                'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1920'
+            ],
+            technology: [
+                'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1920',
+                'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1920',
+                'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=1920',
+                'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1920',
+                'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1920'
+            ],
+            landscapes: [
+                'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920',
+                'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1920',
+                'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=1920',
+                'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1920',
+                'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920'
+            ],
+            abstract: [
+                'https://images.unsplash.com/photo-1557683316-973673baf926?w=1920',
+                'https://images.unsplash.com/photo-1550684376-efcbd6e3f031?w=1920',
+                'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1920',
+                'https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1920',
+                'https://images.unsplash.com/photo-1557682260-96773eb01377?w=1920'
+            ]
+        };
+
+        // Content templates based on detail level
+        this.contentTemplates = {
+            minimal: {
+                intro: ['Key Highlights', 'Summary', 'Overview'],
+                sections: 2,
+                bulletPointsPerSection: 3,
+                wordsPerBullet: 8
+            },
+            balanced: {
+                intro: ['Executive Summary', 'Comprehensive Overview', 'Strategic Analysis'],
+                sections: 4,
+                bulletPointsPerSection: 5,
+                wordsPerBullet: 15
+            },
+            detailed: {
+                intro: ['In-Depth Analysis & Strategic Recommendations', 'Comprehensive Financial Review'],
+                sections: 6,
+                bulletPointsPerSection: 7,
+                wordsPerBullet: 25
+            }
+        };
+
         this.templates = {
             // Corporate Blue Theme
             corporate: {
@@ -209,7 +292,9 @@ class PowerPointTemplates {
 
                 <div class="ppt-selector-tabs">
                     <button class="ppt-tab active" onclick="pptTemplates.switchTab('templates')">Templates</button>
-                    <button class="ppt-tab" onclick="pptTemplates.switchTab('layouts')">Slide Layouts</button>
+                    <button class="ppt-tab" onclick="pptTemplates.switchTab('settings')">Settings</button>
+                    <button class="ppt-tab" onclick="pptTemplates.switchTab('pitchdeck')">Pitch Deck</button>
+                    <button class="ppt-tab" onclick="pptTemplates.switchTab('images')">Images</button>
                     <button class="ppt-tab" onclick="pptTemplates.switchTab('preview')">Preview</button>
                 </div>
 
@@ -219,14 +304,236 @@ class PowerPointTemplates {
                     </div>
                 </div>
 
-                <div class="ppt-tab-content hidden" id="ppt-layouts-tab">
-                    <div class="ppt-layouts-grid">
-                        ${Object.entries(this.slideLayouts).map(([key, name]) => `
-                            <div class="ppt-layout-card" data-layout="${key}" onclick="pptTemplates.selectLayout('${key}')">
-                                <div class="ppt-layout-preview">${this.getLayoutPreviewSVG(key)}</div>
-                                <span>${name}</span>
+                <!-- Settings Tab - Detail Slider & Page Count -->
+                <div class="ppt-tab-content hidden" id="ppt-settings-tab">
+                    <div class="ppt-settings-container">
+                        <div class="ppt-setting-section">
+                            <h3>📊 Content Detail Level</h3>
+                            <p class="setting-desc">Drag the slider to control how detailed your presentation content will be</p>
+                            <div class="detail-slider-container">
+                                <div class="detail-labels">
+                                    <span>Bullet Points</span>
+                                    <span>Balanced</span>
+                                    <span>Full Paragraphs</span>
+                                </div>
+                                <input type="range" id="detail-slider" min="0" max="100" value="50"
+                                    oninput="pptTemplates.updateDetailLevel(this.value)">
+                                <div class="detail-preview" id="detail-preview">
+                                    <strong>Current:</strong> Balanced mix of bullet points and explanatory text
+                                </div>
                             </div>
-                        `).join('')}
+                        </div>
+
+                        <div class="ppt-setting-section">
+                            <h3>📄 Number of Slides</h3>
+                            <p class="setting-desc">Choose slide count or let AI determine the optimal number</p>
+                            <div class="page-count-options">
+                                <button class="page-btn selected" data-count="auto" onclick="pptTemplates.setPageCount('auto')">
+                                    🤖 AI Recommended
+                                </button>
+                                <button class="page-btn" data-count="5" onclick="pptTemplates.setPageCount(5)">5 slides</button>
+                                <button class="page-btn" data-count="8" onclick="pptTemplates.setPageCount(8)">8 slides</button>
+                                <button class="page-btn" data-count="12" onclick="pptTemplates.setPageCount(12)">12 slides</button>
+                                <button class="page-btn" data-count="15" onclick="pptTemplates.setPageCount(15)">15 slides</button>
+                                <button class="page-btn" data-count="20" onclick="pptTemplates.setPageCount(20)">20 slides</button>
+                            </div>
+                            <div class="custom-page-count">
+                                <label>Or specify exact number:</label>
+                                <input type="number" id="custom-page-count" min="1" max="50" placeholder="1-50"
+                                    onchange="pptTemplates.setPageCount(parseInt(this.value))">
+                            </div>
+                        </div>
+
+                        <div class="ppt-setting-section">
+                            <h3>🎨 Content Options</h3>
+                            <div class="content-toggles">
+                                <label class="toggle-option">
+                                    <input type="checkbox" checked onchange="pptTemplates.settings.includeCharts = this.checked">
+                                    <span>Include Charts & Graphs</span>
+                                </label>
+                                <label class="toggle-option">
+                                    <input type="checkbox" checked onchange="pptTemplates.settings.includeImages = this.checked">
+                                    <span>Include High-Quality Images</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pitch Deck Builder Tab -->
+                <div class="ppt-tab-content hidden" id="ppt-pitchdeck-tab">
+                    <div class="pitch-deck-builder">
+                        <div class="pitch-intro">
+                            <h3>🚀 Company Pitch Deck Builder</h3>
+                            <p>Answer these questions to generate a professional pitch deck for your company</p>
+                        </div>
+
+                        <form id="pitch-deck-form" class="pitch-form">
+                            <div class="pitch-section">
+                                <h4>Company Information</h4>
+                                <div class="form-row">
+                                    <label>Company Name *</label>
+                                    <input type="text" id="pitch-company-name" required placeholder="Lightning Ledgerz Inc.">
+                                </div>
+                                <div class="form-row">
+                                    <label>Tagline / One-liner</label>
+                                    <input type="text" id="pitch-tagline" placeholder="AI-Powered Financial Intelligence">
+                                </div>
+                                <div class="form-row two-col">
+                                    <div>
+                                        <label>Year Founded</label>
+                                        <input type="number" id="pitch-year-founded" placeholder="2024" min="1900" max="2025">
+                                    </div>
+                                    <div>
+                                        <label>Number of Employees</label>
+                                        <input type="number" id="pitch-employees" placeholder="25">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pitch-section">
+                                <h4>Leadership & Team</h4>
+                                <div class="form-row">
+                                    <label>Founder / CEO Name</label>
+                                    <input type="text" id="pitch-founder-name" placeholder="John Smith">
+                                </div>
+                                <div class="form-row">
+                                    <label>Founder Photo</label>
+                                    <div class="image-upload-area" onclick="document.getElementById('founder-photo-input').click()">
+                                        <span id="founder-photo-preview">📷 Click to upload founder photo</span>
+                                        <input type="file" id="founder-photo-input" accept="image/*" hidden
+                                            onchange="pptTemplates.handleImageUpload(this, 'founder-photo-preview')">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <label>Team Photo (optional)</label>
+                                    <div class="image-upload-area" onclick="document.getElementById('team-photo-input').click()">
+                                        <span id="team-photo-preview">👥 Click to upload team photo</span>
+                                        <input type="file" id="team-photo-input" accept="image/*" hidden
+                                            onchange="pptTemplates.handleImageUpload(this, 'team-photo-preview')">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pitch-section">
+                                <h4>Company Logo</h4>
+                                <div class="form-row">
+                                    <label>Upload Logo (we'll remove the background automatically)</label>
+                                    <div class="logo-upload-area" onclick="document.getElementById('logo-input').click()">
+                                        <span id="logo-preview">🖼️ Click to upload company logo</span>
+                                        <input type="file" id="logo-input" accept="image/*" hidden
+                                            onchange="pptTemplates.handleLogoUpload(this)">
+                                    </div>
+                                    <label class="toggle-option">
+                                        <input type="checkbox" id="remove-bg-checkbox" checked>
+                                        <span>Auto-remove background</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="pitch-section">
+                                <h4>Business Details</h4>
+                                <div class="form-row">
+                                    <label>Industry / Sector</label>
+                                    <select id="pitch-industry">
+                                        <option value="">Select industry...</option>
+                                        <option value="fintech">FinTech</option>
+                                        <option value="saas">SaaS</option>
+                                        <option value="realestate">Real Estate</option>
+                                        <option value="healthcare">Healthcare</option>
+                                        <option value="ecommerce">E-Commerce</option>
+                                        <option value="ai">AI / Machine Learning</option>
+                                        <option value="cleantech">CleanTech / Sustainability</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <label>Services / Products (one per line)</label>
+                                    <textarea id="pitch-services" rows="4" placeholder="Financial Analysis Platform&#10;AI Report Generation&#10;QuickBooks Integration&#10;Investment Dashboard"></textarea>
+                                </div>
+                                <div class="form-row">
+                                    <label>Problem You Solve</label>
+                                    <textarea id="pitch-problem" rows="3" placeholder="Small businesses struggle with complex financial reporting and lack the resources for expensive analysts..."></textarea>
+                                </div>
+                                <div class="form-row">
+                                    <label>Your Solution</label>
+                                    <textarea id="pitch-solution" rows="3" placeholder="AI-powered platform that transforms raw financial data into McKinsey-quality reports in seconds..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="pitch-section">
+                                <h4>Key Metrics (optional)</h4>
+                                <div class="form-row three-col">
+                                    <div>
+                                        <label>Revenue</label>
+                                        <input type="text" id="pitch-revenue" placeholder="$500K ARR">
+                                    </div>
+                                    <div>
+                                        <label>Customers</label>
+                                        <input type="text" id="pitch-customers" placeholder="150+">
+                                    </div>
+                                    <div>
+                                        <label>Growth Rate</label>
+                                        <input type="text" id="pitch-growth" placeholder="25% MoM">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pitch-section">
+                                <h4>Contact & Links</h4>
+                                <div class="form-row two-col">
+                                    <div>
+                                        <label>Website</label>
+                                        <input type="url" id="pitch-website" placeholder="https://lightningledgerz.com">
+                                    </div>
+                                    <div>
+                                        <label>Contact Email</label>
+                                        <input type="email" id="pitch-email" placeholder="hello@company.com">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-primary pitch-generate-btn" onclick="pptTemplates.generatePitchDeck()">
+                                🚀 Generate Pitch Deck
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Image Library Tab -->
+                <div class="ppt-tab-content hidden" id="ppt-images-tab">
+                    <div class="image-library">
+                        <div class="image-library-header">
+                            <h3>📸 High-Quality Image Library</h3>
+                            <p>Select images to include in your presentation (4K quality)</p>
+                        </div>
+
+                        <div class="image-categories">
+                            ${Object.keys(this.imageLibrary).map(cat => `
+                                <button class="image-cat-btn ${cat === 'skylines' ? 'active' : ''}"
+                                    onclick="pptTemplates.showImageCategory('${cat}')">
+                                    ${this.getCategoryIcon(cat)} ${cat.charAt(0).toUpperCase() + cat.slice(1)}
+                                </button>
+                            `).join('')}
+                        </div>
+
+                        <div class="image-grid" id="image-grid">
+                            ${this.imageLibrary.skylines.map((url, i) => `
+                                <div class="image-card" onclick="pptTemplates.selectImage('${url}')">
+                                    <img src="${url}&h=200" alt="Skyline ${i+1}" loading="lazy">
+                                    <div class="image-overlay">
+                                        <span>Click to select</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="selected-images">
+                            <h4>Selected Images (<span id="selected-count">0</span>)</h4>
+                            <div class="selected-images-list" id="selected-images-list">
+                                <p class="no-selection">No images selected yet</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -597,6 +904,405 @@ class PowerPointTemplates {
                 cursor: not-allowed;
             }
 
+            /* Settings Tab Styles */
+            .ppt-settings-container {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            .ppt-setting-section {
+                background: rgba(0, 0, 0, 0.3);
+                border-radius: 15px;
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .ppt-setting-section h3 {
+                color: #ff3333;
+                margin-bottom: 0.5rem;
+            }
+
+            .setting-desc {
+                color: #888;
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+            }
+
+            .detail-slider-container {
+                padding: 1rem 0;
+            }
+
+            .detail-labels {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.5rem;
+                color: #aaa;
+                font-size: 0.85rem;
+            }
+
+            #detail-slider {
+                width: 100%;
+                height: 8px;
+                -webkit-appearance: none;
+                background: linear-gradient(to right, #333 0%, #ff3333 50%, #ffd700 100%);
+                border-radius: 5px;
+                outline: none;
+                cursor: pointer;
+            }
+
+            #detail-slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                width: 24px;
+                height: 24px;
+                background: #ff3333;
+                border-radius: 50%;
+                border: 3px solid #fff;
+                cursor: pointer;
+                box-shadow: 0 2px 10px rgba(255, 51, 51, 0.5);
+            }
+
+            .detail-preview {
+                margin-top: 1rem;
+                padding: 1rem;
+                background: rgba(255, 51, 51, 0.1);
+                border-radius: 10px;
+                color: #ddd;
+                font-size: 0.9rem;
+            }
+
+            .page-count-options {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                margin-bottom: 1rem;
+            }
+
+            .page-btn {
+                background: rgba(255, 255, 255, 0.1);
+                border: 2px solid rgba(255, 255, 255, 0.2);
+                color: #ccc;
+                padding: 0.75rem 1.25rem;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .page-btn:hover {
+                border-color: #ff3333;
+                color: #fff;
+            }
+
+            .page-btn.selected {
+                background: rgba(255, 51, 51, 0.2);
+                border-color: #ff3333;
+                color: #ff3333;
+            }
+
+            .custom-page-count {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                color: #888;
+            }
+
+            .custom-page-count input {
+                width: 100px;
+                padding: 0.5rem 1rem;
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 8px;
+                color: #fff;
+                font-size: 1rem;
+            }
+
+            .content-toggles {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .toggle-option {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                color: #ccc;
+                cursor: pointer;
+            }
+
+            .toggle-option input[type="checkbox"] {
+                width: 20px;
+                height: 20px;
+                accent-color: #ff3333;
+            }
+
+            /* Pitch Deck Builder Styles */
+            .pitch-deck-builder {
+                max-width: 900px;
+                margin: 0 auto;
+            }
+
+            .pitch-intro {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+            .pitch-intro h3 {
+                color: #ff3333;
+                font-size: 1.8rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .pitch-intro p {
+                color: #888;
+            }
+
+            .pitch-form {
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .pitch-section {
+                background: rgba(0, 0, 0, 0.3);
+                border-radius: 15px;
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .pitch-section h4 {
+                color: #ffd700;
+                margin-bottom: 1rem;
+                font-size: 1.1rem;
+            }
+
+            .form-row {
+                margin-bottom: 1rem;
+            }
+
+            .form-row label {
+                display: block;
+                color: #aaa;
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .form-row input[type="text"],
+            .form-row input[type="number"],
+            .form-row input[type="url"],
+            .form-row input[type="email"],
+            .form-row select,
+            .form-row textarea {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 10px;
+                color: #fff;
+                font-size: 1rem;
+                transition: border-color 0.3s ease;
+            }
+
+            .form-row input:focus,
+            .form-row select:focus,
+            .form-row textarea:focus {
+                outline: none;
+                border-color: #ff3333;
+            }
+
+            .form-row.two-col {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+
+            .form-row.three-col {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 1rem;
+            }
+
+            .image-upload-area,
+            .logo-upload-area {
+                background: rgba(0, 0, 0, 0.4);
+                border: 2px dashed rgba(255, 51, 51, 0.4);
+                border-radius: 10px;
+                padding: 2rem;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                color: #888;
+            }
+
+            .image-upload-area:hover,
+            .logo-upload-area:hover {
+                border-color: #ff3333;
+                background: rgba(255, 51, 51, 0.1);
+            }
+
+            .pitch-generate-btn {
+                width: 100%;
+                padding: 1.25rem 2rem !important;
+                font-size: 1.2rem !important;
+                margin-top: 1rem;
+            }
+
+            /* Image Library Styles */
+            .image-library-header {
+                text-align: center;
+                margin-bottom: 1.5rem;
+            }
+
+            .image-library-header h3 {
+                color: #ff3333;
+                margin-bottom: 0.5rem;
+            }
+
+            .image-library-header p {
+                color: #888;
+            }
+
+            .image-categories {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                justify-content: center;
+                margin-bottom: 1.5rem;
+            }
+
+            .image-cat-btn {
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: #ccc;
+                padding: 0.5rem 1rem;
+                border-radius: 20px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .image-cat-btn:hover,
+            .image-cat-btn.active {
+                background: rgba(255, 51, 51, 0.2);
+                border-color: #ff3333;
+                color: #ff3333;
+            }
+
+            .image-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .image-card {
+                position: relative;
+                border-radius: 10px;
+                overflow: hidden;
+                cursor: pointer;
+                border: 3px solid transparent;
+                transition: all 0.3s ease;
+            }
+
+            .image-card img {
+                width: 100%;
+                height: 150px;
+                object-fit: cover;
+                display: block;
+            }
+
+            .image-card:hover {
+                border-color: #ff3333;
+                transform: scale(1.02);
+            }
+
+            .image-card.selected {
+                border-color: #4caf50;
+            }
+
+            .image-card.selected::after {
+                content: '✓';
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: #4caf50;
+                color: #fff;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+            }
+
+            .image-overlay {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+                padding: 1rem;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .image-card:hover .image-overlay {
+                opacity: 1;
+            }
+
+            .image-overlay span {
+                color: #fff;
+                font-size: 0.85rem;
+            }
+
+            .selected-images {
+                background: rgba(0, 0, 0, 0.3);
+                border-radius: 15px;
+                padding: 1rem;
+            }
+
+            .selected-images h4 {
+                color: #ffd700;
+                margin-bottom: 1rem;
+            }
+
+            .selected-images-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .no-selection {
+                color: #666;
+                font-style: italic;
+            }
+
+            .selected-image-thumb {
+                position: relative;
+                display: inline-block;
+            }
+
+            .selected-image-thumb img {
+                width: 80px;
+                height: 50px;
+                object-fit: cover;
+                border-radius: 5px;
+            }
+
+            .selected-image-thumb button {
+                position: absolute;
+                top: -5px;
+                right: -5px;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                background: #ff3333;
+                color: #fff;
+                border: none;
+                cursor: pointer;
+                font-size: 14px;
+                line-height: 1;
+            }
+
             /* Mobile responsive */
             @media (max-width: 768px) {
                 .ppt-selector-panel {
@@ -617,6 +1323,29 @@ class PowerPointTemplates {
 
                 #ppt-generate-btn {
                     width: 100%;
+                }
+
+                .form-row.two-col,
+                .form-row.three-col {
+                    grid-template-columns: 1fr;
+                }
+
+                .page-count-options {
+                    justify-content: center;
+                }
+
+                .image-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .ppt-selector-tabs {
+                    flex-wrap: wrap;
+                    justify-content: center;
+                }
+
+                .ppt-tab {
+                    padding: 0.75rem 1rem;
+                    font-size: 0.9rem;
                 }
             }
         `;
@@ -645,6 +1374,465 @@ class PowerPointTemplates {
             card.classList.remove('selected');
         });
         document.querySelector(`[data-layout="${layoutId}"]`).classList.add('selected');
+        this.selectedLayout = layoutId;
+    }
+
+    // Detail level slider update
+    updateDetailLevel(value) {
+        this.settings.detailLevel = parseInt(value);
+        const preview = document.getElementById('detail-preview');
+
+        if (value < 33) {
+            this.settings.contentDensity = 'minimal';
+            preview.innerHTML = '<strong>Current:</strong> Concise bullet points with key facts only';
+        } else if (value < 66) {
+            this.settings.contentDensity = 'balanced';
+            preview.innerHTML = '<strong>Current:</strong> Balanced mix of bullet points and explanatory text';
+        } else {
+            this.settings.contentDensity = 'detailed';
+            preview.innerHTML = '<strong>Current:</strong> Full paragraphs with detailed analysis and context';
+        }
+    }
+
+    // Page count selection
+    setPageCount(count) {
+        this.settings.pageCount = count;
+
+        // Update UI
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        if (count === 'auto' || typeof count === 'string') {
+            document.querySelector('[data-count="auto"]').classList.add('selected');
+        } else {
+            const btn = document.querySelector(`[data-count="${count}"]`);
+            if (btn) btn.classList.add('selected');
+        }
+    }
+
+    // Get category icon for images
+    getCategoryIcon(category) {
+        const icons = {
+            skylines: '🌆',
+            business: '💼',
+            finance: '📊',
+            technology: '💻',
+            landscapes: '🏔️',
+            abstract: '🎨'
+        };
+        return icons[category] || '📷';
+    }
+
+    // Show image category
+    showImageCategory(category) {
+        // Update buttons
+        document.querySelectorAll('.image-cat-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // Update grid
+        const grid = document.getElementById('image-grid');
+        grid.innerHTML = this.imageLibrary[category].map((url, i) => `
+            <div class="image-card ${this.selectedImages?.includes(url) ? 'selected' : ''}"
+                 onclick="pptTemplates.selectImage('${url}')">
+                <img src="${url}&h=200" alt="${category} ${i+1}" loading="lazy">
+                <div class="image-overlay">
+                    <span>Click to select</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Select/deselect images
+    selectedImages = [];
+    selectImage(url) {
+        const index = this.selectedImages.indexOf(url);
+        if (index > -1) {
+            this.selectedImages.splice(index, 1);
+        } else {
+            this.selectedImages.push(url);
+        }
+
+        // Update UI
+        document.querySelectorAll('.image-card').forEach(card => {
+            const img = card.querySelector('img');
+            if (img && img.src.includes(url.split('?')[0])) {
+                card.classList.toggle('selected', this.selectedImages.includes(url));
+            }
+        });
+
+        // Update selected count
+        document.getElementById('selected-count').textContent = this.selectedImages.length;
+
+        // Update selected images list
+        const list = document.getElementById('selected-images-list');
+        if (this.selectedImages.length === 0) {
+            list.innerHTML = '<p class="no-selection">No images selected yet</p>';
+        } else {
+            list.innerHTML = this.selectedImages.map(url => `
+                <div class="selected-image-thumb">
+                    <img src="${url}&h=60" alt="Selected">
+                    <button onclick="pptTemplates.selectImage('${url}')" title="Remove">×</button>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Handle image upload for pitch deck
+    handleImageUpload(input, previewId) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.getElementById(previewId);
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-height: 100px; border-radius: 5px;">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Handle logo upload with background removal option
+    handleLogoUpload(input) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const preview = document.getElementById('logo-preview');
+                const removeBg = document.getElementById('remove-bg-checkbox').checked;
+
+                preview.innerHTML = `<img src="${e.target.result}" alt="Logo Preview" style="max-height: 100px; border-radius: 5px;">`;
+
+                if (removeBg) {
+                    preview.innerHTML += '<span style="color: #4caf50; margin-left: 10px;">✓ Background will be removed</span>';
+                    // Store for processing
+                    this.uploadedLogo = { dataUrl: e.target.result, removeBg: true };
+                } else {
+                    this.uploadedLogo = { dataUrl: e.target.result, removeBg: false };
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Remove background from image (using canvas technique)
+    async removeBackground(imageDataUrl) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+
+                // Simple white/light background removal
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+
+                    // If pixel is close to white, make it transparent
+                    if (r > 240 && g > 240 && b > 240) {
+                        data[i + 3] = 0; // Set alpha to 0
+                    }
+                    // Also handle light gray backgrounds
+                    else if (r > 220 && g > 220 && b > 220 && Math.abs(r - g) < 10 && Math.abs(g - b) < 10) {
+                        data[i + 3] = 0;
+                    }
+                }
+
+                ctx.putImageData(imageData, 0, 0);
+                resolve(canvas.toDataURL('image/png'));
+            };
+            img.src = imageDataUrl;
+        });
+    }
+
+    // Collect pitch deck form data
+    collectPitchDeckData() {
+        return {
+            companyName: document.getElementById('pitch-company-name')?.value || '',
+            tagline: document.getElementById('pitch-tagline')?.value || '',
+            yearFounded: document.getElementById('pitch-year-founded')?.value || '',
+            employees: document.getElementById('pitch-employees')?.value || '',
+            founderName: document.getElementById('pitch-founder-name')?.value || '',
+            industry: document.getElementById('pitch-industry')?.value || '',
+            services: document.getElementById('pitch-services')?.value || '',
+            problem: document.getElementById('pitch-problem')?.value || '',
+            solution: document.getElementById('pitch-solution')?.value || '',
+            revenue: document.getElementById('pitch-revenue')?.value || '',
+            customers: document.getElementById('pitch-customers')?.value || '',
+            growth: document.getElementById('pitch-growth')?.value || '',
+            website: document.getElementById('pitch-website')?.value || '',
+            email: document.getElementById('pitch-email')?.value || '',
+            logo: this.uploadedLogo || null
+        };
+    }
+
+    // Generate content based on detail level
+    generateContent(topic, type = 'bullet') {
+        const templates = this.contentTemplates[this.settings.contentDensity];
+        const wordCount = templates.wordsPerBullet;
+
+        const contentLibrary = {
+            revenue: {
+                bullet: 'Strong revenue growth driven by expanding market share',
+                balanced: 'Revenue has shown consistent growth, driven by expanding market share and new customer acquisition strategies that have proven highly effective.',
+                detailed: 'Our revenue performance demonstrates a clear upward trajectory, supported by strategic market expansion, enhanced customer acquisition methodologies, and diversified revenue streams that provide resilience against market volatility.'
+            },
+            expenses: {
+                bullet: 'Operational efficiency improvements reducing costs',
+                balanced: 'We have implemented significant operational efficiency improvements that have systematically reduced overhead costs while maintaining service quality.',
+                detailed: 'Through comprehensive operational audits and process optimization initiatives, we have achieved substantial cost reductions across all business units while simultaneously improving service delivery metrics and customer satisfaction scores.'
+            },
+            growth: {
+                bullet: 'Year-over-year growth exceeds industry benchmarks',
+                balanced: 'Our year-over-year growth rate consistently exceeds industry benchmarks, positioning us as a market leader in our sector.',
+                detailed: 'Sustained year-over-year growth that outperforms industry benchmarks demonstrates our strategic positioning and operational excellence. This growth is attributable to our innovative approach to market challenges and commitment to continuous improvement.'
+            },
+            strategy: {
+                bullet: 'Strategic focus on innovation and market expansion',
+                balanced: 'Our strategic focus centers on innovation-driven growth and calculated market expansion into high-potential territories.',
+                detailed: 'Our comprehensive strategy emphasizes innovation as a core competitive advantage, combined with methodical market expansion targeting high-growth opportunities while maintaining operational discipline and financial prudence.'
+            }
+        };
+
+        if (this.settings.contentDensity === 'minimal') {
+            return contentLibrary[topic]?.bullet || topic;
+        } else if (this.settings.contentDensity === 'detailed') {
+            return contentLibrary[topic]?.detailed || topic;
+        }
+        return contentLibrary[topic]?.balanced || topic;
+    }
+
+    // Generate pitch deck from questionnaire
+    async generatePitchDeck() {
+        const data = this.collectPitchDeckData();
+
+        if (!data.companyName) {
+            alert('Please enter your company name');
+            return;
+        }
+
+        // Use selected template or default to executive
+        const template = this.selectedTemplate || this.templates.executive;
+
+        if (typeof PptxGenJS === 'undefined') {
+            alert('PowerPoint generator not loaded. Please refresh the page.');
+            return;
+        }
+
+        // Show loading
+        const btn = document.querySelector('.pitch-generate-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '⏳ Generating Pitch Deck...';
+        btn.disabled = true;
+
+        try {
+            const pptx = new PptxGenJS();
+            const t = template;
+
+            pptx.author = data.companyName;
+            pptx.title = `${data.companyName} - Company Pitch Deck`;
+            pptx.subject = 'Company Pitch Deck';
+
+            // Process logo if uploaded
+            let processedLogo = null;
+            if (data.logo) {
+                if (data.logo.removeBg) {
+                    processedLogo = await this.removeBackground(data.logo.dataUrl);
+                } else {
+                    processedLogo = data.logo.dataUrl;
+                }
+            }
+
+            // Define master slide
+            pptx.defineSlideMaster({
+                title: 'PITCH_MASTER',
+                background: { color: t.colors.background.replace('#', '') }
+            });
+
+            // SLIDE 1: Title Slide
+            let slide = pptx.addSlide({ masterName: 'PITCH_MASTER' });
+            if (processedLogo) {
+                slide.addImage({ data: processedLogo, x: 3.5, y: 0.5, w: 3, h: 1.5, sizing: { type: 'contain' } });
+            }
+            slide.addText(data.companyName, {
+                x: 0.5, y: 2.5, w: 9, h: 1,
+                fontSize: 44, color: t.colors.accent.replace('#', ''),
+                fontFace: t.fonts.title, bold: true, align: 'center'
+            });
+            if (data.tagline) {
+                slide.addText(data.tagline, {
+                    x: 0.5, y: 3.6, w: 9, h: 0.5,
+                    fontSize: 22, color: t.colors.text.replace('#', ''),
+                    fontFace: t.fonts.body, align: 'center'
+                });
+            }
+            if (data.yearFounded) {
+                slide.addText(`Founded ${data.yearFounded}`, {
+                    x: 0.5, y: 4.5, w: 9, h: 0.3,
+                    fontSize: 14, color: '888888',
+                    fontFace: t.fonts.body, align: 'center'
+                });
+            }
+
+            // SLIDE 2: The Problem
+            if (data.problem) {
+                slide = pptx.addSlide({ masterName: 'PITCH_MASTER' });
+                slide.addText('The Problem', {
+                    x: 0.5, y: 0.5, w: 9, h: 0.7,
+                    fontSize: 36, color: t.colors.accent.replace('#', ''),
+                    fontFace: t.fonts.title, bold: true
+                });
+                slide.addText(data.problem, {
+                    x: 0.5, y: 1.5, w: 9, h: 3,
+                    fontSize: 20, color: t.colors.text.replace('#', ''),
+                    fontFace: t.fonts.body, valign: 'top'
+                });
+            }
+
+            // SLIDE 3: Our Solution
+            if (data.solution) {
+                slide = pptx.addSlide({ masterName: 'PITCH_MASTER' });
+                slide.addText('Our Solution', {
+                    x: 0.5, y: 0.5, w: 9, h: 0.7,
+                    fontSize: 36, color: t.colors.accent.replace('#', ''),
+                    fontFace: t.fonts.title, bold: true
+                });
+                slide.addText(data.solution, {
+                    x: 0.5, y: 1.5, w: 9, h: 3,
+                    fontSize: 20, color: t.colors.text.replace('#', ''),
+                    fontFace: t.fonts.body, valign: 'top'
+                });
+            }
+
+            // SLIDE 4: Products/Services
+            if (data.services) {
+                slide = pptx.addSlide({ masterName: 'PITCH_MASTER' });
+                slide.addText('Our Services', {
+                    x: 0.5, y: 0.5, w: 9, h: 0.7,
+                    fontSize: 36, color: t.colors.accent.replace('#', ''),
+                    fontFace: t.fonts.title, bold: true
+                });
+
+                const services = data.services.split('\n').filter(s => s.trim());
+                services.forEach((service, i) => {
+                    slide.addText(`• ${service}`, {
+                        x: 0.5, y: 1.5 + (i * 0.6), w: 9, h: 0.5,
+                        fontSize: 18, color: t.colors.text.replace('#', ''),
+                        fontFace: t.fonts.body
+                    });
+                });
+            }
+
+            // SLIDE 5: Key Metrics (if provided)
+            if (data.revenue || data.customers || data.growth) {
+                slide = pptx.addSlide({ masterName: 'PITCH_MASTER' });
+                slide.addText('Key Metrics', {
+                    x: 0.5, y: 0.5, w: 9, h: 0.7,
+                    fontSize: 36, color: t.colors.accent.replace('#', ''),
+                    fontFace: t.fonts.title, bold: true
+                });
+
+                const metrics = [
+                    { label: 'Revenue', value: data.revenue },
+                    { label: 'Customers', value: data.customers },
+                    { label: 'Growth', value: data.growth }
+                ].filter(m => m.value);
+
+                metrics.forEach((metric, i) => {
+                    const x = 0.5 + (i * 3.2);
+                    slide.addShape('rect', {
+                        x: x, y: 1.5, w: 2.8, h: 2,
+                        fill: { color: t.colors.secondary.replace('#', '') },
+                        line: { color: t.colors.accent.replace('#', ''), pt: 2 }
+                    });
+                    slide.addText(metric.label, {
+                        x: x + 0.1, y: 1.7, w: 2.6, h: 0.4,
+                        fontSize: 14, color: '888888', align: 'center'
+                    });
+                    slide.addText(metric.value, {
+                        x: x + 0.1, y: 2.2, w: 2.6, h: 0.8,
+                        fontSize: 28, color: t.colors.highlight.replace('#', ''),
+                        bold: true, align: 'center'
+                    });
+                });
+            }
+
+            // SLIDE 6: Team (if founder name provided)
+            if (data.founderName) {
+                slide = pptx.addSlide({ masterName: 'PITCH_MASTER' });
+                slide.addText('Leadership', {
+                    x: 0.5, y: 0.5, w: 9, h: 0.7,
+                    fontSize: 36, color: t.colors.accent.replace('#', ''),
+                    fontFace: t.fonts.title, bold: true
+                });
+                slide.addText(data.founderName, {
+                    x: 0.5, y: 2, w: 9, h: 0.5,
+                    fontSize: 24, color: t.colors.text.replace('#', ''),
+                    fontFace: t.fonts.body, align: 'center', bold: true
+                });
+                slide.addText('Founder & CEO', {
+                    x: 0.5, y: 2.6, w: 9, h: 0.4,
+                    fontSize: 16, color: '888888',
+                    fontFace: t.fonts.body, align: 'center'
+                });
+                if (data.employees) {
+                    slide.addText(`Team Size: ${data.employees} employees`, {
+                        x: 0.5, y: 3.5, w: 9, h: 0.4,
+                        fontSize: 14, color: t.colors.accent.replace('#', ''),
+                        fontFace: t.fonts.body, align: 'center'
+                    });
+                }
+            }
+
+            // SLIDE 7: Contact/Thank You
+            slide = pptx.addSlide({ masterName: 'PITCH_MASTER' });
+            slide.addText('Thank You', {
+                x: 0.5, y: 1.5, w: 9, h: 1,
+                fontSize: 48, color: t.colors.accent.replace('#', ''),
+                fontFace: t.fonts.title, bold: true, align: 'center'
+            });
+            slide.addText("Let's Connect", {
+                x: 0.5, y: 2.8, w: 9, h: 0.5,
+                fontSize: 24, color: t.colors.text.replace('#', ''),
+                fontFace: t.fonts.body, align: 'center'
+            });
+            if (data.website) {
+                slide.addText(data.website, {
+                    x: 0.5, y: 3.5, w: 9, h: 0.4,
+                    fontSize: 18, color: t.colors.highlight.replace('#', ''),
+                    fontFace: t.fonts.body, align: 'center'
+                });
+            }
+            if (data.email) {
+                slide.addText(data.email, {
+                    x: 0.5, y: 4, w: 9, h: 0.4,
+                    fontSize: 16, color: '888888',
+                    fontFace: t.fonts.body, align: 'center'
+                });
+            }
+
+            // Save
+            await pptx.writeFile({ fileName: `${data.companyName.replace(/\s+/g, '_')}_Pitch_Deck.pptx` });
+
+            this.closeSelector();
+
+            // Avatar celebration
+            if (window.zacAvatar) {
+                window.zacAvatar.showSpeech(`Your ${data.companyName} pitch deck is ready! Go crush that investor meeting!`, 'Pitch Deck Complete');
+            }
+
+        } catch (error) {
+            console.error('Error generating pitch deck:', error);
+            alert('Error generating pitch deck. Please try again.');
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
     }
 
     switchTab(tabName) {
