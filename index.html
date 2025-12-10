@@ -1101,12 +1101,168 @@
             font-size: 0.9rem;
         }
 
+        /* Upload Financials Button */
+        .upload-financials-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ff3333, #cc0000);
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
+            animation: pulse-glow 2s infinite;
+        }
+
+        .upload-financials-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 51, 51, 0.6);
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4); }
+            50% { box-shadow: 0 4px 25px rgba(255, 51, 51, 0.7); }
+        }
+
+        /* Hamburger Menu Button */
+        .hamburger-btn {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1001;
+        }
+
+        .hamburger-btn span {
+            width: 30px;
+            height: 3px;
+            background: #ff3333;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* Upload Modal */
+        .upload-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .upload-modal.active {
+            display: flex;
+        }
+
+        .upload-modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 2px solid #ff3333;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .upload-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-modal-header h2 {
+            color: #ff3333;
+            margin: 0;
+        }
+
+        .upload-modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .upload-dropzone {
+            border: 3px dashed #ff3333;
+            border-radius: 15px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 51, 51, 0.05);
+        }
+
+        .upload-dropzone:hover, .upload-dropzone.dragover {
+            background: rgba(255, 51, 51, 0.15);
+            border-color: #ff6666;
+        }
+
+        .upload-dropzone svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+            stroke: #ff3333;
+        }
+
+        .upload-dropzone p {
+            color: #ccc;
+            margin: 0.5rem 0;
+        }
+
+        .upload-file-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .file-type-badge {
+            background: rgba(255, 51, 51, 0.2);
+            border: 1px solid #ff3333;
+            color: #ff3333;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
         @media (max-width: 768px) {
             .about-content {
                 grid-template-columns: 1fr;
             }
             .profile-content {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr !important;
             }
             .hero h1 {
                 font-size: 2.5rem;
@@ -1116,6 +1272,58 @@
             }
             .avatar-preview-container {
                 grid-template-columns: 1fr;
+            }
+
+            /* Mobile Navigation */
+            .hamburger-btn {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.98);
+                flex-direction: column;
+                padding: 80px 2rem 2rem;
+                transition: right 0.3s ease;
+                z-index: 1000;
+                border-left: 2px solid #ff3333;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                padding: 1rem 0;
+                border-bottom: 1px solid rgba(255, 51, 51, 0.2);
+            }
+
+            .upload-financials-btn {
+                width: 100%;
+                justify-content: center;
+                margin: 1rem 0;
+            }
+
+            .dropdown {
+                width: 100%;
+            }
+
+            .dropdown-menu {
+                position: static;
+                width: 100%;
+                display: none;
+                border: none;
+                background: rgba(255, 51, 51, 0.1);
+            }
+
+            .dropdown:hover .dropdown-menu,
+            .dropdown.active .dropdown-menu {
+                display: block;
             }
         }
     </style>
@@ -1143,10 +1351,28 @@
         <a href="#top" class="logo">
             <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="height: 55px;">
         </a>
-        <div class="nav-links">
+
+        <!-- Hamburger Menu Button (Mobile) -->
+        <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="nav-links" id="navLinks">
             <a href="#services">Services</a>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
+
+            <!-- Upload Financials Button - Always visible, prominent -->
+            <button class="upload-financials-btn" onclick="showUploadModal()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                Upload Financials
+            </button>
 
             <!-- User Welcome Section (Hidden when not logged in) -->
             <div id="userWelcomeNav" class="user-welcome hidden">
@@ -1270,7 +1496,7 @@
 
             <!-- Account Tab -->
             <div id="tab-account" class="tab-content active">
-                <div class="profile-content">
+                <div class="profile-content" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
                     <div class="profile-card">
                         <h3>Account Information</h3>
                         <div class="profile-info">
@@ -1281,6 +1507,30 @@
                             <p><strong>Status:</strong> <span style="color: #4CAF50;">Active</span></p>
                         </div>
                         <button class="btn btn-primary" onclick="signOutUser()" style="margin-top: 1rem;">Sign Out</button>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Edit Profile</h3>
+                        <div class="form-group">
+                            <label for="edit-first-name">First Name</label>
+                            <input type="text" id="edit-first-name" placeholder="Your first name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-last-name">Last Name</label>
+                            <input type="text" id="edit-last-name" placeholder="Your last name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-company-name">Company Name</label>
+                            <input type="text" id="edit-company-name" placeholder="Your company name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-username">Username</label>
+                            <input type="text" id="edit-username" placeholder="Choose a username">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-phone">Phone Number</label>
+                            <input type="tel" id="edit-phone" placeholder="(555) 123-4567">
+                        </div>
+                        <button class="btn btn-primary" onclick="saveProfileChanges()" style="margin-top: 1rem;">Save Changes</button>
                     </div>
                 </div>
             </div>
@@ -1524,7 +1774,7 @@
         <div class="container">
             <div class="ppt-showcase">
                 <h3>AI-Powered Financial Reports</h3>
-                <p class="subtitle">McKinsey-quality presentations generated in seconds, not weeks</p>
+                <p class="subtitle">Boardroom-ready presentations generated in seconds, not weeks</p>
 
                 <div class="ppt-slides-container">
                     <!-- Executive Summary Slide -->
@@ -1766,6 +2016,40 @@
 
     <!-- Homepage Animations - Floating Graphs -->
     <script src="homepage-animations.js"></script>
+
+    <!-- Upload Financials Modal -->
+    <div class="upload-modal" id="uploadModal">
+        <div class="upload-modal-content">
+            <div class="upload-modal-header">
+                <h2>Upload Your Financials</h2>
+                <button class="upload-modal-close" onclick="closeUploadModal()">&times;</button>
+            </div>
+            <div class="upload-dropzone" id="uploadDropzone" onclick="document.getElementById('fileUploadInput').click()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <p style="font-size: 1.2rem; color: #fff; font-weight: 600;">Drop files here or click to upload</p>
+                <p>We'll analyze your data and generate insights</p>
+                <input type="file" id="fileUploadInput" multiple accept=".pdf,.xlsx,.xls,.csv,.pptx,.ppt,.doc,.docx" style="display: none;" onchange="handleFileUpload(event)">
+            </div>
+            <div class="upload-file-types">
+                <span class="file-type-badge">PDF</span>
+                <span class="file-type-badge">Excel</span>
+                <span class="file-type-badge">CSV</span>
+                <span class="file-type-badge">PowerPoint</span>
+                <span class="file-type-badge">Word</span>
+            </div>
+            <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(255, 51, 51, 0.1); border-radius: 10px;">
+                <p style="color: #ccc; font-size: 0.9rem; margin: 0;">
+                    <strong style="color: #ff3333;">Supported documents:</strong><br>
+                    Proformas, Budgets, Financial Statements, Customer Lists, Expense Reports, Property Data, Comparable Analysis
+                </p>
+            </div>
+            <div id="uploadedFilesList" style="margin-top: 1rem;"></div>
+        </div>
+    </div>
 
     <!-- Zac Avatar - Welcome Guide -->
     <script src="zac-avatar.js"></script>

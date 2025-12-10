@@ -444,7 +444,73 @@ function updateProfilePage() {
     document.getElementById('userEmail').textContent = currentUserProfile.email;
     document.getElementById('userUsername').textContent = currentUserProfile.username || 'Not set';
     document.getElementById('userPlan').textContent = currentUserProfile.package_tier.toUpperCase();
+
+    // Populate edit fields
+    const editFirstName = document.getElementById('edit-first-name');
+    const editLastName = document.getElementById('edit-last-name');
+    const editCompanyName = document.getElementById('edit-company-name');
+    const editUsername = document.getElementById('edit-username');
+    const editPhone = document.getElementById('edit-phone');
+
+    if (editFirstName) editFirstName.value = currentUserProfile.first_name || '';
+    if (editLastName) editLastName.value = currentUserProfile.last_name || '';
+    if (editCompanyName) editCompanyName.value = currentUserProfile.company_name || '';
+    if (editUsername) editUsername.value = currentUserProfile.username || '';
+    if (editPhone) editPhone.value = currentUserProfile.phone || '';
 }
+
+// Save profile changes
+async function saveProfileChanges() {
+    if (!currentUser) {
+        alert('Please sign in first.');
+        return;
+    }
+
+    const firstName = document.getElementById('edit-first-name')?.value.trim();
+    const lastName = document.getElementById('edit-last-name')?.value.trim();
+    const companyName = document.getElementById('edit-company-name')?.value.trim();
+    const username = document.getElementById('edit-username')?.value.trim();
+    const phone = document.getElementById('edit-phone')?.value.trim();
+
+    try {
+        const { error } = await supabase
+            .from('profiles')
+            .update({
+                first_name: firstName,
+                last_name: lastName,
+                company_name: companyName,
+                username: username,
+                phone: phone
+            })
+            .eq('id', currentUser.id);
+
+        if (error) throw error;
+
+        // Update local profile
+        currentUserProfile.first_name = firstName;
+        currentUserProfile.last_name = lastName;
+        currentUserProfile.company_name = companyName;
+        currentUserProfile.username = username;
+        currentUserProfile.phone = phone;
+
+        // Update display
+        document.getElementById('userFullName').textContent = `${firstName} ${lastName}`;
+        document.getElementById('userUsername').textContent = username || 'Not set';
+        document.getElementById('welcomeText').textContent = `Hi, ${firstName || username || 'User'}!`;
+
+        if (window.zacAvatar) {
+            window.zacAvatar.speak('Profile updated successfully!');
+        } else {
+            alert('Profile updated successfully!');
+        }
+
+    } catch (error) {
+        console.error('Profile update error:', error);
+        alert('Failed to update profile: ' + error.message);
+    }
+}
+
+window.saveProfileChanges = saveProfileChanges;
 
 // Show/hide features based on package tier
 function updateFeatureAccess() {
@@ -1786,3 +1852,137 @@ function updateCompanyLogoSection() {
 }
 
 window.handleCompanyLogoUpload = handleCompanyLogoUpload;
+
+// =====================================================
+// UPLOAD FINANCIALS MODAL
+// =====================================================
+
+function showUploadModal() {
+    const modal = document.getElementById('uploadModal');
+    if (modal) {
+        modal.classList.add('active');
+    }
+    // Setup drag and drop
+    setupDropzone();
+}
+
+function closeUploadModal() {
+    const modal = document.getElementById('uploadModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+function setupDropzone() {
+    const dropzone = document.getElementById('uploadDropzone');
+    if (!dropzone) return;
+
+    dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+    });
+
+    dropzone.addEventListener('dragleave', () => {
+        dropzone.classList.remove('dragover');
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        processUploadedFiles(files);
+    });
+}
+
+async function handleFileUpload(event) {
+    const files = event.target.files;
+    processUploadedFiles(files);
+}
+
+async function processUploadedFiles(files) {
+    if (!currentUser) {
+        alert('Please sign in to upload files.');
+        closeUploadModal();
+        showSignIn();
+        return;
+    }
+
+    const filesList = document.getElementById('uploadedFilesList');
+
+    for (const file of files) {
+        // Show file being processed
+        const fileItem = document.createElement('div');
+        fileItem.style.cssText = 'display: flex; align-items: center; gap: 10px; padding: 0.5rem; background: rgba(255,51,51,0.1); border-radius: 8px; margin-top: 0.5rem;';
+        fileItem.innerHTML = `
+            <span style="color: #ff3333;">📄</span>
+            <span style="color: #fff; flex: 1;">${file.name}</span>
+            <span style="color: #4caf50; font-size: 0.8rem;">Uploading...</span>
+        `;
+        filesList.appendChild(fileItem);
+
+        try {
+            const fileName = `financials/${currentUser.id}/${Date.now()}_${file.name}`;
+
+            const { data, error } = await supabase.storage
+                .from('user-documents')
+                .upload(fileName, file);
+
+            if (error) throw error;
+
+            // Update status
+            fileItem.querySelector('span:last-child').textContent = 'Uploaded ✓';
+            fileItem.querySelector('span:last-child').style.color = '#4caf50';
+
+            // Notify with Zac
+            if (window.zacAvatar) {
+                window.zacAvatar.speak(`I'm analyzing ${file.name}... I'll generate insights shortly!`);
+            }
+
+        } catch (error) {
+            console.error('Upload error:', error);
+            fileItem.querySelector('span:last-child').textContent = 'Failed ✗';
+            fileItem.querySelector('span:last-child').style.color = '#f44336';
+        }
+    }
+}
+
+// Close modal on outside click
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('uploadModal');
+    if (e.target === modal) {
+        closeUploadModal();
+    }
+});
+
+window.showUploadModal = showUploadModal;
+window.closeUploadModal = closeUploadModal;
+window.handleFileUpload = handleFileUpload;
+
+// =====================================================
+// MOBILE HAMBURGER MENU
+// =====================================================
+
+function toggleMobileMenu() {
+    const hamburger = document.getElementById('hamburgerBtn');
+    const navLinks = document.getElementById('navLinks');
+
+    hamburger.classList.toggle('active');
+    navLinks.classList.toggle('active');
+}
+
+// Close mobile menu when clicking a link
+document.addEventListener('DOMContentLoaded', () => {
+    const navLinks = document.querySelectorAll('.nav-links a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            const hamburger = document.getElementById('hamburgerBtn');
+            const navLinksContainer = document.getElementById('navLinks');
+            if (hamburger && navLinksContainer) {
+                hamburger.classList.remove('active');
+                navLinksContainer.classList.remove('active');
+            }
+        });
+    });
+});
+
+window.toggleMobileMenu = toggleMobileMenu;

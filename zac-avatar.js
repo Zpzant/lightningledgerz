@@ -116,6 +116,47 @@ class ZacAvatar {
             }
         });
 
+        // Create dismiss button
+        const dismissBtn = document.createElement('button');
+        dismissBtn.id = 'zac-dismiss-btn';
+        dismissBtn.innerHTML = '×';
+        dismissBtn.style.cssText = `
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff3333;
+            color: #ff3333;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: all 0.3s ease;
+            line-height: 1;
+        `;
+        dismissBtn.addEventListener('mouseenter', () => {
+            dismissBtn.style.background = '#ff3333';
+            dismissBtn.style.color = '#fff';
+        });
+        dismissBtn.addEventListener('mouseleave', () => {
+            dismissBtn.style.background = 'rgba(0, 0, 0, 0.8)';
+            dismissBtn.style.color = '#ff3333';
+        });
+        dismissBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.hide();
+            // Store preference so Zac doesn't auto-show again this session
+            sessionStorage.setItem('zac_dismissed', 'true');
+        });
+
+        this.container.style.position = 'fixed';
+        this.container.appendChild(dismissBtn);
         this.container.appendChild(avatar);
         document.body.appendChild(this.container);
     }
@@ -641,6 +682,12 @@ document.addEventListener('DOMContentLoaded', () => {
     zacAvatar = new ZacAvatar();
 
     const hasSeenWalkthrough = localStorage.getItem('zac_walkthrough_seen');
+    const wasDismissed = sessionStorage.getItem('zac_dismissed');
+
+    // Don't auto-show if user dismissed Zac this session
+    if (wasDismissed) {
+        return;
+    }
 
     if (!hasSeenWalkthrough) {
         setTimeout(() => {
