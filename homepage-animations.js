@@ -81,7 +81,7 @@ class GraphCarousel {
             background: rgba(0, 0, 0, 0.85);
             border: 2px solid rgba(255, 51, 51, 0.5);
             border-radius: 20px;
-            padding: 30px;
+            padding: 20px 15px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 51, 51, 0.15);
             backdrop-filter: blur(20px);
             overflow: hidden;
@@ -254,8 +254,8 @@ class GraphCarousel {
         });
 
         return `
-            <div style="display: flex; align-items: center; justify-content: center; gap: 60px; flex-wrap: wrap;">
-                <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap; padding: 0 10px;">
+                <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="flex-shrink: 0;">
                     <defs>
                         <filter id="pieShadow">
                             <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
@@ -263,7 +263,7 @@ class GraphCarousel {
                     </defs>
                     <g filter="url(#pieShadow)">${segments}</g>
                 </svg>
-                <div style="min-width: 180px;">${legendItems}</div>
+                <div style="min-width: 150px;">${legendItems}</div>
             </div>
         `;
     }
@@ -370,11 +370,11 @@ class GraphCarousel {
         });
 
         return `
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
-                <svg width="700" height="200" viewBox="0 0 700 200">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; overflow-x: auto;">
+                <svg width="100%" height="200" viewBox="0 0 700 200" preserveAspectRatio="xMidYMid meet" style="min-width: 300px; max-width: 700px;">
                     ${bars}
                 </svg>
-                <div style="display: flex; gap: 30px; justify-content: center;">${legend}</div>
+                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">${legend}</div>
             </div>
         `;
     }
@@ -385,22 +385,23 @@ class GraphCarousel {
                 background: linear-gradient(135deg, rgba(255,51,51,0.1), rgba(0,0,0,0.3));
                 border: 1px solid rgba(255,51,51,0.3);
                 border-radius: 12px;
-                padding: 20px;
+                padding: 15px;
                 text-align: center;
                 transition: transform 0.2s, box-shadow 0.2s;
                 cursor: pointer;
+                min-width: 120px;
             " onmouseenter="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(255,51,51,0.2)'"
                onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                <div style="color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">${kpi.label}</div>
-                <div style="color: #fff; font-size: 28px; font-weight: 700; margin-bottom: 8px;">${kpi.value}</div>
-                <div style="color: ${kpi.positive ? '#4caf50' : '#f44336'}; font-size: 14px; font-weight: 600;">
+                <div style="color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">${kpi.label}</div>
+                <div style="color: #fff; font-size: 22px; font-weight: 700; margin-bottom: 6px;">${kpi.value}</div>
+                <div style="color: ${kpi.positive ? '#4caf50' : '#f44336'}; font-size: 12px; font-weight: 600;">
                     ${kpi.positive ? '▲' : '▼'} ${kpi.change}
                 </div>
             </div>
         `).join('');
 
         return `
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 800px; margin: 0 auto;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; max-width: 800px; margin: 0 auto; padding: 0 10px;">
                 ${kpis}
             </div>
         `;
@@ -439,8 +440,8 @@ class GraphCarousel {
         }).join(' ');
 
         return `
-            <div style="display: flex; align-items: center; justify-content: center; gap: 60px; flex-wrap: wrap;">
-                <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap; padding: 0 10px;">
+                <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="flex-shrink: 0;">
                     <!-- Background arc -->
                     <path d="${arcPath(startRad, endRad)}" fill="none" stroke="#333" stroke-width="${strokeWidth}" stroke-linecap="round"/>
                     <!-- Value arc -->
@@ -468,9 +469,9 @@ class GraphCarousel {
         const maxVal = Math.max(...graph.data.map(d => d.value));
 
         const bars = graph.data.map((item, i) => `
-            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px;">
-                <div style="width: 140px; color: #ccc; font-size: 13px; text-align: right;">${item.label}</div>
-                <div style="flex: 1; background: rgba(255,255,255,0.1); height: 24px; border-radius: 4px; overflow: hidden;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+                <div style="min-width: 100px; max-width: 140px; flex-shrink: 0; color: #ccc; font-size: 12px; text-align: right;">${item.label}</div>
+                <div style="flex: 1; min-width: 120px; background: rgba(255,255,255,0.1); height: 24px; border-radius: 4px; overflow: hidden;">
                     <div style="
                         width: ${(item.value / maxVal) * 100}%;
                         height: 100%;
@@ -479,11 +480,11 @@ class GraphCarousel {
                         transition: width 0.5s ease;
                     "></div>
                 </div>
-                <div style="width: 50px; color: #fff; font-weight: 600; font-size: 14px;">$${item.value}K</div>
+                <div style="width: 45px; color: #fff; font-weight: 600; font-size: 13px;">$${item.value}K</div>
             </div>
         `).join('');
 
-        return `<div style="max-width: 600px; margin: 0 auto;">${bars}</div>`;
+        return `<div style="max-width: 600px; margin: 0 auto; padding: 0 10px;">${bars}</div>`;
     }
 
     createNavigation() {
