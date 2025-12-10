@@ -456,7 +456,7 @@ class AdvancedFeatures {
         // This is a placeholder for CSP configuration
         const cspMeta = document.createElement('meta');
         cspMeta.httpEquiv = 'Content-Security-Policy';
-        cspMeta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' *.supabase.co *.jsdelivr.net; style-src 'self' 'unsafe-inline';";
+        cspMeta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.supabase.co https://cdn.jsdelivr.net https://accounts.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://accounts.google.com https://oauth2.googleapis.com; frame-src https://accounts.google.com https://*.supabase.co; img-src 'self' data: https: blob:;";
         document.head.appendChild(cspMeta);
     }
 
