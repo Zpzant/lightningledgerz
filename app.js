@@ -351,6 +351,7 @@ async function loadUserProfile() {
         currentUserProfile = data;
         updateNavigationWithUser();
         updateProfilePage();
+        updateCompanyLogoSection();
 
         // Show/hide features based on package
         updateFeatureAccess();
@@ -405,6 +406,11 @@ async function updateNavigationWithUser() {
 function hideUserWelcome() {
     document.getElementById('userWelcomeNav').classList.add('hidden');
     document.getElementById('adminLink').classList.add('hidden');
+    // Hide company logo section
+    const logoSection = document.getElementById('companyLogoSection');
+    if (logoSection) {
+        logoSection.classList.remove('visible');
+    }
 }
 
 // Update profile page with user data
@@ -1530,3 +1536,220 @@ function previewFeatures(event) {
 }
 
 window.previewFeatures = previewFeatures;
+
+// =====================================================
+// AI TYPING ANIMATION FOR PPT SHOWCASE
+// =====================================================
+
+const aiTypingTexts = {
+    exec: "Revenue increased 23% YoY driven by expansion into new markets. Operating margin improved to 18.5% through cost optimization initiatives...",
+    financial: "Net profit margin: 12.4% (+2.1pp). EBITDA: $2.4M. Working capital ratio improved from 1.8 to 2.1. Cash conversion cycle reduced by 8 days...",
+    market: "Market share grew to 15.3% in Q4. Competitive analysis shows 3 key differentiators. Customer acquisition cost decreased 18% while LTV increased...",
+    strategy: "1. Expand digital channels (est. +$500K revenue)\n2. Optimize supply chain (-12% costs)\n3. Launch premium tier (35% margin potential)..."
+};
+
+let typingIntervals = {};
+
+function startTypingAnimation(elementId, text) {
+    const element = document.querySelector(`#${elementId} .typed-text`);
+    if (!element) return;
+
+    let index = 0;
+    element.textContent = '';
+
+    // Clear any existing interval
+    if (typingIntervals[elementId]) {
+        clearInterval(typingIntervals[elementId]);
+    }
+
+    typingIntervals[elementId] = setInterval(() => {
+        if (index < text.length) {
+            element.textContent += text[index];
+            index++;
+        } else {
+            clearInterval(typingIntervals[elementId]);
+            // Restart after a delay
+            setTimeout(() => {
+                startTypingAnimation(elementId, text);
+            }, 3000);
+        }
+    }, 50);
+}
+
+// Start typing animations when PPT showcase is visible
+function initPPTShowcaseAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                startTypingAnimation('typing-exec', aiTypingTexts.exec);
+                setTimeout(() => startTypingAnimation('typing-financial', aiTypingTexts.financial), 500);
+                setTimeout(() => startTypingAnimation('typing-market', aiTypingTexts.market), 1000);
+                setTimeout(() => startTypingAnimation('typing-strategy', aiTypingTexts.strategy), 1500);
+            }
+        });
+    }, { threshold: 0.3 });
+
+    const showcase = document.getElementById('ppt-showcase-section');
+    if (showcase) {
+        observer.observe(showcase);
+    }
+}
+
+// Initialize on page load
+window.addEventListener('DOMContentLoaded', initPPTShowcaseAnimations);
+
+// =====================================================
+// REPORT TEMPLATE SELECTION
+// =====================================================
+
+let selectedReportTemplate = null;
+
+function selectReportTemplate(templateId) {
+    // Remove selected class from all
+    document.querySelectorAll('.report-template-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+
+    // Add selected class to clicked
+    const selectedCard = document.getElementById(`template-${templateId}`);
+    if (selectedCard) {
+        selectedCard.classList.add('selected');
+        selectedReportTemplate = templateId;
+    }
+}
+
+function generateSelectedReport() {
+    if (!selectedReportTemplate) {
+        alert('Please select a report template first!');
+        return;
+    }
+
+    if (!currentUser) {
+        alert('Please sign in to generate reports.');
+        showSignUp();
+        return;
+    }
+
+    // Check if user has Gold or Diamond tier
+    if (currentUserProfile && currentUserProfile.package_tier === 'basic') {
+        alert('Report generation is available for Gold and Diamond members. Please upgrade your package to access this feature.');
+        scrollToPackage('gold-package');
+        return;
+    }
+
+    const templateNames = {
+        executive: 'Executive Summary',
+        detailed: 'Detailed Analysis',
+        budget: 'Budget vs Actual',
+        cashflow: 'Cash Flow Statement',
+        kpi: 'KPI Dashboard',
+        investor: 'Investor Deck'
+    };
+
+    // Use Zac to announce the report generation
+    if (window.zacAvatar) {
+        window.zacAvatar.speak(`Generating your ${templateNames[selectedReportTemplate]} report...`);
+    }
+
+    alert(`Generating ${templateNames[selectedReportTemplate]} report...\n\nThis feature will create a professional PowerPoint presentation using your uploaded financial data.\n\nComing soon!`);
+
+    // TODO: Implement actual report generation with PptxGenJS
+    // This would pull data from dashboard_data and spending_categories
+    // Apply the selected template styling
+    // Generate and download .pptx file
+}
+
+window.selectReportTemplate = selectReportTemplate;
+window.generateSelectedReport = generateSelectedReport;
+
+// =====================================================
+// COMPANY LOGO UPLOAD
+// =====================================================
+
+async function handleCompanyLogoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!currentUser) {
+        alert('Please sign in to upload a company logo.');
+        return;
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        alert('Please select an image file.');
+        return;
+    }
+
+    // Validate file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+        alert('Image must be less than 2MB.');
+        return;
+    }
+
+    try {
+        const fileName = `company-logos/${currentUser.id}/${Date.now()}_${file.name}`;
+
+        // Upload to storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('user-documents')
+            .upload(fileName, file);
+
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data: urlData } = supabase.storage
+            .from('user-documents')
+            .getPublicUrl(fileName);
+
+        const logoUrl = urlData.publicUrl;
+
+        // Update profile with logo URL
+        const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ company_logo_url: logoUrl })
+            .eq('id', currentUser.id);
+
+        if (updateError) throw updateError;
+
+        // Update the preview
+        const preview = document.getElementById('companyLogoPreview');
+        preview.innerHTML = `<img src="${logoUrl}" alt="Company Logo">`;
+
+        // Store in profile
+        if (currentUserProfile) {
+            currentUserProfile.company_logo_url = logoUrl;
+        }
+
+        // Use Zac to confirm
+        if (window.zacAvatar) {
+            window.zacAvatar.speak('Company logo uploaded successfully!');
+        } else {
+            alert('Company logo uploaded successfully!');
+        }
+
+    } catch (error) {
+        console.error('Logo upload error:', error);
+        alert('Failed to upload logo: ' + error.message);
+    }
+}
+
+// Show/hide company logo section based on login state
+function updateCompanyLogoSection() {
+    const logoSection = document.getElementById('companyLogoSection');
+    if (!logoSection) return;
+
+    if (currentUser && currentUserProfile) {
+        logoSection.classList.add('visible');
+
+        // Load existing logo if available
+        if (currentUserProfile.company_logo_url) {
+            const preview = document.getElementById('companyLogoPreview');
+            preview.innerHTML = `<img src="${currentUserProfile.company_logo_url}" alt="Company Logo">`;
+        }
+    } else {
+        logoSection.classList.remove('visible');
+    }
+}
+
+window.handleCompanyLogoUpload = handleCompanyLogoUpload;

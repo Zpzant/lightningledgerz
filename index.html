@@ -875,6 +875,232 @@
             display: block;
         }
 
+        /* Logout Button Style */
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #ff3333;
+            color: #ff3333;
+            padding: 0.4rem 0.6rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-btn:hover {
+            background: #ff3333;
+            color: #fff;
+        }
+
+        /* Company Logo Upload Section */
+        .company-logo-section {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 998;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff3333;
+            border-radius: 15px;
+            padding: 1rem;
+            display: none;
+        }
+
+        .company-logo-section.visible {
+            display: block;
+        }
+
+        .company-logo-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: rgba(255, 51, 51, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            border: 2px solid #ff3333;
+        }
+
+        .company-logo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* PowerPoint Showcase Section */
+        .ppt-showcase {
+            background: linear-gradient(135deg, rgba(20, 20, 30, 0.95), rgba(10, 10, 15, 0.98));
+            border: 1px solid rgba(255, 51, 51, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem auto;
+            max-width: 1200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ppt-showcase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff3333, #ffd700, #ff3333);
+        }
+
+        .ppt-showcase h3 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .ppt-showcase .subtitle {
+            color: #888;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .ppt-slides-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .ppt-slide {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(255, 51, 51, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            min-height: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .ppt-slide:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 51, 51, 0.2);
+            border-color: #ff3333;
+        }
+
+        .ppt-slide-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ppt-slide-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #ff3333, #ff6666);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .ppt-slide-title {
+            font-weight: bold;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .ppt-chart-placeholder {
+            background: rgba(255, 51, 51, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-typing-text {
+            font-family: 'Courier New', monospace;
+            color: #4caf50;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            min-height: 60px;
+        }
+
+        .ai-typing-text .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: #4caf50;
+            animation: blink 0.7s infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .ppt-cta {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        /* Report Templates Section */
+        .report-templates {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .report-template-card {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
+            border: 2px solid rgba(255, 51, 51, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .report-template-card:hover {
+            border-color: #ff3333;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 51, 51, 0.3);
+        }
+
+        .report-template-card.selected {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .report-template-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .report-template-name {
+            color: #ff3333;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-template-desc {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
         @media (max-width: 768px) {
             .about-content {
                 grid-template-columns: 1fr;
@@ -902,6 +1128,17 @@
     <div class="lightning-flash" id="lightningFlash"></div>
     <div class="overlay"></div>
 
+    <!-- Company Logo Upload Section (visible when logged in) -->
+    <div id="companyLogoSection" class="company-logo-section">
+        <div class="company-logo-preview" id="companyLogoPreview">
+            <span style="color: #888; font-size: 0.7rem;">Your Logo</span>
+        </div>
+        <input type="file" id="companyLogoInput" accept="image/*" style="display: none;" onchange="handleCompanyLogoUpload(event)">
+        <button onclick="document.getElementById('companyLogoInput').click()" class="btn btn-small btn-primary" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">
+            Upload Logo
+        </button>
+    </div>
+
     <nav>
         <a href="#top" class="logo">
             <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="height: 55px;">
@@ -916,6 +1153,13 @@
                 <div class="user-avatar-nav" id="navAvatarContainer"></div>
                 <span id="welcomeText">Hi, User!</span>
                 <span class="membership-badge badge-basic" id="membershipBadge"></span>
+                <button onclick="signOutUser()" class="logout-btn" title="Sign Out">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </button>
             </div>
 
             <div class="dropdown">
@@ -1270,6 +1514,144 @@
             <h2>Admin Dashboard</h2>
             <div id="adminContent">
                 <p style="text-align: center;">Loading admin data...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- POWERPOINT SHOWCASE SECTION -->
+    <section id="ppt-showcase-section" class="section" style="margin-top: 0; padding-top: 4rem;">
+        <div class="container">
+            <div class="ppt-showcase">
+                <h3>AI-Powered Financial Reports</h3>
+                <p class="subtitle">McKinsey-quality presentations generated in seconds, not weeks</p>
+
+                <div class="ppt-slides-container">
+                    <!-- Executive Summary Slide -->
+                    <div class="ppt-slide">
+                        <div class="ppt-slide-header">
+                            <div class="ppt-slide-icon">1</div>
+                            <span class="ppt-slide-title">Executive Summary</span>
+                        </div>
+                        <div class="ai-typing-text" id="typing-exec">
+                            <span class="typed-text"></span><span class="cursor"></span>
+                        </div>
+                        <div class="ppt-chart-placeholder">
+                            <svg width="100%" height="60" viewBox="0 0 200 60">
+                                <rect x="10" y="40" width="30" height="20" fill="#ff3333" opacity="0.8"/>
+                                <rect x="50" y="25" width="30" height="35" fill="#ff6666" opacity="0.8"/>
+                                <rect x="90" y="15" width="30" height="45" fill="#ff3333" opacity="0.8"/>
+                                <rect x="130" y="5" width="30" height="55" fill="#ffd700" opacity="0.9"/>
+                                <rect x="170" y="10" width="30" height="50" fill="#ff3333" opacity="0.8"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Financial Analysis Slide -->
+                    <div class="ppt-slide">
+                        <div class="ppt-slide-header">
+                            <div class="ppt-slide-icon">2</div>
+                            <span class="ppt-slide-title">Financial Analysis</span>
+                        </div>
+                        <div class="ai-typing-text" id="typing-financial">
+                            <span class="typed-text"></span><span class="cursor"></span>
+                        </div>
+                        <div class="ppt-chart-placeholder">
+                            <svg width="100%" height="60" viewBox="0 0 200 60">
+                                <polyline points="10,50 40,35 70,40 100,20 130,25 160,10 190,15" fill="none" stroke="#4caf50" stroke-width="3"/>
+                                <polyline points="10,55 40,50 70,48 100,45 130,40 160,35 190,30" fill="none" stroke="#ff3333" stroke-width="2" stroke-dasharray="5,5"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Market Insights Slide -->
+                    <div class="ppt-slide">
+                        <div class="ppt-slide-header">
+                            <div class="ppt-slide-icon">3</div>
+                            <span class="ppt-slide-title">Market Insights</span>
+                        </div>
+                        <div class="ai-typing-text" id="typing-market">
+                            <span class="typed-text"></span><span class="cursor"></span>
+                        </div>
+                        <div class="ppt-chart-placeholder">
+                            <svg width="100%" height="60" viewBox="0 0 200 60">
+                                <circle cx="60" cy="30" r="25" fill="none" stroke="#ff3333" stroke-width="8" stroke-dasharray="78.5 78.5" stroke-dashoffset="20"/>
+                                <circle cx="140" cy="30" r="25" fill="none" stroke="#ffd700" stroke-width="8" stroke-dasharray="78.5 78.5" stroke-dashoffset="40"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Strategic Recommendations Slide -->
+                    <div class="ppt-slide">
+                        <div class="ppt-slide-header">
+                            <div class="ppt-slide-icon">4</div>
+                            <span class="ppt-slide-title">Strategic Recommendations</span>
+                        </div>
+                        <div class="ai-typing-text" id="typing-strategy">
+                            <span class="typed-text"></span><span class="cursor"></span>
+                        </div>
+                        <div class="ppt-chart-placeholder" style="flex-direction: column; gap: 5px;">
+                            <div style="width: 80%; height: 8px; background: linear-gradient(90deg, #ff3333, #ffd700); border-radius: 4px;"></div>
+                            <div style="width: 65%; height: 8px; background: linear-gradient(90deg, #ff3333, #ff6666); border-radius: 4px;"></div>
+                            <div style="width: 90%; height: 8px; background: linear-gradient(90deg, #4caf50, #8bc34a); border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ppt-cta">
+                    <p style="color: #888; margin-bottom: 1rem;">Upload your data and watch AI transform it into boardroom-ready presentations</p>
+                    <button onclick="showSignUp(event)" class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 3rem;">
+                        Generate Your Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- Report Templates -->
+            <h2 style="margin-top: 4rem;">Choose Your Report Template</h2>
+            <p style="text-align: center; color: #888; margin-bottom: 2rem;">Select from Fathom-inspired professional templates</p>
+
+            <div class="report-templates">
+                <div class="report-template-card" onclick="selectReportTemplate('executive')" id="template-executive">
+                    <div class="report-template-icon">📊</div>
+                    <div class="report-template-name">Executive Summary</div>
+                    <div class="report-template-desc">High-level overview for board meetings and investor presentations</div>
+                </div>
+
+                <div class="report-template-card" onclick="selectReportTemplate('detailed')" id="template-detailed">
+                    <div class="report-template-icon">📈</div>
+                    <div class="report-template-name">Detailed Analysis</div>
+                    <div class="report-template-desc">In-depth financial metrics with trend analysis and forecasting</div>
+                </div>
+
+                <div class="report-template-card" onclick="selectReportTemplate('budget')" id="template-budget">
+                    <div class="report-template-icon">💰</div>
+                    <div class="report-template-name">Budget vs Actual</div>
+                    <div class="report-template-desc">Compare planned budgets against actual performance</div>
+                </div>
+
+                <div class="report-template-card" onclick="selectReportTemplate('cashflow')" id="template-cashflow">
+                    <div class="report-template-icon">💵</div>
+                    <div class="report-template-name">Cash Flow Statement</div>
+                    <div class="report-template-desc">Track money in and out with 13-week cash projections</div>
+                </div>
+
+                <div class="report-template-card" onclick="selectReportTemplate('kpi')" id="template-kpi">
+                    <div class="report-template-icon">🎯</div>
+                    <div class="report-template-name">KPI Dashboard</div>
+                    <div class="report-template-desc">Key performance indicators with visual scorecards</div>
+                </div>
+
+                <div class="report-template-card" onclick="selectReportTemplate('investor')" id="template-investor">
+                    <div class="report-template-icon">🏢</div>
+                    <div class="report-template-name">Investor Deck</div>
+                    <div class="report-template-desc">Pitch-ready presentation with market analysis and projections</div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button onclick="generateSelectedReport()" class="btn btn-primary" style="font-size: 1.3rem; padding: 1.2rem 4rem; background: linear-gradient(45deg, #ffd700, #ffed4e); color: #000;">
+                    Generate Report
+                </button>
+                <p style="color: #666; margin-top: 1rem; font-size: 0.9rem;">Select a template above, then click Generate Report</p>
             </div>
         </div>
     </section>
