@@ -350,6 +350,9 @@ class AvatarSelector {
     }
 
     showCurrentAvatar() {
+        // Hide all avatars first to prevent overlap
+        this.hideAllAvatars();
+
         // Remove any dismissed state
         sessionStorage.removeItem('zac_dismissed');
         const bringBackBtn = document.getElementById('bringBackZacBtn');
@@ -401,6 +404,9 @@ class AvatarSelector {
     }
 
     welcomeBack(userName) {
+        // Hide all avatars first to prevent overlap
+        this.hideAllAvatars();
+
         switch(this.currentAvatar) {
             case 'zac':
                 if (window.zacAvatar) window.zacAvatar.welcomeBack(userName);

@@ -1127,10 +1127,18 @@ class QuickBooksIntegration {
         const kpis = this.calculateKPIs();
         const summary = this.generateExecutiveSummary();
         const pnl = this.financialData.profitAndLoss || this.getMockProfitAndLoss();
+        const isDemo = !this.isConnected || this.config.clientId === 'YOUR_QB_CLIENT_ID';
 
         return `
         <div class="qb-modal-overlay" onclick="document.getElementById('qb-dashboard-modal').remove()"></div>
         <div class="qb-modal-content">
+            ${isDemo ? `
+            <div class="qb-demo-banner">
+                <span class="qb-demo-icon">🔬</span>
+                <span><strong>DEMO MODE</strong> - Showing sample data. Connect QuickBooks for real financials.</span>
+                <button class="qb-connect-btn-small" onclick="qbIntegration.connect()">Connect QuickBooks</button>
+            </div>
+            ` : ''}
             <div class="qb-modal-header">
                 <div class="qb-header-left">
                     <img src="https://quickbooks.intuit.com/etc/designs/qbo-static/images/favicon.ico" alt="QB" width="32">
@@ -1335,6 +1343,39 @@ class QuickBooksIntegration {
                 overflow: hidden;
                 display: flex;
                 flex-direction: column;
+            }
+
+            .qb-demo-banner {
+                background: linear-gradient(90deg, #ff9800, #f57c00);
+                color: #000;
+                padding: 12px 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+                font-size: 0.95rem;
+                border-bottom: 2px solid #e65100;
+            }
+
+            .qb-demo-icon {
+                font-size: 1.3rem;
+            }
+
+            .qb-connect-btn-small {
+                background: #1a1a2e;
+                color: #fff;
+                border: 2px solid #fff;
+                padding: 6px 16px;
+                border-radius: 20px;
+                cursor: pointer;
+                font-weight: bold;
+                font-size: 0.85rem;
+                transition: all 0.3s ease;
+            }
+
+            .qb-connect-btn-small:hover {
+                background: #2E7D32;
+                border-color: #2E7D32;
             }
 
             .qb-modal-header {

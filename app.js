@@ -178,8 +178,10 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
                                    currentUserProfile.username ||
                                    currentUserProfile.email.split('@')[0];
 
-                // Use Zac to welcome the user instead of alert
-                if (window.zacAvatar) {
+                // Use the selected avatar to welcome the user
+                if (window.avatarSelector) {
+                    window.avatarSelector.welcomeBack(displayName);
+                } else if (window.zacAvatar) {
                     window.zacAvatar.welcomeBack(displayName);
                 } else {
                     alert(`Hi, ${displayName}! Welcome back.`);
@@ -195,7 +197,9 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
                 window.location.href = "#profile";
             } else {
                 // Profile didn't load yet, still show success
-                if (window.zacAvatar) {
+                if (window.avatarSelector) {
+                    window.avatarSelector.showCurrentAvatar();
+                } else if (window.zacAvatar) {
                     window.zacAvatar.show();
                 }
             }
