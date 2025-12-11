@@ -626,19 +626,18 @@ function scrollToPackage(id) {
         // Add highlighted class to target package
         target.classList.add('highlighted');
 
-        // Fade the package sidebar
-        const sidebar = document.querySelector('.package-sidebar');
-        if (sidebar) {
-            sidebar.classList.add('faded');
+        // Toggle active state - remove from all, add to clicked one (allows switching)
+        const packageType = id.replace('-package', ''); // 'basic', 'gold', or 'diamond'
+        document.querySelectorAll('.package-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const clickedBtn = document.querySelector(`.package-btn.${packageType}`);
+        if (clickedBtn) {
+            clickedBtn.classList.add('active');
         }
 
         // Scroll to target
         target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-        // Remove highlight after 5 seconds
-        setTimeout(() => {
-            target.classList.remove('highlighted');
-        }, 5000);
     }
 }
 

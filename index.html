@@ -252,18 +252,6 @@
             box-shadow: 0 0 20px #fff;
         }
 
-        /* Package sidebar faded state after selection */
-        .package-sidebar.faded {
-            opacity: 0.3;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-
-        .package-sidebar.faded:hover {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
         /* Package card highlighted state */
         .package-card {
             transition: all 0.5s ease;
@@ -1595,7 +1583,8 @@
             <a href="#services">Services</a>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
-            <a onclick="openDealForum()" style="cursor: pointer; color: #ffd700;">Deal Forum</a>
+            <a onclick="openFinancialReports()" style="cursor: pointer; color: #ffd700;">Financial Models</a>
+            <a onclick="openQuickBooksDashboard()" style="cursor: pointer; color: #2E7D32;">QuickBooks</a>
 
             <!-- Upload Financials Button - Always visible, prominent -->
             <button class="upload-financials-btn" onclick="showUploadModal()">
@@ -2300,7 +2289,10 @@
     <script src="presentation-builder.js"></script>
     <script src="powerpoint-templates.js"></script>
     <script src="budget-builder.js"></script>
-    <script src="deal-forum.js"></script>
+    <script src="financial-reports.js"></script>
+    <script src="avatar-3d-system.js"></script>
+    <script src="quickbooks-integration.js"></script>
+    <script src="auto-report-generator.js"></script>
     <script src="data-synthesizer.js"></script>
     <script src="avatar-system-enhanced.js"></script>
     <script src="ai-financial-analyst.js"></script>
