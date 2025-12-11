@@ -422,6 +422,10 @@ async function updateNavigationWithUser() {
     if (dropdownSignIn) dropdownSignIn.classList.add('hidden');
     if (dropdownPreview) dropdownPreview.classList.add('hidden');
     if (dropdownLogout) dropdownLogout.classList.remove('hidden');
+
+    // Hide nav Sign Up button when logged in
+    const navSignUpBtn = document.getElementById('navSignUpBtn');
+    if (navSignUpBtn) navSignUpBtn.classList.add('hidden');
 }
 
 function hideUserWelcome() {
@@ -448,6 +452,10 @@ function hideUserWelcome() {
     if (dropdownSignIn) dropdownSignIn.classList.remove('hidden');
     if (dropdownPreview) dropdownPreview.classList.remove('hidden');
     if (dropdownLogout) dropdownLogout.classList.add('hidden');
+
+    // Show nav Sign Up button when logged out
+    const navSignUpBtn = document.getElementById('navSignUpBtn');
+    if (navSignUpBtn) navSignUpBtn.classList.remove('hidden');
 }
 
 // Update profile page with user data
@@ -2042,6 +2050,95 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.toggleMobileMenu = toggleMobileMenu;
+
+// =====================================================
+// MOBILE DROPDOWN TAP-TO-TOGGLE
+// =====================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    const dropdown = document.querySelector('.dropdown');
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+
+    if (dropdownToggle && dropdown) {
+        // Handle tap/click on dropdown toggle
+        dropdownToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Toggle the active class
+            dropdown.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // Close dropdown when clicking a menu item
+        const dropdownItems = dropdown.querySelectorAll('.dropdown-menu a');
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', () => {
+                dropdown.classList.remove('active');
+            });
+        });
+    }
+});
+
+// =====================================================
+// AVATAR CLICK TRACKING - PROMPT SIGN UP
+// =====================================================
+
+let avatarClickCount = 0;
+const SIGN_UP_PROMPT_CLICKS = 5;
+
+function trackAvatarClick() {
+    // Only track if user is not logged in
+    if (window.currentUser) return;
+
+    avatarClickCount++;
+
+    if (avatarClickCount >= SIGN_UP_PROMPT_CLICKS) {
+        // Show sign up prompt via avatar
+        const currentAvatar = window.avatarSelector?.getCurrentAvatar() || 'zac';
+        const avatarObj = window[currentAvatar + 'Avatar'];
+
+        if (avatarObj && avatarObj.showSpeech) {
+            avatarObj.showSpeech(
+                "Hey! You've been exploring - ready to unlock all features? Sign up free!",
+                "Join Lightning Ledgerz"
+            );
+        }
+
+        // Show sign up modal after a short delay
+        setTimeout(() => {
+            showSignUp();
+        }, 3000);
+
+        // Reset counter
+        avatarClickCount = 0;
+    }
+}
+
+// Hook into avatar clicks
+document.addEventListener('DOMContentLoaded', () => {
+    // Wait for avatars to load
+    setTimeout(() => {
+        const avatarContainers = document.querySelectorAll('[id$="-avatar-container"], .avatar-container, .zac-container');
+        avatarContainers.forEach(container => {
+            container.addEventListener('click', trackAvatarClick);
+        });
+
+        // Also hook into the avatar selector button
+        const avatarBtn = document.getElementById('avatar-selector-btn');
+        if (avatarBtn) {
+            avatarBtn.addEventListener('click', trackAvatarClick);
+        }
+    }, 2000);
+});
+
+window.trackAvatarClick = trackAvatarClick;
 
 // =====================================================
 // TEST MODE - Simulate different tier accounts
