@@ -2,29 +2,60 @@
 // LIGHTNING LEDGERZ - MAIN APPLICATION
 // =====================================================
 
-// Initialize Supabase Client
-const SUPABASE_URL = 'https://uxicgilvxcqpoxavilxp.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4aWNnaWx2eGNxcG94YXZpbHhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzYwNzYsImV4cCI6MjA3NjY1MjA3Nn0.W6_iO15HAxjzvNfp_FHWSS0HYOpaJb7-oC-Z3_KaZaw';
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-let currentUser = null;
-let currentUserProfile = null;
-
 // =====================================================
-// AUTHENTICATION FUNCTIONS
+// MODAL FUNCTIONS - Define first so UI always works
 // =====================================================
 
-// Modal functions
 function showSignUp(e) {
     if (e) e.preventDefault();
-    document.getElementById('signup-modal').classList.remove('hidden');
+    const modal = document.getElementById('signup-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    } else {
+        console.error('signup-modal not found');
+    }
 }
 
 function showSignIn(e) {
     if (e) e.preventDefault();
-    document.getElementById('signin-modal').classList.remove('hidden');
+    const modal = document.getElementById('signin-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    } else {
+        console.error('signin-modal not found');
+    }
 }
+
+// Export modal functions immediately so buttons work even if Supabase fails
+window.showSignUp = showSignUp;
+window.showSignIn = showSignIn;
+
+// =====================================================
+// SUPABASE INITIALIZATION (with error handling)
+// =====================================================
+
+const SUPABASE_URL = 'https://uxicgilvxcqpoxavilxp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4aWNnaWx2eGNxcG94YXZpbHhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzYwNzYsImV4cCI6MjA3NjY1MjA3Nn0.W6_iO15HAxjzvNfp_FHWSS0HYOpaJb7-oC-Z3_KaZaw';
+
+let supabase = null;
+let currentUser = null;
+let currentUserProfile = null;
+
+// Initialize Supabase with error handling
+try {
+    if (window.supabase && window.supabase.createClient) {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('Supabase initialized successfully');
+    } else {
+        console.error('Supabase library not loaded - authentication features will not work');
+    }
+} catch (error) {
+    console.error('Failed to initialize Supabase:', error);
+}
+
+// =====================================================
+// AUTHENTICATION FUNCTIONS
+// =====================================================
 
 function switchToSignIn() {
     document.getElementById('signup-modal').classList.add('hidden');
@@ -66,8 +97,15 @@ window.addEventListener('click', (e) => {
 });
 
 // Sign Up
-document.getElementById("signup-form").addEventListener("submit", async (e) => {
+document.getElementById("signup-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    // Check if Supabase is available
+    if (!supabase) {
+        alert("Connection error. Please refresh the page and try again.");
+        return;
+    }
+
     const companyName = document.getElementById("signup-company").value.trim();
     const firstName = document.getElementById("signup-firstname").value.trim();
     const lastName = document.getElementById("signup-lastname").value.trim();
@@ -171,8 +209,15 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
 });
 
 // Sign In
-document.getElementById("signin-form").addEventListener("submit", async (e) => {
+document.getElementById("signin-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    // Check if Supabase is available
+    if (!supabase) {
+        alert("Connection error. Please refresh the page and try again.");
+        return;
+    }
+
     const email = document.getElementById("signin-email").value.trim();
     const password = document.getElementById("signin-password").value;
     const submitBtn = e.target.querySelector('button[type="submit"]');
@@ -253,7 +298,13 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
 });
 
 // Forgot Password
-document.getElementById("forgot-password").addEventListener("click", async () => {
+document.getElementById("forgot-password")?.addEventListener("click", async () => {
+    // Check if Supabase is available
+    if (!supabase) {
+        alert("Connection error. Please refresh the page and try again.");
+        return;
+    }
+
     const email = document.getElementById("signin-email").value.trim();
 
     if (!email) {
@@ -275,8 +326,15 @@ document.getElementById("forgot-password").addEventListener("click", async () =>
 });
 
 // Password Reset Form Handler
-document.getElementById("reset-password-form").addEventListener("submit", async (e) => {
+document.getElementById("reset-password-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    // Check if Supabase is available
+    if (!supabase) {
+        alert("Connection error. Please refresh the page and try again.");
+        return;
+    }
+
     const newPassword = document.getElementById("new-password").value;
     const confirmPassword = document.getElementById("confirm-password").value;
 
@@ -357,28 +415,31 @@ window.addEventListener('load', () => {
     }
 });
 
-supabase.auth.onAuthStateChange(async (event, session) => {
-    console.log('Auth event:', event);
+// Only set up auth state listener if Supabase is available
+if (supabase) {
+    supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log('Auth event:', event);
 
-    // Show password reset modal when user clicks reset link
-    if (event === 'PASSWORD_RECOVERY') {
-        document.getElementById('reset-password-modal').classList.remove('hidden');
-        return;
-    }
+        // Show password reset modal when user clicks reset link
+        if (event === 'PASSWORD_RECOVERY') {
+            document.getElementById('reset-password-modal').classList.remove('hidden');
+            return;
+        }
 
-    if (session?.user) {
-        currentUser = session.user;
-        await loadUserProfile();
-    } else {
-        currentUser = null;
-        currentUserProfile = null;
-        hideUserWelcome();
-    }
-});
+        if (session?.user) {
+            currentUser = session.user;
+            await loadUserProfile();
+        } else {
+            currentUser = null;
+            currentUserProfile = null;
+            hideUserWelcome();
+        }
+    });
+}
 
 // Load user profile from database
 async function loadUserProfile() {
-    if (!currentUser) return;
+    if (!currentUser || !supabase) return;
 
     try {
         const { data, error } = await supabase
@@ -1615,16 +1676,22 @@ async function loadAdminDashboard() {
 
 // Check auth state on page load
 window.addEventListener('DOMContentLoaded', async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-        currentUser = session.user;
-        await loadUserProfile();
+    if (!supabase) {
+        console.warn('Supabase not available - skipping session check');
+        return;
+    }
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+            currentUser = session.user;
+            await loadUserProfile();
+        }
+    } catch (error) {
+        console.error('Error checking session:', error);
     }
 });
 
-// Make functions globally available
-window.showSignUp = showSignUp;
-window.showSignIn = showSignIn;
+// Make functions globally available (showSignUp and showSignIn are exported at the top)
 window.switchToSignIn = switchToSignIn;
 window.switchToSignUp = switchToSignUp;
 window.signInWithGoogle = signInWithGoogle;
