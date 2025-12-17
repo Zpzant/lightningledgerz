@@ -5,6 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lightning Ledgerz - Budget. Save. Build.</title>
 
+    <!-- Favicon - Use PNG logo directly -->
+    <link rel="icon" type="image/png" href="LightningLedgerzLogo.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="LightningLedgerzLogo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="LightningLedgerzLogo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="LightningLedgerzLogo.png">
+    <link rel="shortcut icon" type="image/png" href="LightningLedgerzLogo.png">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Lightning Ledgerz - Elite budgeting and financial strategy at lightning speed. Build budgets, create professional presentations, and track your finances.">
+    <meta name="keywords" content="budgeting, financial planning, budget builder, powerpoint generator, financial dashboard, Lightning Ledgerz">
+    <meta name="author" content="Zac Prizant">
+
+    <!-- Open Graph / Social Media - MUST use absolute URLs -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.lightningledgerz.com/">
+    <meta property="og:title" content="Lightning Ledgerz - Budget. Save. Build.">
+    <meta property="og:description" content="Elite budgeting and financial strategy at lightning speed. From supercharged budgets to sparky strategy — we deliver results at lightning speed.">
+    <meta property="og:image" content="https://www.lightningledgerz.com/LightningLedgerzLogo.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Lightning Ledgerz">
+
+    <!-- Twitter Card - MUST use absolute URLs -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lightning Ledgerz - Budget. Save. Build.">
+    <meta name="twitter:description" content="Elite budgeting and financial strategy at lightning speed.">
+    <meta name="twitter:image" content="https://www.lightningledgerz.com/LightningLedgerzLogo.png">
+
     <!-- Chart.js for dashboard -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
@@ -88,6 +116,36 @@
             align-items: center;
         }
 
+        /* Mobile Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
         .nav-links {
             display: flex;
             gap: 2rem;
@@ -104,6 +162,95 @@
 
         .nav-links a:hover {
             color: #ff3333;
+        }
+
+        /* Mobile responsive nav */
+        @media (max-width: 900px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.95);
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 80px 2rem 2rem;
+                transition: right 0.3s ease;
+                gap: 1.5rem;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                font-size: 1.1rem;
+                padding: 0.5rem 0;
+                width: 100%;
+            }
+
+            .nav-cta-button {
+                margin-top: 1rem;
+            }
+
+            .dropdown {
+                width: 100%;
+            }
+
+            .dropdown-menu {
+                position: relative;
+                width: 100%;
+                box-shadow: none;
+                background: rgba(255, 51, 51, 0.1);
+            }
+
+            .user-welcome {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Build Custom Decks Nav CTA Button */
+        .nav-cta-button {
+            background: linear-gradient(135deg, #ff3333 0%, #ff6600 50%, #ffcc00 100%);
+            color: #000;
+            font-weight: 700;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
+            animation: pulse-glow 2s infinite;
+        }
+
+        .nav-cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(255, 51, 51, 0.6);
+        }
+
+        .nav-cta-button .bolt-icon {
+            font-size: 1.1rem;
+            animation: bolt-flash 1.5s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4); }
+            50% { box-shadow: 0 4px 25px rgba(255, 102, 0, 0.6); }
+        }
+
+        @keyframes bolt-flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
 
         /* User Welcome Section in Nav */
@@ -787,6 +934,34 @@
             display: none !important;
         }
 
+        /* Tour Dots */
+        .tour-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tour-dot.active {
+            background: #ff3333;
+            box-shadow: 0 0 10px #ff3333;
+        }
+
+        .tour-dot:hover {
+            background: #ff6666;
+        }
+
+        .tour-step {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .upload-area {
             background: rgba(0, 0, 0, 0.3);
             padding: 1.5rem;
@@ -894,13 +1069,27 @@
     <div class="overlay"></div>
 
     <nav>
-        <a href="#top" class="logo">
-            <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="height: 55px;">
+        <a href="#top" class="logo" onclick="handleHomeClick(event)">
+            <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="height: 55px; cursor: pointer;">
         </a>
-        <div class="nav-links">
-            <a href="#services">Services</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+
+        <!-- Hamburger Menu for Mobile -->
+        <div class="hamburger" onclick="toggleMobileNav()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="nav-links" id="navLinks">
+            <a href="#top" onclick="handleHomeClick(event)">Home</a>
+            <a href="#services" onclick="handleServicesClick(event)">Services</a>
+            <a href="#about" onclick="handleAboutClick(event)">About</a>
+            <a href="#contact" onclick="handleContactClick(event)">Contact</a>
+
+            <!-- Build Custom Decks CTA Button -->
+            <button onclick="goToPowerPointGenerator()" class="nav-cta-button">
+                <span class="bolt-icon">⚡</span> Build Custom Decks
+            </button>
 
             <!-- User Welcome Section (Hidden when not logged in) -->
             <div id="userWelcomeNav" class="user-welcome hidden">
@@ -927,7 +1116,12 @@
         <p style="max-width: 800px; margin: 1rem auto;">
             From supercharged budgets to sparky strategy — we deliver results at lightning speed.
         </p>
-        <a href="#contact" class="cta-button">Contact Us</a>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+            <button onclick="showGuideModal()" class="cta-button" style="font-size: 1.3rem;">
+                ⚡ Get Started Free
+            </button>
+            <a href="#contact" class="cta-button" style="background: transparent; border: 2px solid #ff3333;">Contact Us</a>
+        </div>
     </section>
 
     <div class="package-sidebar">
@@ -982,6 +1176,252 @@
                         <li>Direct Phone Support</li>
                     </ul>
                     <button class="btn btn-primary" onclick="selectPackage('diamond', event)">Select Diamond</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCT SHOWCASE SECTION - Real Examples -->
+    <section id="showcase" class="section" style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 0.5rem;">See What You Get</h2>
+            <p style="text-align: center; color: #888; margin-bottom: 3rem;">Real examples of what Lightning Ledgerz creates for you</p>
+
+            <!-- PowerPoint Showcase - McKinsey Style -->
+            <div style="margin-bottom: 4rem;">
+                <h3 style="color: #ffd700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    📑 McKinsey-Quality Presentation Decks
+                    <span style="background: #ffd700; color: #000; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.7rem; font-weight: bold;">GOLD+</span>
+                </h3>
+                <p style="color: #888; margin-bottom: 1.5rem; font-size: 0.95rem;">Auto-generated from your financial data - ready for board meetings & investor pitches</p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+
+                    <!-- Slide 1: Executive Summary (McKinsey Style) -->
+                    <div style="background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+                        <div style="background: #003366; padding: 0.5rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #fff; font-size: 0.6rem; font-weight: bold; letter-spacing: 1px;">LIGHTNING LEDGERZ</span>
+                            <span style="color: rgba(255,255,255,0.6); font-size: 0.55rem;">CONFIDENTIAL</span>
+                        </div>
+                        <div style="padding: 1.25rem; aspect-ratio: 16/9; background: #fff; display: flex; flex-direction: column;">
+                            <h4 style="color: #003366; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.3; font-family: Georgia, serif;">Revenue increased 32% YoY driven by expansion into enterprise segment and improved unit economics</h4>
+                            <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.65rem;">
+                                <div style="background: #f5f7fa; padding: 0.75rem; border-left: 3px solid #003366;">
+                                    <p style="color: #666; margin-bottom: 0.25rem; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.5px;">Total Revenue</p>
+                                    <p style="color: #003366; font-size: 1.4rem; font-weight: bold;">$4.2M</p>
+                                    <p style="color: #2e7d32; font-size: 0.6rem;">▲ +32% vs LY</p>
+                                </div>
+                                <div style="background: #f5f7fa; padding: 0.75rem; border-left: 3px solid #ffd700;">
+                                    <p style="color: #666; margin-bottom: 0.25rem; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.5px;">EBITDA Margin</p>
+                                    <p style="color: #003366; font-size: 1.4rem; font-weight: bold;">24.5%</p>
+                                    <p style="color: #2e7d32; font-size: 0.6rem;">▲ +340 bps</p>
+                                </div>
+                                <div style="background: #f5f7fa; padding: 0.75rem; border-left: 3px solid #ff5722;">
+                                    <p style="color: #666; margin-bottom: 0.25rem; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.5px;">Customer LTV</p>
+                                    <p style="color: #003366; font-size: 1.4rem; font-weight: bold;">$12.4K</p>
+                                    <p style="color: #2e7d32; font-size: 0.6rem;">▲ +18% vs LY</p>
+                                </div>
+                                <div style="background: #f5f7fa; padding: 0.75rem; border-left: 3px solid #9c27b0;">
+                                    <p style="color: #666; margin-bottom: 0.25rem; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.5px;">Net Retention</p>
+                                    <p style="color: #003366; font-size: 1.4rem; font-weight: bold;">118%</p>
+                                    <p style="color: #2e7d32; font-size: 0.6rem;">▲ +8 pts</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="padding: 0.5rem 0.75rem; background: #f0f0f0; color: #666; font-size: 0.75rem; font-weight: 500;">Executive Summary</p>
+                    </div>
+
+                    <!-- Slide 2: EBITDA Waterfall Chart -->
+                    <div style="background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+                        <div style="background: #003366; padding: 0.5rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #fff; font-size: 0.6rem; font-weight: bold; letter-spacing: 1px;">LIGHTNING LEDGERZ</span>
+                            <span style="color: rgba(255,255,255,0.6); font-size: 0.55rem;">Q4 2024</span>
+                        </div>
+                        <div style="padding: 1.25rem; aspect-ratio: 16/9; background: #fff; display: flex; flex-direction: column;">
+                            <h4 style="color: #003366; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.3; font-family: Georgia, serif;">EBITDA improvement driven by revenue growth and operational efficiency gains</h4>
+                            <div style="flex: 1; display: flex; align-items: flex-end; justify-content: space-around; padding-bottom: 1rem;">
+                                <!-- Waterfall Chart -->
+                                <div style="text-align: center;">
+                                    <div style="background: #003366; width: 35px; height: 60px;"></div>
+                                    <p style="font-size: 0.5rem; color: #666; margin-top: 0.25rem;">FY23<br>EBITDA</p>
+                                    <p style="font-size: 0.55rem; color: #003366; font-weight: bold;">$820K</p>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="background: #2e7d32; width: 35px; height: 35px; margin-top: 25px;"></div>
+                                    <p style="font-size: 0.5rem; color: #666; margin-top: 0.25rem;">Revenue<br>Growth</p>
+                                    <p style="font-size: 0.55rem; color: #2e7d32; font-weight: bold;">+$380K</p>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="background: #2e7d32; width: 35px; height: 20px; margin-top: 40px;"></div>
+                                    <p style="font-size: 0.5rem; color: #666; margin-top: 0.25rem;">Cost<br>Savings</p>
+                                    <p style="font-size: 0.55rem; color: #2e7d32; font-weight: bold;">+$120K</p>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="background: #d32f2f; width: 35px; height: 15px; margin-top: 45px;"></div>
+                                    <p style="font-size: 0.5rem; color: #666; margin-top: 0.25rem;">New<br>Hires</p>
+                                    <p style="font-size: 0.55rem; color: #d32f2f; font-weight: bold;">-$90K</p>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="background: #ffd700; width: 35px; height: 85px;"></div>
+                                    <p style="font-size: 0.5rem; color: #666; margin-top: 0.25rem;">FY24<br>EBITDA</p>
+                                    <p style="font-size: 0.55rem; color: #003366; font-weight: bold;">$1.23M</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="padding: 0.5rem 0.75rem; background: #f0f0f0; color: #666; font-size: 0.75rem; font-weight: 500;">EBITDA Bridge Analysis</p>
+                    </div>
+
+                    <!-- Slide 3: Strategic Recommendations -->
+                    <div style="background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+                        <div style="background: #003366; padding: 0.5rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #fff; font-size: 0.6rem; font-weight: bold; letter-spacing: 1px;">LIGHTNING LEDGERZ</span>
+                            <span style="color: rgba(255,255,255,0.6); font-size: 0.55rem;">STRATEGIC PLAN</span>
+                        </div>
+                        <div style="padding: 1.25rem; aspect-ratio: 16/9; background: #fff; display: flex; flex-direction: column;">
+                            <h4 style="color: #003366; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.3; font-family: Georgia, serif;">Three strategic priorities will drive growth in the next fiscal year</h4>
+                            <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.65rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; background: #e3f2fd; padding: 0.5rem; border-radius: 4px;">
+                                    <div style="background: #003366; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.6rem;">1</div>
+                                    <div>
+                                        <p style="color: #003366; font-weight: bold;">Expand Enterprise Sales Team</p>
+                                        <p style="color: #666; font-size: 0.55rem;">Target: +$1.2M ARR | Investment: $200K</p>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; background: #fff3e0; padding: 0.5rem; border-radius: 4px;">
+                                    <div style="background: #ff9800; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.6rem;">2</div>
+                                    <div>
+                                        <p style="color: #e65100; font-weight: bold;">Launch Premium Tier Product</p>
+                                        <p style="color: #666; font-size: 0.55rem;">Target: 15% upsell rate | Q2 Launch</p>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; background: #e8f5e9; padding: 0.5rem; border-radius: 4px;">
+                                    <div style="background: #2e7d32; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.6rem;">3</div>
+                                    <div>
+                                        <p style="color: #1b5e20; font-weight: bold;">Optimize CAC Through Channel Mix</p>
+                                        <p style="color: #666; font-size: 0.55rem;">Target: -25% CAC | Savings: $180K</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="padding: 0.5rem 0.75rem; background: #f0f0f0; color: #666; font-size: 0.75rem; font-weight: 500;">Strategic Recommendations</p>
+                    </div>
+
+                    <!-- Slide 4: Financial Projections -->
+                    <div style="background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+                        <div style="background: #003366; padding: 0.5rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #fff; font-size: 0.6rem; font-weight: bold; letter-spacing: 1px;">LIGHTNING LEDGERZ</span>
+                            <span style="color: rgba(255,255,255,0.6); font-size: 0.55rem;">5-YEAR MODEL</span>
+                        </div>
+                        <div style="padding: 1.25rem; aspect-ratio: 16/9; background: #fff; display: flex; flex-direction: column;">
+                            <h4 style="color: #003366; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3; font-family: Georgia, serif;">Conservative projections show path to profitability by Year 3</h4>
+                            <div style="flex: 1; overflow: hidden;">
+                                <table style="width: 100%; border-collapse: collapse; font-size: 0.55rem;">
+                                    <thead>
+                                        <tr style="border-bottom: 2px solid #003366;">
+                                            <th style="text-align: left; padding: 0.25rem; color: #003366;">$ in thousands</th>
+                                            <th style="text-align: right; padding: 0.25rem; color: #666;">Y1</th>
+                                            <th style="text-align: right; padding: 0.25rem; color: #666;">Y2</th>
+                                            <th style="text-align: right; padding: 0.25rem; color: #666;">Y3</th>
+                                            <th style="text-align: right; padding: 0.25rem; color: #003366; font-weight: bold;">Y5</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="background: #f5f7fa;">
+                                            <td style="padding: 0.25rem; color: #333; font-weight: 500;">Revenue</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #333;">4,200</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #333;">6,300</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #333;">9,450</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #003366; font-weight: bold;">18,900</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 0.25rem; color: #666;">Growth %</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #2e7d32;">32%</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #2e7d32;">50%</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #2e7d32;">50%</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #2e7d32;">35%</td>
+                                        </tr>
+                                        <tr style="background: #f5f7fa;">
+                                            <td style="padding: 0.25rem; color: #333; font-weight: 500;">Gross Profit</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #333;">2,940</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #333;">4,725</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #333;">7,560</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #003366; font-weight: bold;">15,876</td>
+                                        </tr>
+                                        <tr style="border-top: 1px solid #ccc;">
+                                            <td style="padding: 0.25rem; color: #003366; font-weight: bold;">EBITDA</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #d32f2f;">(420)</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #d32f2f;">(126)</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #2e7d32;">567</td>
+                                            <td style="text-align: right; padding: 0.25rem; color: #2e7d32; font-weight: bold;">3,024</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <p style="padding: 0.5rem 0.75rem; background: #f0f0f0; color: #666; font-size: 0.75rem; font-weight: 500;">5-Year Financial Model</p>
+                    </div>
+
+                </div>
+
+                <!-- CTA to try it -->
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button onclick="goToPowerPointGenerator()" style="background: linear-gradient(135deg, #ffd700, #ff9800); color: #000; border: none; padding: 1rem 2rem; border-radius: 30px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);">
+                        ⚡ Generate Your Own Deck Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Budget Builder Showcase -->
+            <div style="margin-bottom: 4rem;">
+                <h3 style="color: #ff3333; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    📊 Smart Budget Builder
+                    <span style="background: #ff3333; color: #fff; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.7rem; font-weight: bold;">ALL PLANS</span>
+                </h3>
+                <div style="background: #111; border: 1px solid #333; border-radius: 12px; padding: 1.5rem;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div style="background: rgba(255, 51, 51, 0.1); border: 1px solid #ff3333; padding: 1rem; border-radius: 8px;">
+                            <p style="color: #888; font-size: 0.85rem;">Total Budget</p>
+                            <p style="color: #fff; font-size: 1.5rem; font-weight: bold;">$45,000</p>
+                        </div>
+                        <div style="background: rgba(76, 175, 80, 0.1); border: 1px solid #4caf50; padding: 1rem; border-radius: 8px;">
+                            <p style="color: #888; font-size: 0.85rem;">Total Spent</p>
+                            <p style="color: #4caf50; font-size: 1.5rem; font-weight: bold;">$32,450</p>
+                        </div>
+                        <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; padding: 1rem; border-radius: 8px;">
+                            <p style="color: #888; font-size: 0.85rem;">Remaining</p>
+                            <p style="color: #ffd700; font-size: 1.5rem; font-weight: bold;">$12,550</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1.5rem;">
+                        <p style="color: #888; font-size: 0.85rem; margin-bottom: 0.5rem;">Categories</p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            <span style="background: #333; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem;">🏠 Housing: $15,000</span>
+                            <span style="background: #333; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem;">🚗 Transport: $3,500</span>
+                            <span style="background: #333; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem;">🍔 Food: $4,200</span>
+                            <span style="background: #333; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem;">💼 Business: $8,750</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Assistant Showcase -->
+            <div>
+                <h3 style="color: #9c27b0; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    🤖 AI Financial Assistant
+                    <span style="background: #9c27b0; color: #fff; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.7rem; font-weight: bold;">ALL PLANS</span>
+                </h3>
+                <div style="background: #111; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; max-width: 500px;">
+                    <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #ff6b9d, #ff3366); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">⚡</div>
+                        <div style="background: linear-gradient(135deg, #ff6b9d, #ff3366); color: #fff; padding: 0.75rem 1rem; border-radius: 15px; border-bottom-left-radius: 5px; flex: 1;">
+                            <p style="font-size: 0.9rem; margin: 0;">Hi! I see you're spending 35% on housing. Would you like me to analyze if that's optimal for your income level?</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+                        <div style="background: #333; color: #fff; padding: 0.75rem 1rem; border-radius: 15px; border-bottom-right-radius: 5px;">
+                            <p style="font-size: 0.9rem; margin: 0;">Yes, show me recommendations!</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1235,16 +1675,28 @@
             <!-- QuickBooks Tab (Diamond Only) -->
             <div id="tab-quickbooks" class="tab-content">
                 <div class="profile-card">
-                    <h3>QuickBooks Integration</h3>
+                    <h3 style="display: flex; align-items: center; gap: 0.5rem;">
+                        <img src="https://quickbooks.intuit.com/oidam/intuit/sbseg/en_us/Blog/Graphic/qb-logo-horizontal-preferred.png" alt="QuickBooks" style="height: 30px; filter: brightness(0) invert(1);">
+                        Integration
+                    </h3>
+                    <p style="color: #888; margin-bottom: 1.5rem;">Sync your financial data automatically with QuickBooks</p>
                     <div id="quickbooksStatus">
-                        <p>Status: Not Connected</p>
-                        <button class="btn btn-primary" onclick="connectQuickBooks()" style="margin-top: 1rem;">Connect QuickBooks</button>
+                        <p style="color: #888; margin-bottom: 1rem;">Status: <span style="color: #ff6666;">Not Connected</span></p>
+                        <button onclick="connectQuickBooks()" style="background: linear-gradient(135deg, #2ca01c, #1a7a12); color: #fff; border: none; padding: 1rem 2rem; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(44, 160, 28, 0.3);">
+                            <span style="font-size: 1.3rem;">📊</span> Connect to QuickBooks
+                        </button>
                     </div>
                     <div id="quickbooksConnected" class="hidden">
-                        <p style="color: #4caf50;">✓ QuickBooks Connected</p>
-                        <p>Last sync: <span id="lastSync">Never</span></p>
-                        <button class="btn btn-primary" onclick="syncQuickBooks()" style="margin-top: 1rem;">Sync Now</button>
-                        <button class="btn btn-small" onclick="disconnectQuickBooks()" style="margin-top: 1rem;">Disconnect</button>
+                        <p style="color: #2ca01c; font-weight: bold; margin-bottom: 1rem;">✓ QuickBooks Connected Successfully</p>
+                        <p style="color: #888;">Last sync: <span id="lastSync" style="color: #fff;">Never</span></p>
+                        <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
+                            <button onclick="syncQuickBooks()" style="background: linear-gradient(135deg, #2ca01c, #1a7a12); color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;">
+                                🔄 Sync Now
+                            </button>
+                            <button onclick="disconnectQuickBooks()" style="background: transparent; color: #888; border: 1px solid #444; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;">
+                                Disconnect
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1344,6 +1796,255 @@
             <p style="color: #888; font-size: 0.9rem; margin-top: 1rem;">After updating your password, you'll be signed in automatically.</p>
         </div>
     </div>
+
+    <!-- GUIDE SELECTOR MODAL -->
+    <div id="guide-modal" class="auth-modal hidden">
+        <div class="auth-box" style="max-width: 500px; padding: 0; background: transparent; border: none;">
+            <!-- Close Button -->
+            <button onclick="closeGuideModal()" style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.5); border: none; color: #fff; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; z-index: 10;">✕</button>
+
+            <!-- Guide Chat Container -->
+            <div id="guide-chat-container" style="position: relative; padding: 2rem;">
+
+                <!-- Guide Cards - Click avatar OR bubble to SIGN UP -->
+                <div class="guide-card active" data-guide="0" style="text-align: center;">
+                    <div onclick="goToSignup()" class="guide-avatar" style="width: 120px; height: 120px; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, #ff6b9d, #ff3366); display: flex; align-items: center; justify-content: center; font-size: 3rem; border: 4px solid #fff; box-shadow: 0 0 30px rgba(255, 107, 157, 0.5); cursor: pointer; transition: transform 0.3s ease;">
+                        ⚡
+                    </div>
+                    <div onclick="goToSignup()" class="guide-chat-bubble" style="background: linear-gradient(135deg, #ff6b9d, #ff3366); color: #fff; padding: 1.5rem; border-radius: 20px; border-bottom-left-radius: 5px; margin-bottom: 1rem; box-shadow: 0 10px 40px rgba(255, 107, 157, 0.3); cursor: pointer;">
+                        <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;">LADY LIGHTNING</h3>
+                        <p style="margin: 0; font-size: 1rem;">Hey! Alaina here, ready to spark things up! Click me to create your free account! ⚡</p>
+                    </div>
+                </div>
+
+                <div class="guide-card" data-guide="1" style="text-align: center; display: none;">
+                    <div onclick="goToSignup()" class="guide-avatar" style="width: 120px; height: 120px; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, #4a90d9, #2563eb); display: flex; align-items: center; justify-content: center; font-size: 3rem; border: 4px solid #fff; box-shadow: 0 0 30px rgba(74, 144, 217, 0.5); cursor: pointer; transition: transform 0.3s ease;">
+                        🎯
+                    </div>
+                    <div onclick="goToSignup()" class="guide-chat-bubble" style="background: linear-gradient(135deg, #4a90d9, #2563eb); color: #fff; padding: 1.5rem; border-radius: 20px; border-bottom-left-radius: 5px; margin-bottom: 1rem; box-shadow: 0 10px 40px rgba(74, 144, 217, 0.3); cursor: pointer;">
+                        <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;">ZAC THE STRATEGIST</h3>
+                        <p style="margin: 0; font-size: 1rem;">Hey there! I'm Zac, your financial strategy expert. Click me to sign up and let's build something amazing! 📊</p>
+                    </div>
+                </div>
+
+                <div class="guide-card" data-guide="2" style="text-align: center; display: none;">
+                    <div onclick="goToSignup()" class="guide-avatar" style="width: 120px; height: 120px; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, #ffd700, #ff9500); display: flex; align-items: center; justify-content: center; font-size: 3rem; border: 4px solid #fff; box-shadow: 0 0 30px rgba(255, 215, 0, 0.5); cursor: pointer; transition: transform 0.3s ease;">
+                        👑
+                    </div>
+                    <div onclick="goToSignup()" class="guide-chat-bubble" style="background: linear-gradient(135deg, #ffd700, #ff9500); color: #000; padding: 1.5rem; border-radius: 20px; border-bottom-left-radius: 5px; margin-bottom: 1rem; box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3); cursor: pointer;">
+                        <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;">LORD OF LIGHT</h3>
+                        <p style="margin: 0; font-size: 1rem;">Greetings! Click me to sign up and I shall illuminate your path to financial wisdom! ✨</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Arrows - Click to Sign Up -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+                    <button onclick="prevGuide()" id="guide-prev-arrow" class="guide-arrow" style="background: rgba(255, 51, 51, 0.2); border: 2px solid #ff3333; color: #ff3333; width: 60px; height: 60px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; transition: all 0.3s ease; visibility: hidden;">
+                        ←
+                    </button>
+
+                    <!-- Guide Dots -->
+                    <div style="display: flex; gap: 0.5rem;">
+                        <span class="guide-dot active" data-guide="0" onclick="goToGuide(0)" style="width: 12px; height: 12px; border-radius: 50%; background: #ff3333; cursor: pointer; transition: all 0.3s;"></span>
+                        <span class="guide-dot" data-guide="1" onclick="goToGuide(1)" style="width: 12px; height: 12px; border-radius: 50%; background: #444; cursor: pointer; transition: all 0.3s;"></span>
+                        <span class="guide-dot" data-guide="2" onclick="goToGuide(2)" style="width: 12px; height: 12px; border-radius: 50%; background: #444; cursor: pointer; transition: all 0.3s;"></span>
+                    </div>
+
+                    <button onclick="nextGuideOrSignup()" id="guide-next-arrow" class="guide-arrow" style="background: linear-gradient(135deg, #ff3333, #ff6666); border: none; color: #fff; width: 60px; height: 60px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; transition: all 0.3s ease; box-shadow: 0 5px 20px rgba(255, 51, 51, 0.4);">
+                        →
+                    </button>
+                </div>
+
+                <!-- Get Started Button -->
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <button onclick="goToSignup()" class="cta-button" style="font-size: 1.2rem; padding: 1rem 2.5rem; background: linear-gradient(135deg, #ff3333, #ff6666); border: none; animation: pulse 2s infinite;">
+                        🚀 Let's Get You Started!
+                    </button>
+                    <p style="color: #888; font-size: 0.85rem; margin-top: 1rem;">
+                        ✓ Free to start &nbsp; ✓ No credit card required
+                    </p>
+                </div>
+
+                <!-- Create Your Own 3D Avatar Button -->
+                <div style="text-align: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #333;">
+                    <p style="color: #888; font-size: 0.8rem; margin-bottom: 0.5rem;">Want a custom 3D guide?</p>
+                    <button onclick="openCreate3DAvatar()" style="background: linear-gradient(135deg, #9c27b0, #673ab7); color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 25px; cursor: pointer; font-size: 0.9rem; transition: all 0.3s ease;">
+                        🎨 Create Your Own Avatar
+                    </button>
+                </div>
+
+                <p style="color: #666; text-align: center; margin-top: 1rem; font-size: 0.85rem;">
+                    Already have an account? <a onclick="closeGuideModal(); showSignIn();" style="color: #ff3333; cursor: pointer; text-decoration: underline;">Sign In</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .guide-arrow:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 51, 51, 0.5);
+        }
+        .guide-avatar:hover {
+            transform: scale(1.1);
+        }
+        .guide-chat-bubble:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(255, 107, 157, 0.4);
+        }
+        .guide-dot.active {
+            background: #ff3333 !important;
+            transform: scale(1.2);
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+    </style>
+
+    <!-- ONBOARDING TOUR MODAL -->
+    <div id="onboarding-modal" class="auth-modal hidden">
+        <div class="auth-box" style="max-width: 700px;">
+            <h2 style="margin-bottom: 0.5rem;">🎉 Welcome to Lightning Ledgerz!</h2>
+            <p style="color: #888; margin-bottom: 2rem;">Let's take a quick tour to help you get started</p>
+
+            <div id="tour-steps">
+                <!-- Step 1 -->
+                <div class="tour-step active" data-step="1">
+                    <div style="background: rgba(255, 51, 51, 0.1); border: 1px solid #ff3333; border-radius: 15px; padding: 2rem; margin-bottom: 1.5rem;">
+                        <h3 style="color: #ff3333; margin-bottom: 1rem;">📊 Step 1: Build Your Budget</h3>
+                        <p style="color: #ccc; margin-bottom: 1rem;">Learn how to create powerful budgets in minutes with our AI-assisted budget builder.</p>
+                        <div style="background: #000; border-radius: 10px; padding: 1rem; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;">
+                            <p style="color: #666;">🎬 Tutorial Video: Creating Budgets</p>
+                            <!-- Placeholder for video embed -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="tour-step" data-step="2" style="display: none;">
+                    <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 15px; padding: 2rem; margin-bottom: 1.5rem;">
+                        <h3 style="color: #ffd700; margin-bottom: 1rem;">📑 Step 2: Generate PowerPoints</h3>
+                        <p style="color: #ccc; margin-bottom: 1rem;">Create McKinsey-quality presentation decks from your financial data automatically.</p>
+                        <div style="background: #000; border-radius: 10px; padding: 1rem; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;">
+                            <p style="color: #666;">🎬 Tutorial Video: PowerPoint Generator</p>
+                            <!-- Placeholder for video embed -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="tour-step" data-step="3" style="display: none;">
+                    <div style="background: rgba(76, 175, 80, 0.1); border: 1px solid #4caf50; border-radius: 15px; padding: 2rem; margin-bottom: 1.5rem;">
+                        <h3 style="color: #4caf50; margin-bottom: 1rem;">📈 Step 3: Track Your Dashboard</h3>
+                        <p style="color: #ccc; margin-bottom: 1rem;">Monitor your financial health with live charts, insights, and AI-powered recommendations.</p>
+                        <div style="background: #000; border-radius: 10px; padding: 1rem; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;">
+                            <p style="color: #666;">🎬 Tutorial Video: Dashboard Overview</p>
+                            <!-- Placeholder for video embed -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="tour-step" data-step="4" style="display: none;">
+                    <div style="background: rgba(156, 39, 176, 0.1); border: 1px solid #9c27b0; border-radius: 15px; padding: 2rem; margin-bottom: 1.5rem;">
+                        <h3 style="color: #9c27b0; margin-bottom: 1rem;">🤖 Step 4: Your AI Assistant</h3>
+                        <p style="color: #ccc; margin-bottom: 1rem;">Chat with your personalized AI guide to build financial models, get insights, and more.</p>
+                        <div style="background: #000; border-radius: 10px; padding: 1rem; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;">
+                            <p style="color: #666;">🎬 Tutorial Video: AI Assistant Features</p>
+                            <!-- Placeholder for video embed -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tour Navigation -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                <button onclick="prevTourStep()" id="tour-prev-btn" class="btn btn-small" style="background: transparent; border: 1px solid #333; color: #888; visibility: hidden;">
+                    ← Previous
+                </button>
+
+                <div id="tour-indicators" style="display: flex; gap: 0.5rem;">
+                    <span class="tour-dot active" data-step="1" onclick="goToTourStep(1)"></span>
+                    <span class="tour-dot" data-step="2" onclick="goToTourStep(2)"></span>
+                    <span class="tour-dot" data-step="3" onclick="goToTourStep(3)"></span>
+                    <span class="tour-dot" data-step="4" onclick="goToTourStep(4)"></span>
+                </div>
+
+                <button onclick="nextTourStep()" id="tour-next-btn" class="cta-button" style="padding: 0.75rem 1.5rem; font-size: 1rem;">
+                    Next →
+                </button>
+            </div>
+
+            <button onclick="skipTour()" style="background: transparent; border: none; color: #666; margin-top: 1.5rem; cursor: pointer; text-decoration: underline;">
+                Skip Tour
+            </button>
+        </div>
+    </div>
+
+    <!-- FLOATING AI ASSISTANT CHATBOT -->
+    <div id="ai-chatbot" class="hidden">
+        <div id="chatbot-container" style="position: fixed; bottom: 100px; right: 20px; width: 380px; max-height: 500px; background: #111; border: 1px solid #333; border-radius: 20px; box-shadow: 0 10px 50px rgba(0,0,0,0.5); z-index: 9999; display: flex; flex-direction: column; overflow: hidden;">
+            <!-- Chat Header -->
+            <div id="chatbot-header" style="background: linear-gradient(135deg, #ff3333, #ff6666); padding: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                <div id="chatbot-avatar" style="width: 45px; height: 45px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">⚡</div>
+                <div style="flex: 1;">
+                    <h4 id="chatbot-name" style="color: #fff; margin: 0; font-size: 1rem;">Lady Lightning</h4>
+                    <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 0.75rem;">AI Financial Assistant</p>
+                </div>
+                <button onclick="toggleChatbot()" style="background: rgba(255,255,255,0.2); border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 1rem;">✕</button>
+            </div>
+
+            <!-- Chat Messages -->
+            <div id="chatbot-messages" style="flex: 1; overflow-y: auto; padding: 1rem; max-height: 300px;">
+                <div class="bot-message" style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                    <div style="width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #ff6b9d, #ff3366); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0;">⚡</div>
+                    <div style="background: #222; color: #fff; padding: 0.75rem 1rem; border-radius: 15px; border-bottom-left-radius: 5px; max-width: 85%;">
+                        <p style="margin: 0; font-size: 0.9rem;">Hey there! I'm your AI assistant. Ask me anything or tell me where you want to go! I can help you with:</p>
+                        <ul style="margin: 0.5rem 0 0 0; padding-left: 1.25rem; font-size: 0.85rem; color: #ccc;">
+                            <li>Building budgets</li>
+                            <li>Generating PowerPoints</li>
+                            <li>Uploading documents</li>
+                            <li>Navigating the app</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div style="padding: 0.5rem 1rem; border-top: 1px solid #333; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button onclick="chatbotNavigate('dashboard')" style="background: #222; border: 1px solid #444; color: #fff; padding: 0.4rem 0.75rem; border-radius: 15px; font-size: 0.75rem; cursor: pointer;">📊 Dashboard</button>
+                <button onclick="chatbotNavigate('budget')" style="background: #222; border: 1px solid #444; color: #fff; padding: 0.4rem 0.75rem; border-radius: 15px; font-size: 0.75rem; cursor: pointer;">💰 Budget</button>
+                <button onclick="chatbotNavigate('documents')" style="background: #222; border: 1px solid #444; color: #fff; padding: 0.4rem 0.75rem; border-radius: 15px; font-size: 0.75rem; cursor: pointer;">📁 Upload</button>
+                <button onclick="chatbotNavigate('powerpoint')" style="background: #222; border: 1px solid #444; color: #fff; padding: 0.4rem 0.75rem; border-radius: 15px; font-size: 0.75rem; cursor: pointer;">📑 PowerPoint</button>
+            </div>
+
+            <!-- Chat Input -->
+            <div style="padding: 1rem; border-top: 1px solid #333; display: flex; gap: 0.5rem;">
+                <input type="text" id="chatbot-input" placeholder="Ask me anything..." style="flex: 1; background: #222; border: 1px solid #444; color: #fff; padding: 0.75rem 1rem; border-radius: 25px; font-size: 0.9rem;" onkeypress="if(event.key==='Enter')sendChatMessage()">
+                <button onclick="sendChatMessage()" style="background: linear-gradient(135deg, #ff3333, #ff6666); border: none; color: #fff; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Chat Button -->
+    <button id="chatbot-toggle" onclick="toggleChatbot()" style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; border-radius: 50%; background: linear-gradient(135deg, #ff3333, #ff6666); border: none; color: #fff; font-size: 1.8rem; cursor: pointer; box-shadow: 0 5px 25px rgba(255, 51, 51, 0.4); z-index: 9998; transition: all 0.3s ease; display: none;">
+        💬
+    </button>
+
+    <style>
+        #chatbot-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 35px rgba(255, 51, 51, 0.5);
+        }
+        #chatbot-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+        #chatbot-messages::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 5px;
+        }
+    </style>
 
     <!-- Avatar Builder Script -->
     <script src="avatar-builder.js"></script>

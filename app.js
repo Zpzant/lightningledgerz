@@ -44,6 +44,12 @@ window.addEventListener('click', (e) => {
     if (e.target.id === 'signin-modal') {
         document.getElementById('signin-modal').classList.add('hidden');
     }
+    if (e.target.id === 'guide-modal') {
+        document.getElementById('guide-modal').classList.add('hidden');
+    }
+    if (e.target.id === 'onboarding-modal') {
+        // Don't allow clicking outside to close onboarding - require Skip or Complete
+    }
 });
 
 // Sign Up
@@ -55,56 +61,126 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
     const email = document.getElementById("signup-email").value.trim();
     const password = document.getElementById("signup-password").value;
 
+    // Validate password length
+    if (password.length < 6) {
+        alert("Password must be at least 6 characters long.");
+        return;
+    }
+
+    // Show loading state
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Creating Account...';
+    submitBtn.disabled = true;
+
     try {
-        // Create auth user
+        console.log("Starting signup for:", email);
+
+        // Create auth user with metadata
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email: email,
-            password: password
+            password: password,
+            options: {
+                data: {
+                    first_name: firstName,
+                    last_name: lastName,
+                    username: username || null
+                }
+            }
         });
+
+        console.log("Auth result:", authData, authError);
 
         if (authError) throw authError;
 
-        // Create profile
-        const { error: profileError } = await supabase
-            .from('profiles')
-            .insert([{
-                id: authData.user.id,
-                email: email,
-                first_name: firstName,
-                last_name: lastName,
-                username: username || null,
-                package_tier: 'basic',
-                is_admin: email === 'zpzant@gmail.com'
-            }]);
+        // Check if email confirmation is required
+        if (authData.user && authData.user.identities && authData.user.identities.length === 0) {
+            // User already exists
+            alert("This email is already registered. Please sign in instead.");
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            return;
+        }
 
-        if (profileError) throw profileError;
+        // Check if user needs to confirm email
+        if (authData.user && !authData.session) {
+            // Email confirmation required
+            alert("Account created! Please check your email to confirm your account, then sign in.");
+            document.getElementById("signup-modal").classList.add('hidden');
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            return;
+        }
 
-        alert("Account created successfully! Welcome to Lightning Ledgerz.");
-        document.getElementById("signup-modal").classList.add('hidden');
+        // Session exists - user is logged in immediately (email confirmation disabled)
+        if (authData.user && authData.session) {
+            // Create profile
+            const { error: profileError } = await supabase
+                .from('profiles')
+                .insert([{
+                    id: authData.user.id,
+                    email: email,
+                    first_name: firstName,
+                    last_name: lastName,
+                    username: username || null,
+                    package_tier: 'basic',
+                    is_admin: email === 'zpzant@gmail.com'
+                }]);
 
-        // Wait for auth state to load profile, then redirect
-        setTimeout(() => {
-            if (currentUserProfile) {
-                // Navigate to profile page to set up avatar
-                document.getElementById("services").style.display = "none";
-                document.getElementById("about").style.display = "none";
-                document.getElementById("contact").style.display = "none";
-                document.getElementById("dashboard").classList.add('hidden');
-                document.getElementById("admin").classList.add('hidden');
-                document.getElementById("profile").classList.remove('hidden');
-                window.location.href = "#profile";
-
-                // Auto-switch to avatar tab for new users
-                switchProfileTab('avatar');
+            if (profileError) {
+                console.error("Profile creation error:", profileError);
+                // Profile might already exist or RLS issue
+                if (!profileError.message.includes('duplicate')) {
+                    console.warn("Could not create profile, will retry on next login");
+                }
             }
-        }, 1000);
+
+            document.getElementById("signup-modal").classList.add('hidden');
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+
+            // Success message
+            alert(`Welcome to Lightning Ledgerz, ${firstName}! Your account has been created.`);
+
+            // Wait for auth state to load profile, then show onboarding tour
+            setTimeout(() => {
+                if (currentUserProfile) {
+                    // Check if tour hasn't been completed yet
+                    if (!localStorage.getItem('tourCompleted')) {
+                        // Show onboarding tour for new users
+                        showOnboardingTour();
+                    } else if (localStorage.getItem('showAvatarAfterSignup') === 'true') {
+                        // Go directly to avatar builder
+                        localStorage.removeItem('showAvatarAfterSignup');
+                        navigateToAvatarBuilder();
+                    } else {
+                        // Navigate to profile page
+                        document.getElementById("services").style.display = "none";
+                        document.getElementById("about").style.display = "none";
+                        document.getElementById("contact").style.display = "none";
+                        document.getElementById("dashboard").classList.add('hidden');
+                        document.getElementById("admin").classList.add('hidden');
+                        document.getElementById("profile").classList.remove('hidden');
+                        window.location.href = "#profile";
+                        switchProfileTab('avatar');
+                    }
+                }
+            }, 1000);
+        }
 
     } catch (error) {
         console.error("Signup error:", error);
-        if (error.message.includes('already registered')) {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+
+        if (error.message.includes('already registered') || error.message.includes('already been registered')) {
             alert("This email is already registered. Please sign in instead.");
+        } else if (error.message.includes('Invalid email')) {
+            alert("Please enter a valid email address.");
+        } else if (error.message.includes('Password')) {
+            alert("Password must be at least 6 characters long.");
         } else {
-            alert("Signup failed: " + error.message);
+            alert("Signup failed: " + error.message + "\n\nPlease try again or contact support.");
         }
     }
 });
@@ -115,13 +191,27 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
     const email = document.getElementById("signin-email").value.trim();
     const password = document.getElementById("signin-password").value;
 
+    // Show loading state
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Signing In...';
+    submitBtn.disabled = true;
+
     try {
+        console.log("Signing in:", email);
+
         const { data, error } = await supabase.auth.signInWithPassword({
             email: email,
             password: password
         });
 
+        console.log("Sign in result:", data, error);
+
         if (error) throw error;
+
+        // Reset button
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
 
         // Close sign-in modal
         document.getElementById("signin-modal").classList.add('hidden');
@@ -145,14 +235,55 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
                 document.getElementById("admin").classList.add('hidden');
                 document.getElementById("profile").classList.remove('hidden');
                 window.location.href = "#profile";
+            } else if (currentUser) {
+                // User exists but no profile - create one
+                alert(`Welcome! Setting up your profile...`);
+                createMissingProfile(currentUser, email);
             }
         }, 1000);
 
     } catch (error) {
         console.error("Login error:", error);
-        alert("Login failed: " + error.message);
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+
+        if (error.message.includes('Invalid login credentials')) {
+            alert("Invalid email or password. Please try again.\n\nIf you forgot your password, click 'Forgot Password?' below.");
+        } else if (error.message.includes('Email not confirmed')) {
+            alert("Please check your email and confirm your account before signing in.");
+        } else {
+            alert("Login failed: " + error.message);
+        }
     }
 });
+
+// Helper function to create profile if missing
+async function createMissingProfile(user, email) {
+    try {
+        const { error } = await supabase
+            .from('profiles')
+            .insert([{
+                id: user.id,
+                email: email,
+                first_name: email.split('@')[0],
+                last_name: '',
+                package_tier: 'basic',
+                is_admin: email === 'zpzant@gmail.com'
+            }]);
+
+        if (!error) {
+            await loadUserProfile();
+            // Navigate to profile
+            document.getElementById("services").style.display = "none";
+            document.getElementById("about").style.display = "none";
+            document.getElementById("contact").style.display = "none";
+            document.getElementById("profile").classList.remove('hidden');
+            window.location.href = "#profile";
+        }
+    } catch (err) {
+        console.error("Error creating missing profile:", err);
+    }
+}
 
 // Forgot Password
 document.getElementById("forgot-password").addEventListener("click", async () => {
@@ -234,10 +365,19 @@ async function signOutUser() {
         alert("Signed out successfully!");
         currentUser = null;
         currentUserProfile = null;
+
+        // Show home sections
+        document.getElementById("services").style.display = "";
+        document.getElementById("about").style.display = "";
+        document.getElementById("contact").style.display = "";
+
+        // Hide profile/dashboard/admin
         document.getElementById("profile").classList.add('hidden');
         document.getElementById("dashboard").classList.add('hidden');
         document.getElementById("admin").classList.add('hidden');
-        window.location.href = "#top";
+
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
         console.error("Sign out error:", error);
         alert("Failed to sign out: " + error.message);
@@ -271,10 +411,25 @@ supabase.auth.onAuthStateChange(async (event, session) => {
     if (session?.user) {
         currentUser = session.user;
         await loadUserProfile();
+        // Show chatbot for logged-in users
+        setTimeout(() => updateChatbotVisibility(), 500);
+
+        // Check for redirect after signup (e.g., from PowerPoint button)
+        const redirectAfterSignup = localStorage.getItem('redirectAfterSignup');
+        if (redirectAfterSignup) {
+            localStorage.removeItem('redirectAfterSignup');
+            setTimeout(() => {
+                if (redirectAfterSignup === 'powerpoint') {
+                    chatbotNavigate('powerpoint');
+                }
+            }, 1000);
+        }
     } else {
         currentUser = null;
         currentUserProfile = null;
         hideUserWelcome();
+        // Hide chatbot for logged-out users
+        setTimeout(() => updateChatbotVisibility(), 500);
     }
 });
 
@@ -386,6 +541,74 @@ function updateFeatureAccess() {
 // NAVIGATION HANDLERS
 // =====================================================
 
+function handleHomeClick(event) {
+    event.preventDefault();
+
+    // Show home sections
+    document.getElementById("services").style.display = "";
+    document.getElementById("about").style.display = "";
+    document.getElementById("contact").style.display = "";
+
+    // Hide profile/dashboard/admin
+    document.getElementById("profile").classList.add('hidden');
+    document.getElementById("dashboard").classList.add('hidden');
+    document.getElementById("admin").classList.add('hidden');
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function handleServicesClick(event) {
+    event.preventDefault();
+
+    // Show services section
+    document.getElementById("services").style.display = "";
+    document.getElementById("about").style.display = "";
+    document.getElementById("contact").style.display = "";
+
+    // Hide profile/dashboard/admin
+    document.getElementById("profile").classList.add('hidden');
+    document.getElementById("dashboard").classList.add('hidden');
+    document.getElementById("admin").classList.add('hidden');
+
+    // Scroll to services
+    document.getElementById("services").scrollIntoView({ behavior: "smooth" });
+}
+
+function handleAboutClick(event) {
+    event.preventDefault();
+
+    // Show all home sections
+    document.getElementById("services").style.display = "";
+    document.getElementById("about").style.display = "";
+    document.getElementById("contact").style.display = "";
+
+    // Hide profile/dashboard/admin
+    document.getElementById("profile").classList.add('hidden');
+    document.getElementById("dashboard").classList.add('hidden');
+    document.getElementById("admin").classList.add('hidden');
+
+    // Scroll to about
+    document.getElementById("about").scrollIntoView({ behavior: "smooth" });
+}
+
+function handleContactClick(event) {
+    event.preventDefault();
+
+    // Show all home sections
+    document.getElementById("services").style.display = "";
+    document.getElementById("about").style.display = "";
+    document.getElementById("contact").style.display = "";
+
+    // Hide profile/dashboard/admin
+    document.getElementById("profile").classList.add('hidden');
+    document.getElementById("dashboard").classList.add('hidden');
+    document.getElementById("admin").classList.add('hidden');
+
+    // Scroll to contact
+    document.getElementById("contact").scrollIntoView({ behavior: "smooth" });
+}
+
 function handleMyProfileClick(event) {
     event.preventDefault();
 
@@ -395,14 +618,18 @@ function handleMyProfileClick(event) {
         return;
     }
 
-    // Hide all sections
+    // Hide all home sections
     document.getElementById("services").style.display = "none";
+    document.getElementById("about").style.display = "none";
+    document.getElementById("contact").style.display = "none";
+
+    // Hide other logged-in sections
     document.getElementById("dashboard").classList.add('hidden');
     document.getElementById("admin").classList.add('hidden');
 
     // Show profile
     document.getElementById("profile").classList.remove('hidden');
-    document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Load avatar if on avatar tab
     if (document.getElementById('tab-avatar').classList.contains('active')) {
@@ -419,14 +646,18 @@ async function handleDashboardClick(event) {
         return;
     }
 
-    // Hide all sections
+    // Hide all home sections
     document.getElementById("services").style.display = "none";
+    document.getElementById("about").style.display = "none";
+    document.getElementById("contact").style.display = "none";
+
+    // Hide other logged-in sections
     document.getElementById("profile").classList.add('hidden');
     document.getElementById("admin").classList.add('hidden');
 
     // Show dashboard
     document.getElementById("dashboard").classList.remove('hidden');
-    document.getElementById("dashboard").scrollIntoView({ behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Load dashboard data
     await loadDashboard();
@@ -440,23 +671,58 @@ async function handleAdminClick(event) {
         return;
     }
 
-    // Hide all sections
+    // Hide all home sections
     document.getElementById("services").style.display = "none";
+    document.getElementById("about").style.display = "none";
+    document.getElementById("contact").style.display = "none";
+
+    // Hide other logged-in sections
     document.getElementById("profile").classList.add('hidden');
     document.getElementById("dashboard").classList.add('hidden');
 
     // Show admin
     document.getElementById("admin").classList.remove('hidden');
-    document.getElementById("admin").scrollIntoView({ behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Load admin data
     await loadAdminDashboard();
 }
 
 function scrollToPackage(id) {
+    // First show services section if hidden
+    document.getElementById("services").style.display = "block";
+
+    // Remove highlight from all packages
+    document.querySelectorAll('.package-card').forEach(card => {
+        card.classList.remove('package-highlighted');
+        card.style.transform = '';
+        card.style.boxShadow = '';
+    });
+
     const target = document.getElementById(id);
     if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
+        // Scroll to it
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Add highlight effect
+        target.classList.add('package-highlighted');
+        target.style.transform = 'scale(1.05)';
+
+        // Add glow effect based on package type
+        if (id.includes('basic')) {
+            target.style.boxShadow = '0 0 40px rgba(255, 51, 51, 0.6), 0 0 80px rgba(255, 51, 51, 0.3)';
+        } else if (id.includes('gold')) {
+            target.style.boxShadow = '0 0 40px rgba(255, 215, 0, 0.6), 0 0 80px rgba(255, 215, 0, 0.3)';
+        } else if (id.includes('diamond')) {
+            target.style.boxShadow = '0 0 40px rgba(185, 242, 255, 0.6), 0 0 80px rgba(185, 242, 255, 0.3)';
+        }
+
+        // Remove highlight after 3 seconds
+        setTimeout(() => {
+            target.classList.remove('package-highlighted');
+            target.style.transform = '';
+            target.style.boxShadow = '';
+        }, 3000);
     }
 }
 
@@ -511,7 +777,13 @@ function switchProfileTab(tabName) {
 
     // Show selected tab
     document.getElementById(`tab-${tabName}`).classList.add('active');
-    event.target.classList.add('active');
+
+    // Find and activate the correct tab button
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        if (btn.textContent.toLowerCase().includes(tabName)) {
+            btn.classList.add('active');
+        }
+    });
 
     // Load data for specific tabs
     if (tabName === 'avatar') {
@@ -1374,6 +1646,12 @@ window.addEventListener('DOMContentLoaded', async () => {
         currentUser = session.user;
         await loadUserProfile();
     }
+    // Update chatbot visibility on page load
+    setTimeout(() => {
+        if (typeof updateChatbotVisibility === 'function') {
+            updateChatbotVisibility();
+        }
+    }, 1000);
 });
 
 // Make functions globally available
@@ -1382,11 +1660,40 @@ window.showSignIn = showSignIn;
 window.switchToSignIn = switchToSignIn;
 window.switchToSignUp = switchToSignUp;
 window.signOutUser = signOutUser;
+window.handleHomeClick = handleHomeClick;
+window.handleServicesClick = handleServicesClick;
+window.handleAboutClick = handleAboutClick;
+window.handleContactClick = handleContactClick;
 window.handleMyProfileClick = handleMyProfileClick;
 window.handleDashboardClick = handleDashboardClick;
 window.handleAdminClick = handleAdminClick;
 window.scrollToPackage = scrollToPackage;
 window.selectPackage = selectPackage;
+
+// Mobile Navigation Toggle
+function toggleMobileNav() {
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.getElementById('navLinks');
+
+    if (hamburger && navLinks) {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+    }
+}
+
+// Close mobile nav when clicking a link
+document.addEventListener('click', (e) => {
+    if (e.target.matches('.nav-links a')) {
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.getElementById('navLinks');
+        if (hamburger && navLinks) {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+        }
+    }
+});
+
+window.toggleMobileNav = toggleMobileNav;
 window.switchProfileTab = switchProfileTab;
 window.toggleAvatarType = toggleAvatarType;
 window.uploadLogo = uploadLogo;
@@ -1397,3 +1704,522 @@ window.generatePowerPoint = generatePowerPoint;
 window.connectQuickBooks = connectQuickBooks;
 window.syncQuickBooks = syncQuickBooks;
 window.disconnectQuickBooks = disconnectQuickBooks;
+
+// =====================================================
+// GUIDE SELECTOR & ONBOARDING TOUR
+// =====================================================
+
+let currentTourStep = 1;
+const totalTourSteps = 4;
+
+// Guide navigation state
+let currentGuide = 0;
+const totalGuides = 3; // Lady Lightning, Zac, Lord of Light
+
+// Show the guide selector modal
+function showGuideModal() {
+    // Randomize which guide appears first!
+    currentGuide = Math.floor(Math.random() * totalGuides);
+    document.getElementById('guide-modal').classList.remove('hidden');
+    updateGuideDisplay(); // Update the display
+}
+
+// Close guide modal
+function closeGuideModal() {
+    document.getElementById('guide-modal').classList.add('hidden');
+}
+
+// Guide navigation functions
+
+// Go to a specific guide
+function goToGuide(index) {
+    currentGuide = index;
+    updateGuideDisplay();
+}
+
+// Previous guide
+function prevGuide() {
+    if (currentGuide > 0) {
+        currentGuide--;
+        updateGuideDisplay();
+    }
+}
+
+// Next guide or go to signup (ARROWS LEAD TO SIGNUP!)
+function nextGuideOrSignup() {
+    if (currentGuide < totalGuides - 1) {
+        currentGuide++;
+        updateGuideDisplay();
+    } else {
+        // On last guide - clicking arrow goes to SIGNUP!
+        goToSignup();
+    }
+}
+
+// GO TO SIGNUP - This is the main goal!
+function goToSignup() {
+    closeGuideModal();
+    showSignUp();
+    // After signup, show onboarding tour instead of avatar builder
+    localStorage.removeItem('showAvatarAfterSignup');
+    localStorage.removeItem('tourCompleted');
+}
+
+// Update guide display
+function updateGuideDisplay() {
+    // Hide all guide cards
+    document.querySelectorAll('.guide-card').forEach(card => {
+        card.style.display = 'none';
+        card.classList.remove('active');
+    });
+
+    // Show current guide
+    const currentCard = document.querySelector(`.guide-card[data-guide="${currentGuide}"]`);
+    if (currentCard) {
+        currentCard.style.display = 'block';
+        currentCard.classList.add('active');
+    }
+
+    // Update dots
+    document.querySelectorAll('.guide-dot').forEach(dot => {
+        dot.classList.remove('active');
+        dot.style.background = '#444';
+        if (parseInt(dot.dataset.guide) === currentGuide) {
+            dot.classList.add('active');
+            dot.style.background = '#ff3333';
+        }
+    });
+
+    // Update prev arrow visibility
+    const prevArrow = document.getElementById('guide-prev-arrow');
+    if (prevArrow) {
+        prevArrow.style.visibility = currentGuide > 0 ? 'visible' : 'hidden';
+    }
+
+    // Update next arrow - show "Sign Up" indicator on last guide
+    const nextArrow = document.getElementById('guide-next-arrow');
+    if (nextArrow) {
+        if (currentGuide === totalGuides - 1) {
+            nextArrow.innerHTML = '🚀';
+            nextArrow.title = 'Sign Up!';
+        } else {
+            nextArrow.innerHTML = '→';
+            nextArrow.title = 'Next Guide';
+        }
+    }
+}
+
+// Start the onboarding flow - ALWAYS goes to signup first (most important!)
+function startAvatarCreation() {
+    closeGuideModal();
+
+    if (!currentUser) {
+        // Not logged in - MUST sign up first (this is the priority!)
+        showSignUp();
+        // After signup, show tour instead of avatar builder
+        localStorage.removeItem('showAvatarAfterSignup');
+        localStorage.removeItem('tourCompleted');
+    } else {
+        // Already logged in - show the onboarding tour
+        if (!localStorage.getItem('tourCompleted')) {
+            showOnboardingTour();
+        } else {
+            // Tour completed - go to profile
+            navigateToAvatarBuilder();
+        }
+    }
+}
+
+// Navigate to avatar builder
+function navigateToAvatarBuilder() {
+    document.getElementById("services").style.display = "none";
+    document.getElementById("about").style.display = "none";
+    document.getElementById("contact").style.display = "none";
+    document.getElementById("dashboard").classList.add('hidden');
+    document.getElementById("admin").classList.add('hidden');
+    document.getElementById("profile").classList.remove('hidden');
+    window.location.href = "#profile";
+    switchProfileTab('avatar');
+}
+
+// Show onboarding tour after signup
+function showOnboardingTour() {
+    currentTourStep = 1;
+    updateTourDisplay();
+    document.getElementById('onboarding-modal').classList.remove('hidden');
+}
+
+// Tour navigation functions
+function nextTourStep() {
+    if (currentTourStep < totalTourSteps) {
+        currentTourStep++;
+        updateTourDisplay();
+    } else {
+        // Finished tour
+        completeTour();
+    }
+}
+
+function prevTourStep() {
+    if (currentTourStep > 1) {
+        currentTourStep--;
+        updateTourDisplay();
+    }
+}
+
+function goToTourStep(step) {
+    currentTourStep = step;
+    updateTourDisplay();
+}
+
+function updateTourDisplay() {
+    // Hide all steps
+    document.querySelectorAll('.tour-step').forEach(step => {
+        step.style.display = 'none';
+    });
+
+    // Show current step
+    const currentStep = document.querySelector(`.tour-step[data-step="${currentTourStep}"]`);
+    if (currentStep) {
+        currentStep.style.display = 'block';
+    }
+
+    // Update dots
+    document.querySelectorAll('.tour-dot').forEach(dot => {
+        dot.classList.remove('active');
+        if (parseInt(dot.dataset.step) === currentTourStep) {
+            dot.classList.add('active');
+        }
+    });
+
+    // Update prev button visibility
+    const prevBtn = document.getElementById('tour-prev-btn');
+    if (prevBtn) {
+        prevBtn.style.visibility = currentTourStep > 1 ? 'visible' : 'hidden';
+    }
+
+    // Update next button text
+    const nextBtn = document.getElementById('tour-next-btn');
+    if (nextBtn) {
+        if (currentTourStep === totalTourSteps) {
+            nextBtn.textContent = "Get Started! 🚀";
+        } else {
+            nextBtn.textContent = "Next →";
+        }
+    }
+}
+
+function skipTour() {
+    document.getElementById('onboarding-modal').classList.add('hidden');
+    localStorage.setItem('tourCompleted', 'true');
+
+    // After skipping tour, show AI chatbot to offer help
+    setTimeout(() => {
+        toggleChatbot();
+        addChatMessage("No worries! I'm here whenever you need me. What can I help you with today? ⚡", 'bot');
+    }, 500);
+}
+
+function completeTour() {
+    document.getElementById('onboarding-modal').classList.add('hidden');
+    localStorage.setItem('tourCompleted', 'true');
+
+    // After tour, show AI chatbot to offer help
+    setTimeout(() => {
+        toggleChatbot();
+        addChatMessage("Great! You're all set! What would you like to do first? I can help you build budgets, create PowerPoint decks, or navigate to any section! ⚡", 'bot');
+    }, 500);
+}
+
+// Make new functions globally available
+window.showGuideModal = showGuideModal;
+window.closeGuideModal = closeGuideModal;
+window.startAvatarCreation = startAvatarCreation;
+window.showOnboardingTour = showOnboardingTour;
+window.nextTourStep = nextTourStep;
+window.prevTourStep = prevTourStep;
+window.goToTourStep = goToTourStep;
+window.skipTour = skipTour;
+window.completeTour = completeTour;
+// Guide navigation functions
+window.goToGuide = goToGuide;
+window.prevGuide = prevGuide;
+window.nextGuideOrSignup = nextGuideOrSignup;
+window.goToSignup = goToSignup;
+
+// Open 3D Avatar Creator (Ready Player Me)
+function openCreate3DAvatar() {
+    // First check if user is logged in
+    if (!currentUser) {
+        alert('Please sign up first to create your custom 3D avatar!');
+        closeGuideModal();
+        showSignUp();
+        localStorage.setItem('openAvatarAfterSignup', 'true');
+        return;
+    }
+
+    // Open Ready Player Me avatar creator in new tab
+    const rpmUrl = 'https://lightningledgerz.readyplayer.me/avatar?frameApi';
+    window.open(rpmUrl, '_blank', 'width=800,height=600');
+
+    // Listen for avatar URL from Ready Player Me (via localStorage or postMessage)
+    closeGuideModal();
+    alert('Create your 3D avatar in the new window. When finished, your avatar will be saved to your profile!');
+}
+
+window.openCreate3DAvatar = openCreate3DAvatar;
+
+// =====================================================
+// AI CHATBOT ASSISTANT
+// =====================================================
+
+const chatbotGuides = [
+    { name: 'Lady Lightning', emoji: '⚡', color: 'linear-gradient(135deg, #ff6b9d, #ff3366)', greeting: "Hey there! I'm Alaina, ready to spark your financial journey!" },
+    { name: 'Zac the Strategist', emoji: '🎯', color: 'linear-gradient(135deg, #4a90d9, #2563eb)', greeting: "Hey! I'm Zac, your financial strategy expert. What can I help you build?" },
+    { name: 'Lord of Light', emoji: '👑', color: 'linear-gradient(135deg, #ffd700, #ff9500)', greeting: "Greetings! I shall illuminate your path to financial wisdom." },
+    { name: 'Zeus', emoji: '⚡', color: 'linear-gradient(135deg, #9c27b0, #673ab7)', greeting: "The power of financial clarity awaits! How may I assist?" },
+    { name: 'Bolt', emoji: '🔥', color: 'linear-gradient(135deg, #ff5722, #ff9800)', greeting: "Let's supercharge your finances! What do you need?" }
+];
+
+let currentChatbotGuide = null;
+let chatbotOpen = false;
+
+// Toggle chatbot visibility
+function toggleChatbot() {
+    const chatbot = document.getElementById('ai-chatbot');
+    const toggleBtn = document.getElementById('chatbot-toggle');
+
+    chatbotOpen = !chatbotOpen;
+
+    if (chatbotOpen) {
+        // Randomize guide when opening
+        if (!currentChatbotGuide) {
+            currentChatbotGuide = chatbotGuides[Math.floor(Math.random() * chatbotGuides.length)];
+            updateChatbotGuide();
+        }
+        chatbot.classList.remove('hidden');
+        toggleBtn.style.display = 'none';
+    } else {
+        chatbot.classList.add('hidden');
+        toggleBtn.style.display = 'block';
+    }
+}
+
+// Update chatbot appearance based on selected guide
+function updateChatbotGuide() {
+    if (!currentChatbotGuide) return;
+
+    document.getElementById('chatbot-header').style.background = currentChatbotGuide.color;
+    document.getElementById('chatbot-avatar').textContent = currentChatbotGuide.emoji;
+    document.getElementById('chatbot-name').textContent = currentChatbotGuide.name;
+}
+
+// Send chat message
+function sendChatMessage() {
+    const input = document.getElementById('chatbot-input');
+    const message = input.value.trim();
+    if (!message) return;
+
+    // Add user message
+    addChatMessage(message, 'user');
+    input.value = '';
+
+    // Process and respond
+    setTimeout(() => {
+        const response = processChatMessage(message);
+        addChatMessage(response.text, 'bot');
+
+        // If there's a navigation action, execute it
+        if (response.action) {
+            setTimeout(() => {
+                response.action();
+            }, 500);
+        }
+    }, 500);
+}
+
+// Process chat message and generate response with navigation
+function processChatMessage(message) {
+    const lowerMsg = message.toLowerCase();
+
+    // Navigation keywords
+    if (lowerMsg.includes('dashboard') || lowerMsg.includes('overview') || lowerMsg.includes('stats')) {
+        return {
+            text: "Let me take you to the Dashboard! 📊",
+            action: () => chatbotNavigate('dashboard')
+        };
+    }
+
+    if (lowerMsg.includes('budget') || lowerMsg.includes('spending') || lowerMsg.includes('expenses')) {
+        return {
+            text: "Let me take you to the Budget Builder! 💰 Here you can create and track your budgets.",
+            action: () => chatbotNavigate('budget')
+        };
+    }
+
+    if (lowerMsg.includes('upload') || lowerMsg.includes('document') || lowerMsg.includes('file') || lowerMsg.includes('pdf') || lowerMsg.includes('excel')) {
+        return {
+            text: "Let me take you to Documents! 📁 You can upload PDFs, Excel files, and more here.",
+            action: () => chatbotNavigate('documents')
+        };
+    }
+
+    if (lowerMsg.includes('powerpoint') || lowerMsg.includes('presentation') || lowerMsg.includes('ppt') || lowerMsg.includes('slides')) {
+        return {
+            text: "Let me take you to the PowerPoint Generator! 📑 Create McKinsey-quality presentations automatically.",
+            action: () => chatbotNavigate('powerpoint')
+        };
+    }
+
+    if (lowerMsg.includes('quickbooks') || lowerMsg.includes('accounting') || lowerMsg.includes('sync')) {
+        return {
+            text: "Let me take you to QuickBooks Integration! 🔗 Connect your accounting for automatic sync.",
+            action: () => chatbotNavigate('quickbooks')
+        };
+    }
+
+    if (lowerMsg.includes('profile') || lowerMsg.includes('account') || lowerMsg.includes('settings')) {
+        return {
+            text: "Let me take you to your Profile! ⚙️",
+            action: () => chatbotNavigate('profile')
+        };
+    }
+
+    if (lowerMsg.includes('avatar') || lowerMsg.includes('customize') || lowerMsg.includes('character')) {
+        return {
+            text: "Let me take you to the Avatar Builder! 🎨 Create your custom AI guide.",
+            action: () => chatbotNavigate('avatar')
+        };
+    }
+
+    if (lowerMsg.includes('help') || lowerMsg.includes('how') || lowerMsg.includes('what can')) {
+        return {
+            text: "I can help you with:\\n• Building budgets - say 'budget'\\n• Uploading documents - say 'upload'\\n• Creating PowerPoints - say 'powerpoint'\\n• Navigating the app - just tell me where!\\n• Connecting QuickBooks - say 'quickbooks'\\n\\nWhat would you like to do?"
+        };
+    }
+
+    if (lowerMsg.includes('hi') || lowerMsg.includes('hello') || lowerMsg.includes('hey')) {
+        return {
+            text: currentChatbotGuide ? currentChatbotGuide.greeting : "Hey there! How can I help you today?"
+        };
+    }
+
+    // Default response
+    return {
+        text: "I can help you navigate! Try asking about: budget, upload documents, powerpoint, dashboard, or quickbooks. Or just tell me what you're looking for!"
+    };
+}
+
+// Add message to chat
+function addChatMessage(text, type) {
+    const messagesContainer = document.getElementById('chatbot-messages');
+    const messageDiv = document.createElement('div');
+
+    if (type === 'user') {
+        messageDiv.innerHTML = `
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                <div style="background: #333; color: #fff; padding: 0.75rem 1rem; border-radius: 15px; border-bottom-right-radius: 5px; max-width: 85%;">
+                    <p style="margin: 0; font-size: 0.9rem;">${text}</p>
+                </div>
+            </div>
+        `;
+    } else {
+        const guide = currentChatbotGuide || chatbotGuides[0];
+        messageDiv.innerHTML = `
+            <div class="bot-message" style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                <div style="width: 30px; height: 30px; border-radius: 50%; background: ${guide.color}; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0;">${guide.emoji}</div>
+                <div style="background: #222; color: #fff; padding: 0.75rem 1rem; border-radius: 15px; border-bottom-left-radius: 5px; max-width: 85%;">
+                    <p style="margin: 0; font-size: 0.9rem; white-space: pre-line;">${text}</p>
+                </div>
+            </div>
+        `;
+    }
+
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Navigate to different sections via chatbot
+function chatbotNavigate(section) {
+    // Hide all sections first
+    document.getElementById("services").style.display = "none";
+    document.getElementById("about").style.display = "none";
+    document.getElementById("contact").style.display = "none";
+    document.getElementById("dashboard").classList.add('hidden');
+    document.getElementById("admin").classList.add('hidden');
+    document.getElementById("profile").classList.add('hidden');
+
+    switch(section) {
+        case 'dashboard':
+            document.getElementById("dashboard").classList.remove('hidden');
+            window.location.href = "#dashboard";
+            break;
+        case 'budget':
+        case 'documents':
+        case 'powerpoint':
+        case 'quickbooks':
+        case 'avatar':
+        case 'profile':
+            document.getElementById("profile").classList.remove('hidden');
+            window.location.href = "#profile";
+            // Switch to the appropriate tab
+            setTimeout(() => {
+                if (section === 'budget') {
+                    // Go to dashboard for budget (or documents tab)
+                    document.getElementById("dashboard").classList.remove('hidden');
+                    document.getElementById("profile").classList.add('hidden');
+                } else {
+                    switchProfileTab(section === 'profile' ? 'account' : section);
+                }
+            }, 100);
+            break;
+        default:
+            document.getElementById("services").style.display = "block";
+            window.location.href = "#services";
+    }
+}
+
+// Navigate to PowerPoint Generator / Showcase section
+function goToPowerPointGenerator() {
+    // First scroll to showcase section to show samples
+    const showcaseSection = document.getElementById('showcase');
+    if (showcaseSection) {
+        showcaseSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // If user is logged in, after a brief delay, offer to go to generator
+    if (currentUser) {
+        setTimeout(() => {
+            if (confirm('Want to create your own custom deck? Click OK to go to the PowerPoint Generator!')) {
+                chatbotNavigate('powerpoint');
+            }
+        }, 800);
+    } else {
+        // Not logged in - prompt to sign up
+        setTimeout(() => {
+            if (confirm('Sign up FREE to create unlimited custom PowerPoint decks! Ready to get started?')) {
+                showSignUp();
+                localStorage.setItem('redirectAfterSignup', 'powerpoint');
+            }
+        }, 800);
+    }
+}
+
+// Make goToPowerPointGenerator globally available
+window.goToPowerPointGenerator = goToPowerPointGenerator;
+
+// Show chatbot button when user is logged in
+function updateChatbotVisibility() {
+    const toggleBtn = document.getElementById('chatbot-toggle');
+    if (currentUser && toggleBtn) {
+        toggleBtn.style.display = 'block';
+    } else if (toggleBtn) {
+        toggleBtn.style.display = 'none';
+    }
+}
+
+// Make chatbot functions globally available
+window.toggleChatbot = toggleChatbot;
+window.sendChatMessage = sendChatMessage;
+window.chatbotNavigate = chatbotNavigate;
+window.addChatMessage = addChatMessage;
