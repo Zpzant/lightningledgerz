@@ -34,6 +34,14 @@ class AvatarSelector {
                 icon: '👩',
                 color: '#ff6699',
                 description: 'Stylish financial spark'
+            },
+            custom: {
+                name: 'Create Your Own',
+                title: 'Custom Avatar',
+                icon: '✨',
+                color: '#9933ff',
+                description: 'Design your personal avatar',
+                isCustomOption: true
             }
         };
         this.init();
@@ -190,6 +198,23 @@ class AvatarSelector {
                 color: #fff;
             }
 
+            .avatar-option.custom-option {
+                border: 1px dashed rgba(153, 51, 255, 0.5);
+                background: rgba(153, 51, 255, 0.05);
+            }
+
+            .avatar-option.custom-option:hover {
+                background: rgba(153, 51, 255, 0.15);
+                border-color: #9933ff;
+            }
+
+            .avatar-option.custom-option .avatar-option-check {
+                border-color: #9933ff;
+                color: #9933ff;
+                font-size: 16px;
+                font-weight: bold;
+            }
+
             .avatar-selector-close {
                 position: absolute;
                 top: 10px;
@@ -294,42 +319,20 @@ class AvatarSelector {
             <button class="avatar-selector-close" onclick="avatarSelector.togglePanel()">×</button>
             <div class="avatar-selector-title">Choose Your Guide</div>
             ${Object.entries(this.avatars).map(([key, avatar]) => `
-                <div class="avatar-option ${key === this.currentAvatar ? 'active' : ''}"
+                <div class="avatar-option ${key === this.currentAvatar ? 'active' : ''} ${avatar.isCustomOption ? 'custom-option' : ''}"
                      data-avatar="${key}"
                      style="--avatar-color: ${avatar.color}"
-                     onclick="avatarSelector.selectAvatar('${key}')">
-                    <div class="avatar-option-icon" style="color: ${avatar.color}; border-color: ${avatar.color}">
+                     onclick="${avatar.isCustomOption ? 'avatarSelector.goToAvatarBuilder()' : `avatarSelector.selectAvatar('${key}')`}">
+                    <div class="avatar-option-icon" style="color: ${avatar.color}; border-color: ${avatar.color}; ${avatar.isCustomOption ? 'background: linear-gradient(135deg, rgba(153,51,255,0.3), rgba(255,51,51,0.3));' : ''}">
                         ${avatar.icon}
                     </div>
                     <div class="avatar-option-info">
                         <div class="avatar-option-name">${avatar.name}</div>
                         <div class="avatar-option-title">${avatar.title}</div>
                     </div>
-                    <div class="avatar-option-check">✓</div>
+                    <div class="avatar-option-check">${avatar.isCustomOption ? '→' : '✓'}</div>
                 </div>
             `).join('')}
-            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,51,51,0.3);">
-                <button onclick="avatarSelector.goToAvatarBuilder()" style="
-                    width: 100%;
-                    padding: 12px 15px;
-                    background: linear-gradient(135deg, #ff3333, #cc0000);
-                    border: 2px solid #ffd700;
-                    border-radius: 10px;
-                    color: #fff;
-                    font-size: 13px;
-                    font-weight: 600;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 8px;
-                    transition: all 0.3s ease;
-                " onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 4px 20px rgba(255,51,51,0.5)'"
-                   onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
-                    <span style="font-size: 18px;">✨</span>
-                    Create Your Own Avatar
-                </button>
-            </div>
         `;
         document.body.appendChild(panel);
         this.panel = panel;
