@@ -308,6 +308,28 @@ class AvatarSelector {
                     <div class="avatar-option-check">✓</div>
                 </div>
             `).join('')}
+            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,51,51,0.3);">
+                <button onclick="avatarSelector.goToAvatarBuilder()" style="
+                    width: 100%;
+                    padding: 12px 15px;
+                    background: linear-gradient(135deg, #ff3333, #cc0000);
+                    border: 2px solid #ffd700;
+                    border-radius: 10px;
+                    color: #fff;
+                    font-size: 13px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    transition: all 0.3s ease;
+                " onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 4px 20px rgba(255,51,51,0.5)'"
+                   onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                    <span style="font-size: 18px;">✨</span>
+                    Create Your Own Avatar
+                </button>
+            </div>
         `;
         document.body.appendChild(panel);
         this.panel = panel;
@@ -426,6 +448,34 @@ class AvatarSelector {
     getCurrentAvatar() {
         return this.currentAvatar;
     }
+
+    goToAvatarBuilder() {
+        // Close the selector panel
+        this.togglePanel();
+
+        // Check if user is logged in
+        if (!window.currentUser) {
+            alert("Please sign in first to create your own avatar.");
+            if (window.showSignUp) window.showSignUp();
+            return;
+        }
+
+        // Navigate to profile page and switch to avatar tab
+        document.getElementById("services").style.display = "none";
+        document.getElementById("about").style.display = "none";
+        document.getElementById("contact").style.display = "none";
+        document.getElementById("dashboard").classList.add('hidden');
+        document.getElementById("admin").classList.add('hidden');
+        document.getElementById("profile").classList.remove('hidden');
+
+        // Switch to avatar tab
+        if (window.switchProfileTab) {
+            window.switchProfileTab('avatar');
+        }
+
+        // Scroll to profile section
+        document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
+    }
 }
 
 // Initialize avatar selector
@@ -454,5 +504,6 @@ window.avatarSelector = {
     togglePanel: () => avatarSelector?.togglePanel(),
     getCurrentAvatar: () => avatarSelector?.getCurrentAvatar(),
     welcomeBack: (name) => avatarSelector?.welcomeBack(name),
-    showCurrentAvatar: () => avatarSelector?.showCurrentAvatar()
+    showCurrentAvatar: () => avatarSelector?.showCurrentAvatar(),
+    goToAvatarBuilder: () => avatarSelector?.goToAvatarBuilder()
 };

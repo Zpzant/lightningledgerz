@@ -30,6 +30,28 @@ function showSignIn(e) {
 window.showSignUp = showSignUp;
 window.showSignIn = showSignIn;
 
+// Upload Modal function (defined later, but exported early for robustness)
+function showUploadModal() {
+    const modal = document.getElementById('uploadModal');
+    if (modal) {
+        modal.classList.add('active');
+    }
+    // Setup drag and drop if not already set up
+    if (typeof setupDropzone === 'function') {
+        setupDropzone();
+    }
+}
+
+function closeUploadModal() {
+    const modal = document.getElementById('uploadModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+window.showUploadModal = showUploadModal;
+window.closeUploadModal = closeUploadModal;
+
 // =====================================================
 // SUPABASE INITIALIZATION (with error handling)
 // =====================================================
@@ -2022,24 +2044,9 @@ function updateCompanyLogoSection() {
 window.handleCompanyLogoUpload = handleCompanyLogoUpload;
 
 // =====================================================
-// UPLOAD FINANCIALS MODAL
+// UPLOAD FINANCIALS MODAL - Helper functions
+// (showUploadModal and closeUploadModal are defined at top of file)
 // =====================================================
-
-function showUploadModal() {
-    const modal = document.getElementById('uploadModal');
-    if (modal) {
-        modal.classList.add('active');
-    }
-    // Setup drag and drop
-    setupDropzone();
-}
-
-function closeUploadModal() {
-    const modal = document.getElementById('uploadModal');
-    if (modal) {
-        modal.classList.remove('active');
-    }
-}
 
 function setupDropzone() {
     const dropzone = document.getElementById('uploadDropzone');
@@ -2122,9 +2129,42 @@ document.addEventListener('click', (e) => {
     }
 });
 
-window.showUploadModal = showUploadModal;
-window.closeUploadModal = closeUploadModal;
+// showUploadModal and closeUploadModal are exported at top of file
 window.handleFileUpload = handleFileUpload;
+
+// QuickBooks Dashboard function
+function openQuickBooksDashboard(event) {
+    if (event) event.preventDefault();
+
+    if (!currentUser) {
+        alert("Please sign in first to access QuickBooks integration.");
+        showSignIn();
+        return;
+    }
+
+    // Check if user is Diamond tier
+    if (currentUserProfile && currentUserProfile.package_tier !== 'diamond') {
+        alert("QuickBooks integration is available for Diamond members only. Please upgrade your package.");
+        scrollToPackage('diamond-package');
+        return;
+    }
+
+    // Navigate to profile page and switch to QuickBooks tab
+    document.getElementById("services").style.display = "none";
+    document.getElementById("about").style.display = "none";
+    document.getElementById("contact").style.display = "none";
+    document.getElementById("dashboard").classList.add('hidden');
+    document.getElementById("admin").classList.add('hidden');
+    document.getElementById("profile").classList.remove('hidden');
+
+    // Switch to QuickBooks tab
+    switchProfileTab('quickbooks');
+
+    // Scroll to profile section
+    document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
+}
+
+window.openQuickBooksDashboard = openQuickBooksDashboard;
 
 // =====================================================
 // MOBILE HAMBURGER MENU
