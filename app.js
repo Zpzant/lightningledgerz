@@ -52,6 +52,114 @@ function closeUploadModal() {
 window.showUploadModal = showUploadModal;
 window.closeUploadModal = closeUploadModal;
 
+// Navigation functions - defined early so they work even if later code fails
+function handleMyProfileClick(event) {
+    if (event) event.preventDefault();
+
+    if (!window.currentUser) {
+        alert("Please sign in first.");
+        showSignIn(event);
+        return;
+    }
+
+    // Hide all sections
+    const services = document.getElementById("services");
+    const dashboard = document.getElementById("dashboard");
+    const admin = document.getElementById("admin");
+    const profile = document.getElementById("profile");
+
+    if (services) services.style.display = "none";
+    if (dashboard) dashboard.classList.add('hidden');
+    if (admin) admin.classList.add('hidden');
+    if (profile) {
+        profile.classList.remove('hidden');
+        profile.scrollIntoView({ behavior: "smooth" });
+    }
+}
+
+function previewFeatures(event) {
+    if (event) event.preventDefault();
+
+    // Set up demo profile for preview
+    window.currentUserProfile = {
+        first_name: 'Demo',
+        last_name: 'User',
+        email: 'demo@lightningledgerz.com',
+        username: 'demo_user',
+        package_tier: 'diamond',
+        is_admin: false
+    };
+
+    // Update profile page with demo data
+    const userFullName = document.getElementById('userFullName');
+    const userEmail = document.getElementById('userEmail');
+    const userUsername = document.getElementById('userUsername');
+    const userPlan = document.getElementById('userPlan');
+
+    if (userFullName) userFullName.textContent = 'Demo User';
+    if (userEmail) userEmail.textContent = 'demo@lightningledgerz.com';
+    if (userUsername) userUsername.textContent = 'demo_user';
+    if (userPlan) userPlan.textContent = 'DIAMOND (Preview)';
+
+    // Show all tabs for preview
+    const pptTab = document.getElementById('pptTab');
+    const qbTab = document.getElementById('qbTab');
+    if (pptTab) pptTab.classList.remove('hidden');
+    if (qbTab) qbTab.classList.remove('hidden');
+
+    // Hide other sections
+    const services = document.getElementById("services");
+    const about = document.getElementById("about");
+    const contact = document.getElementById("contact");
+    const dashboard = document.getElementById("dashboard");
+    const admin = document.getElementById("admin");
+    const profile = document.getElementById("profile");
+
+    if (services) services.style.display = "none";
+    if (about) about.style.display = "none";
+    if (contact) contact.style.display = "none";
+    if (dashboard) dashboard.classList.add('hidden');
+    if (admin) admin.classList.add('hidden');
+    if (profile) profile.classList.remove('hidden');
+
+    window.location.href = "#profile";
+
+    // Initialize avatar preview
+    if (typeof updateAvatarPreview === 'function') {
+        updateAvatarPreview();
+    }
+
+    // Show demo documents
+    const documentsList = document.getElementById('documentsList');
+    if (documentsList) {
+        documentsList.innerHTML = `
+            <div class="document-item">
+                <div>
+                    <strong>sample_budget.pdf</strong>
+                    <p>PDF - 245 KB - Uploaded: Demo</p>
+                </div>
+                <div class="document-actions">
+                    <button class="btn btn-small btn-primary">View</button>
+                </div>
+            </div>
+            <div class="document-item">
+                <div>
+                    <strong>financials_2024.xlsx</strong>
+                    <p>Excel - 128 KB - Uploaded: Demo</p>
+                </div>
+                <div class="document-actions">
+                    <button class="btn btn-small btn-primary">View</button>
+                </div>
+            </div>
+        `;
+    }
+
+    alert('Preview Mode: Explore all features! Sign up to save your data.');
+}
+
+window.handleMyProfileClick = handleMyProfileClick;
+window.previewFeatures = previewFeatures;
+
 // =====================================================
 // SUPABASE INITIALIZATION (with error handling)
 // =====================================================
@@ -678,31 +786,8 @@ function updateFeatureAccess() {
 
 // =====================================================
 // NAVIGATION HANDLERS
+// (handleMyProfileClick is defined at top of file)
 // =====================================================
-
-function handleMyProfileClick(event) {
-    event.preventDefault();
-
-    if (!currentUser) {
-        alert("Please sign in first.");
-        showSignIn(event);
-        return;
-    }
-
-    // Hide all sections
-    document.getElementById("services").style.display = "none";
-    document.getElementById("dashboard").classList.add('hidden');
-    document.getElementById("admin").classList.add('hidden');
-
-    // Show profile
-    document.getElementById("profile").classList.remove('hidden');
-    document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
-
-    // Load avatar if on avatar tab
-    if (document.getElementById('tab-avatar').classList.contains('active')) {
-        loadAvatar(supabase, currentUser.id);
-    }
-}
 
 async function handleDashboardClick(event) {
     event.preventDefault();
@@ -1713,12 +1798,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Make functions globally available (showSignUp and showSignIn are exported at the top)
+// Make functions globally available (showSignUp, showSignIn, handleMyProfileClick, previewFeatures are exported at the top)
 window.switchToSignIn = switchToSignIn;
 window.switchToSignUp = switchToSignUp;
 window.signInWithGoogle = signInWithGoogle;
 window.signOutUser = signOutUser;
-window.handleMyProfileClick = handleMyProfileClick;
 window.handleDashboardClick = handleDashboardClick;
 window.handleAdminClick = handleAdminClick;
 window.scrollToPackage = scrollToPackage;
@@ -1736,73 +1820,8 @@ window.disconnectQuickBooks = disconnectQuickBooks;
 
 // =====================================================
 // GUEST PREVIEW MODE
+// (previewFeatures is defined at top of file)
 // =====================================================
-
-function previewFeatures(event) {
-    if (event) event.preventDefault();
-
-    // Set up demo profile for preview
-    currentUserProfile = {
-        first_name: 'Demo',
-        last_name: 'User',
-        email: 'demo@lightningledgerz.com',
-        username: 'demo_user',
-        package_tier: 'diamond', // Show all features
-        is_admin: false
-    };
-
-    // Update profile page with demo data
-    document.getElementById('userFullName').textContent = 'Demo User';
-    document.getElementById('userEmail').textContent = 'demo@lightningledgerz.com';
-    document.getElementById('userUsername').textContent = 'demo_user';
-    document.getElementById('userPlan').textContent = 'DIAMOND (Preview)';
-
-    // Show all tabs for preview
-    document.getElementById('pptTab').classList.remove('hidden');
-    document.getElementById('qbTab').classList.remove('hidden');
-
-    // Hide other sections
-    document.getElementById("services").style.display = "none";
-    document.getElementById("about").style.display = "none";
-    document.getElementById("contact").style.display = "none";
-    document.getElementById("dashboard").classList.add('hidden');
-    document.getElementById("admin").classList.add('hidden');
-
-    // Show profile section
-    document.getElementById("profile").classList.remove('hidden');
-    window.location.href = "#profile";
-
-    // Initialize avatar preview
-    if (typeof updateAvatarPreview === 'function') {
-        updateAvatarPreview();
-    }
-
-    // Show demo documents
-    document.getElementById('documentsList').innerHTML = `
-        <div class="document-item">
-            <div>
-                <strong>sample_budget.pdf</strong>
-                <p>PDF • 245 KB • Uploaded: Demo</p>
-            </div>
-            <div class="document-actions">
-                <button class="btn btn-small btn-primary">View</button>
-            </div>
-        </div>
-        <div class="document-item">
-            <div>
-                <strong>financials_2024.xlsx</strong>
-                <p>Excel • 128 KB • Uploaded: Demo</p>
-            </div>
-            <div class="document-actions">
-                <button class="btn btn-small btn-primary">View</button>
-            </div>
-        </div>
-    `;
-
-    alert('Preview Mode: Explore all features! Sign up to save your data.');
-}
-
-window.previewFeatures = previewFeatures;
 
 // =====================================================
 // AI TYPING ANIMATION FOR PPT SHOWCASE
@@ -2165,6 +2184,40 @@ function openQuickBooksDashboard(event) {
 }
 
 window.openQuickBooksDashboard = openQuickBooksDashboard;
+
+// PowerPoint Builder function
+function openPowerPointBuilder(event) {
+    if (event) event.preventDefault();
+
+    if (!currentUser) {
+        alert("Please sign in first to access the PowerPoint Builder.");
+        showSignIn();
+        return;
+    }
+
+    // Check if user is Gold or Diamond tier
+    if (currentUserProfile && !['gold', 'diamond'].includes(currentUserProfile.package_tier)) {
+        alert("PowerPoint Builder is available for Gold and Diamond members. Please upgrade your package.");
+        scrollToPackage('gold-package');
+        return;
+    }
+
+    // Navigate to profile page and switch to PowerPoint tab
+    document.getElementById("services").style.display = "none";
+    document.getElementById("about").style.display = "none";
+    document.getElementById("contact").style.display = "none";
+    document.getElementById("dashboard").classList.add('hidden');
+    document.getElementById("admin").classList.add('hidden');
+    document.getElementById("profile").classList.remove('hidden');
+
+    // Switch to PowerPoint tab
+    switchProfileTab('powerpoint');
+
+    // Scroll to profile section
+    document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
+}
+
+window.openPowerPointBuilder = openPowerPointBuilder;
 
 // =====================================================
 // MOBILE HAMBURGER MENU
