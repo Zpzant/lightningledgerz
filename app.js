@@ -74,59 +74,96 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
     const email = document.getElementById("signup-email").value.trim();
     const password = document.getElementById("signup-password").value;
 
+    // Validate password
+    if (password.length < 6) {
+        alert("Password must be at least 6 characters long.");
+        return;
+    }
+
+    // Show loading state
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Creating Account...';
+    submitBtn.disabled = true;
+
     // Calculate trial end date (15 days from now)
     const trialEndDate = new Date();
     trialEndDate.setDate(trialEndDate.getDate() + 15);
 
     try {
+        console.log("Starting signup for:", email);
+
         // Create auth user
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email: email,
             password: password
         });
 
+        console.log("Auth result:", authData, authError);
+
         if (authError) throw authError;
 
-        // Create profile with company name and trial
-        const { error: profileError } = await supabase
-            .from('profiles')
-            .insert([{
-                id: authData.user.id,
-                email: email,
-                first_name: firstName,
-                last_name: lastName,
-                company_name: companyName,
-                package_tier: 'trial',
-                trial_end_date: trialEndDate.toISOString(),
-                is_admin: email === 'zpzant@gmail.com'
-            }]);
+        // Check if email confirmation is required (no session means email needs confirmation)
+        if (authData.user && !authData.session) {
+            alert("Account created! Please check your email to confirm your account, then sign in.");
+            document.getElementById("signup-modal").classList.add('hidden');
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            return;
+        }
 
-        if (profileError) throw profileError;
+        // Session exists - create profile immediately
+        if (authData.user && authData.session) {
+            // Create profile with company name and trial
+            const { error: profileError } = await supabase
+                .from('profiles')
+                .insert([{
+                    id: authData.user.id,
+                    email: email,
+                    first_name: firstName,
+                    last_name: lastName,
+                    company_name: companyName,
+                    package_tier: 'trial',
+                    trial_end_date: trialEndDate.toISOString(),
+                    is_admin: email === 'zpzant@gmail.com'
+                }]);
 
-        alert("Account created successfully! Welcome to Lightning Ledgerz.");
-        document.getElementById("signup-modal").classList.add('hidden');
-
-        // Wait for auth state to load profile, then redirect
-        setTimeout(() => {
-            if (currentUserProfile) {
-                // Navigate to profile page to set up avatar
-                document.getElementById("services").style.display = "none";
-                document.getElementById("about").style.display = "none";
-                document.getElementById("contact").style.display = "none";
-                document.getElementById("dashboard").classList.add('hidden');
-                document.getElementById("admin").classList.add('hidden');
-                document.getElementById("profile").classList.remove('hidden');
-                window.location.href = "#profile";
-
-                // Auto-switch to avatar tab for new users
-                switchProfileTab('avatar');
+            if (profileError) {
+                console.error("Profile creation error:", profileError);
             }
-        }, 1000);
+
+            alert(`Welcome to Lightning Ledgerz, ${firstName}! Your 15-day free trial has started.`);
+            document.getElementById("signup-modal").classList.add('hidden');
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+
+            // Wait for auth state to load profile, then redirect
+            setTimeout(() => {
+                if (currentUserProfile) {
+                    // Navigate to profile page to set up avatar
+                    document.getElementById("services").style.display = "none";
+                    document.getElementById("about").style.display = "none";
+                    document.getElementById("contact").style.display = "none";
+                    document.getElementById("dashboard").classList.add('hidden');
+                    document.getElementById("admin").classList.add('hidden');
+                    document.getElementById("profile").classList.remove('hidden');
+                    window.location.href = "#profile";
+
+                    // Auto-switch to avatar tab for new users
+                    switchProfileTab('avatar');
+                }
+            }, 1000);
+        }
 
     } catch (error) {
         console.error("Signup error:", error);
-        if (error.message.includes('already registered')) {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+
+        if (error.message.includes('already registered') || error.message.includes('already been registered')) {
             alert("This email is already registered. Please sign in instead.");
+        } else if (error.message.includes('Invalid email')) {
+            alert("Please enter a valid email address.");
         } else {
             alert("Signup failed: " + error.message);
         }
