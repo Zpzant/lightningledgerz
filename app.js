@@ -2,25 +2,32 @@
 // LIGHTNING LEDGERZ - MAIN APPLICATION
 // =====================================================
 
+console.log('%c⚡ Lightning Ledgerz App Loading...', 'color: #ff3333; font-size: 14px; font-weight: bold;');
+
 // =====================================================
 // MODAL FUNCTIONS - Define first so UI always works
 // =====================================================
 
 function showSignUp(e) {
+    console.log('showSignUp called');  // Debug log
     if (e) e.preventDefault();
     const modal = document.getElementById('signup-modal');
+    console.log('signup-modal element:', modal);
     if (modal) {
         modal.classList.remove('hidden');
+        console.log('signup-modal shown, classes now:', modal.className);
     } else {
         console.error('signup-modal not found');
     }
 }
 
 function showSignIn(e) {
+    console.log('showSignIn called');  // Debug log
     if (e) e.preventDefault();
     const modal = document.getElementById('signin-modal');
     if (modal) {
         modal.classList.remove('hidden');
+        console.log('signin-modal shown');
     } else {
         console.error('signin-modal not found');
     }
@@ -29,6 +36,7 @@ function showSignIn(e) {
 // Export modal functions immediately so buttons work even if Supabase fails
 window.showSignUp = showSignUp;
 window.showSignIn = showSignIn;
+console.log('✓ showSignUp and showSignIn exported to window');
 
 // Upload Modal function (defined later, but exported early for robustness)
 function showUploadModal() {
@@ -159,6 +167,7 @@ function previewFeatures(event) {
 
 window.handleMyProfileClick = handleMyProfileClick;
 window.previewFeatures = previewFeatures;
+console.log('✓ handleMyProfileClick and previewFeatures exported to window');
 
 // =====================================================
 // SUPABASE INITIALIZATION (with error handling)
