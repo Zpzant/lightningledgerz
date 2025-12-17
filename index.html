@@ -5,39 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lightning Ledgerz - Budget. Save. Build.</title>
 
-    <!-- Favicon - Use PNG logo directly -->
-    <link rel="icon" type="image/png" href="LightningLedgerzLogo.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="LightningLedgerzLogo.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="LightningLedgerzLogo.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="LightningLedgerzLogo.png">
-    <link rel="shortcut icon" type="image/png" href="LightningLedgerzLogo.png">
-
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Lightning Ledgerz - Elite budgeting and financial strategy at lightning speed. Build budgets, create professional presentations, and track your finances.">
-    <meta name="keywords" content="budgeting, financial planning, budget builder, powerpoint generator, financial dashboard, Lightning Ledgerz">
-    <meta name="author" content="Zac Prizant">
-
-    <!-- Open Graph / Social Media - MUST use absolute URLs -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.lightningledgerz.com/">
-    <meta property="og:title" content="Lightning Ledgerz - Budget. Save. Build.">
-    <meta property="og:description" content="Elite budgeting and financial strategy at lightning speed. From supercharged budgets to sparky strategy — we deliver results at lightning speed.">
-    <meta property="og:image" content="https://www.lightningledgerz.com/LightningLedgerzLogo.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="Lightning Ledgerz">
-
-    <!-- Twitter Card - MUST use absolute URLs -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Lightning Ledgerz - Budget. Save. Build.">
-    <meta name="twitter:description" content="Elite budgeting and financial strategy at lightning speed.">
-    <meta name="twitter:image" content="https://www.lightningledgerz.com/LightningLedgerzLogo.png">
-
     <!-- Chart.js for dashboard -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- PDF.js for PDF processing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- XLSX for Excel processing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+
+    <!-- PPTX-Gen for PowerPoint generation -->
+    <script src="https://cdn.jsdelivr.net/npm/pptxgen@3.12.0/dist/pptxgen.umd.min.js"></script>
 
     <style>
         * {
@@ -116,36 +97,6 @@
             align-items: center;
         }
 
-        /* Mobile Hamburger Menu */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            padding: 10px;
-            z-index: 1001;
-        }
-
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background: #fff;
-            border-radius: 3px;
-            transition: all 0.3s ease;
-        }
-
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -6px);
-        }
-
         .nav-links {
             display: flex;
             gap: 2rem;
@@ -162,95 +113,6 @@
 
         .nav-links a:hover {
             color: #ff3333;
-        }
-
-        /* Mobile responsive nav */
-        @media (max-width: 900px) {
-            .hamburger {
-                display: flex;
-            }
-
-            .nav-links {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 280px;
-                height: 100vh;
-                background: rgba(0, 0, 0, 0.95);
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 80px 2rem 2rem;
-                transition: right 0.3s ease;
-                gap: 1.5rem;
-            }
-
-            .nav-links.active {
-                right: 0;
-            }
-
-            .nav-links a {
-                font-size: 1.1rem;
-                padding: 0.5rem 0;
-                width: 100%;
-            }
-
-            .nav-cta-button {
-                margin-top: 1rem;
-            }
-
-            .dropdown {
-                width: 100%;
-            }
-
-            .dropdown-menu {
-                position: relative;
-                width: 100%;
-                box-shadow: none;
-                background: rgba(255, 51, 51, 0.1);
-            }
-
-            .user-welcome {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-
-        /* Build Custom Decks Nav CTA Button */
-        .nav-cta-button {
-            background: linear-gradient(135deg, #ff3333 0%, #ff6600 50%, #ffcc00 100%);
-            color: #000;
-            font-weight: 700;
-            padding: 0.6rem 1.2rem;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
-            animation: pulse-glow 2s infinite;
-        }
-
-        .nav-cta-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 25px rgba(255, 51, 51, 0.6);
-        }
-
-        .nav-cta-button .bolt-icon {
-            font-size: 1.1rem;
-            animation: bolt-flash 1.5s infinite;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4); }
-            50% { box-shadow: 0 4px 25px rgba(255, 102, 0, 0.6); }
-        }
-
-        @keyframes bolt-flash {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
         }
 
         /* User Welcome Section in Nav */
@@ -388,6 +250,138 @@
             color: #000;
             border-color: #fff;
             box-shadow: 0 0 20px #fff;
+        }
+
+        /* Package card highlighted state */
+        .package-card {
+            transition: all 0.5s ease;
+        }
+
+        .package-card.highlighted {
+            transform: scale(1.08);
+            z-index: 100;
+            animation: packageGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .package-card.basic.highlighted {
+            box-shadow: 0 0 60px rgba(255, 51, 51, 1), 0 0 120px rgba(255, 51, 51, 0.8), 0 0 180px rgba(255, 51, 51, 0.5) !important;
+            border-color: #ff3333 !important;
+            border-width: 5px !important;
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.35), rgba(0, 0, 0, 0.9)) !important;
+        }
+
+        .package-card.gold.highlighted {
+            box-shadow: 0 0 60px rgba(255, 215, 0, 1), 0 0 120px rgba(255, 215, 0, 0.8), 0 0 180px rgba(255, 215, 0, 0.5) !important;
+            border-color: #ffd700 !important;
+            border-width: 5px !important;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.35), rgba(0, 0, 0, 0.9)) !important;
+        }
+
+        .package-card.diamond.highlighted {
+            box-shadow: 0 0 60px rgba(255, 255, 255, 1), 0 0 120px rgba(255, 255, 255, 0.8), 0 0 180px rgba(255, 255, 255, 0.5) !important;
+            border-color: #fff !important;
+            border-width: 5px !important;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(0, 0, 0, 0.9)) !important;
+        }
+
+        @keyframes packageGlow {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.3); }
+        }
+
+        /* Bring back Zac button */
+        .bring-back-zac {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff3333, #cc0000);
+            border: 2px solid #ff6666;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 9990;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(255, 51, 51, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .bring-back-zac:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(255, 51, 51, 0.7);
+        }
+
+        .bring-back-zac.visible {
+            display: flex;
+        }
+
+        /* Membership tier theming for nav */
+        nav.tier-basic {
+            border-bottom: 2px solid #ff3333;
+        }
+
+        nav.tier-gold {
+            border-bottom: 2px solid #ffd700;
+        }
+
+        nav.tier-gold .logo img {
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+        }
+
+        nav.tier-gold .upload-financials-btn {
+            background: linear-gradient(135deg, #ffd700, #cc9900);
+        }
+
+        nav.tier-diamond {
+            border-bottom: 2px solid #fff;
+            background: linear-gradient(90deg, rgba(0,0,0,0.95), rgba(30,30,50,0.95), rgba(0,0,0,0.95));
+        }
+
+        nav.tier-diamond .logo img {
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+        }
+
+        nav.tier-diamond .upload-financials-btn {
+            background: linear-gradient(135deg, #fff, #e0e0e0);
+            color: #000;
+        }
+
+        /* Diamond pattern overlay for diamond tier */
+        nav.tier-diamond::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.03) 10px,
+                rgba(255,255,255,0.03) 20px
+            );
+            pointer-events: none;
+        }
+
+        /* Membership badge styling */
+        .membership-badge.badge-basic {
+            background: linear-gradient(135deg, #ff3333, #cc0000);
+        }
+
+        .membership-badge.badge-gold {
+            background: linear-gradient(135deg, #ffd700, #cc9900);
+            color: #000;
+        }
+
+        .membership-badge.badge-diamond {
+            background: linear-gradient(135deg, #fff, #c0c0c0);
+            color: #000;
+            text-shadow: 0 0 3px rgba(0,0,0,0.2);
         }
 
         .section {
@@ -856,8 +850,35 @@
             color: #000;
         }
 
-        .dropdown:hover .dropdown-menu {
+        .dropdown:hover .dropdown-menu,
+        .dropdown.active .dropdown-menu {
             display: block;
+        }
+
+        /* Prominent Sign Up Button in Nav */
+        .sign-up-btn-nav {
+            background: linear-gradient(45deg, #ff3333, #ff6666);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
+            animation: signUpPulse 2s infinite;
+        }
+
+        .sign-up-btn-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 51, 51, 0.6);
+            background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
+        }
+
+        @keyframes signUpPulse {
+            0%, 100% { box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4); }
+            50% { box-shadow: 0 4px 25px rgba(255, 51, 51, 0.7), 0 0 10px rgba(255, 215, 0, 0.3); }
         }
 
         .auth-modal {
@@ -932,34 +953,6 @@
 
         .hidden {
             display: none !important;
-        }
-
-        /* Tour Dots */
-        .tour-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #333;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .tour-dot.active {
-            background: #ff3333;
-            box-shadow: 0 0 10px #ff3333;
-        }
-
-        .tour-dot:hover {
-            background: #ff6666;
-        }
-
-        .tour-step {
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .upload-area {
@@ -1041,12 +1034,394 @@
             display: block;
         }
 
+        /* Logout Button Style */
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #ff3333;
+            color: #ff3333;
+            padding: 0.4rem 0.6rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-btn:hover {
+            background: #ff3333;
+            color: #fff;
+        }
+
+        /* Company Logo Upload Section */
+        .company-logo-section {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 998;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff3333;
+            border-radius: 15px;
+            padding: 1rem;
+            display: none;
+        }
+
+        .company-logo-section.visible {
+            display: block;
+        }
+
+        .company-logo-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: rgba(255, 51, 51, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            border: 2px solid #ff3333;
+        }
+
+        .company-logo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* PowerPoint Showcase Section */
+        .ppt-showcase {
+            background: linear-gradient(135deg, rgba(20, 20, 30, 0.95), rgba(10, 10, 15, 0.98));
+            border: 1px solid rgba(255, 51, 51, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem auto;
+            max-width: 1200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ppt-showcase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff3333, #ffd700, #ff3333);
+        }
+
+        .ppt-showcase h3 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .ppt-showcase .subtitle {
+            color: #888;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .ppt-slides-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .ppt-slide {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(255, 51, 51, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            min-height: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .ppt-slide:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 51, 51, 0.2);
+            border-color: #ff3333;
+        }
+
+        .ppt-slide-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ppt-slide-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #ff3333, #ff6666);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .ppt-slide-title {
+            font-weight: bold;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .ppt-chart-placeholder {
+            background: rgba(255, 51, 51, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-typing-text {
+            font-family: 'Courier New', monospace;
+            color: #4caf50;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            min-height: 60px;
+        }
+
+        .ai-typing-text .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: #4caf50;
+            animation: blink 0.7s infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .ppt-cta {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        /* Report Templates Section */
+        .report-templates {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .report-template-card {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
+            border: 2px solid rgba(255, 51, 51, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .report-template-card:hover {
+            border-color: #ff3333;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 51, 51, 0.3);
+        }
+
+        .report-template-card.selected {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .report-template-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .report-template-name {
+            color: #ff3333;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-template-desc {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Upload Financials Button */
+        .upload-financials-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ff3333, #cc0000);
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
+            animation: pulse-glow 2s infinite;
+        }
+
+        .upload-financials-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 51, 51, 0.6);
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4); }
+            50% { box-shadow: 0 4px 25px rgba(255, 51, 51, 0.7); }
+        }
+
+        /* Hamburger Menu Button */
+        .hamburger-btn {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1001;
+        }
+
+        .hamburger-btn span {
+            width: 30px;
+            height: 3px;
+            background: #ff3333;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* Upload Modal */
+        .upload-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .upload-modal.active {
+            display: flex;
+        }
+
+        .upload-modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 2px solid #ff3333;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .upload-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-modal-header h2 {
+            color: #ff3333;
+            margin: 0;
+        }
+
+        .upload-modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .upload-dropzone {
+            border: 3px dashed #ff3333;
+            border-radius: 15px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 51, 51, 0.05);
+        }
+
+        .upload-dropzone:hover, .upload-dropzone.dragover {
+            background: rgba(255, 51, 51, 0.15);
+            border-color: #ff6666;
+        }
+
+        .upload-dropzone svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+            stroke: #ff3333;
+        }
+
+        .upload-dropzone p {
+            color: #ccc;
+            margin: 0.5rem 0;
+        }
+
+        .upload-file-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .file-type-badge {
+            background: rgba(255, 51, 51, 0.2);
+            border: 1px solid #ff3333;
+            color: #ff3333;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
         @media (max-width: 768px) {
             .about-content {
                 grid-template-columns: 1fr;
             }
             .profile-content {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr !important;
             }
             .hero h1 {
                 font-size: 2.5rem;
@@ -1056,6 +1431,159 @@
             }
             .avatar-preview-container {
                 grid-template-columns: 1fr;
+            }
+
+            /* Mobile Navigation */
+            .hamburger-btn {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.98);
+                flex-direction: column;
+                padding: 80px 2rem 2rem;
+                transition: right 0.3s ease;
+                z-index: 1000;
+                border-left: 2px solid #ff3333;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                padding: 1rem 0;
+                border-bottom: 1px solid rgba(255, 51, 51, 0.2);
+            }
+
+            .upload-financials-btn {
+                width: 100%;
+                justify-content: center;
+                margin: 1rem 0;
+            }
+
+            .dropdown {
+                width: 100%;
+            }
+
+            .dropdown-menu {
+                position: static;
+                width: 100%;
+                display: none;
+                border: none;
+                background: rgba(255, 51, 51, 0.1);
+            }
+
+            /* Mobile: Remove hover behavior, only use active class (tap) */
+            .dropdown:hover .dropdown-menu {
+                display: none;
+            }
+
+            .dropdown.active .dropdown-menu {
+                display: block;
+            }
+
+            /* Mobile Sign Up Button */
+            .sign-up-btn-nav {
+                width: 100%;
+                padding: 1rem;
+                font-size: 1.1rem;
+                margin: 0.5rem 0;
+                order: -1; /* Show at top of mobile menu */
+            }
+
+            /* Mobile user welcome - prevent overlap */
+            .user-welcome {
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 0.8rem;
+                font-size: 0.85rem;
+                width: 100%;
+                text-align: center;
+            }
+
+            .user-avatar-nav {
+                width: 35px;
+                height: 35px;
+            }
+
+            #welcomeText {
+                font-size: 0.9rem;
+            }
+
+            /* Make package sidebar smaller on mobile */
+            .package-sidebar {
+                left: 10px;
+                bottom: 10px;
+            }
+
+            .package-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            /* Bring back Zac button mobile */
+            .bring-back-zac {
+                width: 40px !important;
+                height: 40px !important;
+                font-size: 18px !important;
+                bottom: 10px !important;
+                right: 10px !important;
+            }
+
+            /* MOBILE SIGN-IN FIX */
+            .auth-modal {
+                padding: 15px;
+                align-items: flex-start;
+                padding-top: 60px;
+            }
+
+            .auth-box {
+                padding: 1.5rem 1rem;
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
+                border-radius: 12px;
+                max-height: calc(100vh - 80px);
+            }
+
+            .auth-box h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .auth-box input {
+                padding: 1rem;
+                font-size: 16px !important; /* Prevents iOS zoom */
+                margin: 0.75rem 0;
+                border-radius: 8px;
+                -webkit-appearance: none;
+                appearance: none;
+            }
+
+            .auth-box button {
+                padding: 1rem;
+                font-size: 1rem;
+                margin-top: 0.75rem;
+                min-height: 50px;
+            }
+
+            .auth-box .text-link {
+                padding: 10px;
+                display: block;
+                font-size: 1rem;
+            }
+
+            /* Google sign in button mobile */
+            .auth-box button[onclick*="Google"] {
+                min-height: 50px;
+                font-size: 1rem;
             }
         }
     </style>
@@ -1068,44 +1596,75 @@
     <div class="lightning-flash" id="lightningFlash"></div>
     <div class="overlay"></div>
 
+    <!-- Company Logo Upload Section (visible when logged in) -->
+    <div id="companyLogoSection" class="company-logo-section">
+        <div class="company-logo-preview" id="companyLogoPreview">
+            <span style="color: #888; font-size: 0.7rem;">Your Logo</span>
+        </div>
+        <input type="file" id="companyLogoInput" accept="image/*" style="display: none;" onchange="handleCompanyLogoUpload(event)">
+        <button onclick="document.getElementById('companyLogoInput').click()" class="btn btn-small btn-primary" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">
+            Upload Logo
+        </button>
+    </div>
+
     <nav>
-        <a href="#top" class="logo" onclick="handleHomeClick(event)">
-            <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="height: 55px; cursor: pointer;">
+        <a href="#top" class="logo">
+            <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="height: 55px;">
         </a>
 
-        <!-- Hamburger Menu for Mobile -->
-        <div class="hamburger" onclick="toggleMobileNav()">
+        <!-- Hamburger Menu Button (Mobile) -->
+        <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()">
             <span></span>
             <span></span>
             <span></span>
-        </div>
+        </button>
 
         <div class="nav-links" id="navLinks">
-            <a href="#top" onclick="handleHomeClick(event)">Home</a>
-            <a href="#services" onclick="handleServicesClick(event)">Services</a>
-            <a href="#about" onclick="handleAboutClick(event)">About</a>
-            <a href="#contact" onclick="handleContactClick(event)">Contact</a>
+            <a href="#services">Services</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <a onclick="openFinancialReports()" style="cursor: pointer; color: #ffd700;">Financial Models</a>
+            <a onclick="openQuickBooksDashboard()" style="cursor: pointer; color: #2E7D32;">QuickBooks</a>
 
-            <!-- Build Custom Decks CTA Button -->
-            <button onclick="goToPowerPointGenerator()" class="nav-cta-button">
-                <span class="bolt-icon">⚡</span> Build Custom Decks
+            <!-- Upload Financials Button - Always visible, prominent -->
+            <button class="upload-financials-btn" onclick="showUploadModal()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                Upload Financials
             </button>
 
             <!-- User Welcome Section (Hidden when not logged in) -->
             <div id="userWelcomeNav" class="user-welcome hidden">
                 <div class="user-avatar-nav" id="navAvatarContainer"></div>
-                <span id="welcomeText">Welcome Back, User</span>
+                <span id="welcomeText">Hi, User!</span>
                 <span class="membership-badge badge-basic" id="membershipBadge"></span>
+                <button onclick="signOutUser()" class="logout-btn" title="Sign Out">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </button>
             </div>
+
+            <!-- Prominent Sign Up Button - Always Visible -->
+            <button onclick="showSignUp(event)" class="sign-up-btn-nav" id="navSignUpBtn">
+                Sign Up Free
+            </button>
 
             <div class="dropdown">
                 <a class="dropdown-toggle">Get Started</a>
                 <div class="dropdown-menu">
-                    <a href="#signup" onclick="showSignUp(event)">Sign Up</a>
-                    <a href="#signin" onclick="showSignIn(event)">Sign In</a>
+                    <a href="#signup" onclick="showSignUp(event)" id="dropdownSignUp">Sign Up</a>
+                    <a href="#signin" onclick="showSignIn(event)" id="dropdownSignIn">Sign In</a>
                     <a href="#profile" onclick="handleMyProfileClick(event)">My Profile</a>
-                    <a href="#dashboard" onclick="handleDashboardClick(event)">Dashboard</a>
+                    <a href="#profile" onclick="previewFeatures(event)" id="dropdownPreview">Preview Features (Guest)</a>
+                    <a href="dashboard.html" target="_blank">Dashboard</a>
                     <a id="adminLink" href="#admin" onclick="handleAdminClick(event)" class="hidden">Admin</a>
+                    <a href="#" onclick="signOutUser(); return false;" id="dropdownLogout" class="hidden" style="color: #ff3333; border-top: 1px solid rgba(255,51,51,0.3);">Sign Out</a>
                 </div>
             </div>
         </div>
@@ -1117,9 +1676,7 @@
             From supercharged budgets to sparky strategy — we deliver results at lightning speed.
         </p>
         <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-            <button onclick="showGuideModal()" class="cta-button" style="font-size: 1.3rem;">
-                ⚡ Get Started Free
-            </button>
+            <button onclick="showSignUp(event)" class="cta-button" style="background: linear-gradient(45deg, #ff3333, #ff6666);">Start Free Trial</button>
             <a href="#contact" class="cta-button" style="background: transparent; border: 2px solid #ff3333;">Contact Us</a>
         </div>
     </section>
@@ -1134,7 +1691,7 @@
         <div class="container">
             <h2>Our Service Packages</h2>
             <div class="package-grid">
-                <div id="basic-package" class="package-card basic" onclick="selectPackage('basic')">
+                <div id="basic-package" class="package-card basic">
                     <h3>⚡ Basic Package</h3>
                     <div class="package-price">$29/month</div>
                     <ul class="package-features">
@@ -1145,10 +1702,10 @@
                         <li>Spending Categories</li>
                         <li>Email Support</li>
                     </ul>
-                    <button class="btn btn-primary" onclick="selectPackage('basic', event)">Select Basic</button>
+                    <a href="https://buy.stripe.com/dRmfZheTUbkcgT7fuNbsc02" target="_blank" class="btn btn-primary">Buy Now</a>
                 </div>
 
-                <div id="gold-package" class="package-card gold" onclick="selectPackage('gold')">
+                <div id="gold-package" class="package-card gold">
                     <h3>✨ Gold Package</h3>
                     <div class="package-price">$49/month</div>
                     <ul class="package-features">
@@ -1160,10 +1717,10 @@
                         <li>Advanced Analytics</li>
                         <li>Priority Support</li>
                     </ul>
-                    <button class="btn btn-primary" onclick="selectPackage('gold', event)">Select Gold</button>
+                    <a href="https://buy.stripe.com/28E28r1348805apeqJbsc01" target="_blank" class="btn btn-primary">Buy Now</a>
                 </div>
 
-                <div id="diamond-package" class="package-card diamond" onclick="selectPackage('diamond')">
+                <div id="diamond-package" class="package-card diamond">
                     <h3>💎 Diamond Package</h3>
                     <div class="package-price">$99/month</div>
                     <ul class="package-features">
@@ -1175,253 +1732,7 @@
                         <li>Custom Reports</li>
                         <li>Direct Phone Support</li>
                     </ul>
-                    <button class="btn btn-primary" onclick="selectPackage('diamond', event)">Select Diamond</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- PRODUCT SHOWCASE SECTION - Real Examples -->
-    <section id="showcase" class="section" style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);">
-        <div class="container">
-            <h2 style="text-align: center; margin-bottom: 0.5rem;">See What You Get</h2>
-            <p style="text-align: center; color: #888; margin-bottom: 3rem;">Real examples of what Lightning Ledgerz creates for you</p>
-
-            <!-- PowerPoint Showcase - McKinsey Style -->
-            <div style="margin-bottom: 4rem;">
-                <h3 style="color: #ffd700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-                    📑 McKinsey-Quality Presentation Decks
-                    <span style="background: #ffd700; color: #000; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.7rem; font-weight: bold;">GOLD+</span>
-                </h3>
-                <p style="color: #888; margin-bottom: 1.5rem; font-size: 0.95rem;">Auto-generated from your financial data - ready for board meetings & investor pitches</p>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
-
-                    <!-- Slide 1: Executive Summary (McKinsey Style) -->
-                    <div style="background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
-                        <div style="background: #003366; padding: 0.5rem 1rem; display: flex; justify-content: space-between; align-items: center;">
-                            <span style="color: #fff; font-size: 0.6rem; font-weight: bold; letter-spacing: 1px;">LIGHTNING LEDGERZ</span>
-                            <span style="color: rgba(255,255,255,0.6); font-size: 0.55rem;">CONFIDENTIAL</span>
-                        </div>
-                        <div style="padding: 1.25rem; aspect-ratio: 16/9; background: #fff; display: flex; flex-direction: column;">
-                            <h4 style="color: #003366; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.3; font-family: Georgia, serif;">Revenue increased 32% YoY driven by expansion into enterprise segment and improved unit economics</h4>
-                            <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.65rem;">
-                                <div style="background: #f5f7fa; padding: 0.75rem; border-left: 3px solid #003366;">
-                                    <p style="color: #666; margin-bottom: 0.25rem; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.5px;">Total Revenue</p>
-                                    <p style="color: #003366; font-size: 1.4rem; font-weight: bold;">$4.2M</p>
-                                    <p style="color: #2e7d32; font-size: 0.6rem;">▲ +32% vs LY</p>
-                                </div>
-                                <div style="background: #f5f7fa; padding: 0.75rem; border-left: 3px solid #ffd700;">
-                                    <p style="color: #666; margin-bottom: 0.25rem; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.5px;">EBITDA Margin</p>
-                                    <p style="color: #003366; font-size: 1.4rem; font-weight: bold;">24.5%</p>
-                                    <p style="color: #2e7d32; font-size: 0.6rem;">▲ +340 bps</p>
-                                </div>
-                                <div style="background: #f5f7fa; padding: 0.75rem; border-left: 3px solid #ff5722;">
-                                    <p style="color: #666; margin-bottom: 0.25rem; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.5px;">Customer LTV</p>
-                                    <p style="color: #003366; font-size: 1.4rem; font-weight: bold;">$12.4K</p>
-                                    <p style="color: #2e7d32; font-size: 0.6rem;">▲ +18% vs LY</p>
-                                </div>
-                                <div style="background: #f5f7fa; padding: 0.75rem; border-left: 3px solid #9c27b0;">
-                                    <p style="color: #666; margin-bottom: 0.25rem; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.5px;">Net Retention</p>
-                                    <p style="color: #003366; font-size: 1.4rem; font-weight: bold;">118%</p>
-                                    <p style="color: #2e7d32; font-size: 0.6rem;">▲ +8 pts</p>
-                                </div>
-                            </div>
-                        </div>
-                        <p style="padding: 0.5rem 0.75rem; background: #f0f0f0; color: #666; font-size: 0.75rem; font-weight: 500;">Executive Summary</p>
-                    </div>
-
-                    <!-- Slide 2: EBITDA Waterfall Chart -->
-                    <div style="background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
-                        <div style="background: #003366; padding: 0.5rem 1rem; display: flex; justify-content: space-between; align-items: center;">
-                            <span style="color: #fff; font-size: 0.6rem; font-weight: bold; letter-spacing: 1px;">LIGHTNING LEDGERZ</span>
-                            <span style="color: rgba(255,255,255,0.6); font-size: 0.55rem;">Q4 2024</span>
-                        </div>
-                        <div style="padding: 1.25rem; aspect-ratio: 16/9; background: #fff; display: flex; flex-direction: column;">
-                            <h4 style="color: #003366; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.3; font-family: Georgia, serif;">EBITDA improvement driven by revenue growth and operational efficiency gains</h4>
-                            <div style="flex: 1; display: flex; align-items: flex-end; justify-content: space-around; padding-bottom: 1rem;">
-                                <!-- Waterfall Chart -->
-                                <div style="text-align: center;">
-                                    <div style="background: #003366; width: 35px; height: 60px;"></div>
-                                    <p style="font-size: 0.5rem; color: #666; margin-top: 0.25rem;">FY23<br>EBITDA</p>
-                                    <p style="font-size: 0.55rem; color: #003366; font-weight: bold;">$820K</p>
-                                </div>
-                                <div style="text-align: center;">
-                                    <div style="background: #2e7d32; width: 35px; height: 35px; margin-top: 25px;"></div>
-                                    <p style="font-size: 0.5rem; color: #666; margin-top: 0.25rem;">Revenue<br>Growth</p>
-                                    <p style="font-size: 0.55rem; color: #2e7d32; font-weight: bold;">+$380K</p>
-                                </div>
-                                <div style="text-align: center;">
-                                    <div style="background: #2e7d32; width: 35px; height: 20px; margin-top: 40px;"></div>
-                                    <p style="font-size: 0.5rem; color: #666; margin-top: 0.25rem;">Cost<br>Savings</p>
-                                    <p style="font-size: 0.55rem; color: #2e7d32; font-weight: bold;">+$120K</p>
-                                </div>
-                                <div style="text-align: center;">
-                                    <div style="background: #d32f2f; width: 35px; height: 15px; margin-top: 45px;"></div>
-                                    <p style="font-size: 0.5rem; color: #666; margin-top: 0.25rem;">New<br>Hires</p>
-                                    <p style="font-size: 0.55rem; color: #d32f2f; font-weight: bold;">-$90K</p>
-                                </div>
-                                <div style="text-align: center;">
-                                    <div style="background: #ffd700; width: 35px; height: 85px;"></div>
-                                    <p style="font-size: 0.5rem; color: #666; margin-top: 0.25rem;">FY24<br>EBITDA</p>
-                                    <p style="font-size: 0.55rem; color: #003366; font-weight: bold;">$1.23M</p>
-                                </div>
-                            </div>
-                        </div>
-                        <p style="padding: 0.5rem 0.75rem; background: #f0f0f0; color: #666; font-size: 0.75rem; font-weight: 500;">EBITDA Bridge Analysis</p>
-                    </div>
-
-                    <!-- Slide 3: Strategic Recommendations -->
-                    <div style="background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
-                        <div style="background: #003366; padding: 0.5rem 1rem; display: flex; justify-content: space-between; align-items: center;">
-                            <span style="color: #fff; font-size: 0.6rem; font-weight: bold; letter-spacing: 1px;">LIGHTNING LEDGERZ</span>
-                            <span style="color: rgba(255,255,255,0.6); font-size: 0.55rem;">STRATEGIC PLAN</span>
-                        </div>
-                        <div style="padding: 1.25rem; aspect-ratio: 16/9; background: #fff; display: flex; flex-direction: column;">
-                            <h4 style="color: #003366; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.3; font-family: Georgia, serif;">Three strategic priorities will drive growth in the next fiscal year</h4>
-                            <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.65rem;">
-                                <div style="display: flex; align-items: center; gap: 0.5rem; background: #e3f2fd; padding: 0.5rem; border-radius: 4px;">
-                                    <div style="background: #003366; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.6rem;">1</div>
-                                    <div>
-                                        <p style="color: #003366; font-weight: bold;">Expand Enterprise Sales Team</p>
-                                        <p style="color: #666; font-size: 0.55rem;">Target: +$1.2M ARR | Investment: $200K</p>
-                                    </div>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 0.5rem; background: #fff3e0; padding: 0.5rem; border-radius: 4px;">
-                                    <div style="background: #ff9800; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.6rem;">2</div>
-                                    <div>
-                                        <p style="color: #e65100; font-weight: bold;">Launch Premium Tier Product</p>
-                                        <p style="color: #666; font-size: 0.55rem;">Target: 15% upsell rate | Q2 Launch</p>
-                                    </div>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 0.5rem; background: #e8f5e9; padding: 0.5rem; border-radius: 4px;">
-                                    <div style="background: #2e7d32; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.6rem;">3</div>
-                                    <div>
-                                        <p style="color: #1b5e20; font-weight: bold;">Optimize CAC Through Channel Mix</p>
-                                        <p style="color: #666; font-size: 0.55rem;">Target: -25% CAC | Savings: $180K</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <p style="padding: 0.5rem 0.75rem; background: #f0f0f0; color: #666; font-size: 0.75rem; font-weight: 500;">Strategic Recommendations</p>
-                    </div>
-
-                    <!-- Slide 4: Financial Projections -->
-                    <div style="background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
-                        <div style="background: #003366; padding: 0.5rem 1rem; display: flex; justify-content: space-between; align-items: center;">
-                            <span style="color: #fff; font-size: 0.6rem; font-weight: bold; letter-spacing: 1px;">LIGHTNING LEDGERZ</span>
-                            <span style="color: rgba(255,255,255,0.6); font-size: 0.55rem;">5-YEAR MODEL</span>
-                        </div>
-                        <div style="padding: 1.25rem; aspect-ratio: 16/9; background: #fff; display: flex; flex-direction: column;">
-                            <h4 style="color: #003366; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3; font-family: Georgia, serif;">Conservative projections show path to profitability by Year 3</h4>
-                            <div style="flex: 1; overflow: hidden;">
-                                <table style="width: 100%; border-collapse: collapse; font-size: 0.55rem;">
-                                    <thead>
-                                        <tr style="border-bottom: 2px solid #003366;">
-                                            <th style="text-align: left; padding: 0.25rem; color: #003366;">$ in thousands</th>
-                                            <th style="text-align: right; padding: 0.25rem; color: #666;">Y1</th>
-                                            <th style="text-align: right; padding: 0.25rem; color: #666;">Y2</th>
-                                            <th style="text-align: right; padding: 0.25rem; color: #666;">Y3</th>
-                                            <th style="text-align: right; padding: 0.25rem; color: #003366; font-weight: bold;">Y5</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr style="background: #f5f7fa;">
-                                            <td style="padding: 0.25rem; color: #333; font-weight: 500;">Revenue</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #333;">4,200</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #333;">6,300</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #333;">9,450</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #003366; font-weight: bold;">18,900</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 0.25rem; color: #666;">Growth %</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #2e7d32;">32%</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #2e7d32;">50%</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #2e7d32;">50%</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #2e7d32;">35%</td>
-                                        </tr>
-                                        <tr style="background: #f5f7fa;">
-                                            <td style="padding: 0.25rem; color: #333; font-weight: 500;">Gross Profit</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #333;">2,940</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #333;">4,725</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #333;">7,560</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #003366; font-weight: bold;">15,876</td>
-                                        </tr>
-                                        <tr style="border-top: 1px solid #ccc;">
-                                            <td style="padding: 0.25rem; color: #003366; font-weight: bold;">EBITDA</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #d32f2f;">(420)</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #d32f2f;">(126)</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #2e7d32;">567</td>
-                                            <td style="text-align: right; padding: 0.25rem; color: #2e7d32; font-weight: bold;">3,024</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <p style="padding: 0.5rem 0.75rem; background: #f0f0f0; color: #666; font-size: 0.75rem; font-weight: 500;">5-Year Financial Model</p>
-                    </div>
-
-                </div>
-
-                <!-- CTA to try it -->
-                <div style="text-align: center; margin-top: 2rem;">
-                    <button onclick="goToPowerPointGenerator()" style="background: linear-gradient(135deg, #ffd700, #ff9800); color: #000; border: none; padding: 1rem 2rem; border-radius: 30px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);">
-                        ⚡ Generate Your Own Deck Now
-                    </button>
-                </div>
-            </div>
-
-            <!-- Budget Builder Showcase -->
-            <div style="margin-bottom: 4rem;">
-                <h3 style="color: #ff3333; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                    📊 Smart Budget Builder
-                    <span style="background: #ff3333; color: #fff; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.7rem; font-weight: bold;">ALL PLANS</span>
-                </h3>
-                <div style="background: #111; border: 1px solid #333; border-radius: 12px; padding: 1.5rem;">
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                        <div style="background: rgba(255, 51, 51, 0.1); border: 1px solid #ff3333; padding: 1rem; border-radius: 8px;">
-                            <p style="color: #888; font-size: 0.85rem;">Total Budget</p>
-                            <p style="color: #fff; font-size: 1.5rem; font-weight: bold;">$45,000</p>
-                        </div>
-                        <div style="background: rgba(76, 175, 80, 0.1); border: 1px solid #4caf50; padding: 1rem; border-radius: 8px;">
-                            <p style="color: #888; font-size: 0.85rem;">Total Spent</p>
-                            <p style="color: #4caf50; font-size: 1.5rem; font-weight: bold;">$32,450</p>
-                        </div>
-                        <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; padding: 1rem; border-radius: 8px;">
-                            <p style="color: #888; font-size: 0.85rem;">Remaining</p>
-                            <p style="color: #ffd700; font-size: 1.5rem; font-weight: bold;">$12,550</p>
-                        </div>
-                    </div>
-                    <div style="margin-top: 1.5rem;">
-                        <p style="color: #888; font-size: 0.85rem; margin-bottom: 0.5rem;">Categories</p>
-                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                            <span style="background: #333; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem;">🏠 Housing: $15,000</span>
-                            <span style="background: #333; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem;">🚗 Transport: $3,500</span>
-                            <span style="background: #333; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem;">🍔 Food: $4,200</span>
-                            <span style="background: #333; color: #fff; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem;">💼 Business: $8,750</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- AI Assistant Showcase -->
-            <div>
-                <h3 style="color: #9c27b0; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                    🤖 AI Financial Assistant
-                    <span style="background: #9c27b0; color: #fff; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.7rem; font-weight: bold;">ALL PLANS</span>
-                </h3>
-                <div style="background: #111; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; max-width: 500px;">
-                    <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
-                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #ff6b9d, #ff3366); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">⚡</div>
-                        <div style="background: linear-gradient(135deg, #ff6b9d, #ff3366); color: #fff; padding: 0.75rem 1rem; border-radius: 15px; border-bottom-left-radius: 5px; flex: 1;">
-                            <p style="font-size: 0.9rem; margin: 0;">Hi! I see you're spending 35% on housing. Would you like me to analyze if that's optimal for your income level?</p>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
-                        <div style="background: #333; color: #fff; padding: 0.75rem 1rem; border-radius: 15px; border-bottom-right-radius: 5px;">
-                            <p style="font-size: 0.9rem; margin: 0;">Yes, show me recommendations!</p>
-                        </div>
-                    </div>
+                    <a href="https://buy.stripe.com/dRm9ATbHIdsk5ap0zTbsc00" target="_blank" class="btn btn-primary">Buy Now</a>
                 </div>
             </div>
         </div>
@@ -1452,7 +1763,7 @@
 
             <!-- Account Tab -->
             <div id="tab-account" class="tab-content active">
-                <div class="profile-content">
+                <div class="profile-content" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
                     <div class="profile-card">
                         <h3>Account Information</h3>
                         <div class="profile-info">
@@ -1463,6 +1774,30 @@
                             <p><strong>Status:</strong> <span style="color: #4CAF50;">Active</span></p>
                         </div>
                         <button class="btn btn-primary" onclick="signOutUser()" style="margin-top: 1rem;">Sign Out</button>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Edit Profile</h3>
+                        <div class="form-group">
+                            <label for="edit-first-name">First Name</label>
+                            <input type="text" id="edit-first-name" placeholder="Your first name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-last-name">Last Name</label>
+                            <input type="text" id="edit-last-name" placeholder="Your last name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-company-name">Company Name</label>
+                            <input type="text" id="edit-company-name" placeholder="Your company name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-username">Username</label>
+                            <input type="text" id="edit-username" placeholder="Choose a username">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-phone">Phone Number</label>
+                            <input type="tel" id="edit-phone" placeholder="(555) 123-4567">
+                        </div>
+                        <button class="btn btn-primary" onclick="saveProfileChanges()" style="margin-top: 1rem;">Save Changes</button>
                     </div>
                 </div>
             </div>
@@ -1675,28 +2010,16 @@
             <!-- QuickBooks Tab (Diamond Only) -->
             <div id="tab-quickbooks" class="tab-content">
                 <div class="profile-card">
-                    <h3 style="display: flex; align-items: center; gap: 0.5rem;">
-                        <img src="https://quickbooks.intuit.com/oidam/intuit/sbseg/en_us/Blog/Graphic/qb-logo-horizontal-preferred.png" alt="QuickBooks" style="height: 30px; filter: brightness(0) invert(1);">
-                        Integration
-                    </h3>
-                    <p style="color: #888; margin-bottom: 1.5rem;">Sync your financial data automatically with QuickBooks</p>
+                    <h3>QuickBooks Integration</h3>
                     <div id="quickbooksStatus">
-                        <p style="color: #888; margin-bottom: 1rem;">Status: <span style="color: #ff6666;">Not Connected</span></p>
-                        <button onclick="connectQuickBooks()" style="background: linear-gradient(135deg, #2ca01c, #1a7a12); color: #fff; border: none; padding: 1rem 2rem; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(44, 160, 28, 0.3);">
-                            <span style="font-size: 1.3rem;">📊</span> Connect to QuickBooks
-                        </button>
+                        <p>Status: Not Connected</p>
+                        <button class="btn btn-primary" onclick="connectQuickBooks()" style="margin-top: 1rem;">Connect QuickBooks</button>
                     </div>
                     <div id="quickbooksConnected" class="hidden">
-                        <p style="color: #2ca01c; font-weight: bold; margin-bottom: 1rem;">✓ QuickBooks Connected Successfully</p>
-                        <p style="color: #888;">Last sync: <span id="lastSync" style="color: #fff;">Never</span></p>
-                        <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
-                            <button onclick="syncQuickBooks()" style="background: linear-gradient(135deg, #2ca01c, #1a7a12); color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;">
-                                🔄 Sync Now
-                            </button>
-                            <button onclick="disconnectQuickBooks()" style="background: transparent; color: #888; border: 1px solid #444; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;">
-                                Disconnect
-                            </button>
-                        </div>
+                        <p style="color: #4caf50;">✓ QuickBooks Connected</p>
+                        <p>Last sync: <span id="lastSync">Never</span></p>
+                        <button class="btn btn-primary" onclick="syncQuickBooks()" style="margin-top: 1rem;">Sync Now</button>
+                        <button class="btn btn-small" onclick="disconnectQuickBooks()" style="margin-top: 1rem;">Disconnect</button>
                     </div>
                 </div>
             </div>
@@ -1709,6 +2032,144 @@
             <h2>Admin Dashboard</h2>
             <div id="adminContent">
                 <p style="text-align: center;">Loading admin data...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- POWERPOINT SHOWCASE SECTION -->
+    <section id="ppt-showcase-section" class="section" style="margin-top: 0; padding-top: 4rem;">
+        <div class="container">
+            <div class="ppt-showcase">
+                <h3>AI-Powered Financial Reports</h3>
+                <p class="subtitle">Boardroom-ready presentations generated in seconds, not weeks</p>
+
+                <div class="ppt-slides-container">
+                    <!-- Executive Summary Slide -->
+                    <div class="ppt-slide">
+                        <div class="ppt-slide-header">
+                            <div class="ppt-slide-icon">1</div>
+                            <span class="ppt-slide-title">Executive Summary</span>
+                        </div>
+                        <div class="ai-typing-text" id="typing-exec">
+                            <span class="typed-text"></span><span class="cursor"></span>
+                        </div>
+                        <div class="ppt-chart-placeholder">
+                            <svg width="100%" height="60" viewBox="0 0 200 60">
+                                <rect x="10" y="40" width="30" height="20" fill="#ff3333" opacity="0.8"/>
+                                <rect x="50" y="25" width="30" height="35" fill="#ff6666" opacity="0.8"/>
+                                <rect x="90" y="15" width="30" height="45" fill="#ff3333" opacity="0.8"/>
+                                <rect x="130" y="5" width="30" height="55" fill="#ffd700" opacity="0.9"/>
+                                <rect x="170" y="10" width="30" height="50" fill="#ff3333" opacity="0.8"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Financial Analysis Slide -->
+                    <div class="ppt-slide">
+                        <div class="ppt-slide-header">
+                            <div class="ppt-slide-icon">2</div>
+                            <span class="ppt-slide-title">Financial Analysis</span>
+                        </div>
+                        <div class="ai-typing-text" id="typing-financial">
+                            <span class="typed-text"></span><span class="cursor"></span>
+                        </div>
+                        <div class="ppt-chart-placeholder">
+                            <svg width="100%" height="60" viewBox="0 0 200 60">
+                                <polyline points="10,50 40,35 70,40 100,20 130,25 160,10 190,15" fill="none" stroke="#4caf50" stroke-width="3"/>
+                                <polyline points="10,55 40,50 70,48 100,45 130,40 160,35 190,30" fill="none" stroke="#ff3333" stroke-width="2" stroke-dasharray="5,5"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Market Insights Slide -->
+                    <div class="ppt-slide">
+                        <div class="ppt-slide-header">
+                            <div class="ppt-slide-icon">3</div>
+                            <span class="ppt-slide-title">Market Insights</span>
+                        </div>
+                        <div class="ai-typing-text" id="typing-market">
+                            <span class="typed-text"></span><span class="cursor"></span>
+                        </div>
+                        <div class="ppt-chart-placeholder">
+                            <svg width="100%" height="60" viewBox="0 0 200 60">
+                                <circle cx="60" cy="30" r="25" fill="none" stroke="#ff3333" stroke-width="8" stroke-dasharray="78.5 78.5" stroke-dashoffset="20"/>
+                                <circle cx="140" cy="30" r="25" fill="none" stroke="#ffd700" stroke-width="8" stroke-dasharray="78.5 78.5" stroke-dashoffset="40"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Strategic Recommendations Slide -->
+                    <div class="ppt-slide">
+                        <div class="ppt-slide-header">
+                            <div class="ppt-slide-icon">4</div>
+                            <span class="ppt-slide-title">Strategic Recommendations</span>
+                        </div>
+                        <div class="ai-typing-text" id="typing-strategy">
+                            <span class="typed-text"></span><span class="cursor"></span>
+                        </div>
+                        <div class="ppt-chart-placeholder" style="flex-direction: column; gap: 5px;">
+                            <div style="width: 80%; height: 8px; background: linear-gradient(90deg, #ff3333, #ffd700); border-radius: 4px;"></div>
+                            <div style="width: 65%; height: 8px; background: linear-gradient(90deg, #ff3333, #ff6666); border-radius: 4px;"></div>
+                            <div style="width: 90%; height: 8px; background: linear-gradient(90deg, #4caf50, #8bc34a); border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ppt-cta">
+                    <p style="color: #888; margin-bottom: 1rem;">Upload your data and watch AI transform it into boardroom-ready presentations</p>
+                    <button onclick="showSignUp(event)" class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 3rem;">
+                        Generate Your Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- Report Templates -->
+            <h2 style="margin-top: 4rem;">Choose Your Report Template</h2>
+            <p style="text-align: center; color: #888; margin-bottom: 2rem;">Select from Fathom-inspired professional templates</p>
+
+            <div class="report-templates">
+                <div class="report-template-card" onclick="selectReportTemplate('executive')" id="template-executive">
+                    <div class="report-template-icon">📊</div>
+                    <div class="report-template-name">Executive Summary</div>
+                    <div class="report-template-desc">High-level overview for board meetings and investor presentations</div>
+                </div>
+
+                <div class="report-template-card" onclick="selectReportTemplate('detailed')" id="template-detailed">
+                    <div class="report-template-icon">📈</div>
+                    <div class="report-template-name">Detailed Analysis</div>
+                    <div class="report-template-desc">In-depth financial metrics with trend analysis and forecasting</div>
+                </div>
+
+                <div class="report-template-card" onclick="selectReportTemplate('budget')" id="template-budget">
+                    <div class="report-template-icon">💰</div>
+                    <div class="report-template-name">Budget vs Actual</div>
+                    <div class="report-template-desc">Compare planned budgets against actual performance</div>
+                </div>
+
+                <div class="report-template-card" onclick="selectReportTemplate('cashflow')" id="template-cashflow">
+                    <div class="report-template-icon">💵</div>
+                    <div class="report-template-name">Cash Flow Statement</div>
+                    <div class="report-template-desc">Track money in and out with 13-week cash projections</div>
+                </div>
+
+                <div class="report-template-card" onclick="selectReportTemplate('kpi')" id="template-kpi">
+                    <div class="report-template-icon">🎯</div>
+                    <div class="report-template-name">KPI Dashboard</div>
+                    <div class="report-template-desc">Key performance indicators with visual scorecards</div>
+                </div>
+
+                <div class="report-template-card" onclick="selectReportTemplate('investor')" id="template-investor">
+                    <div class="report-template-icon">🏢</div>
+                    <div class="report-template-name">Investor Deck</div>
+                    <div class="report-template-desc">Pitch-ready presentation with market analysis and projections</div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button onclick="generateSelectedReport()" class="btn btn-primary" style="font-size: 1.3rem; padding: 1.2rem 4rem; background: linear-gradient(45deg, #ffd700, #ffed4e); color: #000;">
+                    Generate Report
+                </button>
+                <p style="color: #666; margin-top: 1rem; font-size: 0.9rem;">Select a template above, then click Generate Report</p>
             </div>
         </div>
     </section>
@@ -1757,15 +2218,26 @@
     <!-- SIGN UP MODAL -->
     <div id="signup-modal" class="auth-modal hidden">
         <div class="auth-box">
-            <h2>Sign Up</h2>
+            <h2>Start Your Free Trial</h2>
+            <p style="color: #ff6666; margin-bottom: 1rem; font-size: 0.95rem;">15 days free - No credit card required</p>
+
+            <!-- Google Sign Up Button -->
+            <button onclick="signInWithGoogle()" style="width: 100%; padding: 0.75rem; margin-bottom: 1rem; background: #fff; color: #333; border: 1px solid #ddd; border-radius: 0.5rem; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Sign up with Google
+            </button>
+
+            <div style="text-align: center; margin: 1rem 0; color: #666;">— or —</div>
+
             <form id="signup-form">
-                <input type="text" id="signup-firstname" placeholder="First Name" required />
-                <input type="text" id="signup-lastname" placeholder="Last Name" required />
-                <input type="text" id="signup-username" placeholder="Username (optional)" />
-                <input type="email" id="signup-email" placeholder="Email" required />
+                <input type="text" id="signup-company" placeholder="Company Name" required />
+                <input type="text" id="signup-firstname" placeholder="Your First Name" required />
+                <input type="text" id="signup-lastname" placeholder="Your Last Name" required />
+                <input type="email" id="signup-email" placeholder="Work Email" required />
                 <input type="password" id="signup-password" placeholder="Password (min 6 characters)" required />
-                <button type="submit">Create Account</button>
+                <button type="submit">Start Free Trial</button>
             </form>
+            <p style="color: #888; font-size: 0.8rem; margin-top: 1rem;">By signing up, you agree to our Terms of Service</p>
             <a class="text-link" onclick="switchToSignIn()">Already have an account? Sign in</a>
         </div>
     </div>
@@ -1774,6 +2246,15 @@
     <div id="signin-modal" class="auth-modal hidden">
         <div class="auth-box">
             <h2>Sign In</h2>
+
+            <!-- Google Sign In Button -->
+            <button onclick="signInWithGoogle()" style="width: 100%; padding: 0.75rem; margin-bottom: 1rem; background: #fff; color: #333; border: 1px solid #ddd; border-radius: 0.5rem; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Continue with Google
+            </button>
+
+            <div style="text-align: center; margin: 1rem 0; color: #666;">— or —</div>
+
             <form id="signin-form">
                 <input type="email" id="signin-email" placeholder="Email" required />
                 <input type="password" id="signin-password" placeholder="Password" required />
@@ -1797,257 +2278,71 @@
         </div>
     </div>
 
-    <!-- GUIDE SELECTOR MODAL -->
-    <div id="guide-modal" class="auth-modal hidden">
-        <div class="auth-box" style="max-width: 500px; padding: 0; background: transparent; border: none;">
-            <!-- Close Button -->
-            <button onclick="closeGuideModal()" style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.5); border: none; color: #fff; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; z-index: 10;">✕</button>
-
-            <!-- Guide Chat Container -->
-            <div id="guide-chat-container" style="position: relative; padding: 2rem;">
-
-                <!-- Guide Cards - Click avatar OR bubble to SIGN UP -->
-                <div class="guide-card active" data-guide="0" style="text-align: center;">
-                    <div onclick="goToSignup()" class="guide-avatar" style="width: 120px; height: 120px; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, #ff6b9d, #ff3366); display: flex; align-items: center; justify-content: center; font-size: 3rem; border: 4px solid #fff; box-shadow: 0 0 30px rgba(255, 107, 157, 0.5); cursor: pointer; transition: transform 0.3s ease;">
-                        ⚡
-                    </div>
-                    <div onclick="goToSignup()" class="guide-chat-bubble" style="background: linear-gradient(135deg, #ff6b9d, #ff3366); color: #fff; padding: 1.5rem; border-radius: 20px; border-bottom-left-radius: 5px; margin-bottom: 1rem; box-shadow: 0 10px 40px rgba(255, 107, 157, 0.3); cursor: pointer;">
-                        <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;">LADY LIGHTNING</h3>
-                        <p style="margin: 0; font-size: 1rem;">Hey! Alaina here, ready to spark things up! Click me to create your free account! ⚡</p>
-                    </div>
-                </div>
-
-                <div class="guide-card" data-guide="1" style="text-align: center; display: none;">
-                    <div onclick="goToSignup()" class="guide-avatar" style="width: 120px; height: 120px; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, #4a90d9, #2563eb); display: flex; align-items: center; justify-content: center; font-size: 3rem; border: 4px solid #fff; box-shadow: 0 0 30px rgba(74, 144, 217, 0.5); cursor: pointer; transition: transform 0.3s ease;">
-                        🎯
-                    </div>
-                    <div onclick="goToSignup()" class="guide-chat-bubble" style="background: linear-gradient(135deg, #4a90d9, #2563eb); color: #fff; padding: 1.5rem; border-radius: 20px; border-bottom-left-radius: 5px; margin-bottom: 1rem; box-shadow: 0 10px 40px rgba(74, 144, 217, 0.3); cursor: pointer;">
-                        <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;">ZAC THE STRATEGIST</h3>
-                        <p style="margin: 0; font-size: 1rem;">Hey there! I'm Zac, your financial strategy expert. Click me to sign up and let's build something amazing! 📊</p>
-                    </div>
-                </div>
-
-                <div class="guide-card" data-guide="2" style="text-align: center; display: none;">
-                    <div onclick="goToSignup()" class="guide-avatar" style="width: 120px; height: 120px; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, #ffd700, #ff9500); display: flex; align-items: center; justify-content: center; font-size: 3rem; border: 4px solid #fff; box-shadow: 0 0 30px rgba(255, 215, 0, 0.5); cursor: pointer; transition: transform 0.3s ease;">
-                        👑
-                    </div>
-                    <div onclick="goToSignup()" class="guide-chat-bubble" style="background: linear-gradient(135deg, #ffd700, #ff9500); color: #000; padding: 1.5rem; border-radius: 20px; border-bottom-left-radius: 5px; margin-bottom: 1rem; box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3); cursor: pointer;">
-                        <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;">LORD OF LIGHT</h3>
-                        <p style="margin: 0; font-size: 1rem;">Greetings! Click me to sign up and I shall illuminate your path to financial wisdom! ✨</p>
-                    </div>
-                </div>
-
-                <!-- Navigation Arrows - Click to Sign Up -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
-                    <button onclick="prevGuide()" id="guide-prev-arrow" class="guide-arrow" style="background: rgba(255, 51, 51, 0.2); border: 2px solid #ff3333; color: #ff3333; width: 60px; height: 60px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; transition: all 0.3s ease; visibility: hidden;">
-                        ←
-                    </button>
-
-                    <!-- Guide Dots -->
-                    <div style="display: flex; gap: 0.5rem;">
-                        <span class="guide-dot active" data-guide="0" onclick="goToGuide(0)" style="width: 12px; height: 12px; border-radius: 50%; background: #ff3333; cursor: pointer; transition: all 0.3s;"></span>
-                        <span class="guide-dot" data-guide="1" onclick="goToGuide(1)" style="width: 12px; height: 12px; border-radius: 50%; background: #444; cursor: pointer; transition: all 0.3s;"></span>
-                        <span class="guide-dot" data-guide="2" onclick="goToGuide(2)" style="width: 12px; height: 12px; border-radius: 50%; background: #444; cursor: pointer; transition: all 0.3s;"></span>
-                    </div>
-
-                    <button onclick="nextGuideOrSignup()" id="guide-next-arrow" class="guide-arrow" style="background: linear-gradient(135deg, #ff3333, #ff6666); border: none; color: #fff; width: 60px; height: 60px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; transition: all 0.3s ease; box-shadow: 0 5px 20px rgba(255, 51, 51, 0.4);">
-                        →
-                    </button>
-                </div>
-
-                <!-- Get Started Button -->
-                <div style="text-align: center; margin-top: 1.5rem;">
-                    <button onclick="goToSignup()" class="cta-button" style="font-size: 1.2rem; padding: 1rem 2.5rem; background: linear-gradient(135deg, #ff3333, #ff6666); border: none; animation: pulse 2s infinite;">
-                        🚀 Let's Get You Started!
-                    </button>
-                    <p style="color: #888; font-size: 0.85rem; margin-top: 1rem;">
-                        ✓ Free to start &nbsp; ✓ No credit card required
-                    </p>
-                </div>
-
-                <!-- Create Your Own 3D Avatar Button -->
-                <div style="text-align: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #333;">
-                    <p style="color: #888; font-size: 0.8rem; margin-bottom: 0.5rem;">Want a custom 3D guide?</p>
-                    <button onclick="openCreate3DAvatar()" style="background: linear-gradient(135deg, #9c27b0, #673ab7); color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 25px; cursor: pointer; font-size: 0.9rem; transition: all 0.3s ease;">
-                        🎨 Create Your Own Avatar
-                    </button>
-                </div>
-
-                <p style="color: #666; text-align: center; margin-top: 1rem; font-size: 0.85rem;">
-                    Already have an account? <a onclick="closeGuideModal(); showSignIn();" style="color: #ff3333; cursor: pointer; text-decoration: underline;">Sign In</a>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <style>
-        .guide-arrow:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(255, 51, 51, 0.5);
-        }
-        .guide-avatar:hover {
-            transform: scale(1.1);
-        }
-        .guide-chat-bubble:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 50px rgba(255, 107, 157, 0.4);
-        }
-        .guide-dot.active {
-            background: #ff3333 !important;
-            transform: scale(1.2);
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
-    </style>
-
-    <!-- ONBOARDING TOUR MODAL -->
-    <div id="onboarding-modal" class="auth-modal hidden">
-        <div class="auth-box" style="max-width: 700px;">
-            <h2 style="margin-bottom: 0.5rem;">🎉 Welcome to Lightning Ledgerz!</h2>
-            <p style="color: #888; margin-bottom: 2rem;">Let's take a quick tour to help you get started</p>
-
-            <div id="tour-steps">
-                <!-- Step 1 -->
-                <div class="tour-step active" data-step="1">
-                    <div style="background: rgba(255, 51, 51, 0.1); border: 1px solid #ff3333; border-radius: 15px; padding: 2rem; margin-bottom: 1.5rem;">
-                        <h3 style="color: #ff3333; margin-bottom: 1rem;">📊 Step 1: Build Your Budget</h3>
-                        <p style="color: #ccc; margin-bottom: 1rem;">Learn how to create powerful budgets in minutes with our AI-assisted budget builder.</p>
-                        <div style="background: #000; border-radius: 10px; padding: 1rem; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;">
-                            <p style="color: #666;">🎬 Tutorial Video: Creating Budgets</p>
-                            <!-- Placeholder for video embed -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="tour-step" data-step="2" style="display: none;">
-                    <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 15px; padding: 2rem; margin-bottom: 1.5rem;">
-                        <h3 style="color: #ffd700; margin-bottom: 1rem;">📑 Step 2: Generate PowerPoints</h3>
-                        <p style="color: #ccc; margin-bottom: 1rem;">Create McKinsey-quality presentation decks from your financial data automatically.</p>
-                        <div style="background: #000; border-radius: 10px; padding: 1rem; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;">
-                            <p style="color: #666;">🎬 Tutorial Video: PowerPoint Generator</p>
-                            <!-- Placeholder for video embed -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Step 3 -->
-                <div class="tour-step" data-step="3" style="display: none;">
-                    <div style="background: rgba(76, 175, 80, 0.1); border: 1px solid #4caf50; border-radius: 15px; padding: 2rem; margin-bottom: 1.5rem;">
-                        <h3 style="color: #4caf50; margin-bottom: 1rem;">📈 Step 3: Track Your Dashboard</h3>
-                        <p style="color: #ccc; margin-bottom: 1rem;">Monitor your financial health with live charts, insights, and AI-powered recommendations.</p>
-                        <div style="background: #000; border-radius: 10px; padding: 1rem; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;">
-                            <p style="color: #666;">🎬 Tutorial Video: Dashboard Overview</p>
-                            <!-- Placeholder for video embed -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Step 4 -->
-                <div class="tour-step" data-step="4" style="display: none;">
-                    <div style="background: rgba(156, 39, 176, 0.1); border: 1px solid #9c27b0; border-radius: 15px; padding: 2rem; margin-bottom: 1.5rem;">
-                        <h3 style="color: #9c27b0; margin-bottom: 1rem;">🤖 Step 4: Your AI Assistant</h3>
-                        <p style="color: #ccc; margin-bottom: 1rem;">Chat with your personalized AI guide to build financial models, get insights, and more.</p>
-                        <div style="background: #000; border-radius: 10px; padding: 1rem; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;">
-                            <p style="color: #666;">🎬 Tutorial Video: AI Assistant Features</p>
-                            <!-- Placeholder for video embed -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tour Navigation -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
-                <button onclick="prevTourStep()" id="tour-prev-btn" class="btn btn-small" style="background: transparent; border: 1px solid #333; color: #888; visibility: hidden;">
-                    ← Previous
-                </button>
-
-                <div id="tour-indicators" style="display: flex; gap: 0.5rem;">
-                    <span class="tour-dot active" data-step="1" onclick="goToTourStep(1)"></span>
-                    <span class="tour-dot" data-step="2" onclick="goToTourStep(2)"></span>
-                    <span class="tour-dot" data-step="3" onclick="goToTourStep(3)"></span>
-                    <span class="tour-dot" data-step="4" onclick="goToTourStep(4)"></span>
-                </div>
-
-                <button onclick="nextTourStep()" id="tour-next-btn" class="cta-button" style="padding: 0.75rem 1.5rem; font-size: 1rem;">
-                    Next →
-                </button>
-            </div>
-
-            <button onclick="skipTour()" style="background: transparent; border: none; color: #666; margin-top: 1.5rem; cursor: pointer; text-decoration: underline;">
-                Skip Tour
-            </button>
-        </div>
-    </div>
-
-    <!-- FLOATING AI ASSISTANT CHATBOT -->
-    <div id="ai-chatbot" class="hidden">
-        <div id="chatbot-container" style="position: fixed; bottom: 100px; right: 20px; width: 380px; max-height: 500px; background: #111; border: 1px solid #333; border-radius: 20px; box-shadow: 0 10px 50px rgba(0,0,0,0.5); z-index: 9999; display: flex; flex-direction: column; overflow: hidden;">
-            <!-- Chat Header -->
-            <div id="chatbot-header" style="background: linear-gradient(135deg, #ff3333, #ff6666); padding: 1rem; display: flex; align-items: center; gap: 0.75rem;">
-                <div id="chatbot-avatar" style="width: 45px; height: 45px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">⚡</div>
-                <div style="flex: 1;">
-                    <h4 id="chatbot-name" style="color: #fff; margin: 0; font-size: 1rem;">Lady Lightning</h4>
-                    <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 0.75rem;">AI Financial Assistant</p>
-                </div>
-                <button onclick="toggleChatbot()" style="background: rgba(255,255,255,0.2); border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 1rem;">✕</button>
-            </div>
-
-            <!-- Chat Messages -->
-            <div id="chatbot-messages" style="flex: 1; overflow-y: auto; padding: 1rem; max-height: 300px;">
-                <div class="bot-message" style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                    <div style="width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #ff6b9d, #ff3366); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0;">⚡</div>
-                    <div style="background: #222; color: #fff; padding: 0.75rem 1rem; border-radius: 15px; border-bottom-left-radius: 5px; max-width: 85%;">
-                        <p style="margin: 0; font-size: 0.9rem;">Hey there! I'm your AI assistant. Ask me anything or tell me where you want to go! I can help you with:</p>
-                        <ul style="margin: 0.5rem 0 0 0; padding-left: 1.25rem; font-size: 0.85rem; color: #ccc;">
-                            <li>Building budgets</li>
-                            <li>Generating PowerPoints</li>
-                            <li>Uploading documents</li>
-                            <li>Navigating the app</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div style="padding: 0.5rem 1rem; border-top: 1px solid #333; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                <button onclick="chatbotNavigate('dashboard')" style="background: #222; border: 1px solid #444; color: #fff; padding: 0.4rem 0.75rem; border-radius: 15px; font-size: 0.75rem; cursor: pointer;">📊 Dashboard</button>
-                <button onclick="chatbotNavigate('budget')" style="background: #222; border: 1px solid #444; color: #fff; padding: 0.4rem 0.75rem; border-radius: 15px; font-size: 0.75rem; cursor: pointer;">💰 Budget</button>
-                <button onclick="chatbotNavigate('documents')" style="background: #222; border: 1px solid #444; color: #fff; padding: 0.4rem 0.75rem; border-radius: 15px; font-size: 0.75rem; cursor: pointer;">📁 Upload</button>
-                <button onclick="chatbotNavigate('powerpoint')" style="background: #222; border: 1px solid #444; color: #fff; padding: 0.4rem 0.75rem; border-radius: 15px; font-size: 0.75rem; cursor: pointer;">📑 PowerPoint</button>
-            </div>
-
-            <!-- Chat Input -->
-            <div style="padding: 1rem; border-top: 1px solid #333; display: flex; gap: 0.5rem;">
-                <input type="text" id="chatbot-input" placeholder="Ask me anything..." style="flex: 1; background: #222; border: 1px solid #444; color: #fff; padding: 0.75rem 1rem; border-radius: 25px; font-size: 0.9rem;" onkeypress="if(event.key==='Enter')sendChatMessage()">
-                <button onclick="sendChatMessage()" style="background: linear-gradient(135deg, #ff3333, #ff6666); border: none; color: #fff; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">➤</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Floating Chat Button -->
-    <button id="chatbot-toggle" onclick="toggleChatbot()" style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; border-radius: 50%; background: linear-gradient(135deg, #ff3333, #ff6666); border: none; color: #fff; font-size: 1.8rem; cursor: pointer; box-shadow: 0 5px 25px rgba(255, 51, 51, 0.4); z-index: 9998; transition: all 0.3s ease; display: none;">
-        💬
-    </button>
-
-    <style>
-        #chatbot-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 35px rgba(255, 51, 51, 0.5);
-        }
-        #chatbot-messages::-webkit-scrollbar {
-            width: 5px;
-        }
-        #chatbot-messages::-webkit-scrollbar-thumb {
-            background: #444;
-            border-radius: 5px;
-        }
-    </style>
-
     <!-- Avatar Builder Script -->
     <script src="avatar-builder.js"></script>
+
+    <!-- Homepage Animations - Floating Graphs -->
+    <script src="homepage-animations.js"></script>
+
+    <!-- Upload Financials Modal -->
+    <div class="upload-modal" id="uploadModal">
+        <div class="upload-modal-content">
+            <div class="upload-modal-header">
+                <h2>Upload Your Financials</h2>
+                <button class="upload-modal-close" onclick="closeUploadModal()">&times;</button>
+            </div>
+            <div class="upload-dropzone" id="uploadDropzone" onclick="document.getElementById('fileUploadInput').click()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <p style="font-size: 1.2rem; color: #fff; font-weight: 600;">Drop files here or click to upload</p>
+                <p>We'll analyze your data and generate insights</p>
+                <input type="file" id="fileUploadInput" multiple accept=".pdf,.xlsx,.xls,.csv,.pptx,.ppt,.doc,.docx" style="display: none;" onchange="handleFileUpload(event)">
+            </div>
+            <div class="upload-file-types">
+                <span class="file-type-badge">PDF</span>
+                <span class="file-type-badge">Excel</span>
+                <span class="file-type-badge">CSV</span>
+                <span class="file-type-badge">PowerPoint</span>
+                <span class="file-type-badge">Word</span>
+            </div>
+            <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(255, 51, 51, 0.1); border-radius: 10px;">
+                <p style="color: #ccc; font-size: 0.9rem; margin: 0;">
+                    <strong style="color: #ff3333;">Supported documents:</strong><br>
+                    Proformas, Budgets, Financial Statements, Customer Lists, Expense Reports, Property Data, Comparable Analysis
+                </p>
+            </div>
+            <div id="uploadedFilesList" style="margin-top: 1rem;"></div>
+        </div>
+    </div>
+
+    <!-- Bring Back Zac Button (shown when Zac is dismissed) -->
+    <button class="bring-back-zac" id="bringBackZacBtn" onclick="bringBackZac()" title="Bring back Zac">
+        ⚡
+    </button>
+
+    <!-- Avatar Characters -->
+    <script src="zac-avatar.js"></script>
+    <script src="bolt-avatar.js"></script>
+    <script src="zeus-avatar.js"></script>
+    <script src="alaina-avatar.js"></script>
+    <script src="avatar-selector.js"></script>
+
+    <!-- New Lightning Ledgerz Modules -->
+    <script src="presentation-builder.js"></script>
+    <script src="powerpoint-templates.js"></script>
+    <script src="budget-builder.js"></script>
+    <script src="financial-reports.js"></script>
+    <script src="avatar-3d-system.js"></script>
+    <script src="quickbooks-integration.js"></script>
+    <script src="auto-report-generator.js"></script>
+    <script src="data-synthesizer.js"></script>
+    <script src="avatar-system-enhanced.js"></script>
+    <script src="ai-financial-analyst.js"></script>
+    <script src="referral-system.js"></script>
+    <script src="advanced-features.js"></script>
 
     <!-- Main Application Script -->
     <script src="app.js"></script>

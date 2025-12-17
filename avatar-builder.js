@@ -83,8 +83,8 @@ function generateAvatarSVG(options, pose = 'standing') {
         'beige': '#d7ccc8'
     };
 
-    const skinColor = skinColors[skinTone] || skinColors['medium'];
-    const eyeColor = eyeColors[eyeColor] || eyeColors['brown'];
+    const skinColorHex = skinColors[skinTone] || skinColors['medium'];
+    const eyeColorHex = eyeColors[eyeColor] || eyeColors['brown'];
     const hairColorHex = hairColors[hairColor] || hairColors['brown'];
     const outfitColorHex = outfitColors[outfitColor] || outfitColors['navy'];
 
@@ -143,16 +143,16 @@ function generateAvatarSVG(options, pose = 'standing') {
             ${themeElement}
 
             <!-- Head -->
-            <circle cx="100" cy="80" r="30" fill="${skinColor}" stroke="#000" stroke-width="1"/>
+            <circle cx="100" cy="80" r="30" fill="${skinColorHex}" stroke="#000" stroke-width="1"/>
 
             <!-- Eyes -->
-            <circle cx="90" cy="75" r="4" fill="${eyeColor}"/>
-            <circle cx="110" cy="75" r="4" fill="${eyeColor}"/>
+            <circle cx="90" cy="75" r="4" fill="${eyeColorHex}"/>
+            <circle cx="110" cy="75" r="4" fill="${eyeColorHex}"/>
             <circle cx="91" cy="74" r="1.5" fill="#fff"/>
             <circle cx="111" cy="74" r="1.5" fill="#fff"/>
 
             <!-- Nose -->
-            <line x1="100" y1="80" x2="100" y2="88" stroke="${skinColor}" stroke-width="2"
+            <line x1="100" y1="80" x2="100" y2="88" stroke="${skinColorHex}" stroke-width="2"
                   stroke-linecap="round" opacity="0.5"/>
 
             <!-- Mouth -->
@@ -171,9 +171,9 @@ function generateAvatarSVG(options, pose = 'standing') {
             <rect x="70" y="110" width="60" height="80" fill="${outfitColorHex}" rx="5" stroke="#000" stroke-width="1"/>
 
             <!-- Arms -->
-            <rect x="55" y="120" width="12" height="50" fill="${skinColor}"
+            <rect x="55" y="120" width="12" height="50" fill="${skinColorHex}"
                   transform="rotate(${currentPose.armAngle} 61 120)" rx="6"/>
-            <rect x="133" y="120" width="12" height="50" fill="${skinColor}"
+            <rect x="133" y="120" width="12" height="50" fill="${skinColorHex}"
                   transform="rotate(${-currentPose.armAngle} 139 120)" rx="6"/>
 
             <!-- Legs -->

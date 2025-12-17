@@ -36,6 +36,25 @@ function switchToSignUp() {
     document.getElementById('signup-modal').classList.remove('hidden');
 }
 
+// Google Sign In
+async function signInWithGoogle() {
+    try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin + '/index.html'
+            }
+        });
+
+        if (error) throw error;
+
+        // OAuth will redirect to Google, then back to your site
+    } catch (error) {
+        console.error("Google sign in error:", error);
+        alert("Google sign in failed: " + error.message);
+    }
+}
+
 // Close modals when clicking outside
 window.addEventListener('click', (e) => {
     if (e.target.id === 'signup-modal') {
@@ -44,143 +63,72 @@ window.addEventListener('click', (e) => {
     if (e.target.id === 'signin-modal') {
         document.getElementById('signin-modal').classList.add('hidden');
     }
-    if (e.target.id === 'guide-modal') {
-        document.getElementById('guide-modal').classList.add('hidden');
-    }
-    if (e.target.id === 'onboarding-modal') {
-        // Don't allow clicking outside to close onboarding - require Skip or Complete
-    }
 });
 
 // Sign Up
 document.getElementById("signup-form").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const companyName = document.getElementById("signup-company").value.trim();
     const firstName = document.getElementById("signup-firstname").value.trim();
     const lastName = document.getElementById("signup-lastname").value.trim();
-    const username = document.getElementById("signup-username").value.trim();
     const email = document.getElementById("signup-email").value.trim();
     const password = document.getElementById("signup-password").value;
 
-    // Validate password length
-    if (password.length < 6) {
-        alert("Password must be at least 6 characters long.");
-        return;
-    }
-
-    // Show loading state
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Creating Account...';
-    submitBtn.disabled = true;
+    // Calculate trial end date (15 days from now)
+    const trialEndDate = new Date();
+    trialEndDate.setDate(trialEndDate.getDate() + 15);
 
     try {
-        console.log("Starting signup for:", email);
-
-        // Create auth user with metadata
+        // Create auth user
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email: email,
-            password: password,
-            options: {
-                data: {
-                    first_name: firstName,
-                    last_name: lastName,
-                    username: username || null
-                }
-            }
+            password: password
         });
-
-        console.log("Auth result:", authData, authError);
 
         if (authError) throw authError;
 
-        // Check if email confirmation is required
-        if (authData.user && authData.user.identities && authData.user.identities.length === 0) {
-            // User already exists
-            alert("This email is already registered. Please sign in instead.");
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-            return;
-        }
+        // Create profile with company name and trial
+        const { error: profileError } = await supabase
+            .from('profiles')
+            .insert([{
+                id: authData.user.id,
+                email: email,
+                first_name: firstName,
+                last_name: lastName,
+                company_name: companyName,
+                package_tier: 'trial',
+                trial_end_date: trialEndDate.toISOString(),
+                is_admin: email === 'zpzant@gmail.com'
+            }]);
 
-        // Check if user needs to confirm email
-        if (authData.user && !authData.session) {
-            // Email confirmation required
-            alert("Account created! Please check your email to confirm your account, then sign in.");
-            document.getElementById("signup-modal").classList.add('hidden');
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-            return;
-        }
+        if (profileError) throw profileError;
 
-        // Session exists - user is logged in immediately (email confirmation disabled)
-        if (authData.user && authData.session) {
-            // Create profile
-            const { error: profileError } = await supabase
-                .from('profiles')
-                .insert([{
-                    id: authData.user.id,
-                    email: email,
-                    first_name: firstName,
-                    last_name: lastName,
-                    username: username || null,
-                    package_tier: 'basic',
-                    is_admin: email === 'zpzant@gmail.com'
-                }]);
+        alert("Account created successfully! Welcome to Lightning Ledgerz.");
+        document.getElementById("signup-modal").classList.add('hidden');
 
-            if (profileError) {
-                console.error("Profile creation error:", profileError);
-                // Profile might already exist or RLS issue
-                if (!profileError.message.includes('duplicate')) {
-                    console.warn("Could not create profile, will retry on next login");
-                }
+        // Wait for auth state to load profile, then redirect
+        setTimeout(() => {
+            if (currentUserProfile) {
+                // Navigate to profile page to set up avatar
+                document.getElementById("services").style.display = "none";
+                document.getElementById("about").style.display = "none";
+                document.getElementById("contact").style.display = "none";
+                document.getElementById("dashboard").classList.add('hidden');
+                document.getElementById("admin").classList.add('hidden');
+                document.getElementById("profile").classList.remove('hidden');
+                window.location.href = "#profile";
+
+                // Auto-switch to avatar tab for new users
+                switchProfileTab('avatar');
             }
-
-            document.getElementById("signup-modal").classList.add('hidden');
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-
-            // Success message
-            alert(`Welcome to Lightning Ledgerz, ${firstName}! Your account has been created.`);
-
-            // Wait for auth state to load profile, then show onboarding tour
-            setTimeout(() => {
-                if (currentUserProfile) {
-                    // Check if tour hasn't been completed yet
-                    if (!localStorage.getItem('tourCompleted')) {
-                        // Show onboarding tour for new users
-                        showOnboardingTour();
-                    } else if (localStorage.getItem('showAvatarAfterSignup') === 'true') {
-                        // Go directly to avatar builder
-                        localStorage.removeItem('showAvatarAfterSignup');
-                        navigateToAvatarBuilder();
-                    } else {
-                        // Navigate to profile page
-                        document.getElementById("services").style.display = "none";
-                        document.getElementById("about").style.display = "none";
-                        document.getElementById("contact").style.display = "none";
-                        document.getElementById("dashboard").classList.add('hidden');
-                        document.getElementById("admin").classList.add('hidden');
-                        document.getElementById("profile").classList.remove('hidden');
-                        window.location.href = "#profile";
-                        switchProfileTab('avatar');
-                    }
-                }
-            }, 1000);
-        }
+        }, 1000);
 
     } catch (error) {
         console.error("Signup error:", error);
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-
-        if (error.message.includes('already registered') || error.message.includes('already been registered')) {
+        if (error.message.includes('already registered')) {
             alert("This email is already registered. Please sign in instead.");
-        } else if (error.message.includes('Invalid email')) {
-            alert("Please enter a valid email address.");
-        } else if (error.message.includes('Password')) {
-            alert("Password must be at least 6 characters long.");
         } else {
-            alert("Signup failed: " + error.message + "\n\nPlease try again or contact support.");
+            alert("Signup failed: " + error.message);
         }
     }
 });
@@ -190,28 +138,33 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("signin-email").value.trim();
     const password = document.getElementById("signin-password").value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
 
     // Show loading state
-    const submitBtn = e.target.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Signing In...';
+    submitBtn.textContent = 'Signing in...';
     submitBtn.disabled = true;
 
     try {
-        console.log("Signing in:", email);
+        console.log("Attempting sign in for:", email);
 
         const { data, error } = await supabase.auth.signInWithPassword({
             email: email,
             password: password
         });
 
-        console.log("Sign in result:", data, error);
+        console.log("Sign in response:", { data, error });
 
-        if (error) throw error;
-
-        // Reset button
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
+        if (error) {
+            // Handle specific error cases
+            if (error.message.includes('Invalid login credentials')) {
+                throw new Error('Invalid email or password. Please try again.');
+            } else if (error.message.includes('Email not confirmed')) {
+                throw new Error('Please check your email and click the confirmation link first.');
+            } else {
+                throw error;
+            }
+        }
 
         // Close sign-in modal
         document.getElementById("signin-modal").classList.add('hidden');
@@ -225,7 +178,14 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
                                    currentUserProfile.username ||
                                    currentUserProfile.email.split('@')[0];
 
-                alert(`Welcome back, ${displayName}!`);
+                // Use the selected avatar to welcome the user
+                if (window.avatarSelector) {
+                    window.avatarSelector.welcomeBack(displayName);
+                } else if (window.zacAvatar) {
+                    window.zacAvatar.welcomeBack(displayName);
+                } else {
+                    alert(`Hi, ${displayName}! Welcome back.`);
+                }
 
                 // Navigate to profile page
                 document.getElementById("services").style.display = "none";
@@ -235,55 +195,25 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
                 document.getElementById("admin").classList.add('hidden');
                 document.getElementById("profile").classList.remove('hidden');
                 window.location.href = "#profile";
-            } else if (currentUser) {
-                // User exists but no profile - create one
-                alert(`Welcome! Setting up your profile...`);
-                createMissingProfile(currentUser, email);
+            } else {
+                // Profile didn't load yet, still show success
+                if (window.avatarSelector) {
+                    window.avatarSelector.showCurrentAvatar();
+                } else if (window.zacAvatar) {
+                    window.zacAvatar.show();
+                }
             }
-        }, 1000);
+        }, 1500);
 
     } catch (error) {
         console.error("Login error:", error);
+        alert("Login failed: " + error.message);
+    } finally {
+        // Reset button state
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
-
-        if (error.message.includes('Invalid login credentials')) {
-            alert("Invalid email or password. Please try again.\n\nIf you forgot your password, click 'Forgot Password?' below.");
-        } else if (error.message.includes('Email not confirmed')) {
-            alert("Please check your email and confirm your account before signing in.");
-        } else {
-            alert("Login failed: " + error.message);
-        }
     }
 });
-
-// Helper function to create profile if missing
-async function createMissingProfile(user, email) {
-    try {
-        const { error } = await supabase
-            .from('profiles')
-            .insert([{
-                id: user.id,
-                email: email,
-                first_name: email.split('@')[0],
-                last_name: '',
-                package_tier: 'basic',
-                is_admin: email === 'zpzant@gmail.com'
-            }]);
-
-        if (!error) {
-            await loadUserProfile();
-            // Navigate to profile
-            document.getElementById("services").style.display = "none";
-            document.getElementById("about").style.display = "none";
-            document.getElementById("contact").style.display = "none";
-            document.getElementById("profile").classList.remove('hidden');
-            window.location.href = "#profile";
-        }
-    } catch (err) {
-        console.error("Error creating missing profile:", err);
-    }
-}
 
 // Forgot Password
 document.getElementById("forgot-password").addEventListener("click", async () => {
@@ -365,19 +295,10 @@ async function signOutUser() {
         alert("Signed out successfully!");
         currentUser = null;
         currentUserProfile = null;
-
-        // Show home sections
-        document.getElementById("services").style.display = "";
-        document.getElementById("about").style.display = "";
-        document.getElementById("contact").style.display = "";
-
-        // Hide profile/dashboard/admin
         document.getElementById("profile").classList.add('hidden');
         document.getElementById("dashboard").classList.add('hidden');
         document.getElementById("admin").classList.add('hidden');
-
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.location.href = "#top";
     } catch (error) {
         console.error("Sign out error:", error);
         alert("Failed to sign out: " + error.message);
@@ -411,25 +332,10 @@ supabase.auth.onAuthStateChange(async (event, session) => {
     if (session?.user) {
         currentUser = session.user;
         await loadUserProfile();
-        // Show chatbot for logged-in users
-        setTimeout(() => updateChatbotVisibility(), 500);
-
-        // Check for redirect after signup (e.g., from PowerPoint button)
-        const redirectAfterSignup = localStorage.getItem('redirectAfterSignup');
-        if (redirectAfterSignup) {
-            localStorage.removeItem('redirectAfterSignup');
-            setTimeout(() => {
-                if (redirectAfterSignup === 'powerpoint') {
-                    chatbotNavigate('powerpoint');
-                }
-            }, 1000);
-        }
     } else {
         currentUser = null;
         currentUserProfile = null;
         hideUserWelcome();
-        // Hide chatbot for logged-out users
-        setTimeout(() => updateChatbotVisibility(), 500);
     }
 });
 
@@ -449,6 +355,7 @@ async function loadUserProfile() {
         currentUserProfile = data;
         updateNavigationWithUser();
         updateProfilePage();
+        updateCompanyLogoSection();
 
         // Show/hide features based on package
         updateFeatureAccess();
@@ -466,22 +373,28 @@ async function updateNavigationWithUser() {
     const welcomeText = document.getElementById('welcomeText');
     const badge = document.getElementById('membershipBadge');
     const navAvatarContainer = document.getElementById('navAvatarContainer');
+    const navElement = document.querySelector('nav');
 
     // Use first name, username, or email as fallback
     const displayName = currentUserProfile.first_name ||
                        currentUserProfile.username ||
                        currentUserProfile.email.split('@')[0];
 
-    welcomeText.textContent = `Welcome Back, ${displayName}`;
+    welcomeText.textContent = `Hi, ${displayName}!`;
 
-    // Set badge color based on tier
+    // Set badge color and nav theme based on tier
     badge.className = 'membership-badge';
+    navElement.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
+
     if (currentUserProfile.package_tier === 'basic') {
         badge.classList.add('badge-basic');
+        navElement.classList.add('tier-basic');
     } else if (currentUserProfile.package_tier === 'gold') {
         badge.classList.add('badge-gold');
+        navElement.classList.add('tier-gold');
     } else if (currentUserProfile.package_tier === 'diamond') {
         badge.classList.add('badge-diamond');
+        navElement.classList.add('tier-diamond');
     }
 
     // Load and display avatar
@@ -498,11 +411,51 @@ async function updateNavigationWithUser() {
     if (currentUserProfile.is_admin) {
         document.getElementById('adminLink').classList.remove('hidden');
     }
+
+    // Update dropdown menu items for logged-in state
+    const dropdownSignUp = document.getElementById('dropdownSignUp');
+    const dropdownSignIn = document.getElementById('dropdownSignIn');
+    const dropdownPreview = document.getElementById('dropdownPreview');
+    const dropdownLogout = document.getElementById('dropdownLogout');
+
+    if (dropdownSignUp) dropdownSignUp.classList.add('hidden');
+    if (dropdownSignIn) dropdownSignIn.classList.add('hidden');
+    if (dropdownPreview) dropdownPreview.classList.add('hidden');
+    if (dropdownLogout) dropdownLogout.classList.remove('hidden');
+
+    // Hide nav Sign Up button when logged in
+    const navSignUpBtn = document.getElementById('navSignUpBtn');
+    if (navSignUpBtn) navSignUpBtn.classList.add('hidden');
 }
 
 function hideUserWelcome() {
     document.getElementById('userWelcomeNav').classList.add('hidden');
     document.getElementById('adminLink').classList.add('hidden');
+    // Hide company logo section
+    const logoSection = document.getElementById('companyLogoSection');
+    if (logoSection) {
+        logoSection.classList.remove('visible');
+    }
+    // Remove tier theming from nav
+    const navElement = document.querySelector('nav');
+    if (navElement) {
+        navElement.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
+    }
+
+    // Reset dropdown menu items for logged-out state
+    const dropdownSignUp = document.getElementById('dropdownSignUp');
+    const dropdownSignIn = document.getElementById('dropdownSignIn');
+    const dropdownPreview = document.getElementById('dropdownPreview');
+    const dropdownLogout = document.getElementById('dropdownLogout');
+
+    if (dropdownSignUp) dropdownSignUp.classList.remove('hidden');
+    if (dropdownSignIn) dropdownSignIn.classList.remove('hidden');
+    if (dropdownPreview) dropdownPreview.classList.remove('hidden');
+    if (dropdownLogout) dropdownLogout.classList.add('hidden');
+
+    // Show nav Sign Up button when logged out
+    const navSignUpBtn = document.getElementById('navSignUpBtn');
+    if (navSignUpBtn) navSignUpBtn.classList.remove('hidden');
 }
 
 // Update profile page with user data
@@ -514,7 +467,73 @@ function updateProfilePage() {
     document.getElementById('userEmail').textContent = currentUserProfile.email;
     document.getElementById('userUsername').textContent = currentUserProfile.username || 'Not set';
     document.getElementById('userPlan').textContent = currentUserProfile.package_tier.toUpperCase();
+
+    // Populate edit fields
+    const editFirstName = document.getElementById('edit-first-name');
+    const editLastName = document.getElementById('edit-last-name');
+    const editCompanyName = document.getElementById('edit-company-name');
+    const editUsername = document.getElementById('edit-username');
+    const editPhone = document.getElementById('edit-phone');
+
+    if (editFirstName) editFirstName.value = currentUserProfile.first_name || '';
+    if (editLastName) editLastName.value = currentUserProfile.last_name || '';
+    if (editCompanyName) editCompanyName.value = currentUserProfile.company_name || '';
+    if (editUsername) editUsername.value = currentUserProfile.username || '';
+    if (editPhone) editPhone.value = currentUserProfile.phone || '';
 }
+
+// Save profile changes
+async function saveProfileChanges() {
+    if (!currentUser) {
+        alert('Please sign in first.');
+        return;
+    }
+
+    const firstName = document.getElementById('edit-first-name')?.value.trim();
+    const lastName = document.getElementById('edit-last-name')?.value.trim();
+    const companyName = document.getElementById('edit-company-name')?.value.trim();
+    const username = document.getElementById('edit-username')?.value.trim();
+    const phone = document.getElementById('edit-phone')?.value.trim();
+
+    try {
+        const { error } = await supabase
+            .from('profiles')
+            .update({
+                first_name: firstName,
+                last_name: lastName,
+                company_name: companyName,
+                username: username,
+                phone: phone
+            })
+            .eq('id', currentUser.id);
+
+        if (error) throw error;
+
+        // Update local profile
+        currentUserProfile.first_name = firstName;
+        currentUserProfile.last_name = lastName;
+        currentUserProfile.company_name = companyName;
+        currentUserProfile.username = username;
+        currentUserProfile.phone = phone;
+
+        // Update display
+        document.getElementById('userFullName').textContent = `${firstName} ${lastName}`;
+        document.getElementById('userUsername').textContent = username || 'Not set';
+        document.getElementById('welcomeText').textContent = `Hi, ${firstName || username || 'User'}!`;
+
+        if (window.zacAvatar) {
+            window.zacAvatar.speak('Profile updated successfully!');
+        } else {
+            alert('Profile updated successfully!');
+        }
+
+    } catch (error) {
+        console.error('Profile update error:', error);
+        alert('Failed to update profile: ' + error.message);
+    }
+}
+
+window.saveProfileChanges = saveProfileChanges;
 
 // Show/hide features based on package tier
 function updateFeatureAccess() {
@@ -541,74 +560,6 @@ function updateFeatureAccess() {
 // NAVIGATION HANDLERS
 // =====================================================
 
-function handleHomeClick(event) {
-    event.preventDefault();
-
-    // Show home sections
-    document.getElementById("services").style.display = "";
-    document.getElementById("about").style.display = "";
-    document.getElementById("contact").style.display = "";
-
-    // Hide profile/dashboard/admin
-    document.getElementById("profile").classList.add('hidden');
-    document.getElementById("dashboard").classList.add('hidden');
-    document.getElementById("admin").classList.add('hidden');
-
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function handleServicesClick(event) {
-    event.preventDefault();
-
-    // Show services section
-    document.getElementById("services").style.display = "";
-    document.getElementById("about").style.display = "";
-    document.getElementById("contact").style.display = "";
-
-    // Hide profile/dashboard/admin
-    document.getElementById("profile").classList.add('hidden');
-    document.getElementById("dashboard").classList.add('hidden');
-    document.getElementById("admin").classList.add('hidden');
-
-    // Scroll to services
-    document.getElementById("services").scrollIntoView({ behavior: "smooth" });
-}
-
-function handleAboutClick(event) {
-    event.preventDefault();
-
-    // Show all home sections
-    document.getElementById("services").style.display = "";
-    document.getElementById("about").style.display = "";
-    document.getElementById("contact").style.display = "";
-
-    // Hide profile/dashboard/admin
-    document.getElementById("profile").classList.add('hidden');
-    document.getElementById("dashboard").classList.add('hidden');
-    document.getElementById("admin").classList.add('hidden');
-
-    // Scroll to about
-    document.getElementById("about").scrollIntoView({ behavior: "smooth" });
-}
-
-function handleContactClick(event) {
-    event.preventDefault();
-
-    // Show all home sections
-    document.getElementById("services").style.display = "";
-    document.getElementById("about").style.display = "";
-    document.getElementById("contact").style.display = "";
-
-    // Hide profile/dashboard/admin
-    document.getElementById("profile").classList.add('hidden');
-    document.getElementById("dashboard").classList.add('hidden');
-    document.getElementById("admin").classList.add('hidden');
-
-    // Scroll to contact
-    document.getElementById("contact").scrollIntoView({ behavior: "smooth" });
-}
-
 function handleMyProfileClick(event) {
     event.preventDefault();
 
@@ -618,18 +569,14 @@ function handleMyProfileClick(event) {
         return;
     }
 
-    // Hide all home sections
+    // Hide all sections
     document.getElementById("services").style.display = "none";
-    document.getElementById("about").style.display = "none";
-    document.getElementById("contact").style.display = "none";
-
-    // Hide other logged-in sections
     document.getElementById("dashboard").classList.add('hidden');
     document.getElementById("admin").classList.add('hidden');
 
     // Show profile
     document.getElementById("profile").classList.remove('hidden');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
 
     // Load avatar if on avatar tab
     if (document.getElementById('tab-avatar').classList.contains('active')) {
@@ -646,18 +593,14 @@ async function handleDashboardClick(event) {
         return;
     }
 
-    // Hide all home sections
+    // Hide all sections
     document.getElementById("services").style.display = "none";
-    document.getElementById("about").style.display = "none";
-    document.getElementById("contact").style.display = "none";
-
-    // Hide other logged-in sections
     document.getElementById("profile").classList.add('hidden');
     document.getElementById("admin").classList.add('hidden');
 
     // Show dashboard
     document.getElementById("dashboard").classList.remove('hidden');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById("dashboard").scrollIntoView({ behavior: "smooth" });
 
     // Load dashboard data
     await loadDashboard();
@@ -671,58 +614,42 @@ async function handleAdminClick(event) {
         return;
     }
 
-    // Hide all home sections
+    // Hide all sections
     document.getElementById("services").style.display = "none";
-    document.getElementById("about").style.display = "none";
-    document.getElementById("contact").style.display = "none";
-
-    // Hide other logged-in sections
     document.getElementById("profile").classList.add('hidden');
     document.getElementById("dashboard").classList.add('hidden');
 
     // Show admin
     document.getElementById("admin").classList.remove('hidden');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById("admin").scrollIntoView({ behavior: "smooth" });
 
     // Load admin data
     await loadAdminDashboard();
 }
 
 function scrollToPackage(id) {
-    // First show services section if hidden
-    document.getElementById("services").style.display = "block";
-
-    // Remove highlight from all packages
-    document.querySelectorAll('.package-card').forEach(card => {
-        card.classList.remove('package-highlighted');
-        card.style.transform = '';
-        card.style.boxShadow = '';
-    });
-
     const target = document.getElementById(id);
     if (target) {
-        // Scroll to it
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Remove highlighted class from all packages
+        document.querySelectorAll('.package-card').forEach(card => {
+            card.classList.remove('highlighted');
+        });
 
-        // Add highlight effect
-        target.classList.add('package-highlighted');
-        target.style.transform = 'scale(1.05)';
+        // Add highlighted class to target package
+        target.classList.add('highlighted');
 
-        // Add glow effect based on package type
-        if (id.includes('basic')) {
-            target.style.boxShadow = '0 0 40px rgba(255, 51, 51, 0.6), 0 0 80px rgba(255, 51, 51, 0.3)';
-        } else if (id.includes('gold')) {
-            target.style.boxShadow = '0 0 40px rgba(255, 215, 0, 0.6), 0 0 80px rgba(255, 215, 0, 0.3)';
-        } else if (id.includes('diamond')) {
-            target.style.boxShadow = '0 0 40px rgba(185, 242, 255, 0.6), 0 0 80px rgba(185, 242, 255, 0.3)';
+        // Toggle active state - remove from all, add to clicked one (allows switching)
+        const packageType = id.replace('-package', ''); // 'basic', 'gold', or 'diamond'
+        document.querySelectorAll('.package-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const clickedBtn = document.querySelector(`.package-btn.${packageType}`);
+        if (clickedBtn) {
+            clickedBtn.classList.add('active');
         }
 
-        // Remove highlight after 3 seconds
-        setTimeout(() => {
-            target.classList.remove('package-highlighted');
-            target.style.transform = '';
-            target.style.boxShadow = '';
-        }, 3000);
+        // Scroll to target
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 }
 
@@ -776,11 +703,16 @@ function switchProfileTab(tabName) {
     });
 
     // Show selected tab
-    document.getElementById(`tab-${tabName}`).classList.add('active');
+    const tabContent = document.getElementById(`tab-${tabName}`);
+    if (tabContent) {
+        tabContent.classList.add('active');
+    }
 
-    // Find and activate the correct tab button
-    document.querySelectorAll('.tab-button').forEach(btn => {
-        if (btn.textContent.toLowerCase().includes(tabName)) {
+    // Find and activate the correct button
+    const buttons = document.querySelectorAll('.tab-button');
+    buttons.forEach(btn => {
+        if (btn.textContent.toLowerCase().includes(tabName.toLowerCase()) ||
+            btn.getAttribute('onclick')?.includes(tabName)) {
             btn.classList.add('active');
         }
     });
@@ -922,7 +854,12 @@ async function uploadDocuments() {
             progressBar.style.width = progress + '%';
         }
 
-        alert("All files uploaded successfully!");
+        // Use Zac to celebrate the upload
+        if (window.zacAvatar) {
+            window.zacAvatar.celebrateUpload();
+        } else {
+            alert("All files uploaded successfully!");
+        }
         fileInput.value = "";
         progressDiv.style.display = "none";
         progressBar.style.width = "0%";
@@ -1646,12 +1583,6 @@ window.addEventListener('DOMContentLoaded', async () => {
         currentUser = session.user;
         await loadUserProfile();
     }
-    // Update chatbot visibility on page load
-    setTimeout(() => {
-        if (typeof updateChatbotVisibility === 'function') {
-            updateChatbotVisibility();
-        }
-    }, 1000);
 });
 
 // Make functions globally available
@@ -1659,41 +1590,13 @@ window.showSignUp = showSignUp;
 window.showSignIn = showSignIn;
 window.switchToSignIn = switchToSignIn;
 window.switchToSignUp = switchToSignUp;
+window.signInWithGoogle = signInWithGoogle;
 window.signOutUser = signOutUser;
-window.handleHomeClick = handleHomeClick;
-window.handleServicesClick = handleServicesClick;
-window.handleAboutClick = handleAboutClick;
-window.handleContactClick = handleContactClick;
 window.handleMyProfileClick = handleMyProfileClick;
 window.handleDashboardClick = handleDashboardClick;
 window.handleAdminClick = handleAdminClick;
 window.scrollToPackage = scrollToPackage;
 window.selectPackage = selectPackage;
-
-// Mobile Navigation Toggle
-function toggleMobileNav() {
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.getElementById('navLinks');
-
-    if (hamburger && navLinks) {
-        hamburger.classList.toggle('active');
-        navLinks.classList.toggle('active');
-    }
-}
-
-// Close mobile nav when clicking a link
-document.addEventListener('click', (e) => {
-    if (e.target.matches('.nav-links a')) {
-        const hamburger = document.querySelector('.hamburger');
-        const navLinks = document.getElementById('navLinks');
-        if (hamburger && navLinks) {
-            hamburger.classList.remove('active');
-            navLinks.classList.remove('active');
-        }
-    }
-});
-
-window.toggleMobileNav = toggleMobileNav;
 window.switchProfileTab = switchProfileTab;
 window.toggleAvatarType = toggleAvatarType;
 window.uploadLogo = uploadLogo;
@@ -1706,520 +1609,605 @@ window.syncQuickBooks = syncQuickBooks;
 window.disconnectQuickBooks = disconnectQuickBooks;
 
 // =====================================================
-// GUIDE SELECTOR & ONBOARDING TOUR
+// GUEST PREVIEW MODE
 // =====================================================
 
-let currentTourStep = 1;
-const totalTourSteps = 4;
+function previewFeatures(event) {
+    if (event) event.preventDefault();
 
-// Guide navigation state
-let currentGuide = 0;
-const totalGuides = 3; // Lady Lightning, Zac, Lord of Light
+    // Set up demo profile for preview
+    currentUserProfile = {
+        first_name: 'Demo',
+        last_name: 'User',
+        email: 'demo@lightningledgerz.com',
+        username: 'demo_user',
+        package_tier: 'diamond', // Show all features
+        is_admin: false
+    };
 
-// Show the guide selector modal
-function showGuideModal() {
-    // Randomize which guide appears first!
-    currentGuide = Math.floor(Math.random() * totalGuides);
-    document.getElementById('guide-modal').classList.remove('hidden');
-    updateGuideDisplay(); // Update the display
-}
+    // Update profile page with demo data
+    document.getElementById('userFullName').textContent = 'Demo User';
+    document.getElementById('userEmail').textContent = 'demo@lightningledgerz.com';
+    document.getElementById('userUsername').textContent = 'demo_user';
+    document.getElementById('userPlan').textContent = 'DIAMOND (Preview)';
 
-// Close guide modal
-function closeGuideModal() {
-    document.getElementById('guide-modal').classList.add('hidden');
-}
+    // Show all tabs for preview
+    document.getElementById('pptTab').classList.remove('hidden');
+    document.getElementById('qbTab').classList.remove('hidden');
 
-// Guide navigation functions
-
-// Go to a specific guide
-function goToGuide(index) {
-    currentGuide = index;
-    updateGuideDisplay();
-}
-
-// Previous guide
-function prevGuide() {
-    if (currentGuide > 0) {
-        currentGuide--;
-        updateGuideDisplay();
-    }
-}
-
-// Next guide or go to signup (ARROWS LEAD TO SIGNUP!)
-function nextGuideOrSignup() {
-    if (currentGuide < totalGuides - 1) {
-        currentGuide++;
-        updateGuideDisplay();
-    } else {
-        // On last guide - clicking arrow goes to SIGNUP!
-        goToSignup();
-    }
-}
-
-// GO TO SIGNUP - This is the main goal!
-function goToSignup() {
-    closeGuideModal();
-    showSignUp();
-    // After signup, show onboarding tour instead of avatar builder
-    localStorage.removeItem('showAvatarAfterSignup');
-    localStorage.removeItem('tourCompleted');
-}
-
-// Update guide display
-function updateGuideDisplay() {
-    // Hide all guide cards
-    document.querySelectorAll('.guide-card').forEach(card => {
-        card.style.display = 'none';
-        card.classList.remove('active');
-    });
-
-    // Show current guide
-    const currentCard = document.querySelector(`.guide-card[data-guide="${currentGuide}"]`);
-    if (currentCard) {
-        currentCard.style.display = 'block';
-        currentCard.classList.add('active');
-    }
-
-    // Update dots
-    document.querySelectorAll('.guide-dot').forEach(dot => {
-        dot.classList.remove('active');
-        dot.style.background = '#444';
-        if (parseInt(dot.dataset.guide) === currentGuide) {
-            dot.classList.add('active');
-            dot.style.background = '#ff3333';
-        }
-    });
-
-    // Update prev arrow visibility
-    const prevArrow = document.getElementById('guide-prev-arrow');
-    if (prevArrow) {
-        prevArrow.style.visibility = currentGuide > 0 ? 'visible' : 'hidden';
-    }
-
-    // Update next arrow - show "Sign Up" indicator on last guide
-    const nextArrow = document.getElementById('guide-next-arrow');
-    if (nextArrow) {
-        if (currentGuide === totalGuides - 1) {
-            nextArrow.innerHTML = '🚀';
-            nextArrow.title = 'Sign Up!';
-        } else {
-            nextArrow.innerHTML = '→';
-            nextArrow.title = 'Next Guide';
-        }
-    }
-}
-
-// Start the onboarding flow - ALWAYS goes to signup first (most important!)
-function startAvatarCreation() {
-    closeGuideModal();
-
-    if (!currentUser) {
-        // Not logged in - MUST sign up first (this is the priority!)
-        showSignUp();
-        // After signup, show tour instead of avatar builder
-        localStorage.removeItem('showAvatarAfterSignup');
-        localStorage.removeItem('tourCompleted');
-    } else {
-        // Already logged in - show the onboarding tour
-        if (!localStorage.getItem('tourCompleted')) {
-            showOnboardingTour();
-        } else {
-            // Tour completed - go to profile
-            navigateToAvatarBuilder();
-        }
-    }
-}
-
-// Navigate to avatar builder
-function navigateToAvatarBuilder() {
+    // Hide other sections
     document.getElementById("services").style.display = "none";
     document.getElementById("about").style.display = "none";
     document.getElementById("contact").style.display = "none";
     document.getElementById("dashboard").classList.add('hidden');
     document.getElementById("admin").classList.add('hidden');
+
+    // Show profile section
     document.getElementById("profile").classList.remove('hidden');
     window.location.href = "#profile";
-    switchProfileTab('avatar');
-}
 
-// Show onboarding tour after signup
-function showOnboardingTour() {
-    currentTourStep = 1;
-    updateTourDisplay();
-    document.getElementById('onboarding-modal').classList.remove('hidden');
-}
-
-// Tour navigation functions
-function nextTourStep() {
-    if (currentTourStep < totalTourSteps) {
-        currentTourStep++;
-        updateTourDisplay();
-    } else {
-        // Finished tour
-        completeTour();
-    }
-}
-
-function prevTourStep() {
-    if (currentTourStep > 1) {
-        currentTourStep--;
-        updateTourDisplay();
-    }
-}
-
-function goToTourStep(step) {
-    currentTourStep = step;
-    updateTourDisplay();
-}
-
-function updateTourDisplay() {
-    // Hide all steps
-    document.querySelectorAll('.tour-step').forEach(step => {
-        step.style.display = 'none';
-    });
-
-    // Show current step
-    const currentStep = document.querySelector(`.tour-step[data-step="${currentTourStep}"]`);
-    if (currentStep) {
-        currentStep.style.display = 'block';
+    // Initialize avatar preview
+    if (typeof updateAvatarPreview === 'function') {
+        updateAvatarPreview();
     }
 
-    // Update dots
-    document.querySelectorAll('.tour-dot').forEach(dot => {
-        dot.classList.remove('active');
-        if (parseInt(dot.dataset.step) === currentTourStep) {
-            dot.classList.add('active');
-        }
-    });
+    // Show demo documents
+    document.getElementById('documentsList').innerHTML = `
+        <div class="document-item">
+            <div>
+                <strong>sample_budget.pdf</strong>
+                <p>PDF • 245 KB • Uploaded: Demo</p>
+            </div>
+            <div class="document-actions">
+                <button class="btn btn-small btn-primary">View</button>
+            </div>
+        </div>
+        <div class="document-item">
+            <div>
+                <strong>financials_2024.xlsx</strong>
+                <p>Excel • 128 KB • Uploaded: Demo</p>
+            </div>
+            <div class="document-actions">
+                <button class="btn btn-small btn-primary">View</button>
+            </div>
+        </div>
+    `;
 
-    // Update prev button visibility
-    const prevBtn = document.getElementById('tour-prev-btn');
-    if (prevBtn) {
-        prevBtn.style.visibility = currentTourStep > 1 ? 'visible' : 'hidden';
+    alert('Preview Mode: Explore all features! Sign up to save your data.');
+}
+
+window.previewFeatures = previewFeatures;
+
+// =====================================================
+// AI TYPING ANIMATION FOR PPT SHOWCASE
+// =====================================================
+
+const aiTypingTexts = {
+    exec: "Revenue increased 23% YoY driven by expansion into new markets. Operating margin improved to 18.5% through cost optimization initiatives...",
+    financial: "Net profit margin: 12.4% (+2.1pp). EBITDA: $2.4M. Working capital ratio improved from 1.8 to 2.1. Cash conversion cycle reduced by 8 days...",
+    market: "Market share grew to 15.3% in Q4. Competitive analysis shows 3 key differentiators. Customer acquisition cost decreased 18% while LTV increased...",
+    strategy: "1. Expand digital channels (est. +$500K revenue)\n2. Optimize supply chain (-12% costs)\n3. Launch premium tier (35% margin potential)..."
+};
+
+let typingIntervals = {};
+
+function startTypingAnimation(elementId, text) {
+    const element = document.querySelector(`#${elementId} .typed-text`);
+    if (!element) return;
+
+    let index = 0;
+    element.textContent = '';
+
+    // Clear any existing interval
+    if (typingIntervals[elementId]) {
+        clearInterval(typingIntervals[elementId]);
     }
 
-    // Update next button text
-    const nextBtn = document.getElementById('tour-next-btn');
-    if (nextBtn) {
-        if (currentTourStep === totalTourSteps) {
-            nextBtn.textContent = "Get Started! 🚀";
+    typingIntervals[elementId] = setInterval(() => {
+        if (index < text.length) {
+            element.textContent += text[index];
+            index++;
         } else {
-            nextBtn.textContent = "Next →";
+            clearInterval(typingIntervals[elementId]);
+            // Restart after a delay
+            setTimeout(() => {
+                startTypingAnimation(elementId, text);
+            }, 3000);
         }
+    }, 50);
+}
+
+// Start typing animations when PPT showcase is visible
+function initPPTShowcaseAnimations() {
+    const isMobile = window.innerWidth <= 768;
+
+    // Lower threshold for mobile devices
+    const threshold = isMobile ? 0.1 : 0.3;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                startTypingAnimation('typing-exec', aiTypingTexts.exec);
+                setTimeout(() => startTypingAnimation('typing-financial', aiTypingTexts.financial), 500);
+                setTimeout(() => startTypingAnimation('typing-market', aiTypingTexts.market), 1000);
+                setTimeout(() => startTypingAnimation('typing-strategy', aiTypingTexts.strategy), 1500);
+            }
+        });
+    }, { threshold: threshold, rootMargin: '50px' });
+
+    const showcase = document.getElementById('ppt-showcase-section');
+    if (showcase) {
+        observer.observe(showcase);
+    }
+
+    // Fallback for mobile - start animations after scroll delay
+    if (isMobile) {
+        let typingStarted = false;
+        window.addEventListener('scroll', () => {
+            if (!typingStarted && showcase) {
+                const rect = showcase.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    typingStarted = true;
+                    startTypingAnimation('typing-exec', aiTypingTexts.exec);
+                    setTimeout(() => startTypingAnimation('typing-financial', aiTypingTexts.financial), 500);
+                    setTimeout(() => startTypingAnimation('typing-market', aiTypingTexts.market), 1000);
+                    setTimeout(() => startTypingAnimation('typing-strategy', aiTypingTexts.strategy), 1500);
+                }
+            }
+        }, { passive: true });
     }
 }
 
-function skipTour() {
-    document.getElementById('onboarding-modal').classList.add('hidden');
-    localStorage.setItem('tourCompleted', 'true');
+// Initialize on page load
+window.addEventListener('DOMContentLoaded', initPPTShowcaseAnimations);
 
-    // After skipping tour, show AI chatbot to offer help
-    setTimeout(() => {
-        toggleChatbot();
-        addChatMessage("No worries! I'm here whenever you need me. What can I help you with today? ⚡", 'bot');
-    }, 500);
+// =====================================================
+// REPORT TEMPLATE SELECTION
+// =====================================================
+
+let selectedReportTemplate = null;
+
+function selectReportTemplate(templateId) {
+    // Remove selected class from all
+    document.querySelectorAll('.report-template-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+
+    // Add selected class to clicked
+    const selectedCard = document.getElementById(`template-${templateId}`);
+    if (selectedCard) {
+        selectedCard.classList.add('selected');
+        selectedReportTemplate = templateId;
+    }
 }
 
-function completeTour() {
-    document.getElementById('onboarding-modal').classList.add('hidden');
-    localStorage.setItem('tourCompleted', 'true');
-
-    // After tour, show AI chatbot to offer help
-    setTimeout(() => {
-        toggleChatbot();
-        addChatMessage("Great! You're all set! What would you like to do first? I can help you build budgets, create PowerPoint decks, or navigate to any section! ⚡", 'bot');
-    }, 500);
-}
-
-// Make new functions globally available
-window.showGuideModal = showGuideModal;
-window.closeGuideModal = closeGuideModal;
-window.startAvatarCreation = startAvatarCreation;
-window.showOnboardingTour = showOnboardingTour;
-window.nextTourStep = nextTourStep;
-window.prevTourStep = prevTourStep;
-window.goToTourStep = goToTourStep;
-window.skipTour = skipTour;
-window.completeTour = completeTour;
-// Guide navigation functions
-window.goToGuide = goToGuide;
-window.prevGuide = prevGuide;
-window.nextGuideOrSignup = nextGuideOrSignup;
-window.goToSignup = goToSignup;
-
-// Open 3D Avatar Creator (Ready Player Me)
-function openCreate3DAvatar() {
-    // First check if user is logged in
-    if (!currentUser) {
-        alert('Please sign up first to create your custom 3D avatar!');
-        closeGuideModal();
-        showSignUp();
-        localStorage.setItem('openAvatarAfterSignup', 'true');
+function generateSelectedReport() {
+    if (!selectedReportTemplate) {
+        alert('Please select a report template first!');
         return;
     }
 
-    // Open Ready Player Me avatar creator in new tab
-    const rpmUrl = 'https://lightningledgerz.readyplayer.me/avatar?frameApi';
-    window.open(rpmUrl, '_blank', 'width=800,height=600');
-
-    // Listen for avatar URL from Ready Player Me (via localStorage or postMessage)
-    closeGuideModal();
-    alert('Create your 3D avatar in the new window. When finished, your avatar will be saved to your profile!');
-}
-
-window.openCreate3DAvatar = openCreate3DAvatar;
-
-// =====================================================
-// AI CHATBOT ASSISTANT
-// =====================================================
-
-const chatbotGuides = [
-    { name: 'Lady Lightning', emoji: '⚡', color: 'linear-gradient(135deg, #ff6b9d, #ff3366)', greeting: "Hey there! I'm Alaina, ready to spark your financial journey!" },
-    { name: 'Zac the Strategist', emoji: '🎯', color: 'linear-gradient(135deg, #4a90d9, #2563eb)', greeting: "Hey! I'm Zac, your financial strategy expert. What can I help you build?" },
-    { name: 'Lord of Light', emoji: '👑', color: 'linear-gradient(135deg, #ffd700, #ff9500)', greeting: "Greetings! I shall illuminate your path to financial wisdom." },
-    { name: 'Zeus', emoji: '⚡', color: 'linear-gradient(135deg, #9c27b0, #673ab7)', greeting: "The power of financial clarity awaits! How may I assist?" },
-    { name: 'Bolt', emoji: '🔥', color: 'linear-gradient(135deg, #ff5722, #ff9800)', greeting: "Let's supercharge your finances! What do you need?" }
-];
-
-let currentChatbotGuide = null;
-let chatbotOpen = false;
-
-// Toggle chatbot visibility
-function toggleChatbot() {
-    const chatbot = document.getElementById('ai-chatbot');
-    const toggleBtn = document.getElementById('chatbot-toggle');
-
-    chatbotOpen = !chatbotOpen;
-
-    if (chatbotOpen) {
-        // Randomize guide when opening
-        if (!currentChatbotGuide) {
-            currentChatbotGuide = chatbotGuides[Math.floor(Math.random() * chatbotGuides.length)];
-            updateChatbotGuide();
-        }
-        chatbot.classList.remove('hidden');
-        toggleBtn.style.display = 'none';
-    } else {
-        chatbot.classList.add('hidden');
-        toggleBtn.style.display = 'block';
-    }
-}
-
-// Update chatbot appearance based on selected guide
-function updateChatbotGuide() {
-    if (!currentChatbotGuide) return;
-
-    document.getElementById('chatbot-header').style.background = currentChatbotGuide.color;
-    document.getElementById('chatbot-avatar').textContent = currentChatbotGuide.emoji;
-    document.getElementById('chatbot-name').textContent = currentChatbotGuide.name;
-}
-
-// Send chat message
-function sendChatMessage() {
-    const input = document.getElementById('chatbot-input');
-    const message = input.value.trim();
-    if (!message) return;
-
-    // Add user message
-    addChatMessage(message, 'user');
-    input.value = '';
-
-    // Process and respond
-    setTimeout(() => {
-        const response = processChatMessage(message);
-        addChatMessage(response.text, 'bot');
-
-        // If there's a navigation action, execute it
-        if (response.action) {
-            setTimeout(() => {
-                response.action();
-            }, 500);
-        }
-    }, 500);
-}
-
-// Process chat message and generate response with navigation
-function processChatMessage(message) {
-    const lowerMsg = message.toLowerCase();
-
-    // Navigation keywords
-    if (lowerMsg.includes('dashboard') || lowerMsg.includes('overview') || lowerMsg.includes('stats')) {
-        return {
-            text: "Let me take you to the Dashboard! 📊",
-            action: () => chatbotNavigate('dashboard')
-        };
+    if (!currentUser) {
+        alert('Please sign in to generate reports.');
+        showSignUp();
+        return;
     }
 
-    if (lowerMsg.includes('budget') || lowerMsg.includes('spending') || lowerMsg.includes('expenses')) {
-        return {
-            text: "Let me take you to the Budget Builder! 💰 Here you can create and track your budgets.",
-            action: () => chatbotNavigate('budget')
-        };
+    // Check if user has Gold or Diamond tier
+    if (currentUserProfile && currentUserProfile.package_tier === 'basic') {
+        alert('Report generation is available for Gold and Diamond members. Please upgrade your package to access this feature.');
+        scrollToPackage('gold-package');
+        return;
     }
 
-    if (lowerMsg.includes('upload') || lowerMsg.includes('document') || lowerMsg.includes('file') || lowerMsg.includes('pdf') || lowerMsg.includes('excel')) {
-        return {
-            text: "Let me take you to Documents! 📁 You can upload PDFs, Excel files, and more here.",
-            action: () => chatbotNavigate('documents')
-        };
-    }
-
-    if (lowerMsg.includes('powerpoint') || lowerMsg.includes('presentation') || lowerMsg.includes('ppt') || lowerMsg.includes('slides')) {
-        return {
-            text: "Let me take you to the PowerPoint Generator! 📑 Create McKinsey-quality presentations automatically.",
-            action: () => chatbotNavigate('powerpoint')
-        };
-    }
-
-    if (lowerMsg.includes('quickbooks') || lowerMsg.includes('accounting') || lowerMsg.includes('sync')) {
-        return {
-            text: "Let me take you to QuickBooks Integration! 🔗 Connect your accounting for automatic sync.",
-            action: () => chatbotNavigate('quickbooks')
-        };
-    }
-
-    if (lowerMsg.includes('profile') || lowerMsg.includes('account') || lowerMsg.includes('settings')) {
-        return {
-            text: "Let me take you to your Profile! ⚙️",
-            action: () => chatbotNavigate('profile')
-        };
-    }
-
-    if (lowerMsg.includes('avatar') || lowerMsg.includes('customize') || lowerMsg.includes('character')) {
-        return {
-            text: "Let me take you to the Avatar Builder! 🎨 Create your custom AI guide.",
-            action: () => chatbotNavigate('avatar')
-        };
-    }
-
-    if (lowerMsg.includes('help') || lowerMsg.includes('how') || lowerMsg.includes('what can')) {
-        return {
-            text: "I can help you with:\\n• Building budgets - say 'budget'\\n• Uploading documents - say 'upload'\\n• Creating PowerPoints - say 'powerpoint'\\n• Navigating the app - just tell me where!\\n• Connecting QuickBooks - say 'quickbooks'\\n\\nWhat would you like to do?"
-        };
-    }
-
-    if (lowerMsg.includes('hi') || lowerMsg.includes('hello') || lowerMsg.includes('hey')) {
-        return {
-            text: currentChatbotGuide ? currentChatbotGuide.greeting : "Hey there! How can I help you today?"
-        };
-    }
-
-    // Default response
-    return {
-        text: "I can help you navigate! Try asking about: budget, upload documents, powerpoint, dashboard, or quickbooks. Or just tell me what you're looking for!"
+    const templateNames = {
+        executive: 'Executive Summary',
+        detailed: 'Detailed Analysis',
+        budget: 'Budget vs Actual',
+        cashflow: 'Cash Flow Statement',
+        kpi: 'KPI Dashboard',
+        investor: 'Investor Deck'
     };
+
+    // Use Zac to announce the report generation
+    if (window.zacAvatar) {
+        window.zacAvatar.speak(`Generating your ${templateNames[selectedReportTemplate]} report...`);
+    }
+
+    alert(`Generating ${templateNames[selectedReportTemplate]} report...\n\nThis feature will create a professional PowerPoint presentation using your uploaded financial data.\n\nComing soon!`);
+
+    // TODO: Implement actual report generation with PptxGenJS
+    // This would pull data from dashboard_data and spending_categories
+    // Apply the selected template styling
+    // Generate and download .pptx file
 }
 
-// Add message to chat
-function addChatMessage(text, type) {
-    const messagesContainer = document.getElementById('chatbot-messages');
-    const messageDiv = document.createElement('div');
+window.selectReportTemplate = selectReportTemplate;
+window.generateSelectedReport = generateSelectedReport;
 
-    if (type === 'user') {
-        messageDiv.innerHTML = `
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-                <div style="background: #333; color: #fff; padding: 0.75rem 1rem; border-radius: 15px; border-bottom-right-radius: 5px; max-width: 85%;">
-                    <p style="margin: 0; font-size: 0.9rem;">${text}</p>
-                </div>
-            </div>
-        `;
+// =====================================================
+// COMPANY LOGO UPLOAD
+// =====================================================
+
+async function handleCompanyLogoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!currentUser) {
+        alert('Please sign in to upload a company logo.');
+        return;
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        alert('Please select an image file.');
+        return;
+    }
+
+    // Validate file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+        alert('Image must be less than 2MB.');
+        return;
+    }
+
+    try {
+        const fileName = `company-logos/${currentUser.id}/${Date.now()}_${file.name}`;
+
+        // Upload to storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('user-documents')
+            .upload(fileName, file);
+
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data: urlData } = supabase.storage
+            .from('user-documents')
+            .getPublicUrl(fileName);
+
+        const logoUrl = urlData.publicUrl;
+
+        // Update profile with logo URL
+        const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ company_logo_url: logoUrl })
+            .eq('id', currentUser.id);
+
+        if (updateError) throw updateError;
+
+        // Update the preview
+        const preview = document.getElementById('companyLogoPreview');
+        preview.innerHTML = `<img src="${logoUrl}" alt="Company Logo">`;
+
+        // Store in profile
+        if (currentUserProfile) {
+            currentUserProfile.company_logo_url = logoUrl;
+        }
+
+        // Use Zac to confirm
+        if (window.zacAvatar) {
+            window.zacAvatar.speak('Company logo uploaded successfully!');
+        } else {
+            alert('Company logo uploaded successfully!');
+        }
+
+    } catch (error) {
+        console.error('Logo upload error:', error);
+        alert('Failed to upload logo: ' + error.message);
+    }
+}
+
+// Show/hide company logo section based on login state
+function updateCompanyLogoSection() {
+    const logoSection = document.getElementById('companyLogoSection');
+    if (!logoSection) return;
+
+    if (currentUser && currentUserProfile) {
+        logoSection.classList.add('visible');
+
+        // Load existing logo if available
+        if (currentUserProfile.company_logo_url) {
+            const preview = document.getElementById('companyLogoPreview');
+            preview.innerHTML = `<img src="${currentUserProfile.company_logo_url}" alt="Company Logo">`;
+        }
     } else {
-        const guide = currentChatbotGuide || chatbotGuides[0];
-        messageDiv.innerHTML = `
-            <div class="bot-message" style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                <div style="width: 30px; height: 30px; border-radius: 50%; background: ${guide.color}; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0;">${guide.emoji}</div>
-                <div style="background: #222; color: #fff; padding: 0.75rem 1rem; border-radius: 15px; border-bottom-left-radius: 5px; max-width: 85%;">
-                    <p style="margin: 0; font-size: 0.9rem; white-space: pre-line;">${text}</p>
-                </div>
-            </div>
+        logoSection.classList.remove('visible');
+    }
+}
+
+window.handleCompanyLogoUpload = handleCompanyLogoUpload;
+
+// =====================================================
+// UPLOAD FINANCIALS MODAL
+// =====================================================
+
+function showUploadModal() {
+    const modal = document.getElementById('uploadModal');
+    if (modal) {
+        modal.classList.add('active');
+    }
+    // Setup drag and drop
+    setupDropzone();
+}
+
+function closeUploadModal() {
+    const modal = document.getElementById('uploadModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+function setupDropzone() {
+    const dropzone = document.getElementById('uploadDropzone');
+    if (!dropzone) return;
+
+    dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+    });
+
+    dropzone.addEventListener('dragleave', () => {
+        dropzone.classList.remove('dragover');
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        processUploadedFiles(files);
+    });
+}
+
+async function handleFileUpload(event) {
+    const files = event.target.files;
+    processUploadedFiles(files);
+}
+
+async function processUploadedFiles(files) {
+    if (!currentUser) {
+        alert('Please sign in to upload files.');
+        closeUploadModal();
+        showSignIn();
+        return;
+    }
+
+    const filesList = document.getElementById('uploadedFilesList');
+
+    for (const file of files) {
+        // Show file being processed
+        const fileItem = document.createElement('div');
+        fileItem.style.cssText = 'display: flex; align-items: center; gap: 10px; padding: 0.5rem; background: rgba(255,51,51,0.1); border-radius: 8px; margin-top: 0.5rem;';
+        fileItem.innerHTML = `
+            <span style="color: #ff3333;">📄</span>
+            <span style="color: #fff; flex: 1;">${file.name}</span>
+            <span style="color: #4caf50; font-size: 0.8rem;">Uploading...</span>
         `;
-    }
+        filesList.appendChild(fileItem);
 
-    messagesContainer.appendChild(messageDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
+        try {
+            const fileName = `financials/${currentUser.id}/${Date.now()}_${file.name}`;
 
-// Navigate to different sections via chatbot
-function chatbotNavigate(section) {
-    // Hide all sections first
-    document.getElementById("services").style.display = "none";
-    document.getElementById("about").style.display = "none";
-    document.getElementById("contact").style.display = "none";
-    document.getElementById("dashboard").classList.add('hidden');
-    document.getElementById("admin").classList.add('hidden');
-    document.getElementById("profile").classList.add('hidden');
+            const { data, error } = await supabase.storage
+                .from('user-documents')
+                .upload(fileName, file);
 
-    switch(section) {
-        case 'dashboard':
-            document.getElementById("dashboard").classList.remove('hidden');
-            window.location.href = "#dashboard";
-            break;
-        case 'budget':
-        case 'documents':
-        case 'powerpoint':
-        case 'quickbooks':
-        case 'avatar':
-        case 'profile':
-            document.getElementById("profile").classList.remove('hidden');
-            window.location.href = "#profile";
-            // Switch to the appropriate tab
-            setTimeout(() => {
-                if (section === 'budget') {
-                    // Go to dashboard for budget (or documents tab)
-                    document.getElementById("dashboard").classList.remove('hidden');
-                    document.getElementById("profile").classList.add('hidden');
-                } else {
-                    switchProfileTab(section === 'profile' ? 'account' : section);
-                }
-            }, 100);
-            break;
-        default:
-            document.getElementById("services").style.display = "block";
-            window.location.href = "#services";
-    }
-}
+            if (error) throw error;
 
-// Navigate to PowerPoint Generator / Showcase section
-function goToPowerPointGenerator() {
-    // First scroll to showcase section to show samples
-    const showcaseSection = document.getElementById('showcase');
-    if (showcaseSection) {
-        showcaseSection.scrollIntoView({ behavior: 'smooth' });
-    }
+            // Update status
+            fileItem.querySelector('span:last-child').textContent = 'Uploaded ✓';
+            fileItem.querySelector('span:last-child').style.color = '#4caf50';
 
-    // If user is logged in, after a brief delay, offer to go to generator
-    if (currentUser) {
-        setTimeout(() => {
-            if (confirm('Want to create your own custom deck? Click OK to go to the PowerPoint Generator!')) {
-                chatbotNavigate('powerpoint');
+            // Notify with Zac
+            if (window.zacAvatar) {
+                window.zacAvatar.speak(`I'm analyzing ${file.name}... I'll generate insights shortly!`);
             }
-        }, 800);
-    } else {
-        // Not logged in - prompt to sign up
-        setTimeout(() => {
-            if (confirm('Sign up FREE to create unlimited custom PowerPoint decks! Ready to get started?')) {
-                showSignUp();
-                localStorage.setItem('redirectAfterSignup', 'powerpoint');
+
+        } catch (error) {
+            console.error('Upload error:', error);
+            fileItem.querySelector('span:last-child').textContent = 'Failed ✗';
+            fileItem.querySelector('span:last-child').style.color = '#f44336';
+        }
+    }
+}
+
+// Close modal on outside click
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('uploadModal');
+    if (e.target === modal) {
+        closeUploadModal();
+    }
+});
+
+window.showUploadModal = showUploadModal;
+window.closeUploadModal = closeUploadModal;
+window.handleFileUpload = handleFileUpload;
+
+// =====================================================
+// MOBILE HAMBURGER MENU
+// =====================================================
+
+function toggleMobileMenu() {
+    const hamburger = document.getElementById('hamburgerBtn');
+    const navLinks = document.getElementById('navLinks');
+
+    hamburger.classList.toggle('active');
+    navLinks.classList.toggle('active');
+}
+
+// Close mobile menu when clicking a link
+document.addEventListener('DOMContentLoaded', () => {
+    const navLinks = document.querySelectorAll('.nav-links a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            const hamburger = document.getElementById('hamburgerBtn');
+            const navLinksContainer = document.getElementById('navLinks');
+            if (hamburger && navLinksContainer) {
+                hamburger.classList.remove('active');
+                navLinksContainer.classList.remove('active');
             }
-        }, 800);
+        });
+    });
+});
+
+window.toggleMobileMenu = toggleMobileMenu;
+
+// =====================================================
+// MOBILE DROPDOWN TAP-TO-TOGGLE
+// =====================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    const dropdown = document.querySelector('.dropdown');
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+
+    if (dropdownToggle && dropdown) {
+        // Handle tap/click on dropdown toggle
+        dropdownToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Toggle the active class
+            dropdown.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // Close dropdown when clicking a menu item
+        const dropdownItems = dropdown.querySelectorAll('.dropdown-menu a');
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', () => {
+                dropdown.classList.remove('active');
+            });
+        });
+    }
+});
+
+// =====================================================
+// AVATAR CLICK TRACKING - PROMPT SIGN UP
+// =====================================================
+
+let avatarClickCount = 0;
+const SIGN_UP_PROMPT_CLICKS = 5;
+
+function trackAvatarClick() {
+    // Only track if user is not logged in
+    if (window.currentUser) return;
+
+    avatarClickCount++;
+
+    if (avatarClickCount >= SIGN_UP_PROMPT_CLICKS) {
+        // Show sign up prompt via avatar
+        const currentAvatar = window.avatarSelector?.getCurrentAvatar() || 'zac';
+        const avatarObj = window[currentAvatar + 'Avatar'];
+
+        if (avatarObj && avatarObj.showSpeech) {
+            avatarObj.showSpeech(
+                "Hey! You've been exploring - ready to unlock all features? Sign up free!",
+                "Join Lightning Ledgerz"
+            );
+        }
+
+        // Show sign up modal after a short delay
+        setTimeout(() => {
+            showSignUp();
+        }, 3000);
+
+        // Reset counter
+        avatarClickCount = 0;
     }
 }
 
-// Make goToPowerPointGenerator globally available
-window.goToPowerPointGenerator = goToPowerPointGenerator;
+// Hook into avatar clicks
+document.addEventListener('DOMContentLoaded', () => {
+    // Wait for avatars to load
+    setTimeout(() => {
+        const avatarContainers = document.querySelectorAll('[id$="-avatar-container"], .avatar-container, .zac-container');
+        avatarContainers.forEach(container => {
+            container.addEventListener('click', trackAvatarClick);
+        });
 
-// Show chatbot button when user is logged in
-function updateChatbotVisibility() {
-    const toggleBtn = document.getElementById('chatbot-toggle');
-    if (currentUser && toggleBtn) {
-        toggleBtn.style.display = 'block';
-    } else if (toggleBtn) {
-        toggleBtn.style.display = 'none';
+        // Also hook into the avatar selector button
+        const avatarBtn = document.getElementById('avatar-selector-btn');
+        if (avatarBtn) {
+            avatarBtn.addEventListener('click', trackAvatarClick);
+        }
+    }, 2000);
+});
+
+window.trackAvatarClick = trackAvatarClick;
+
+// =====================================================
+// TEST MODE - Simulate different tier accounts
+// =====================================================
+// Use these functions in browser console to test different tier theming:
+// testTier('basic') - Red theme
+// testTier('gold') - Gold theme
+// testTier('diamond') - Diamond/white theme
+
+function testTier(tier) {
+    // Create mock user profile
+    const mockProfile = {
+        username: `Test_${tier}_User`,
+        first_name: `Test ${tier.charAt(0).toUpperCase() + tier.slice(1)}`,
+        email: `test_${tier}@lightningledgerz.com`,
+        package_tier: tier,
+        xp_points: tier === 'diamond' ? 5000 : tier === 'gold' ? 2500 : 500,
+        level: tier === 'diamond' ? 10 : tier === 'gold' ? 5 : 2
+    };
+
+    // Set global profile
+    currentUserProfile = mockProfile;
+    currentUser = { id: 'test-user-' + tier };
+
+    // Update nav with the mock profile
+    const userWelcomeNav = document.getElementById('userWelcomeNav');
+    const welcomeText = document.getElementById('welcomeText');
+    const badge = document.getElementById('membershipBadge');
+    const navElement = document.querySelector('nav');
+
+    if (userWelcomeNav) userWelcomeNav.classList.remove('hidden');
+    if (welcomeText) welcomeText.textContent = `Hi, ${mockProfile.first_name}!`;
+
+    // Hide sign up/sign in options
+    const dropdownSignUp = document.getElementById('dropdownSignUp');
+    const dropdownSignIn = document.getElementById('dropdownSignIn');
+    const dropdownLogout = document.getElementById('dropdownLogout');
+    if (dropdownSignUp) dropdownSignUp.classList.add('hidden');
+    if (dropdownSignIn) dropdownSignIn.classList.add('hidden');
+    if (dropdownLogout) dropdownLogout.classList.remove('hidden');
+
+    // Set badge and nav theme
+    if (badge) {
+        badge.className = 'membership-badge';
+        badge.classList.add(`badge-${tier}`);
     }
+
+    if (navElement) {
+        navElement.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
+        navElement.classList.add(`tier-${tier}`);
+    }
+
+    console.log(`%c✓ Test mode activated: ${tier.toUpperCase()} tier`,
+        `color: ${tier === 'gold' ? '#ffd700' : tier === 'diamond' ? '#fff' : '#ff3333'}; font-size: 16px; font-weight: bold;`);
+    console.log('Mock profile:', mockProfile);
+
+    // Show the appropriate avatar
+    if (window.avatarSelector) {
+        window.avatarSelector.showCurrentAvatar();
+    }
+
+    return `Test ${tier} account activated. Look at the nav bar to see the theme change!`;
 }
 
-// Make chatbot functions globally available
-window.toggleChatbot = toggleChatbot;
-window.sendChatMessage = sendChatMessage;
-window.chatbotNavigate = chatbotNavigate;
-window.addChatMessage = addChatMessage;
+// Quick test functions
+window.testBasic = () => testTier('basic');
+window.testGold = () => testTier('gold');
+window.testDiamond = () => testTier('diamond');
+window.testTier = testTier;
+
+console.log('%c⚡ Lightning Ledgerz Test Mode Available', 'color: #ff3333; font-size: 14px; font-weight: bold;');
+console.log('Run testBasic(), testGold(), or testDiamond() in console to test different tiers.');
