@@ -16,7 +16,7 @@ class ZacAvatar {
             { text: "I'll help you transform complex financial data into crystal-clear insights.", pose: "pointing", title: "Your Guide" },
             { text: "Upload your documents - PDFs, Excel, PowerPoints - and watch the magic happen.", pose: "standing", title: "Data Wizard" },
             { text: "Check out our packages - from startup essentials to enterprise-grade analytics.", pose: "pointing", title: "Solutions Expert" },
-            { text: "Generate McKinsey-quality reports with a single click. AI-powered brilliance.", pose: "thumbsup", title: "Report Master" },
+            { text: "Generate Fortune-500 quality reports with a single click. AI-powered brilliance.", pose: "thumbsup", title: "Report Master" },
             { text: "Ready to supercharge your business? Let's get started!", pose: "waving", title: "Let's Go!" }
         ];
         this.init();

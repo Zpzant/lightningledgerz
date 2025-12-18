@@ -1,6 +1,6 @@
 // =====================================================
 // LIGHTNING LEDGERZ - PROFESSIONAL DECK TEMPLATES
-// McKinsey, Bain, Deloitte, and Custom styles
+// Fortune 500, Bain, Deloitte, and Custom styles
 // High-quality presentation templates
 // =====================================================
 
@@ -8,7 +8,7 @@ const DeckTemplates = {
     // Professional color schemes from top consulting firms
     colorSchemes: {
         mckinsey: {
-            name: 'McKinsey',
+            name: 'Fortune 500',
             primary: '#003D79',
             secondary: '#0077B6',
             accent: '#00B4D8',

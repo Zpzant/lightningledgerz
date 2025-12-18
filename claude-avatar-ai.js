@@ -86,7 +86,7 @@ Lightning Ledgerz is a financial management platform with these features:
 - QuickBooks Integration: Connect accounting data (Diamond tier)
 - Document Upload: PDF, Excel, CSV file analysis
 - Financial Dashboard: Real-time charts and metrics
-- Templates: McKinsey, Bain, Deloitte, BCG, PwC style templates
+- Templates: Fortune 500, Bain, Deloitte, BCG, PwC style templates
 
 Tier structure:
 - Basic ($29/mo): Dashboard, file uploads, basic analytics
@@ -189,11 +189,11 @@ Navigation commands you can suggest:
             return this.formatResponse(name, `Let's get your financial documents into the system! I'll open the upload panel for you. We support PDFs, Excel files (.xlsx, .xls), and CSVs. Just drag and drop your files or click to browse. Once uploaded, I can help you analyze the data and create visualizations.`, 'showUploadModal');
         }
 
-        if (lowerMessage.includes('powerpoint') || lowerMessage.includes('presentation') || lowerMessage.includes('ppt')) {
+        if (lowerMessage.includes('powerpoint') || lowerMessage.includes('presentation') || lowerMessage.includes('ppt') || lowerMessage.includes('deck')) {
             if (context.userTier && !['gold', 'diamond'].includes(context.userTier)) {
-                return this.formatResponse(name, `The PowerPoint Builder is a Gold and Diamond feature that lets you create McKinsey-quality presentations in minutes. Upgrade your plan to unlock professional templates, custom branding, and one-click export. Would you like to see our packages?`, 'scrollToPackage');
+                return this.formatResponse(name, `The Presentation Builder is a Gold and Diamond feature that lets you create boardroom-quality decks in minutes. Upgrade your plan to unlock professional templates, custom branding, and one-click export. Would you like to see our packages?`, 'scrollToPackage');
             }
-            return this.formatResponse(name, `Let's create a stunning presentation! I'll take you to the PowerPoint Builder where you can choose from McKinsey, Bain, or Deloitte-style templates. You can add your financial data, customize colors, and export to PPTX. Ready to impress your stakeholders?`, 'openPowerPointBuilder');
+            return this.formatResponse(name, `Let's create a stunning presentation! I'll take you to the Presentation Builder where you can choose from Fortune 500, Bain, or Deloitte-style templates. You can add your financial data, customize colors, and export to PPTX. Ready to impress your stakeholders?`, 'openPowerPointBuilder');
         }
 
         if (lowerMessage.includes('quickbooks') || lowerMessage.includes('accounting') || lowerMessage.includes('connect')) {
@@ -229,7 +229,7 @@ In the Report Builder, you can add KPI cards with automatic calculations and tre
         if (lowerMessage.includes('template')) {
             return this.formatResponse(name, `We have professional templates inspired by top consulting firms:
 
-• **McKinsey Style** - Clean, data-focused, blue tones
+• **Fortune 500 Style** - Clean, data-focused, blue tones
 • **Bain Style** - Bold, red accents, impactful
 • **Deloitte Style** - Modern, green emphasis, fresh
 • **BCG Style** - Classic, green, analytical

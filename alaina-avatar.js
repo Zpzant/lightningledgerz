@@ -328,7 +328,91 @@ class AlainaAvatar {
         chatContainer.appendChild(chatInputWrapper);
         this.speechBubble.appendChild(chatContainer);
 
+        // Quick Actions section (same as Zac)
+        const quickActions = document.createElement('div');
+        quickActions.id = 'alaina-quick-actions';
+        quickActions.style.cssText = `
+            display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 102, 153, 0.3);
+        `;
+
+        const actions = [
+            { icon: '📤', label: 'Upload Financials', action: 'upload' },
+            { icon: '📊', label: 'Build Model', action: 'model' },
+            { icon: '📈', label: 'View Reports', action: 'reports' },
+            { icon: '💳', label: 'Upgrade Plan', action: 'upgrade' }
+        ];
+
+        actions.forEach(act => {
+            const btn = document.createElement('button');
+            btn.innerHTML = `${act.icon} ${act.label}`;
+            btn.dataset.action = act.action;
+            btn.style.cssText = `
+                background: rgba(255, 102, 153, 0.15);
+                border: 1px solid rgba(255, 102, 153, 0.4);
+                color: #fff;
+                padding: 8px 12px;
+                border-radius: 8px;
+                font-size: 12px;
+                cursor: pointer;
+                transition: all 0.2s;
+            `;
+            btn.addEventListener('mouseenter', () => {
+                btn.style.background = 'rgba(255, 102, 153, 0.3)';
+                btn.style.borderColor = '#ff6699';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.background = 'rgba(255, 102, 153, 0.15)';
+                btn.style.borderColor = 'rgba(255, 102, 153, 0.4)';
+            });
+            btn.addEventListener('click', () => this.handleQuickAction(act.action));
+            quickActions.appendChild(btn);
+        });
+
+        this.speechBubble.appendChild(quickActions);
+
         this.container.insertBefore(this.speechBubble, this.container.firstChild);
+    }
+
+    handleQuickAction(action) {
+        switch(action) {
+            case 'upload':
+                this.showSpeech("Let me zap open the upload panel for you!", "Upload Financials");
+                this.setPose('pointing');
+                setTimeout(() => {
+                    if (typeof showUploadModal === 'function') showUploadModal();
+                }, 500);
+                break;
+            case 'model':
+                this.showSpeech("Let's build a financial model! What type? Three-Statement, DCF, or LBO?", "Model Builder");
+                this.setPose('happy');
+                break;
+            case 'reports':
+                this.showSpeech("Sparking up your reports dashboard!", "View Reports");
+                this.setPose('pointing');
+                // Navigate to reports
+                const dashboard = document.getElementById('dashboard');
+                if (dashboard) {
+                    dashboard.classList.remove('hidden');
+                    document.getElementById('services').style.display = 'none';
+                    dashboard.scrollIntoView({ behavior: 'smooth' });
+                }
+                break;
+            case 'upgrade':
+                this.showSpeech("Let's power up your account!", "Upgrade Plan");
+                this.setPose('waving');
+                // Scroll to packages
+                const packages = document.getElementById('services');
+                if (packages) {
+                    packages.style.display = 'block';
+                    packages.scrollIntoView({ behavior: 'smooth' });
+                }
+                break;
+        }
     }
 
     getAvatarSVG(pose) {
@@ -872,7 +956,9 @@ class AlainaAvatar {
 
     enableChatMode() {
         const chatContainer = document.getElementById('alaina-chat-container');
+        const quickActions = document.getElementById('alaina-quick-actions');
         if (chatContainer) chatContainer.style.display = 'block';
+        if (quickActions) quickActions.style.display = 'flex';
     }
 
     handleChatInput(message) {

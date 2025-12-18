@@ -345,6 +345,15 @@ class AvatarSelector {
     selectAvatar(avatarKey) {
         if (!this.avatars[avatarKey]) return;
 
+        // Check if user is logged in before allowing avatar selection
+        if (!window.currentUser) {
+            this.togglePanel(); // Close the panel
+            if (window.showSignIn) {
+                window.showSignIn();
+            }
+            return;
+        }
+
         // Hide all avatars
         this.hideAllAvatars();
 
@@ -458,8 +467,7 @@ class AvatarSelector {
 
         // Check if user is logged in
         if (!window.currentUser) {
-            alert("Please sign in first to create your own avatar.");
-            if (window.showSignUp) window.showSignUp();
+            if (window.showSignIn) window.showSignIn();
             return;
         }
 

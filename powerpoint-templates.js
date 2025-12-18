@@ -457,7 +457,7 @@ class PowerPointTemplates {
                                 </div>
                                 <div class="form-row">
                                     <label>Your Solution</label>
-                                    <textarea id="pitch-solution" rows="3" placeholder="AI-powered platform that transforms raw financial data into McKinsey-quality reports in seconds..."></textarea>
+                                    <textarea id="pitch-solution" rows="3" placeholder="AI-powered platform that transforms raw financial data into boardroom-quality reports in seconds..."></textarea>
                                 </div>
                             </div>
 

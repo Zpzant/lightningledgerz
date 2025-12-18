@@ -335,7 +335,89 @@ class ZeusAvatar {
         chatContainer.appendChild(chatInputWrapper);
         this.speechBubble.appendChild(chatContainer);
 
+        // Quick Actions section (same as Zac)
+        const quickActions = document.createElement('div');
+        quickActions.id = 'zeus-quick-actions';
+        quickActions.style.cssText = `
+            display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(136, 102, 255, 0.3);
+        `;
+
+        const actions = [
+            { icon: '📤', label: 'Upload Financials', action: 'upload' },
+            { icon: '📊', label: 'Build Model', action: 'model' },
+            { icon: '📈', label: 'View Reports', action: 'reports' },
+            { icon: '💳', label: 'Upgrade Plan', action: 'upgrade' }
+        ];
+
+        actions.forEach(act => {
+            const btn = document.createElement('button');
+            btn.innerHTML = `${act.icon} ${act.label}`;
+            btn.dataset.action = act.action;
+            btn.style.cssText = `
+                background: rgba(136, 102, 255, 0.15);
+                border: 1px solid rgba(136, 102, 255, 0.4);
+                color: #fff;
+                padding: 8px 12px;
+                border-radius: 8px;
+                font-size: 12px;
+                cursor: pointer;
+                transition: all 0.2s;
+            `;
+            btn.addEventListener('mouseenter', () => {
+                btn.style.background = 'rgba(136, 102, 255, 0.3)';
+                btn.style.borderColor = '#8866ff';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.background = 'rgba(136, 102, 255, 0.15)';
+                btn.style.borderColor = 'rgba(136, 102, 255, 0.4)';
+            });
+            btn.addEventListener('click', () => this.handleQuickAction(act.action));
+            quickActions.appendChild(btn);
+        });
+
+        this.speechBubble.appendChild(quickActions);
+
         this.container.insertBefore(this.speechBubble, this.container.firstChild);
+    }
+
+    handleQuickAction(action) {
+        switch(action) {
+            case 'upload':
+                this.showSpeech("By the power of Olympus, I shall open the sacred upload portal!", "Divine Upload");
+                this.setPose('lightning');
+                setTimeout(() => {
+                    if (typeof showUploadModal === 'function') showUploadModal();
+                }, 500);
+                break;
+            case 'model':
+                this.showSpeech("The gods shall forge a financial model! What type do you seek? Three-Statement, DCF, or LBO?", "Divine Builder");
+                this.setPose('pointing');
+                break;
+            case 'reports':
+                this.showSpeech("Behold the sacred scrolls of your reports!", "Divine Reports");
+                this.setPose('pointing');
+                const dashboard = document.getElementById('dashboard');
+                if (dashboard) {
+                    dashboard.classList.remove('hidden');
+                    document.getElementById('services').style.display = 'none';
+                    dashboard.scrollIntoView({ behavior: 'smooth' });
+                }
+                break;
+            case 'upgrade':
+                this.showSpeech("Ascend to greater power! Choose your divine package!", "Upgrade Plan");
+                this.setPose('waving');
+                const packages = document.getElementById('services');
+                if (packages) {
+                    packages.style.display = 'block';
+                    packages.scrollIntoView({ behavior: 'smooth' });
+                }
+                break;
+        }
     }
 
     getAvatarSVG(pose) {
@@ -735,7 +817,9 @@ class ZeusAvatar {
 
     enableChatMode() {
         const chatContainer = document.getElementById('zeus-chat-container');
+        const quickActions = document.getElementById('zeus-quick-actions');
         if (chatContainer) chatContainer.style.display = 'block';
+        if (quickActions) quickActions.style.display = 'flex';
     }
 
     handleChatInput(message) {

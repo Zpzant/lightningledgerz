@@ -1,6 +1,6 @@
 // =====================================================
 // LIGHTNING LEDGERZ - PROFESSIONAL FINANCIAL REPORTS
-// McKinsey-quality Excel workbooks with charts & formulas
+// Fortune 500-quality Excel workbooks with charts & formulas
 // Restaurant, Hotel, M&A models with DSCR analysis
 // Budget vs Actual, Waterfall charts, Pie charts
 // =====================================================

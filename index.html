@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lightning Ledgerz - Budget. Save. Build.</title>
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
-    <link rel="apple-touch-icon" href="LightningLedgerzLogo.png">
+    <!-- Favicon - Optimized for all devices -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="favicon-512x512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="msapplication-TileImage" content="favicon-192x192.png">
 
     <!-- Chart.js for dashboard -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -931,6 +936,7 @@
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
+            position: relative;
         }
 
         .auth-box h2 {
@@ -1652,7 +1658,7 @@
             <a href="#contact">Contact</a>
             <a onclick="openFinancialReports()" style="cursor: pointer; color: #ffd700;">Financial Models</a>
             <a onclick="openQuickBooksDashboard()" style="cursor: pointer; color: #2E7D32;">QuickBooks</a>
-            <a onclick="openPowerPointBuilder()" style="cursor: pointer; color: #ff5722;">PowerPoint</a>
+            <a onclick="openPowerPointBuilder()" style="cursor: pointer; color: #ff5722;">Pro Decks</a>
             <a onclick="openReportBuilder()" style="cursor: pointer; color: #9c27b0;">Reports</a>
 
             <!-- Upload Financials Button - Always visible, prominent -->
@@ -1786,7 +1792,7 @@
                 <button class="tab-button active" onclick="switchProfileTab('account')">Account</button>
                 <button class="tab-button" onclick="switchProfileTab('avatar')">Avatar</button>
                 <button class="tab-button" onclick="switchProfileTab('documents')">Documents</button>
-                <button class="tab-button" onclick="switchProfileTab('powerpoint')" id="pptTab" class="hidden">PowerPoint</button>
+                <button class="tab-button" onclick="switchProfileTab('powerpoint')" id="pptTab" class="hidden">Pro Decks</button>
                 <button class="tab-button" onclick="switchProfileTab('quickbooks')" id="qbTab" class="hidden">QuickBooks</button>
             </div>
 
@@ -2022,14 +2028,14 @@
                 </div>
             </div>
 
-            <!-- PowerPoint Tab (Gold/Diamond Only) -->
+            <!-- Pro Decks Tab (Gold/Diamond Only) -->
             <div id="tab-powerpoint" class="tab-content">
                 <div class="profile-card">
-                    <h3>Generate PowerPoint Deck</h3>
-                    <p>Create professional pitch decks with your financial data</p>
-                    <button class="btn btn-primary" onclick="generatePowerPoint()" style="margin-top: 1rem;">Generate Deck</button>
+                    <h3>Create Pro Deck</h3>
+                    <p>Create boardroom-ready presentations with your financial data</p>
+                    <button class="btn btn-primary" onclick="generatePowerPoint()" style="margin-top: 1rem;">Generate Pro Deck</button>
 
-                    <h4 style="margin-top: 2rem; color: #ff3333;">Your PowerPoint Files</h4>
+                    <h4 style="margin-top: 2rem; color: #ff3333;">Your Pro Deck Files</h4>
                     <div id="powerpointList" style="margin-top: 1rem;">
                         <p style="color: #888;">No files generated yet</p>
                     </div>
@@ -2143,7 +2149,7 @@
         </div>
     </section>
 
-    <!-- POWERPOINT SHOWCASE SECTION -->
+    <!-- PRO DECKS SHOWCASE SECTION -->
     <section id="ppt-showcase-section" class="section" style="margin-top: 0; padding-top: 4rem;">
         <div class="container">
             <div class="ppt-showcase">
@@ -2323,8 +2329,9 @@
     </section>
 
     <!-- SIGN UP MODAL -->
-    <div id="signup-modal" class="auth-modal hidden">
+    <div id="signup-modal" class="auth-modal hidden" onclick="if(event.target===this)hideSignUp()">
         <div class="auth-box">
+            <button onclick="hideSignUp()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; color: #ff3333; font-size: 24px; cursor: pointer; padding: 0; width: 30px; height: 30px;">&times;</button>
             <h2>Start Your Free Trial</h2>
             <p style="color: #ff6666; margin-bottom: 1rem; font-size: 0.95rem;">15 days free - No credit card required</p>
 
@@ -2350,8 +2357,9 @@
     </div>
 
     <!-- SIGN IN MODAL -->
-    <div id="signin-modal" class="auth-modal hidden">
+    <div id="signin-modal" class="auth-modal hidden" onclick="if(event.target===this)hideSignIn()">
         <div class="auth-box">
+            <button onclick="hideSignIn()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; color: #ff3333; font-size: 24px; cursor: pointer; padding: 0; width: 30px; height: 30px;">&times;</button>
             <h2>Sign In</h2>
 
             <!-- Google Sign In Button -->
@@ -2384,6 +2392,45 @@
             <p style="color: #888; font-size: 0.9rem; margin-top: 1rem;">After updating your password, you'll be signed in automatically.</p>
         </div>
     </div>
+
+    <!-- Critical Modal Functions - Inline for immediate availability -->
+    <script>
+        // Define modal functions immediately so they work even if other scripts fail
+        function showSignUp(e) {
+            if (e) e.preventDefault();
+            var modal = document.getElementById('signup-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+        function showSignIn(e) {
+            if (e) e.preventDefault();
+            var modal = document.getElementById('signin-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+        function hideSignUp() {
+            var modal = document.getElementById('signup-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+        function hideSignIn() {
+            var modal = document.getElementById('signin-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+        function switchToSignIn() {
+            hideSignUp();
+            showSignIn();
+        }
+        function switchToSignUp() {
+            hideSignIn();
+            showSignUp();
+        }
+        // Export to window
+        window.showSignUp = showSignUp;
+        window.showSignIn = showSignIn;
+        window.hideSignUp = hideSignUp;
+        window.hideSignIn = hideSignIn;
+        window.switchToSignIn = switchToSignIn;
+        window.switchToSignUp = switchToSignUp;
+        console.log('✓ Modal functions loaded inline');
+    </script>
 
     <!-- Avatar Builder Script -->
     <script src="avatar-builder.js"></script>

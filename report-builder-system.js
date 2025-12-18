@@ -15,7 +15,7 @@ class ReportBuilder {
         this.dragOffset = { x: 0, y: 0 };
         this.elementCounter = 0;
 
-        // Professional color palettes (McKinsey/Bain style)
+        // Professional color palettes (Fortune 500/Bain style)
         this.colorPalettes = {
             mckinsey: {
                 primary: '#1e3a5f',
@@ -696,7 +696,7 @@ class ReportBuilder {
                     </button>
                     <select class="rb-toolbar-select" onchange="reportBuilder.changePalette(this.value)">
                         <option value="lightning">Lightning Theme</option>
-                        <option value="mckinsey">McKinsey Style</option>
+                        <option value="mckinsey">Fortune 500 Style</option>
                         <option value="bain">Bain Style</option>
                         <option value="deloitte">Deloitte Style</option>
                     </select>

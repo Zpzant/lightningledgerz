@@ -38,6 +38,27 @@ window.showSignUp = showSignUp;
 window.showSignIn = showSignIn;
 console.log('✓ showSignUp and showSignIn exported to window');
 
+// Hide modal functions
+function hideSignUp() {
+    const modal = document.getElementById('signup-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        console.log('signup-modal hidden');
+    }
+}
+
+function hideSignIn() {
+    const modal = document.getElementById('signin-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        console.log('signin-modal hidden');
+    }
+}
+
+window.hideSignUp = hideSignUp;
+window.hideSignIn = hideSignIn;
+console.log('✓ hideSignUp and hideSignIn exported to window');
+
 // Upload Modal function (defined later, but exported early for robustness)
 function showUploadModal() {
     const modal = document.getElementById('uploadModal');
