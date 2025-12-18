@@ -892,6 +892,13 @@ const avatar3DSystem = new Avatar3DSystem();
 
 // Global functions
 window.openAvatar3DSelector = function() {
+    // Require login before showing 3D avatar selector
+    if (!window.currentUser) {
+        if (window.showSignIn) {
+            window.showSignIn();
+        }
+        return;
+    }
     avatar3DSystem.openAvatarSelector();
 };
 

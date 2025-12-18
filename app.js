@@ -230,19 +230,46 @@ function switchToSignUp() {
 // Google Sign In
 async function signInWithGoogle() {
     try {
+        // Check if Supabase is initialized
+        if (!supabase) {
+            alert("Authentication service not available. Please refresh the page and try again.");
+            return;
+        }
+
+        // Hide any open modals
+        hideSignIn();
+        hideSignUp();
+
+        // Get the correct redirect URL - use origin without trailing path for better compatibility
+        const redirectUrl = window.location.origin + (window.location.pathname.includes('index.html') ? '/index.html' : '/');
+        console.log('Google OAuth redirect URL:', redirectUrl);
+
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: window.location.origin + '/index.html'
+                redirectTo: redirectUrl,
+                queryParams: {
+                    access_type: 'offline',
+                    prompt: 'consent'
+                }
             }
         });
 
-        if (error) throw error;
+        if (error) {
+            console.error("Google OAuth error:", error);
+            if (error.message.includes('provider')) {
+                alert("Google sign-in is not configured. Please contact support or use email/password sign-in.\n\nFor admins: Enable Google provider in Supabase Dashboard > Authentication > Providers > Google");
+            } else {
+                throw error;
+            }
+            return;
+        }
 
         // OAuth will redirect to Google, then back to your site
+        console.log('Google OAuth initiated:', data);
     } catch (error) {
         console.error("Google sign in error:", error);
-        alert("Google sign in failed: " + error.message);
+        alert("Google sign in failed: " + error.message + "\n\nPlease try email/password sign-in instead.");
     }
 }
 
