@@ -691,6 +691,10 @@ class ReportBuilder {
             <!-- Main Area -->
             <div class="rb-main">
                 <div class="rb-toolbar">
+                    <div class="rb-logo" onclick="reportBuilder.close()" title="Return to Lightning Ledgerz">
+                        <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz" style="height: 35px; cursor: pointer;">
+                    </div>
+                    <div class="rb-toolbar-divider"></div>
                     <button class="rb-toolbar-btn" onclick="reportBuilder.showTemplates()">
                         <span>📋</span> Templates
                     </button>

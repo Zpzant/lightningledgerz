@@ -2491,32 +2491,43 @@ window.openQuickBooksDashboard = openQuickBooksDashboard;
 function openPowerPointBuilder(event) {
     if (event) event.preventDefault();
 
+    // Allow demo users too
     if (!currentUser) {
-        alert("Please sign in first to access the PowerPoint Builder.");
-        showSignIn();
+        // For non-logged-in users, offer preview
+        if (confirm("Pro Decks is available for Gold and Diamond members.\n\nWould you like to preview it in Demo Mode?")) {
+            previewFeatures();
+            setTimeout(() => {
+                if (typeof openPowerPointTemplates === 'function') {
+                    openPowerPointTemplates();
+                }
+            }, 500);
+        } else {
+            showSignUp();
+        }
         return;
     }
 
-    // Check if user is Gold or Diamond tier
-    if (currentUserProfile && !['gold', 'diamond'].includes(currentUserProfile.package_tier)) {
-        alert("PowerPoint Builder is available for Gold and Diamond members. Please upgrade your package.");
+    // Check if user is Gold or Diamond tier (skip for demo users)
+    if (currentUserProfile && !['gold', 'diamond'].includes(currentUserProfile.package_tier) && currentUser.id !== 'demo-user-001') {
+        alert("Pro Decks is available for Gold and Diamond members. Please upgrade your package.");
         scrollToPackage('gold-package');
         return;
     }
 
-    // Navigate to profile page and switch to PowerPoint tab
-    document.getElementById("services").style.display = "none";
-    document.getElementById("about").style.display = "none";
-    document.getElementById("contact").style.display = "none";
-    document.getElementById("dashboard").classList.add('hidden');
-    document.getElementById("admin").classList.add('hidden');
-    document.getElementById("profile").classList.remove('hidden');
-
-    // Switch to PowerPoint tab
-    switchProfileTab('powerpoint');
-
-    // Scroll to profile section
-    document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
+    // Open the PowerPoint Templates selector directly
+    if (typeof openPowerPointTemplates === 'function') {
+        openPowerPointTemplates();
+    } else {
+        // Fallback: Navigate to profile page and switch to PowerPoint tab
+        document.getElementById("services").style.display = "none";
+        document.getElementById("about").style.display = "none";
+        document.getElementById("contact").style.display = "none";
+        document.getElementById("dashboard").classList.add('hidden');
+        document.getElementById("admin").classList.add('hidden');
+        document.getElementById("profile").classList.remove('hidden');
+        switchProfileTab('powerpoint');
+        document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
+    }
 }
 
 window.openPowerPointBuilder = openPowerPointBuilder;

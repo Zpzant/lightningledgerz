@@ -286,7 +286,9 @@ class PowerPointTemplates {
             <div class="ppt-selector-overlay" onclick="pptTemplates.closeSelector()"></div>
             <div class="ppt-selector-panel">
                 <div class="ppt-selector-header">
-                    <h2>Choose Your Presentation Style</h2>
+                    <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz" onclick="pptTemplates.closeSelector()"
+                         style="height: 40px; cursor: pointer; margin-right: 15px;" title="Return to Home">
+                    <h2>Pro Decks - Presentation Builder</h2>
                     <button class="ppt-selector-close" onclick="pptTemplates.closeSelector()">&times;</button>
                 </div>
 
@@ -506,6 +508,14 @@ class PowerPointTemplates {
                         <div class="image-library-header">
                             <h3>📸 High-Quality Image Library</h3>
                             <p>Select images to include in your presentation (4K quality)</p>
+                            <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn btn-primary" onclick="if(window.openImageBrowser) window.openImageBrowser((img) => pptTemplates.selectImage(img.url))" style="background: linear-gradient(45deg, #ff3333, #ff6666);">
+                                    🖼️ Browse Full Library (60+ Images)
+                                </button>
+                                <button class="btn" onclick="if(window.openImageBrowser) window.openImageBrowser((img) => pptTemplates.selectImage(img.url))" style="background: linear-gradient(45deg, #ffd700, #ffed4e); color: #111;">
+                                    ✨ AI Image Generator
+                                </button>
+                            </div>
                         </div>
 
                         <div class="image-categories">
