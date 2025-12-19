@@ -203,8 +203,12 @@ class ZacAvatar {
             if (this.walkthroughStep < this.walkthroughMessages.length) {
                 this.nextWalkthroughStep();
             } else {
-                // Toggle speech/chat - no login required for preset avatars
-                this.toggleSpeech();
+                // After tour, prompt sign up
+                if (!window.currentUser && window.showSignUp) {
+                    window.showSignUp();
+                } else {
+                    this.toggleSpeech();
+                }
             }
         });
 

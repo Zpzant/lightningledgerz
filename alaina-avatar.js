@@ -153,8 +153,15 @@ class AlainaAvatar {
             changeAvatarLabel.style.opacity = '0';
         });
         avatar.addEventListener('click', () => {
-            // Toggle speech/chat - no login required for preset avatars
-            this.toggleSpeech();
+            // Show greeting, then prompt sign up if not logged in
+            if (!window.currentUser) {
+                this.showSpeech("Hey there! I'm Alaina, Lady Lightning! Sign up to unlock my full powers!", "Welcome!");
+                setTimeout(() => {
+                    if (window.showSignUp) window.showSignUp();
+                }, 2500);
+            } else {
+                this.toggleSpeech();
+            }
         });
 
         // Create dismiss button

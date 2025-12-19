@@ -109,14 +109,16 @@ function handleMyProfileClick(event) {
 function previewFeatures(event) {
     if (event) event.preventDefault();
 
-    // Set up demo profile for preview
+    // Set up demo user and profile for full preview
+    window.currentUser = { id: 'demo-user-001', email: 'demo@lightningledgerz.com' };
     window.currentUserProfile = {
         first_name: 'Demo',
         last_name: 'User',
         email: 'demo@lightningledgerz.com',
         username: 'demo_user',
         package_tier: 'diamond',
-        is_admin: false
+        is_admin: false,
+        company_name: 'Demo Company Inc.'
     };
 
     // Update profile page with demo data
@@ -136,7 +138,25 @@ function previewFeatures(event) {
     if (pptTab) pptTab.classList.remove('hidden');
     if (qbTab) qbTab.classList.remove('hidden');
 
-    // Hide other sections
+    // Show user welcome in nav
+    const welcomeNav = document.getElementById('userWelcomeNav');
+    const welcomeText = document.getElementById('welcomeText');
+    const navSignUpBtn = document.getElementById('navSignUpBtn');
+    if (welcomeNav) welcomeNav.classList.remove('hidden');
+    if (welcomeText) welcomeText.textContent = 'Hi, Demo!';
+    if (navSignUpBtn) navSignUpBtn.style.display = 'none';
+
+    // Show logout in dropdown
+    const dropdownLogout = document.getElementById('dropdownLogout');
+    if (dropdownLogout) dropdownLogout.classList.remove('hidden');
+
+    // Hide signup/signin from dropdown since "logged in"
+    const dropdownSignUp = document.getElementById('dropdownSignUp');
+    const dropdownSignIn = document.getElementById('dropdownSignIn');
+    if (dropdownSignUp) dropdownSignUp.classList.add('hidden');
+    if (dropdownSignIn) dropdownSignIn.classList.add('hidden');
+
+    // Navigate to profile
     const services = document.getElementById("services");
     const about = document.getElementById("about");
     const contact = document.getElementById("contact");
@@ -164,27 +184,234 @@ function previewFeatures(event) {
         documentsList.innerHTML = `
             <div class="document-item">
                 <div>
-                    <strong>sample_budget.pdf</strong>
-                    <p>PDF - 245 KB - Uploaded: Demo</p>
+                    <strong>Q4_Budget_Report.pdf</strong>
+                    <p>PDF - 2.4 MB - Uploaded: Dec 15, 2024</p>
                 </div>
                 <div class="document-actions">
-                    <button class="btn btn-small btn-primary">View</button>
+                    <button class="btn btn-small btn-primary" onclick="viewDemoReport('budget')">View</button>
                 </div>
             </div>
             <div class="document-item">
                 <div>
-                    <strong>financials_2024.xlsx</strong>
-                    <p>Excel - 128 KB - Uploaded: Demo</p>
+                    <strong>Annual_Financials_2024.xlsx</strong>
+                    <p>Excel - 856 KB - Uploaded: Dec 10, 2024</p>
                 </div>
                 <div class="document-actions">
-                    <button class="btn btn-small btn-primary">View</button>
+                    <button class="btn btn-small btn-primary" onclick="viewDemoReport('financials')">View</button>
+                </div>
+            </div>
+            <div class="document-item">
+                <div>
+                    <strong>Investor_Deck_Q4.pptx</strong>
+                    <p>PowerPoint - 4.2 MB - Uploaded: Dec 8, 2024</p>
+                </div>
+                <div class="document-actions">
+                    <button class="btn btn-small btn-primary" onclick="viewDemoReport('presentation')">View</button>
                 </div>
             </div>
         `;
     }
 
-    alert('Preview Mode: Explore all features! Sign up to save your data.');
+    // Load demo PowerPoint history
+    loadDemoPowerPointHistory();
+
+    alert('🎉 Demo Mode Active!\n\nYou now have full Diamond-tier access to explore all features.\n\nTry: Pro Decks, QuickBooks, Reports, and more!\n\nNote: Data won\'t be saved - sign up to keep your work!');
 }
+
+// Demo report viewer
+function viewDemoReport(type) {
+    let title, content;
+    switch(type) {
+        case 'budget':
+            title = 'Q4 Budget Report';
+            content = generateDemoBudgetHTML();
+            break;
+        case 'financials':
+            title = 'Annual Financials 2024';
+            content = generateDemoFinancialsHTML();
+            break;
+        case 'presentation':
+            title = 'Investor Deck Q4';
+            content = generateDemoPresentationHTML();
+            break;
+        default:
+            title = 'Demo Document';
+            content = '<p>Document preview not available.</p>';
+    }
+    showDemoModal(title, content);
+}
+
+function showDemoModal(title, content) {
+    // Remove existing modal if any
+    const existing = document.getElementById('demo-report-modal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'demo-report-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.95); z-index: 10000; display: flex;
+        justify-content: center; align-items: center; padding: 20px;
+    `;
+    modal.innerHTML = `
+        <div style="background: #111; border: 2px solid #ff3333; border-radius: 15px;
+                    max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color: #ff3333; margin: 0;">${title}</h2>
+                <button onclick="document.getElementById('demo-report-modal').remove()"
+                        style="background: none; border: none; color: #ff3333; font-size: 30px; cursor: pointer;">&times;</button>
+            </div>
+            <div style="color: #fff;">${content}</div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+    });
+}
+
+function generateDemoBudgetHTML() {
+    return `
+        <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 25px; border-radius: 10px; margin-bottom: 20px;">
+            <h3 style="color: #ffd700; margin-top: 0;">Executive Summary</h3>
+            <p>Q4 2024 demonstrates strong fiscal performance with revenue exceeding projections by 12.3%.</p>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px;">
+                <div style="background: rgba(255,51,51,0.2); padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 28px; color: #ff3333; font-weight: bold;">$2.4M</div>
+                    <div style="color: #888;">Total Revenue</div>
+                </div>
+                <div style="background: rgba(0,255,136,0.2); padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 28px; color: #00ff88; font-weight: bold;">+18.5%</div>
+                    <div style="color: #888;">YoY Growth</div>
+                </div>
+                <div style="background: rgba(255,215,0,0.2); padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 28px; color: #ffd700; font-weight: bold;">$890K</div>
+                    <div style="color: #888;">Net Profit</div>
+                </div>
+            </div>
+        </div>
+        <div style="background: #1a1a2e; padding: 20px; border-radius: 10px;">
+            <h4 style="color: #fff;">Budget vs Actual Analysis</h4>
+            <table style="width: 100%; border-collapse: collapse; color: #fff;">
+                <tr style="border-bottom: 1px solid #333;">
+                    <th style="text-align: left; padding: 10px;">Category</th>
+                    <th style="text-align: right; padding: 10px;">Budget</th>
+                    <th style="text-align: right; padding: 10px;">Actual</th>
+                    <th style="text-align: right; padding: 10px;">Variance</th>
+                </tr>
+                <tr><td style="padding: 10px;">Sales Revenue</td><td style="text-align: right;">$2,100,000</td><td style="text-align: right; color: #00ff88;">$2,358,450</td><td style="text-align: right; color: #00ff88;">+12.3%</td></tr>
+                <tr><td style="padding: 10px;">Operating Expenses</td><td style="text-align: right;">$980,000</td><td style="text-align: right; color: #00ff88;">$945,200</td><td style="text-align: right; color: #00ff88;">-3.6%</td></tr>
+                <tr><td style="padding: 10px;">Marketing</td><td style="text-align: right;">$250,000</td><td style="text-align: right;">$267,800</td><td style="text-align: right; color: #ff6666;">+7.1%</td></tr>
+                <tr><td style="padding: 10px;">R&D</td><td style="text-align: right;">$180,000</td><td style="text-align: right; color: #00ff88;">$172,400</td><td style="text-align: right; color: #00ff88;">-4.2%</td></tr>
+            </table>
+        </div>
+    `;
+}
+
+function generateDemoFinancialsHTML() {
+    return `
+        <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 25px; border-radius: 10px; margin-bottom: 20px;">
+            <h3 style="color: #ffd700; margin-top: 0;">Annual Financial Statement 2024</h3>
+            <p style="color: #aaa;">Comprehensive financial overview following GAAP standards</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+            <div style="background: #1a1a2e; padding: 20px; border-radius: 10px;">
+                <h4 style="color: #ff3333;">Income Statement</h4>
+                <div style="color: #fff; font-size: 14px;">
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #333;"><span>Gross Revenue</span><span>$9,245,000</span></div>
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #333;"><span>Cost of Goods Sold</span><span style="color: #ff6666;">($3,698,000)</span></div>
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #333;"><span><strong>Gross Profit</strong></span><span style="color: #00ff88;"><strong>$5,547,000</strong></span></div>
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #333;"><span>Operating Expenses</span><span style="color: #ff6666;">($2,890,000)</span></div>
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 16px;"><span><strong>Net Income</strong></span><span style="color: #ffd700;"><strong>$2,657,000</strong></span></div>
+                </div>
+            </div>
+            <div style="background: #1a1a2e; padding: 20px; border-radius: 10px;">
+                <h4 style="color: #ff3333;">Balance Sheet Highlights</h4>
+                <div style="color: #fff; font-size: 14px;">
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #333;"><span>Total Assets</span><span>$15,890,000</span></div>
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #333;"><span>Total Liabilities</span><span>$4,230,000</span></div>
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #333;"><span><strong>Shareholders' Equity</strong></span><span style="color: #00ff88;"><strong>$11,660,000</strong></span></div>
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #333;"><span>Current Ratio</span><span>2.4x</span></div>
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0;"><span>Debt-to-Equity</span><span>0.36x</span></div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function generateDemoPresentationHTML() {
+    return `
+        <div style="background: linear-gradient(135deg, #0f0f23, #1a1a3e); padding: 40px; border-radius: 15px; text-align: center; margin-bottom: 20px;">
+            <div style="font-size: 14px; color: #ffd700; margin-bottom: 10px;">INVESTOR PRESENTATION</div>
+            <h2 style="color: #fff; font-size: 32px; margin: 0;">Q4 2024 Quarterly Review</h2>
+            <p style="color: #888; margin-top: 10px;">Demo Company Inc. | December 2024</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+            <div style="background: #1a1a2e; padding: 20px; border-radius: 10px; border-left: 4px solid #ff3333;">
+                <h4 style="color: #ff3333; margin-top: 0;">Key Highlights</h4>
+                <ul style="color: #fff; padding-left: 20px;">
+                    <li>Revenue growth exceeded forecast by 12%</li>
+                    <li>Customer acquisition up 34% YoY</li>
+                    <li>Operating margin improved to 28.7%</li>
+                    <li>New market expansion in EMEA region</li>
+                </ul>
+            </div>
+            <div style="background: #1a1a2e; padding: 20px; border-radius: 10px; border-left: 4px solid #ffd700;">
+                <h4 style="color: #ffd700; margin-top: 0;">Strategic Priorities</h4>
+                <ul style="color: #fff; padding-left: 20px;">
+                    <li>Scale enterprise sales team</li>
+                    <li>Launch AI-powered analytics suite</li>
+                    <li>Expand partnership ecosystem</li>
+                    <li>Achieve SOC 2 Type II certification</li>
+                </ul>
+            </div>
+            <div style="background: #1a1a2e; padding: 20px; border-radius: 10px; border-left: 4px solid #00ff88; grid-column: span 2;">
+                <h4 style="color: #00ff88; margin-top: 0;">Financial Outlook 2025</h4>
+                <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 15px;">
+                    <div><div style="font-size: 24px; color: #fff;">$12.5M</div><div style="color: #888;">Revenue Target</div></div>
+                    <div><div style="font-size: 24px; color: #fff;">35%</div><div style="color: #888;">Growth Rate</div></div>
+                    <div><div style="font-size: 24px; color: #fff;">32%</div><div style="color: #888;">Target Margin</div></div>
+                </div>
+            </div>
+        </div>
+        <p style="text-align: center; color: #666; margin-top: 20px; font-size: 12px;">
+            Generated with Lightning Ledgerz Pro Decks | McKinsey-style formatting
+        </p>
+    `;
+}
+
+// Load demo PowerPoint history
+function loadDemoPowerPointHistory() {
+    const listContainer = document.getElementById('powerpointList');
+    if (!listContainer) return;
+
+    listContainer.innerHTML = `
+        <div class="ppt-history-item" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,51,51,0.1); border-radius: 8px; margin-bottom: 10px;">
+            <div>
+                <strong style="color: #fff;">Investor Update Q4 2024</strong>
+                <p style="color: #888; margin: 5px 0 0 0; font-size: 12px;">Executive Summary • Generated: Dec 15, 2024</p>
+            </div>
+            <button onclick="viewDemoReport('presentation')" style="background: linear-gradient(45deg, #ff3333, #ff6666); border: none; padding: 8px 16px; border-radius: 5px; color: #fff; cursor: pointer;">View</button>
+        </div>
+        <div class="ppt-history-item" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,215,0,0.1); border-radius: 8px; margin-bottom: 10px;">
+            <div>
+                <strong style="color: #fff;">Board Meeting Deck</strong>
+                <p style="color: #888; margin: 5px 0 0 0; font-size: 12px;">Detailed Analysis • Generated: Dec 10, 2024</p>
+            </div>
+            <button onclick="viewDemoReport('presentation')" style="background: linear-gradient(45deg, #ffd700, #ffed4e); border: none; padding: 8px 16px; border-radius: 5px; color: #333; cursor: pointer;">View</button>
+        </div>
+        <div class="ppt-history-item" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,255,136,0.1); border-radius: 8px;">
+            <div>
+                <strong style="color: #fff;">Annual Financial Review</strong>
+                <p style="color: #888; margin: 5px 0 0 0; font-size: 12px;">KPI Dashboard • Generated: Dec 1, 2024</p>
+            </div>
+            <button onclick="viewDemoReport('financials')" style="background: linear-gradient(45deg, #00ff88, #00cc6a); border: none; padding: 8px 16px; border-radius: 5px; color: #111; cursor: pointer;">View</button>
+        </div>
+    `;
+}
+
+window.viewDemoReport = viewDemoReport;
+window.showDemoModal = showDemoModal;
 
 window.handleMyProfileClick = handleMyProfileClick;
 window.previewFeatures = previewFeatures;
@@ -892,6 +1119,17 @@ async function handleAdminClick(event) {
 function scrollToPackage(id) {
     const target = document.getElementById(id);
     if (target) {
+        // Make sure services section is visible first
+        const services = document.getElementById('services');
+        const profile = document.getElementById('profile');
+        const dashboard = document.getElementById('dashboard');
+        const admin = document.getElementById('admin');
+
+        if (services) services.style.display = 'block';
+        if (profile) profile.classList.add('hidden');
+        if (dashboard) dashboard.classList.add('hidden');
+        if (admin) admin.classList.add('hidden');
+
         // Remove highlighted class from all packages
         document.querySelectorAll('.package-card').forEach(card => {
             card.classList.remove('highlighted');
@@ -910,8 +1148,15 @@ function scrollToPackage(id) {
             clickedBtn.classList.add('active');
         }
 
-        // Scroll to target
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Scroll to target with a small delay to ensure visibility
+        setTimeout(() => {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+
+        // Remove highlight after 5 seconds
+        setTimeout(() => {
+            target.classList.remove('highlighted');
+        }, 5000);
     }
 }
 
