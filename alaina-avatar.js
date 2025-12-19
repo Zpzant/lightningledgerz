@@ -153,12 +153,8 @@ class AlainaAvatar {
             changeAvatarLabel.style.opacity = '0';
         });
         avatar.addEventListener('click', () => {
-            // Open the 3D avatar selector
-            if (typeof openAvatar3DSelector === 'function') {
-                openAvatar3DSelector();
-            } else {
-                this.toggleSpeech();
-            }
+            // Toggle speech/chat - no login required for preset avatars
+            this.toggleSpeech();
         });
 
         // Create dismiss button

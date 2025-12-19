@@ -203,12 +203,8 @@ class ZacAvatar {
             if (this.walkthroughStep < this.walkthroughMessages.length) {
                 this.nextWalkthroughStep();
             } else {
-                // Open the 3D avatar selector
-                if (typeof openAvatar3DSelector === 'function') {
-                    openAvatar3DSelector();
-                } else {
-                    this.toggleSpeech();
-                }
+                // Toggle speech/chat - no login required for preset avatars
+                this.toggleSpeech();
             }
         });
 
