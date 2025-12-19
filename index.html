@@ -2407,7 +2407,7 @@
 
             <div style="text-align: center; margin: 1rem 0; color: #666;">— or —</div>
 
-            <form id="signin-form">
+            <form id="signin-form" onsubmit="return handleSignInSubmit(event)">
                 <input type="email" id="signin-email" placeholder="Email" required />
                 <input type="password" id="signin-password" placeholder="Password" required />
                 <button type="submit">Log In</button>
@@ -2459,6 +2459,115 @@
             hideSignIn();
             showSignUp();
         }
+        // Handle Sign In Submit - Test Account Bypass
+        async function handleSignInSubmit(e) {
+            e.preventDefault();
+
+            var email = document.getElementById('signin-email').value.trim();
+            var password = document.getElementById('signin-password').value;
+            var submitBtn = e.target.querySelector('button[type="submit"]');
+
+            console.log('Sign in attempt for:', email);
+
+            // Show loading
+            var originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Signing in...';
+            submitBtn.disabled = true;
+
+            // TEST ACCOUNT - Emily
+            if (email === 'zacily14@gmail.com' && password === 'Snailman1!') {
+                console.log('Emily test account login');
+
+                var mockUser = {
+                    id: 'test-emily-001',
+                    email: 'zacily14@gmail.com',
+                    user_metadata: { first_name: 'Emily' }
+                };
+
+                var mockProfile = {
+                    id: 'test-emily-001',
+                    email: 'zacily14@gmail.com',
+                    first_name: 'Emily',
+                    username: 'emily',
+                    avatar_url: null,
+                    selected_avatar: 'alaina',
+                    package_tier: 'diamond'
+                };
+
+                // Set global state
+                window.currentUser = mockUser;
+                window.currentUserProfile = mockProfile;
+
+                // Save session
+                localStorage.setItem('testUserSession', JSON.stringify({
+                    user: mockUser,
+                    profile: mockProfile,
+                    timestamp: Date.now()
+                }));
+
+                // Close modal
+                hideSignIn();
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+
+                // Welcome message
+                alert('Hi Emily! Welcome back.');
+
+                // Update nav
+                var signinBtn = document.getElementById('nav-signin');
+                var signupBtn = document.getElementById('nav-signup');
+                if (signinBtn) signinBtn.style.display = 'none';
+                if (signupBtn) signupBtn.style.display = 'none';
+
+                // Navigate to profile
+                document.getElementById('services').style.display = 'none';
+                document.getElementById('about').style.display = 'none';
+                document.getElementById('contact').style.display = 'none';
+                document.getElementById('dashboard').classList.add('hidden');
+                document.getElementById('admin').classList.add('hidden');
+                document.getElementById('profile').classList.remove('hidden');
+
+                // Initialize file manager
+                setTimeout(function() {
+                    if (window.fileManager) {
+                        window.fileManager.init('test-emily-001', null);
+                        var mountPoint = document.getElementById('file-manager-mount');
+                        if (mountPoint && !mountPoint.hasChildNodes()) {
+                            mountPoint.appendChild(window.fileManager.createUI());
+                        }
+                    }
+                }, 200);
+
+                window.location.href = '#profile';
+                return false;
+            }
+
+            // For other accounts, try Supabase
+            if (window.supabase) {
+                try {
+                    var result = await window.supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
+
+                    if (result.error) {
+                        alert('Login failed: ' + result.error.message);
+                    } else {
+                        hideSignIn();
+                        // The auth state change handler will take over
+                    }
+                } catch (err) {
+                    alert('Login error: ' + err.message);
+                }
+            } else {
+                alert('Invalid email or password.');
+            }
+
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            return false;
+        }
+
         // Export to window
         window.showSignUp = showSignUp;
         window.showSignIn = showSignIn;
@@ -2466,6 +2575,7 @@
         window.hideSignIn = hideSignIn;
         window.switchToSignIn = switchToSignIn;
         window.switchToSignUp = switchToSignUp;
+        window.handleSignInSubmit = handleSignInSubmit;
         console.log('✓ Modal functions loaded inline');
     </script>
 
