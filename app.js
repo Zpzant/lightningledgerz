@@ -2234,17 +2234,9 @@ function generateSelectedReport() {
         return;
     }
 
+    // Auto-enable demo mode for non-logged-in users
     if (!currentUser) {
-        alert('Please sign in to generate reports.');
-        showSignUp();
-        return;
-    }
-
-    // Check if user has Gold or Diamond tier
-    if (currentUserProfile && currentUserProfile.package_tier === 'basic') {
-        alert('Report generation is available for Gold and Diamond members. Please upgrade your package to access this feature.');
-        scrollToPackage('gold-package');
-        return;
+        previewFeatures();
     }
 
     const templateNames = {
@@ -2258,15 +2250,22 @@ function generateSelectedReport() {
 
     // Use Zac to announce the report generation
     if (window.zacAvatar) {
-        window.zacAvatar.speak(`Generating your ${templateNames[selectedReportTemplate]} report...`);
+        window.zacAvatar.speak(`Opening ${templateNames[selectedReportTemplate]} in the Report Builder...`);
     }
 
-    alert(`Generating ${templateNames[selectedReportTemplate]} report...\n\nThis feature will create a professional PowerPoint presentation using your uploaded financial data.\n\nComing soon!`);
+    // Open Report Builder with the selected template
+    setTimeout(() => {
+        if (typeof openReportBuilder === 'function') {
+            openReportBuilder();
 
-    // TODO: Implement actual report generation with PptxGenJS
-    // This would pull data from dashboard_data and spending_categories
-    // Apply the selected template styling
-    // Generate and download .pptx file
+            // Wait for Report Builder to initialize, then load template
+            setTimeout(() => {
+                if (window.reportBuilder) {
+                    window.reportBuilder.loadProfessionalTemplate(selectedReportTemplate);
+                }
+            }, 500);
+        }
+    }, currentUser ? 0 : 300);
 }
 
 window.selectReportTemplate = selectReportTemplate;
@@ -2487,47 +2486,35 @@ function openQuickBooksDashboard(event) {
 
 window.openQuickBooksDashboard = openQuickBooksDashboard;
 
-// PowerPoint Builder function
+// PowerPoint Builder function - Pro Decks (like Gamma but better)
 function openPowerPointBuilder(event) {
     if (event) event.preventDefault();
 
-    // Allow demo users too
+    // For non-logged-in users, auto-enable demo mode
     if (!currentUser) {
-        // For non-logged-in users, offer preview
-        if (confirm("Pro Decks is available for Gold and Diamond members.\n\nWould you like to preview it in Demo Mode?")) {
-            previewFeatures();
-            setTimeout(() => {
-                if (typeof openPowerPointTemplates === 'function') {
-                    openPowerPointTemplates();
-                }
-            }, 500);
+        // Automatically enter demo mode
+        previewFeatures();
+    }
+
+    // Give a moment for demo mode to initialize, then open
+    setTimeout(() => {
+        // Try multiple ways to open the template selector
+        if (typeof window.openPowerPointTemplates === 'function') {
+            window.openPowerPointTemplates();
+        } else if (typeof pptTemplates !== 'undefined' && pptTemplates.openSelector) {
+            pptTemplates.openSelector();
         } else {
-            showSignUp();
+            // Create and show the selector manually if needed
+            console.log('Pro Decks: Initializing template selector...');
+            // Force load the PowerPointTemplates class
+            if (typeof PowerPointTemplates !== 'undefined') {
+                window.pptTemplates = new PowerPointTemplates();
+                window.pptTemplates.openSelector();
+            } else {
+                alert('Pro Decks is loading... Please try again in a moment.');
+            }
         }
-        return;
-    }
-
-    // Check if user is Gold or Diamond tier (skip for demo users)
-    if (currentUserProfile && !['gold', 'diamond'].includes(currentUserProfile.package_tier) && currentUser.id !== 'demo-user-001') {
-        alert("Pro Decks is available for Gold and Diamond members. Please upgrade your package.");
-        scrollToPackage('gold-package');
-        return;
-    }
-
-    // Open the PowerPoint Templates selector directly
-    if (typeof openPowerPointTemplates === 'function') {
-        openPowerPointTemplates();
-    } else {
-        // Fallback: Navigate to profile page and switch to PowerPoint tab
-        document.getElementById("services").style.display = "none";
-        document.getElementById("about").style.display = "none";
-        document.getElementById("contact").style.display = "none";
-        document.getElementById("dashboard").classList.add('hidden');
-        document.getElementById("admin").classList.add('hidden');
-        document.getElementById("profile").classList.remove('hidden');
-        switchProfileTab('powerpoint');
-        document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
-    }
+    }, currentUser ? 0 : 300);
 }
 
 window.openPowerPointBuilder = openPowerPointBuilder;

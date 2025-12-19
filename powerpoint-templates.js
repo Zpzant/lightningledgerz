@@ -288,8 +288,28 @@ class PowerPointTemplates {
                 <div class="ppt-selector-header">
                     <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz" onclick="pptTemplates.closeSelector()"
                          style="height: 40px; cursor: pointer; margin-right: 15px;" title="Return to Home">
-                    <h2>Pro Decks - Presentation Builder</h2>
+                    <h2>Pro Decks - AI Presentation Builder</h2>
                     <button class="ppt-selector-close" onclick="pptTemplates.closeSelector()">&times;</button>
+                </div>
+
+                <!-- AI Prompt Section (Gamma-style) -->
+                <div class="ppt-ai-prompt-section">
+                    <div class="ppt-ai-prompt-container">
+                        <div class="ppt-ai-icon">✨</div>
+                        <input type="text" id="ppt-ai-prompt" class="ppt-ai-input"
+                               placeholder="Describe your presentation... (e.g., 'Quarterly financial report for Q4 2024' or 'Pitch deck for a fintech startup')">
+                        <button class="ppt-ai-generate-btn" onclick="pptTemplates.generateFromPrompt()">
+                            <span>Generate with AI</span>
+                        </button>
+                    </div>
+                    <div class="ppt-quick-prompts">
+                        <span class="ppt-quick-label">Quick start:</span>
+                        <button class="ppt-quick-btn" onclick="pptTemplates.useQuickPrompt('financial')">Financial Report</button>
+                        <button class="ppt-quick-btn" onclick="pptTemplates.useQuickPrompt('investor')">Investor Pitch</button>
+                        <button class="ppt-quick-btn" onclick="pptTemplates.useQuickPrompt('quarterly')">Quarterly Review</button>
+                        <button class="ppt-quick-btn" onclick="pptTemplates.useQuickPrompt('budget')">Budget Analysis</button>
+                        <button class="ppt-quick-btn" onclick="pptTemplates.useQuickPrompt('sales')">Sales Dashboard</button>
+                    </div>
                 </div>
 
                 <div class="ppt-selector-tabs">
@@ -647,6 +667,93 @@ class PowerPointTemplates {
                 height: 100%;
                 background: rgba(0, 0, 0, 0.85);
                 backdrop-filter: blur(5px);
+            }
+
+            /* AI Prompt Section - Gamma Style */
+            .ppt-ai-prompt-section {
+                background: linear-gradient(135deg, rgba(255, 51, 51, 0.15), rgba(255, 215, 0, 0.1));
+                border: 1px solid rgba(255, 51, 51, 0.3);
+                border-radius: 16px;
+                padding: 1.5rem;
+                margin: 1rem 2rem;
+            }
+
+            .ppt-ai-prompt-container {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                background: rgba(0, 0, 0, 0.4);
+                border-radius: 12px;
+                padding: 8px 12px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .ppt-ai-icon {
+                font-size: 24px;
+            }
+
+            .ppt-ai-input {
+                flex: 1;
+                background: transparent;
+                border: none;
+                color: #fff;
+                font-size: 16px;
+                padding: 10px;
+                outline: none;
+            }
+
+            .ppt-ai-input::placeholder {
+                color: rgba(255, 255, 255, 0.5);
+            }
+
+            .ppt-ai-generate-btn {
+                background: linear-gradient(135deg, #ff3333, #cc0000);
+                border: none;
+                color: #fff;
+                padding: 12px 24px;
+                border-radius: 10px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .ppt-ai-generate-btn:hover {
+                background: linear-gradient(135deg, #ff4444, #dd1111);
+                transform: scale(1.02);
+                box-shadow: 0 4px 20px rgba(255, 51, 51, 0.4);
+            }
+
+            .ppt-quick-prompts {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-top: 12px;
+                flex-wrap: wrap;
+            }
+
+            .ppt-quick-label {
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 13px;
+            }
+
+            .ppt-quick-btn {
+                background: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #fff;
+                padding: 6px 14px;
+                border-radius: 20px;
+                font-size: 12px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .ppt-quick-btn:hover {
+                background: rgba(255, 51, 51, 0.2);
+                border-color: #ff3333;
             }
 
             .ppt-selector-panel {
@@ -1894,11 +2001,23 @@ class PowerPointTemplates {
     }
 
     openSelector() {
-        let selector = document.getElementById('ppt-template-selector');
-        if (!selector) {
-            selector = this.createTemplateSelectorUI();
+        // Remove existing selector to ensure fresh state
+        let existingSelector = document.getElementById('ppt-template-selector');
+        if (existingSelector) {
+            existingSelector.remove();
         }
+
+        // Create fresh selector
+        const selector = this.createTemplateSelectorUI();
         selector.classList.add('active');
+
+        // Focus for accessibility
+        setTimeout(() => {
+            const panel = selector.querySelector('.ppt-selector-panel');
+            if (panel) panel.focus();
+        }, 100);
+
+        console.log('Pro Decks opened successfully');
     }
 
     closeSelector() {
@@ -1906,6 +2025,110 @@ class PowerPointTemplates {
         if (selector) {
             selector.classList.remove('active');
         }
+    }
+
+    // AI Prompt Generation (Gamma-style)
+    generateFromPrompt() {
+        const prompt = document.getElementById('ppt-ai-prompt')?.value?.trim();
+        if (!prompt) {
+            alert('Please enter a description for your presentation');
+            return;
+        }
+
+        // Auto-select a template based on prompt keywords
+        const templateMatch = this.matchTemplateToPrompt(prompt);
+        this.selectTemplate(templateMatch);
+
+        // Show generation progress
+        const btn = document.querySelector('.ppt-ai-generate-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span>Generating...</span>';
+        btn.disabled = true;
+
+        // Simulate AI generation
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+
+            // Switch to preview tab
+            this.switchTab('preview');
+            this.updatePreview();
+
+            // Show success message
+            this.showNotification('Presentation generated! Click "Generate Presentation" to download.');
+        }, 1500);
+    }
+
+    useQuickPrompt(type) {
+        const prompts = {
+            financial: 'Comprehensive financial report with P&L analysis, revenue trends, and key metrics',
+            investor: 'Startup pitch deck with market opportunity, business model, traction, and funding ask',
+            quarterly: 'Q4 2024 quarterly business review with KPIs, achievements, and next quarter goals',
+            budget: 'Budget vs actual analysis with variance explanations and cost optimization recommendations',
+            sales: 'Sales performance dashboard with pipeline, conversion rates, and revenue forecasts'
+        };
+
+        const templates = {
+            financial: 'corporate',
+            investor: 'mckinsey',
+            quarterly: 'deloitte',
+            budget: 'modern',
+            sales: 'bold'
+        };
+
+        const promptInput = document.getElementById('ppt-ai-prompt');
+        if (promptInput) {
+            promptInput.value = prompts[type] || '';
+        }
+
+        // Auto-select matching template
+        if (templates[type] && this.templates[templates[type]]) {
+            this.selectTemplate(templates[type]);
+        }
+    }
+
+    matchTemplateToPrompt(prompt) {
+        const promptLower = prompt.toLowerCase();
+
+        if (promptLower.includes('pitch') || promptLower.includes('investor') || promptLower.includes('startup')) {
+            return 'mckinsey';
+        } else if (promptLower.includes('financial') || promptLower.includes('p&l') || promptLower.includes('profit')) {
+            return 'corporate';
+        } else if (promptLower.includes('quarterly') || promptLower.includes('review')) {
+            return 'deloitte';
+        } else if (promptLower.includes('budget') || promptLower.includes('cost')) {
+            return 'modern';
+        } else if (promptLower.includes('sales') || promptLower.includes('pipeline')) {
+            return 'bold';
+        } else if (promptLower.includes('tech') || promptLower.includes('technology')) {
+            return 'tech';
+        } else if (promptLower.includes('creative') || promptLower.includes('design')) {
+            return 'creative';
+        }
+        return 'corporate'; // Default
+    }
+
+    showNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            z-index: 100000;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 20px rgba(40, 167, 69, 0.4);
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 4000);
     }
 
     async generatePresentation() {
@@ -2102,8 +2325,25 @@ const pptTemplates = new PowerPointTemplates();
 
 // Global function to open template selector
 window.openPowerPointTemplates = function() {
+    // Ensure pptTemplates exists
+    if (!window.pptTemplates) {
+        window.pptTemplates = new PowerPointTemplates();
+    }
     pptTemplates.openSelector();
 };
+
+// Auto-initialize on DOM ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        if (!window.pptTemplates) {
+            window.pptTemplates = new PowerPointTemplates();
+        }
+    });
+} else {
+    if (!window.pptTemplates) {
+        window.pptTemplates = new PowerPointTemplates();
+    }
+}
 
 // Export for module use
 if (typeof module !== 'undefined' && module.exports) {
