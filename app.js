@@ -626,12 +626,6 @@ document.getElementById("signup-form")?.addEventListener("submit", async (e) => 
 document.getElementById("signin-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // Check if Supabase is available
-    if (!supabase) {
-        alert("Connection error. Please refresh the page and try again.");
-        return;
-    }
-
     const email = document.getElementById("signin-email").value.trim();
     const password = document.getElementById("signin-password").value;
     const submitBtn = e.target.querySelector('button[type="submit"]');
@@ -640,6 +634,83 @@ document.getElementById("signin-form")?.addEventListener("submit", async (e) => 
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Signing in...';
     submitBtn.disabled = true;
+
+    // TEST ACCOUNT BYPASS - Emily's test account
+    if (email === 'zacily14@gmail.com' && password === 'Snailman1!') {
+        console.log("Test account login for Emily");
+
+        // Create mock user session for Emily
+        const mockUser = {
+            id: 'test-emily-001',
+            email: 'zacily14@gmail.com',
+            user_metadata: { first_name: 'Emily' }
+        };
+
+        const mockProfile = {
+            id: 'test-emily-001',
+            email: 'zacily14@gmail.com',
+            first_name: 'Emily',
+            username: 'emily',
+            avatar_url: null,
+            selected_avatar: 'alaina'
+        };
+
+        // Set global user state
+        currentUser = mockUser;
+        currentUserProfile = mockProfile;
+
+        // Save to localStorage for persistence
+        localStorage.setItem('testUserSession', JSON.stringify({
+            user: mockUser,
+            profile: mockProfile,
+            timestamp: Date.now()
+        }));
+
+        // Close modal
+        document.getElementById("signin-modal").classList.add('hidden');
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+
+        // Welcome Emily with avatar
+        if (window.avatarSelector) {
+            window.avatarSelector.welcomeBack('Emily');
+        } else if (window.alainaAvatar) {
+            window.alainaAvatar.welcomeBack('Emily');
+        } else {
+            alert('Hi Emily! Welcome back.');
+        }
+
+        // Update UI for logged in state
+        updateUIForUser(mockUser, mockProfile);
+
+        // Initialize file manager for Emily
+        if (window.fileManager) {
+            window.fileManager.init('test-emily-001', null);
+            const mountPoint = document.getElementById('file-manager-mount');
+            if (mountPoint && !mountPoint.hasChildNodes()) {
+                mountPoint.appendChild(window.fileManager.createUI());
+            }
+        }
+
+        // Navigate to profile
+        document.getElementById("services").style.display = "none";
+        document.getElementById("about").style.display = "none";
+        document.getElementById("contact").style.display = "none";
+        document.getElementById("dashboard").classList.add('hidden');
+        document.getElementById("admin").classList.add('hidden');
+        document.getElementById("profile").classList.remove('hidden');
+        window.location.href = "#profile";
+
+        return;
+    }
+
+    // Check if Supabase is available
+    if (!supabase) {
+        alert("Connection error. Please refresh the page and try again.");
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+        return;
+    }
 
     try {
         console.log("Attempting sign in for:", email);
@@ -798,12 +869,31 @@ document.getElementById("reset-password-form")?.addEventListener("submit", async
 // Sign Out
 async function signOutUser() {
     try {
-        const { error } = await supabase.auth.signOut();
-        if (error) throw error;
+        // Clear test session if exists
+        localStorage.removeItem('testUserSession');
+        localStorage.removeItem('emilyFiles');
+
+        // Sign out from Supabase if available
+        if (supabase) {
+            const { error } = await supabase.auth.signOut();
+            if (error) console.warn('Supabase signout:', error.message);
+        }
 
         alert("Signed out successfully!");
         currentUser = null;
         currentUserProfile = null;
+
+        // Update UI for logged out state
+        const signinBtn = document.getElementById('nav-signin');
+        const signupBtn = document.getElementById('nav-signup');
+        const profileBtn = document.getElementById('nav-profile');
+        const logoutBtn = document.getElementById('nav-logout');
+
+        if (signinBtn) signinBtn.style.display = 'inline-block';
+        if (signupBtn) signupBtn.style.display = 'inline-block';
+        if (profileBtn) profileBtn.style.display = 'none';
+        if (logoutBtn) logoutBtn.style.display = 'none';
+
         document.getElementById("profile").classList.add('hidden');
         document.getElementById("dashboard").classList.add('hidden');
         document.getElementById("admin").classList.add('hidden');
@@ -871,6 +961,15 @@ async function loadUserProfile() {
 
         // Show/hide features based on package
         updateFeatureAccess();
+
+        // Initialize file manager for real users
+        if (window.fileManager && currentUser) {
+            window.fileManager.init(currentUser.id, supabase);
+            const mountPoint = document.getElementById('file-manager-mount');
+            if (mountPoint && !mountPoint.hasChildNodes()) {
+                mountPoint.appendChild(window.fileManager.createUI());
+            }
+        }
 
     } catch (error) {
         console.error("Error loading profile:", error);
@@ -2083,8 +2182,68 @@ async function loadAdminDashboard() {
 // INITIALIZE ON PAGE LOAD
 // =====================================================
 
-// Check auth state on page load
+// Update UI for logged in user
+function updateUIForUser(user, profile) {
+    // Update nav buttons
+    const signinBtn = document.getElementById('nav-signin');
+    const signupBtn = document.getElementById('nav-signup');
+    const profileBtn = document.getElementById('nav-profile');
+    const logoutBtn = document.getElementById('nav-logout');
+
+    if (signinBtn) signinBtn.style.display = 'none';
+    if (signupBtn) signupBtn.style.display = 'none';
+    if (profileBtn) profileBtn.style.display = 'inline-block';
+    if (logoutBtn) logoutBtn.style.display = 'inline-block';
+
+    // Update profile display name
+    const displayName = profile?.first_name || profile?.username || user?.email?.split('@')[0] || 'User';
+    const profileNameEl = document.getElementById('profile-display-name');
+    if (profileNameEl) profileNameEl.textContent = displayName;
+
+    // Update profile email
+    const profileEmailEl = document.getElementById('profile-email');
+    if (profileEmailEl) profileEmailEl.textContent = user?.email || '';
+
+    console.log('UI updated for user:', displayName);
+}
+
+// Check auth state on page load (includes test account restoration)
 window.addEventListener('DOMContentLoaded', async () => {
+    // First check for test account session
+    const testSession = localStorage.getItem('testUserSession');
+    if (testSession) {
+        try {
+            const sessionData = JSON.parse(testSession);
+            // Check if session is less than 7 days old
+            if (Date.now() - sessionData.timestamp < 7 * 24 * 60 * 60 * 1000) {
+                console.log('Restoring test session for Emily');
+                currentUser = sessionData.user;
+                currentUserProfile = sessionData.profile;
+                updateUIForUser(currentUser, currentUserProfile);
+
+                // Initialize file manager for Emily
+                setTimeout(() => {
+                    if (window.fileManager) {
+                        window.fileManager.init('test-emily-001', null);
+                        const mountPoint = document.getElementById('file-manager-mount');
+                        if (mountPoint && !mountPoint.hasChildNodes()) {
+                            mountPoint.appendChild(window.fileManager.createUI());
+                        }
+                    }
+                }, 100);
+
+                return;
+            } else {
+                // Session expired, clear it
+                localStorage.removeItem('testUserSession');
+            }
+        } catch (e) {
+            console.error('Error parsing test session:', e);
+            localStorage.removeItem('testUserSession');
+        }
+    }
+
+    // Check Supabase session
     if (!supabase) {
         console.warn('Supabase not available - skipping session check');
         return;

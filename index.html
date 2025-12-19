@@ -2040,8 +2040,13 @@
 
             <!-- Documents Tab -->
             <div id="tab-documents" class="tab-content">
-                <div class="profile-card">
-                    <h3>Upload Documents</h3>
+                <!-- File Manager with Categorized Uploads -->
+                <div id="file-manager-mount"></div>
+
+                <!-- Legacy Upload Section -->
+                <div class="profile-card" style="margin-top: 20px;">
+                    <h3>📎 Additional Documents</h3>
+                    <p style="color: #888; margin-bottom: 15px;">Upload any other supporting documents</p>
                     <div class="upload-area">
                         <input type="file" id="fileUpload" accept=".pdf,.xlsx,.xls,.csv" multiple>
                         <button class="btn btn-primary" onclick="uploadDocuments()">Upload Files</button>
@@ -2053,9 +2058,9 @@
                         </div>
                     </div>
 
-                    <h4 style="margin-top: 2rem; color: #ff3333;">Your Documents</h4>
+                    <h4 style="margin-top: 2rem; color: #ff3333;">Uploaded Files</h4>
                     <div id="documentsList" style="margin-top: 1rem;">
-                        <p style="color: #888;">Loading documents...</p>
+                        <p style="color: #888;">No additional documents uploaded yet.</p>
                     </div>
                 </div>
             </div>
@@ -2533,6 +2538,7 @@
     <script src="report-builder-system.js"></script>
     <script src="deck-templates.js"></script>
     <script src="claude-avatar-ai.js"></script>
+    <script src="file-manager.js"></script>
 
     <!-- Main Application Script -->
     <script src="app.js"></script>
