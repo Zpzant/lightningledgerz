@@ -53,6 +53,8 @@ class ProDeckBuilder {
             { id: 'pie-chart', name: 'Pie/Donut Chart', icon: '🥧', category: 'charts' },
             { id: 'comparison', name: 'Side-by-Side Compare', icon: '⚖️', category: 'analysis' },
             { id: 'waterfall', name: 'Waterfall Chart', icon: '🌊', category: 'charts' },
+            { id: 'global-map', name: 'World Map', icon: '🗺️', category: 'maps' },
+            { id: 'us-map', name: 'US Map', icon: '🇺🇸', category: 'maps' },
             { id: 'process-flow', name: 'Process Flow', icon: '➡️', category: 'process' },
             { id: 'timeline', name: 'Timeline/Roadmap', icon: '🗓️', category: 'process' },
             { id: 'table-data', name: 'Data Table', icon: '📋', category: 'data' },
@@ -635,6 +637,7 @@ class ProDeckBuilder {
             summary: 'Summary',
             data: 'Data & Metrics',
             charts: 'Charts',
+            maps: 'Geographic Maps',
             analysis: 'Analysis',
             process: 'Process',
             layout: 'Layouts',
@@ -643,6 +646,23 @@ class ProDeckBuilder {
         };
 
         let html = '';
+
+        // Add "From Your Data" section at top
+        html += `
+            <div class="template-category">
+                <div class="template-category-title" style="color: #4caf50;">📤 From Your Data</div>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div class="template-item" onclick="window.openMapDataUpload()" style="display: flex; align-items: center; gap: 10px; padding: 12px;">
+                        <div class="template-icon" style="font-size: 1.2rem;">🗺️</div>
+                        <div>
+                            <div class="template-name" style="font-size: 0.8rem; font-weight: 600;">Upload Geographic Data</div>
+                            <div style="font-size: 0.65rem; color: #888;">CSV with locations & values</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
         Object.entries(categories).forEach(([catId, catName]) => {
             const templates = this.slideTemplates.filter(t => t.category === catId);
             if (templates.length > 0) {
