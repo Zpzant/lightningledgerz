@@ -591,6 +591,38 @@ class ProDeckBuilder {
                         <div class="toolbar-group">
                             <span class="toolbar-label">Slide ${this.currentSlideIndex + 1} of ${this.slides.length}</span>
                         </div>
+                        <div class="toolbar-group">
+                            <span class="toolbar-label">Background:</span>
+                            <select class="toolbar-select" onchange="window.proDeckBuilder.changeSlideBackground(this.value)">
+                                <optgroup label="City Skylines">
+                                    <option value="nyc-night">NYC Night</option>
+                                    <option value="nyc-skyline">NYC Skyline</option>
+                                    <option value="manhattan">Manhattan</option>
+                                    <option value="london">London</option>
+                                    <option value="dubai">Dubai</option>
+                                    <option value="singapore">Singapore</option>
+                                    <option value="tokyo">Tokyo</option>
+                                    <option value="hong-kong">Hong Kong</option>
+                                </optgroup>
+                                <optgroup label="Business">
+                                    <option value="skyscraper">Skyscraper</option>
+                                    <option value="glass-building">Glass Building</option>
+                                    <option value="office-modern">Modern Office</option>
+                                    <option value="corporate">Corporate</option>
+                                </optgroup>
+                                <optgroup label="Abstract">
+                                    <option value="abstract-blue">Abstract Blue</option>
+                                    <option value="abstract-dark">Abstract Dark</option>
+                                    <option value="network">Network</option>
+                                </optgroup>
+                                <optgroup label="Gradients">
+                                    <option value="gradient-dark">Dark Gradient</option>
+                                    <option value="gradient-blue">Blue Gradient</option>
+                                    <option value="gradient-green">Green Gradient</option>
+                                    <option value="gradient-purple">Purple Gradient</option>
+                                </optgroup>
+                            </select>
+                        </div>
                         <div class="toolbar-group" style="margin-left: auto;">
                             <button class="deck-btn deck-btn-secondary" onclick="window.proDeckBuilder.prevSlide()" ${this.currentSlideIndex === 0 ? 'disabled' : ''}>← Prev</button>
                             <button class="deck-btn deck-btn-secondary" onclick="window.proDeckBuilder.nextSlide()" ${this.currentSlideIndex >= this.slides.length - 1 ? 'disabled' : ''}>Next →</button>
@@ -1073,6 +1105,18 @@ class ProDeckBuilder {
         this.theme = themeName;
         this.save();
         this.render();
+    }
+
+    // Change slide background
+    changeSlideBackground(bgKey) {
+        if (this.slides.length === 0) return;
+        const slide = this.slides[this.currentSlideIndex];
+        if (slide && slide.data) {
+            slide.data.background = bgKey;
+            this.save();
+            this.render();
+            window.toast?.success('Background Updated', 'Slide background changed');
+        }
     }
 
     // Present mode
