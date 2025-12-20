@@ -1332,6 +1332,14 @@ function switchProfileTab(tabName) {
         loadPowerPointHistory();
     } else if (tabName === 'quickbooks') {
         loadQuickBooksStatus();
+    } else if (tabName === 'proforma') {
+        // Initialize pro forma preview if available
+        if (window.proFormaPlanner) {
+            const preview = document.getElementById('proforma-preview');
+            if (preview && preview.innerHTML === '') {
+                preview.innerHTML = '<p style="color: #888; text-align: center; padding: 2rem;">Click "Open Full Planner" to start building your financial model</p>';
+            }
+        }
     }
 }
 
@@ -1955,11 +1963,40 @@ async function generatePowerPoint() {
         return;
     }
 
-    alert("PowerPoint generation feature coming soon! This will generate a professional pitch deck with your financial data, charts, and AI-generated insights.");
+    // Use the real PowerPoint generator
+    if (window.generateQuickPowerPoint) {
+        await window.generateQuickPowerPoint();
+    } else {
+        // Fallback - generate basic deck
+        const toast = window.toast || { info: alert, success: alert, error: alert };
+        toast.info('Generating PowerPoint...', 'Creating your presentation');
 
-    // TODO: Implement PowerPoint generation using a library like PptxGenJS
-    // This would pull data from dashboard_data and spending_categories
-    // Generate charts, add user's logo/avatar, and create a downloadable .pptx file
+        try {
+            const pptx = new PptxGenJS();
+            pptx.author = 'Lightning Ledgerz';
+            pptx.company = currentUserProfile.company_name || 'My Company';
+            pptx.title = 'Financial Report';
+
+            // Title slide
+            let slide = pptx.addSlide();
+            slide.addText('Financial Report', { x: 0.5, y: 2, w: 9, h: 1.5, fontSize: 44, bold: true, color: 'ff3333', align: 'center' });
+            slide.addText(currentUserProfile.company_name || 'My Company', { x: 0.5, y: 3.5, w: 9, h: 0.5, fontSize: 24, color: '333333', align: 'center' });
+            slide.addText(new Date().toLocaleDateString(), { x: 0.5, y: 4.2, w: 9, h: 0.4, fontSize: 14, color: '666666', align: 'center' });
+
+            // Financial summary slide
+            slide = pptx.addSlide();
+            slide.addText('Financial Summary', { x: 0.5, y: 0.5, w: 9, h: 0.8, fontSize: 32, bold: true, color: 'ff3333' });
+            slide.addText(`Revenue: $${(dashboard_data?.revenue || 0).toLocaleString()}`, { x: 0.5, y: 1.8, w: 9, h: 0.5, fontSize: 18 });
+            slide.addText(`Expenses: $${(dashboard_data?.expenses || 0).toLocaleString()}`, { x: 0.5, y: 2.4, w: 9, h: 0.5, fontSize: 18 });
+            slide.addText(`Net Income: $${((dashboard_data?.revenue || 0) - (dashboard_data?.expenses || 0)).toLocaleString()}`, { x: 0.5, y: 3, w: 9, h: 0.5, fontSize: 18, bold: true });
+
+            await pptx.writeFile({ fileName: 'Financial_Report_' + new Date().toISOString().split('T')[0] });
+            toast.success('PowerPoint Generated!', 'Your presentation has been downloaded');
+        } catch (error) {
+            console.error('PowerPoint generation error:', error);
+            toast.error('Generation Failed', error.message);
+        }
+    }
 }
 
 async function loadPowerPointHistory() {

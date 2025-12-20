@@ -54,6 +54,7 @@
             overflow: hidden;
         }
 
+        .video-background video,
         .video-background iframe {
             position: absolute;
             top: 50%;
@@ -65,8 +66,10 @@
             transform: translate(-50%, -50%);
             opacity: 0;
             transition: opacity 1s ease-in-out;
+            object-fit: cover;
         }
 
+        .video-background video.active,
         .video-background iframe.active {
             opacity: 1;
         }
@@ -1655,8 +1658,49 @@
 </head>
 <body>
     <div class="video-background" id="videoBackground">
-        <iframe src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1" frameborder="0" allowfullscreen class="active"></iframe>
+        <!-- iOS/iPhone compatible video with fallback -->
+        <video id="bgVideo" autoplay muted loop playsinline webkit-playsinline class="active" poster="lightning-poster.jpg">
+            <source src="https://streamable.com/e/0ek0up" type="video/mp4">
+        </video>
+        <!-- Fallback iframe for browsers that don't support video element -->
+        <iframe id="bgIframe" src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1&muted=1" frameborder="0" allowfullscreen allow="autoplay; fullscreen" style="display: none;" class="active"></iframe>
     </div>
+    <script>
+        // iOS/iPhone video compatibility fix
+        (function() {
+            const video = document.getElementById('bgVideo');
+            const iframe = document.getElementById('bgIframe');
+
+            // Check if video can play
+            video.addEventListener('error', function() {
+                // Fallback to iframe
+                video.style.display = 'none';
+                iframe.style.display = 'block';
+            });
+
+            // iOS requires user interaction for autoplay
+            function enableVideoPlayback() {
+                video.play().catch(function(e) {
+                    // If autoplay fails, show iframe fallback
+                    video.style.display = 'none';
+                    iframe.style.display = 'block';
+                });
+            }
+
+            // Try to play on load
+            if (video.readyState >= 2) {
+                enableVideoPlayback();
+            } else {
+                video.addEventListener('loadeddata', enableVideoPlayback);
+            }
+
+            // Also try on first touch for iOS
+            document.addEventListener('touchstart', function initVideo() {
+                video.play().catch(function(){});
+                document.removeEventListener('touchstart', initVideo);
+            }, { once: true });
+        })();
+    </script>
 
     <div class="lightning-flash" id="lightningFlash"></div>
     <div class="overlay"></div>
@@ -1689,6 +1733,7 @@
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
             <a onclick="openFinancialReports()" style="cursor: pointer; color: #ffd700;">Financial Models</a>
+            <a onclick="openProFormaPlanner()" style="cursor: pointer; color: #4caf50;">Pro Forma</a>
             <a onclick="openQuickBooksDashboard()" style="cursor: pointer; color: #2E7D32;">QuickBooks</a>
             <a onclick="openPowerPointBuilder()" style="cursor: pointer; color: #ff5722;">Pro Decks</a>
             <a onclick="openReportBuilder()" style="cursor: pointer; color: #9c27b0;">Reports</a>
@@ -1825,6 +1870,7 @@
                 <button class="tab-button" onclick="switchProfileTab('avatar')">Avatar</button>
                 <button class="tab-button" onclick="switchProfileTab('documents')">Documents</button>
                 <button class="tab-button" onclick="switchProfileTab('powerpoint')" id="pptTab" class="hidden">Pro Decks</button>
+                <button class="tab-button" onclick="switchProfileTab('proforma')" id="proformaTab">Pro Forma</button>
                 <button class="tab-button" onclick="switchProfileTab('quickbooks')" id="qbTab" class="hidden">QuickBooks</button>
             </div>
 
@@ -2076,6 +2122,53 @@
                     <div id="powerpointList" style="margin-top: 1rem;">
                         <p style="color: #888;">No files generated yet</p>
                     </div>
+                </div>
+            </div>
+
+            <!-- Pro Forma Planning Tab -->
+            <div id="tab-proforma" class="tab-content">
+                <div class="profile-card" style="max-width: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div>
+                            <h3 style="color: #ff3333; margin: 0;">📊 Pro Forma Financial Model</h3>
+                            <p style="color: #888; margin-top: 5px;">Build professional financial projections with multiple forecasting methods</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openProFormaPlanner()" style="padding: 12px 24px;">
+                            <span style="margin-right: 8px;">🚀</span> Open Full Planner
+                        </button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                        <div style="background: rgba(255,51,51,0.1); border: 1px solid #ff3333; border-radius: 10px; padding: 1.5rem; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 10px;">📈</div>
+                            <h4 style="color: #fff; margin: 0 0 5px;">Revenue Planning</h4>
+                            <p style="color: #888; font-size: 0.85rem; margin: 0;">Multiple revenue categories with dropdown selection</p>
+                        </div>
+                        <div style="background: rgba(76,175,80,0.1); border: 1px solid #4caf50; border-radius: 10px; padding: 1.5rem; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 10px;">💰</div>
+                            <h4 style="color: #fff; margin: 0 0 5px;">Expense Management</h4>
+                            <p style="color: #888; font-size: 0.85rem; margin: 0;">Fixed & variable expenses with helper notes</p>
+                        </div>
+                        <div style="background: rgba(33,150,243,0.1); border: 1px solid #2196f3; border-radius: 10px; padding: 1.5rem; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 10px;">🎯</div>
+                            <h4 style="color: #fff; margin: 0 0 5px;">Smart Projections</h4>
+                            <p style="color: #888; font-size: 0.85rem; margin: 0;">T3, T6, T12, YoY, and percentage methods</p>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 1.5rem;">
+                        <h4 style="color: #ff3333; margin: 0 0 1rem;">Projection Methods Available:</h4>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 0.9rem;">
+                            <div style="color: #ccc;">• <strong>T12/T6/T3:</strong> Trailing month averages</div>
+                            <div style="color: #ccc;">• <strong>Last Year:</strong> Match previous year totals</div>
+                            <div style="color: #ccc;">• <strong>Same Month LY:</strong> Last year same month</div>
+                            <div style="color: #ccc;">• <strong>% Increase:</strong> Growth projections</div>
+                            <div style="color: #ccc;">• <strong>Last Month:</strong> Carry forward values</div>
+                            <div style="color: #ccc;">• <strong>Manual:</strong> Custom entry per month</div>
+                        </div>
+                    </div>
+
+                    <div id="proforma-preview" style="margin-top: 2rem;"></div>
                 </div>
             </div>
 
@@ -2656,6 +2749,8 @@
     <script src="budget-forecasting.js"></script>
     <script src="onboarding-tutorial.js"></script>
     <script src="data-export.js"></script>
+    <script src="pptx-generator.js"></script>
+    <script src="pro-forma-planner.js"></script>
 
     <!-- Main Application Script -->
     <script src="app.js"></script>

@@ -1139,8 +1139,10 @@
                     else window.toast.info('Report Builder', 'Feature coming soon!');
                     break;
                 case 'deck':
-                    if (typeof window.openPowerPointBuilder === 'function') window.openPowerPointBuilder();
-                    else window.toast.info('Pro Decks', 'Feature coming soon!');
+                    if (typeof window.generateQuickPowerPoint === 'function') window.generateQuickPowerPoint();
+                    else if (typeof window.openPowerPointBuilder === 'function') window.openPowerPointBuilder();
+                    else if (typeof generatePowerPoint === 'function') generatePowerPoint();
+                    else window.toast.info('Pro Decks', 'Loading PowerPoint generator...');
                     break;
                 case 'upload':
                     this.triggerUpload();
