@@ -128,6 +128,12 @@
             color: #ff3333;
         }
 
+        .nav-links a.active {
+            color: #ff3333;
+            border-bottom: 2px solid #ff3333;
+            padding-bottom: 3px;
+        }
+
         /* User Welcome Section in Nav */
         .user-welcome {
             display: flex;
@@ -1658,49 +1664,8 @@
 </head>
 <body>
     <div class="video-background" id="videoBackground">
-        <!-- iOS/iPhone compatible video with fallback -->
-        <video id="bgVideo" autoplay muted loop playsinline webkit-playsinline class="active" poster="lightning-poster.jpg">
-            <source src="https://streamable.com/e/0ek0up" type="video/mp4">
-        </video>
-        <!-- Fallback iframe for browsers that don't support video element -->
-        <iframe id="bgIframe" src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1&muted=1" frameborder="0" allowfullscreen allow="autoplay; fullscreen" style="display: none;" class="active"></iframe>
+        <iframe src="https://www.youtube.com/embed/n_Dv4JMiwK8?autoplay=1&mute=1&loop=1&playlist=n_Dv4JMiwK8&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen class="active"></iframe>
     </div>
-    <script>
-        // iOS/iPhone video compatibility fix
-        (function() {
-            const video = document.getElementById('bgVideo');
-            const iframe = document.getElementById('bgIframe');
-
-            // Check if video can play
-            video.addEventListener('error', function() {
-                // Fallback to iframe
-                video.style.display = 'none';
-                iframe.style.display = 'block';
-            });
-
-            // iOS requires user interaction for autoplay
-            function enableVideoPlayback() {
-                video.play().catch(function(e) {
-                    // If autoplay fails, show iframe fallback
-                    video.style.display = 'none';
-                    iframe.style.display = 'block';
-                });
-            }
-
-            // Try to play on load
-            if (video.readyState >= 2) {
-                enableVideoPlayback();
-            } else {
-                video.addEventListener('loadeddata', enableVideoPlayback);
-            }
-
-            // Also try on first touch for iOS
-            document.addEventListener('touchstart', function initVideo() {
-                video.play().catch(function(){});
-                document.removeEventListener('touchstart', initVideo);
-            }, { once: true });
-        })();
-    </script>
 
     <div class="lightning-flash" id="lightningFlash"></div>
     <div class="overlay"></div>
@@ -1729,9 +1694,9 @@
         </button>
 
         <div class="nav-links" id="navLinks">
-            <a href="#services">Services</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+            <a href="#services" onclick="navigateToSection('services', event)">Services</a>
+            <a href="#about" onclick="navigateToSection('about', event)">About</a>
+            <a href="#contact" onclick="navigateToSection('contact', event)">Contact</a>
             <a onclick="openFinancialReports()" style="cursor: pointer; color: #ffd700;">Financial Models</a>
             <a onclick="openProFormaPlanner()" style="cursor: pointer; color: #4caf50;">Pro Forma</a>
             <a onclick="openQuickBooksDashboard()" style="cursor: pointer; color: #2E7D32;">QuickBooks</a>
