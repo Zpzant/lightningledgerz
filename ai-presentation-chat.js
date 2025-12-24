@@ -8,13 +8,14 @@ class AIPresentationChat {
         this.messages = [];
         this.currentAvatar = 'zac'; // Default
 
-        // FREEMIUM MODEL - Slide limits per tier
+        // FREEMIUM MODEL - Daily deck generation tries per tier
         this.tierLimits = {
-            free: { slides: 5, presentations: 2, name: 'Free', canExport: false, premiumTemplates: false },
-            basic: { slides: 20, presentations: 10, name: 'Basic', canExport: true, premiumTemplates: false },
-            gold: { slides: 100, presentations: 50, name: 'Gold', canExport: true, premiumTemplates: true },
-            diamond: { slides: -1, presentations: -1, name: 'Diamond', canExport: true, premiumTemplates: true } // -1 = unlimited
+            free: { triesPerDay: 1, name: 'Free', canExport: false, premiumTemplates: false, maxSlides: 5 },
+            basic: { triesPerDay: 3, name: 'Basic', canExport: true, premiumTemplates: false, maxSlides: 15 },
+            gold: { triesPerDay: 10, name: 'Gold', canExport: true, premiumTemplates: true, maxSlides: 30 },
+            diamond: { triesPerDay: -1, name: 'Diamond', canExport: true, premiumTemplates: true, maxSlides: -1 } // -1 = unlimited
         };
+        this.selectedSlideCount = 5; // Default slide count
 
         this.currentTier = this.detectUserTier();
         this.usage = this.loadUsage();
@@ -23,32 +24,34 @@ class AIPresentationChat {
             zac: {
                 name: 'Zac',
                 title: 'Your Financial Strategist',
-                image: 'zac_mps.jpg',
                 greeting: "Hey! I'm Zac. Let's build a killer presentation together. What's it about?",
-                style: 'energetic'
+                style: 'energetic',
+                color: '#ff3333'
             },
             alaina: {
                 name: 'Alaina',
                 title: 'Your Creative Director',
-                image: 'alaina-avatar.png',
                 greeting: "Hi there! I'm Alaina. Ready to create something beautiful? Tell me about your presentation.",
-                style: 'warm'
+                style: 'warm',
+                color: '#ff69b4'
             },
             bolt: {
                 name: 'Bolt',
                 title: 'Your Speed Expert',
-                image: 'bolt-avatar.png',
                 greeting: "Let's move fast! What presentation do you need? I'll have it ready in no time.",
-                style: 'fast'
+                style: 'fast',
+                color: '#ffd700'
             },
             zeus: {
                 name: 'Zeus',
                 title: 'Your Power Presenter',
-                image: 'zeus-avatar.png',
                 greeting: "Ready to create something powerful? Tell me your vision and I'll bring the thunder.",
-                style: 'powerful'
+                style: 'powerful',
+                color: '#9370db'
             }
         };
+        this.uploadedPDF = null;
+        this.pdfData = null;
         this.slides = [];
         this.isGenerating = false;
 
@@ -93,10 +96,10 @@ class AIPresentationChat {
         const saved = localStorage.getItem('presentationUsage');
         if (saved) {
             const usage = JSON.parse(saved);
-            // Reset if it's a new month
+            // Reset if it's a new day
             const now = new Date();
-            const savedMonth = new Date(usage.resetDate);
-            if (now.getMonth() !== savedMonth.getMonth() || now.getFullYear() !== savedMonth.getFullYear()) {
+            const savedDate = new Date(usage.resetDate);
+            if (now.toDateString() !== savedDate.toDateString()) {
                 return this.resetUsage();
             }
             return usage;
@@ -104,11 +107,11 @@ class AIPresentationChat {
         return this.resetUsage();
     }
 
-    // FREEMIUM: Reset monthly usage
+    // FREEMIUM: Reset daily usage
     resetUsage() {
         const usage = {
-            slidesCreated: 0,
-            presentationsCreated: 0,
+            triesUsed: 0,
+            decksCreated: 0,
             resetDate: new Date().toISOString()
         };
         localStorage.setItem('presentationUsage', JSON.stringify(usage));
@@ -120,18 +123,268 @@ class AIPresentationChat {
         localStorage.setItem('presentationUsage', JSON.stringify(this.usage));
     }
 
-    // FREEMIUM: Check if user can create more slides
-    canCreateSlides(count = 1) {
-        const limit = this.tierLimits[this.currentTier].slides;
+    // FREEMIUM: Check if user can generate more decks today
+    canGenerateDeck() {
+        const limit = this.tierLimits[this.currentTier].triesPerDay;
         if (limit === -1) return true; // Unlimited
-        return (this.usage.slidesCreated + count) <= limit;
+        return this.usage.triesUsed < limit;
     }
 
-    // FREEMIUM: Get remaining slides
-    getRemainingSlides() {
-        const limit = this.tierLimits[this.currentTier].slides;
+    // FREEMIUM: Get remaining tries today
+    getRemainingTries() {
+        const limit = this.tierLimits[this.currentTier].triesPerDay;
         if (limit === -1) return '∞';
-        return Math.max(0, limit - this.usage.slidesCreated);
+        return Math.max(0, limit - this.usage.triesUsed);
+    }
+
+    // FREEMIUM: Get max slides allowed for tier
+    getMaxSlides() {
+        const max = this.tierLimits[this.currentTier].maxSlides;
+        return max === -1 ? 50 : max; // 50 is the absolute max even for unlimited
+    }
+
+    // Get mini avatar SVG for chat (uses the animated avatar classes)
+    getAvatarSVG(avatarKey, size = 50) {
+        const color = this.avatarData[avatarKey]?.color || '#ff3333';
+
+        // Mini animated avatar SVGs matching the main site avatars
+        const avatars = {
+            zac: `<svg viewBox="0 0 100 100" width="${size}" height="${size}">
+                <defs>
+                    <linearGradient id="zacHair" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#4a3728"/>
+                        <stop offset="100%" style="stop-color:#2d1f15"/>
+                    </linearGradient>
+                    <linearGradient id="zacSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#f5d0b0"/>
+                        <stop offset="100%" style="stop-color:#e8b896"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="50" cy="50" r="48" fill="#1a1a2e"/>
+                <ellipse cx="50" cy="58" rx="28" ry="32" fill="url(#zacSkin)"/>
+                <path d="M22 40 Q50 10 78 40 Q75 25 50 22 Q25 25 22 40" fill="url(#zacHair)"/>
+                <path d="M30 38 Q50 32 70 38 L68 48 Q50 42 32 48 Z" fill="url(#zacHair)"/>
+                <ellipse cx="38" cy="52" rx="5" ry="6" fill="#fff"/>
+                <ellipse cx="62" cy="52" rx="5" ry="6" fill="#fff"/>
+                <circle cx="39" cy="53" r="3" fill="#3d2314"/>
+                <circle cx="63" cy="53" r="3" fill="#3d2314"/>
+                <circle cx="40" cy="52" r="1" fill="#fff"/>
+                <circle cx="64" cy="52" r="1" fill="#fff"/>
+                <path d="M45 68 Q50 72 55 68" stroke="#c9967a" stroke-width="2" fill="none"/>
+                <path d="M44 72 Q50 78 56 72" stroke="#ff3333" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <path d="M50 82 L50 95 L46 98 L54 98 L50 95" fill="#ff3333"/>
+            </svg>`,
+
+            alaina: `<svg viewBox="0 0 100 100" width="${size}" height="${size}">
+                <defs>
+                    <linearGradient id="alainaHair" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#8B4513"/>
+                        <stop offset="100%" style="stop-color:#5D3A1A"/>
+                    </linearGradient>
+                    <linearGradient id="alainaSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#ffe4d0"/>
+                        <stop offset="100%" style="stop-color:#f5d0b8"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="50" cy="50" r="48" fill="#1a1a2e"/>
+                <ellipse cx="50" cy="58" rx="26" ry="30" fill="url(#alainaSkin)"/>
+                <path d="M20 45 Q20 15 50 15 Q80 15 80 45 L78 70 Q75 55 70 50 L70 45 Q70 30 50 28 Q30 30 30 45 L30 50 Q25 55 22 70 Z" fill="url(#alainaHair)"/>
+                <ellipse cx="38" cy="52" rx="4" ry="5" fill="#fff"/>
+                <ellipse cx="62" cy="52" rx="4" ry="5" fill="#fff"/>
+                <circle cx="39" cy="53" r="2.5" fill="#4a7c59"/>
+                <circle cx="63" cy="53" r="2.5" fill="#4a7c59"/>
+                <circle cx="40" cy="52" r="0.8" fill="#fff"/>
+                <circle cx="64" cy="52" r="0.8" fill="#fff"/>
+                <path d="M32 46 Q38 44 42 46" stroke="#5D3A1A" stroke-width="1.5" fill="none"/>
+                <path d="M58 46 Q62 44 68 46" stroke="#5D3A1A" stroke-width="1.5" fill="none"/>
+                <ellipse cx="32" cy="58" rx="4" ry="2" fill="#ffb6c1" opacity="0.5"/>
+                <ellipse cx="68" cy="58" rx="4" ry="2" fill="#ffb6c1" opacity="0.5"/>
+                <path d="M45 72 Q50 76 55 72" stroke="#ff69b4" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            </svg>`,
+
+            bolt: `<svg viewBox="0 0 100 100" width="${size}" height="${size}">
+                <defs>
+                    <linearGradient id="boltGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#ffd700"/>
+                        <stop offset="100%" style="stop-color:#ff8c00"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="50" cy="50" r="48" fill="#1a1a2e"/>
+                <circle cx="50" cy="50" r="35" fill="url(#boltGlow)" opacity="0.3"/>
+                <path d="M55 20 L40 48 L50 48 L45 80 L60 45 L50 45 Z" fill="#ffd700" stroke="#ff8c00" stroke-width="2"/>
+                <circle cx="38" cy="55" r="6" fill="#fff"/>
+                <circle cx="62" cy="55" r="6" fill="#fff"/>
+                <circle cx="39" cy="56" r="3.5" fill="#1a1a2e"/>
+                <circle cx="63" cy="56" r="3.5" fill="#1a1a2e"/>
+                <circle cx="40" cy="54" r="1.2" fill="#ffd700"/>
+                <circle cx="64" cy="54" r="1.2" fill="#ffd700"/>
+                <path d="M42 72 Q50 78 58 72" stroke="#ffd700" stroke-width="3" fill="none" stroke-linecap="round"/>
+            </svg>`,
+
+            zeus: `<svg viewBox="0 0 100 100" width="${size}" height="${size}">
+                <defs>
+                    <linearGradient id="zeusBeard" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#c0c0c0"/>
+                        <stop offset="100%" style="stop-color:#808080"/>
+                    </linearGradient>
+                    <linearGradient id="zeusSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#f0d0b0"/>
+                        <stop offset="100%" style="stop-color:#d4a574"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="50" cy="50" r="48" fill="#1a1a2e"/>
+                <ellipse cx="50" cy="55" rx="30" ry="35" fill="url(#zeusSkin)"/>
+                <path d="M20 35 Q30 5 50 10 Q70 5 80 35 L75 45 Q50 38 25 45 Z" fill="url(#zeusBeard)"/>
+                <path d="M30 65 Q50 90 70 65 Q65 80 50 85 Q35 80 30 65" fill="url(#zeusBeard)"/>
+                <ellipse cx="38" cy="48" rx="5" ry="6" fill="#fff"/>
+                <ellipse cx="62" cy="48" rx="5" ry="6" fill="#fff"/>
+                <circle cx="39" cy="49" r="3" fill="#4169e1"/>
+                <circle cx="63" cy="49" r="3" fill="#4169e1"/>
+                <circle cx="40" cy="48" r="1" fill="#fff"/>
+                <circle cx="64" cy="48" r="1" fill="#fff"/>
+                <path d="M30 42 Q38 38 44 42" stroke="#808080" stroke-width="2.5" fill="none"/>
+                <path d="M56 42 Q62 38 70 42" stroke="#808080" stroke-width="2.5" fill="none"/>
+                <path d="M42 62 L45 58 L50 65 L55 58 L58 62" stroke="#9370db" stroke-width="2" fill="none"/>
+            </svg>`
+        };
+
+        return avatars[avatarKey] || avatars.zac;
+    }
+
+    // PDF Upload and Processing
+    async processPDF(file) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+
+                // Use PDF.js to extract content
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const extractedData = {
+                    text: [],
+                    pageCount: pdf.numPages,
+                    images: [],
+                    tables: []
+                };
+
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+
+                    // Extract text
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    extractedData.text.push({
+                        page: i,
+                        content: pageText
+                    });
+
+                    // Extract images (render page to canvas)
+                    const viewport = page.getViewport({ scale: 1.5 });
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+
+                    await page.render({ canvasContext: context, viewport: viewport }).promise;
+
+                    // Store page as image for slide backgrounds
+                    extractedData.images.push({
+                        page: i,
+                        dataUrl: canvas.toDataURL('image/jpeg', 0.8)
+                    });
+                }
+
+                this.pdfData = extractedData;
+                resolve(extractedData);
+            } catch (error) {
+                console.error('PDF processing error:', error);
+                reject(error);
+            }
+        });
+    }
+
+    // Generate slides from PDF content
+    generateSlidesFromPDF(pdfData, userPrompt) {
+        const slides = [];
+
+        // Title slide
+        slides.push({
+            title: 'Presentation',
+            icon: '📋',
+            type: 'title',
+            content: userPrompt || 'Generated from PDF'
+        });
+
+        // Analyze text to create content slides
+        pdfData.text.forEach((pageData, index) => {
+            const text = pageData.content.trim();
+            if (text.length > 50) {
+                // Detect slide type based on content
+                let slideType = 'bullets';
+                let icon = '📝';
+
+                if (text.match(/\d+%|\$[\d,]+|revenue|profit|growth/i)) {
+                    slideType = 'kpi';
+                    icon = '📊';
+                } else if (text.match(/chart|graph|trend|analysis/i)) {
+                    slideType = 'chart';
+                    icon = '📈';
+                } else if (text.match(/team|members|staff|department/i)) {
+                    slideType = 'team';
+                    icon = '👥';
+                }
+
+                // Extract a title from the first line or first ~50 chars
+                const lines = text.split(/[.!?\n]/);
+                const title = lines[0]?.substring(0, 60) || `Page ${index + 1}`;
+
+                slides.push({
+                    title: title.trim(),
+                    icon: icon,
+                    type: slideType,
+                    content: text.substring(0, 500),
+                    sourceImage: pdfData.images[index]?.dataUrl
+                });
+            }
+        });
+
+        // Summary slide
+        slides.push({
+            title: 'Key Takeaways',
+            icon: '✅',
+            type: 'bullets',
+            content: 'Summary points from the document'
+        });
+
+        return slides;
+    }
+
+    // Handle PDF file upload
+    handlePDFUpload(file) {
+        if (!file || file.type !== 'application/pdf') {
+            this.addMessage("Please upload a valid PDF file.", 'ai');
+            return;
+        }
+
+        this.uploadedPDF = file;
+        this.addMessage(`📄 I've received your PDF: "${file.name}". Processing it now...`, 'ai');
+
+        this.showTyping();
+
+        this.processPDF(file).then(pdfData => {
+            this.hideTyping();
+            const pageCount = pdfData.pageCount;
+            const wordCount = pdfData.text.reduce((sum, p) => sum + p.content.split(' ').length, 0);
+
+            this.addMessage(
+                `I've analyzed your ${pageCount}-page PDF with approximately ${wordCount} words. ` +
+                `I found text, images, and potential data visualizations. ` +
+                `Now tell me what kind of presentation you'd like to create from this content!`,
+                'ai'
+            );
+        }).catch(error => {
+            this.hideTyping();
+            this.addMessage("Sorry, I had trouble reading that PDF. Please try another file.", 'ai');
+        });
     }
 
     // FREEMIUM: Show upgrade modal
@@ -197,17 +450,17 @@ class AIPresentationChat {
     updateUsageDisplay() {
         const counter = document.getElementById('slide-usage-counter');
         if (counter) {
-            const remaining = this.getRemainingSlides();
-            const limit = this.tierLimits[this.currentTier].slides;
+            const remaining = this.getRemainingTries();
+            const limit = this.tierLimits[this.currentTier].triesPerDay;
             if (limit === -1) {
-                counter.innerHTML = `<span class="usage-unlimited">∞ Unlimited Slides</span>`;
+                counter.innerHTML = `<span class="usage-unlimited">∞ Unlimited Decks</span>`;
             } else {
-                const percentage = ((limit - this.usage.slidesCreated) / limit) * 100;
+                const percentage = (remaining / limit) * 100;
                 let colorClass = 'usage-good';
-                if (percentage <= 20) colorClass = 'usage-warning';
+                if (percentage <= 33) colorClass = 'usage-warning';
                 if (percentage <= 0) colorClass = 'usage-empty';
                 counter.innerHTML = `
-                    <span class="${colorClass}">${remaining}/${limit} slides left</span>
+                    <span class="${colorClass}">${remaining}/${limit} tries today</span>
                     <div class="usage-bar">
                         <div class="usage-fill ${colorClass}" style="width: ${Math.max(0, percentage)}%"></div>
                     </div>
@@ -428,8 +681,8 @@ class AIPresentationChat {
                     <div class="ai-pres-chat-panel">
                         <!-- Avatar Header -->
                         <div class="ai-pres-avatar-header">
-                            <div class="ai-pres-avatar-img">
-                                <img src="${avatar.image}" alt="${avatar.name}" onerror="this.src='https://via.placeholder.com/80?text=${avatar.name[0]}'">
+                            <div class="ai-pres-avatar-img ai-pres-avatar-svg">
+                                ${this.getAvatarSVG(this.currentAvatar, 70)}
                             </div>
                             <div class="ai-pres-avatar-info">
                                 <h3>${avatar.name}</h3>
@@ -443,8 +696,8 @@ class AIPresentationChat {
                         <!-- Chat Messages -->
                         <div class="ai-pres-messages" id="ai-pres-messages">
                             <div class="ai-message">
-                                <div class="ai-message-avatar">
-                                    <img src="${avatar.image}" alt="${avatar.name}" onerror="this.src='https://via.placeholder.com/40?text=${avatar.name[0]}'">
+                                <div class="ai-message-avatar ai-message-avatar-svg">
+                                    ${this.getAvatarSVG(this.currentAvatar, 40)}
                                 </div>
                                 <div class="ai-message-content">
                                     <div class="ai-message-name">${avatar.name}</div>
@@ -461,11 +714,33 @@ class AIPresentationChat {
                             <button onclick="aiPresChat.usePrompt('Create a project status update presentation')">📋 Status Update</button>
                         </div>
 
+                        <!-- Slide Count Selector -->
+                        <div class="slide-count-selector">
+                            <span class="selector-label">Slides to generate:</span>
+                            <div class="slide-count-buttons" id="slide-count-buttons">
+                                <button class="slide-count-btn" data-count="3" onclick="aiPresChat.setSlideCount(3)">3</button>
+                                <button class="slide-count-btn active" data-count="5" onclick="aiPresChat.setSlideCount(5)">5</button>
+                                <button class="slide-count-btn" data-count="8" onclick="aiPresChat.setSlideCount(8)">8</button>
+                                <button class="slide-count-btn" data-count="10" onclick="aiPresChat.setSlideCount(10)">10</button>
+                                <button class="slide-count-btn" data-count="15" onclick="aiPresChat.setSlideCount(15)">15</button>
+                            </div>
+                            <span class="slide-limit-note" id="slide-limit-note">(max ${this.getMaxSlides()} for ${this.tierLimits[this.currentTier].name})</span>
+                        </div>
+
                         <!-- Chat Input -->
                         <div class="ai-pres-chat-input-container">
+                            <input type="file" id="pdf-upload-input" accept=".pdf" style="display:none" onchange="aiPresChat.handlePDFUpload(this.files[0])">
+                            <button class="ai-pres-upload-btn" onclick="document.getElementById('pdf-upload-input').click()" title="Upload PDF">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                                </svg>
+                            </button>
                             <textarea
                                 id="ai-pres-chat-input"
-                                placeholder="Describe your presentation... e.g., 'Create a Q4 financial report with revenue trends and KPIs'"
+                                placeholder="Upload a PDF or describe your presentation... e.g., 'Create a Q4 financial report'"
                                 rows="2"
                             ></textarea>
                             <button class="ai-pres-send-btn" onclick="aiPresChat.sendMessage()" id="ai-pres-send-btn">
@@ -474,6 +749,9 @@ class AIPresentationChat {
                                     <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                                 </svg>
                             </button>
+                        </div>
+                        <div class="pdf-upload-hint">
+                            <span>📄 Upload a PDF to extract content for your slides</span>
                         </div>
                     </div>
 
@@ -510,7 +788,7 @@ class AIPresentationChat {
                     <div class="avatar-options">
                         ${Object.keys(this.avatarData).map(key => `
                             <div class="avatar-option ${key === this.currentAvatar ? 'selected' : ''}" onclick="aiPresChat.selectAvatar('${key}')">
-                                <img src="${this.avatarData[key].image}" alt="${this.avatarData[key].name}" onerror="this.src='https://via.placeholder.com/60?text=${this.avatarData[key].name[0]}'">
+                                <div class="avatar-option-svg">${this.getAvatarSVG(key, 60)}</div>
                                 <span>${this.avatarData[key].name}</span>
                             </div>
                         `).join('')}
@@ -933,6 +1211,109 @@ class AIPresentationChat {
                 color: #666;
             }
 
+            /* PDF Upload Button */
+            .ai-pres-upload-btn {
+                width: 48px;
+                height: 48px;
+                background: rgba(255,255,255,0.1);
+                border: 1px solid rgba(255,255,255,0.2);
+                border-radius: 12px;
+                color: #fff;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s;
+                flex-shrink: 0;
+            }
+
+            .ai-pres-upload-btn:hover {
+                background: rgba(255,51,51,0.2);
+                border-color: #ff3333;
+            }
+
+            .pdf-upload-hint {
+                text-align: center;
+                padding: 8px;
+                color: rgba(255,255,255,0.5);
+                font-size: 0.8rem;
+            }
+
+            /* SVG Avatar Containers */
+            .ai-pres-avatar-svg {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: transparent;
+            }
+
+            .ai-pres-avatar-svg svg {
+                border-radius: 50%;
+            }
+
+            .ai-message-avatar-svg {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .avatar-option-svg {
+                margin-bottom: 8px;
+            }
+
+            /* Slide Count Selector */
+            .slide-count-selector {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 0;
+                flex-wrap: wrap;
+            }
+
+            .selector-label {
+                color: rgba(255,255,255,0.7);
+                font-size: 0.85rem;
+            }
+
+            .slide-count-buttons {
+                display: flex;
+                gap: 8px;
+            }
+
+            .slide-count-btn {
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+                background: rgba(255,255,255,0.05);
+                border: 1px solid rgba(255,255,255,0.15);
+                color: #ccc;
+                font-size: 0.9rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+            .slide-count-btn:hover {
+                background: rgba(255,51,51,0.15);
+                border-color: rgba(255,51,51,0.5);
+            }
+
+            .slide-count-btn.active {
+                background: #ff3333;
+                border-color: #ff3333;
+                color: #fff;
+            }
+
+            .slide-count-btn.disabled {
+                opacity: 0.3;
+                cursor: not-allowed;
+            }
+
+            .slide-limit-note {
+                color: rgba(255,255,255,0.4);
+                font-size: 0.75rem;
+            }
+
             .ai-pres-send-btn {
                 width: 48px;
                 height: 48px;
@@ -1320,8 +1701,8 @@ class AIPresentationChat {
             `;
         } else {
             messageDiv.innerHTML = `
-                <div class="ai-message-avatar">
-                    <img src="${avatar.image}" alt="${avatar.name}" onerror="this.src='https://via.placeholder.com/40?text=${avatar.name[0]}'">
+                <div class="ai-message-avatar ai-message-avatar-svg">
+                    ${this.getAvatarSVG(this.currentAvatar, 40)}
                 </div>
                 <div class="ai-message-content">
                     <div class="ai-message-name">${avatar.name}</div>
@@ -1355,8 +1736,8 @@ class AIPresentationChat {
         slidesHtml += '</div>';
 
         messageDiv.innerHTML = `
-            <div class="ai-message-avatar">
-                <img src="${avatar.image}" alt="${avatar.name}" onerror="this.src='https://via.placeholder.com/40?text=${avatar.name[0]}'">
+            <div class="ai-message-avatar ai-message-avatar-svg">
+                ${this.getAvatarSVG(this.currentAvatar, 40)}
             </div>
             <div class="ai-message-content">
                 <div class="ai-message-name">${avatar.name}</div>
@@ -1401,96 +1782,273 @@ class AIPresentationChat {
     }
 
     async generatePresentation(prompt) {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // FREEMIUM: Check if user has tries left today
+        if (!this.canGenerateDeck()) {
+            this.hideTyping();
+            this.addMessage(`You've used all ${this.tierLimits[this.currentTier].triesPerDay} deck generations for today! Come back tomorrow or upgrade for more.`, 'ai');
+            this.showUpgradeModal('limit');
+            return;
+        }
+
+        // Simulate API processing delay
+        await new Promise(resolve => setTimeout(resolve, 2500));
 
         this.hideTyping();
 
-        // Generate slides based on prompt
-        const slidesToCreate = this.createSlidesFromPrompt(prompt);
-
-        // FREEMIUM: Check if user can create these slides
-        if (!this.canCreateSlides(slidesToCreate.length)) {
-            const remaining = this.getRemainingSlides();
-            const avatar = this.avatarData[this.currentAvatar];
-
-            if (remaining === 0) {
-                // No slides left - show upgrade modal
-                this.addMessage(`You've used all ${this.tierLimits[this.currentTier].slides} free slides this month! Upgrade to create more amazing presentations.`, 'ai');
-                this.showUpgradeModal('limit');
-                return;
-            } else {
-                // Can create some but not all slides
-                this.addMessage(`I can only create ${remaining} more slides on your ${this.tierLimits[this.currentTier].name} plan. Want me to create a shorter presentation, or upgrade for more?`, 'ai');
-                // Truncate slides to what's available
-                slidesToCreate.splice(remaining);
-            }
-        }
+        // Generate intelligent slides based on prompt
+        const slidesToCreate = this.createSlidesFromPrompt(prompt, this.selectedSlideCount);
 
         this.slides = slidesToCreate;
 
-        // FREEMIUM: Update usage
-        this.usage.slidesCreated += slidesToCreate.length;
-        this.usage.presentationsCreated += 1;
+        // FREEMIUM: Update usage (count as one try)
+        this.usage.triesUsed += 1;
+        this.usage.decksCreated += 1;
         this.saveUsage();
         this.updateUsageDisplay();
 
         const avatar = this.avatarData[this.currentAvatar];
         let responseText = '';
 
+        // Extract company name for personalized response
+        const companyMatch = prompt.match(/(?:for|my company|called|named)\s+([A-Z][a-zA-Z\s]+?)(?:\s+a|\s+in|\s*,|$)/i);
+        const companyName = companyMatch ? companyMatch[1].trim() : 'your company';
+
         switch (avatar.style) {
             case 'energetic':
-                responseText = `Boom! 💥 I've created ${slidesToCreate.length} slides for you! Here's what we've got:`;
+                responseText = `Boom! 💥 I've created ${slidesToCreate.length} custom slides for ${companyName}! Check these out:`;
                 break;
             case 'warm':
-                responseText = `I've put together ${slidesToCreate.length} beautiful slides for your presentation. Take a look:`;
+                responseText = `I've crafted ${slidesToCreate.length} beautiful slides tailored for ${companyName}. Here's what I've prepared:`;
                 break;
             case 'fast':
-                responseText = `Done! ${slidesToCreate.length} slides ready. Here they are:`;
+                responseText = `Done! ${slidesToCreate.length} slides for ${companyName} - ready to impress:`;
                 break;
             case 'powerful':
-                responseText = `Behold! ${slidesToCreate.length} powerful slides that will command attention:`;
+                responseText = `Behold! ${slidesToCreate.length} powerful slides for ${companyName} that will command attention:`;
                 break;
             default:
-                responseText = `I've generated ${slidesToCreate.length} slides for you:`;
+                responseText = `I've generated ${slidesToCreate.length} customized slides for ${companyName}:`;
         }
 
         this.addMessageWithSlides(responseText, slidesToCreate);
         this.updateSlidesPanel();
     }
 
-    createSlidesFromPrompt(prompt) {
+    // Intelligent slide generation from prompt
+    createSlidesFromPrompt(prompt, targetSlideCount = 5) {
         const promptLower = prompt.toLowerCase();
         let slides = [];
 
-        // Determine presentation type and generate appropriate slides
-        if (promptLower.includes('financial') || promptLower.includes('report') || promptLower.includes('quarterly')) {
-            slides = [
-                { title: 'Executive Summary', icon: '📋', type: 'title' },
-                { title: 'Revenue Overview', icon: '💰', type: 'chart' },
-                { title: 'Expense Analysis', icon: '📊', type: 'chart' },
-                { title: 'Profit & Loss', icon: '📈', type: 'table' },
-                { title: 'Key Metrics', icon: '🎯', type: 'kpi' },
-                { title: 'Cash Flow', icon: '💵', type: 'chart' },
-                { title: 'Year-over-Year', icon: '📆', type: 'comparison' },
-                { title: 'Forecast', icon: '🔮', type: 'chart' },
-                { title: 'Recommendations', icon: '💡', type: 'bullets' },
-                { title: 'Next Steps', icon: '➡️', type: 'bullets' }
-            ];
-        } else if (promptLower.includes('investor') || promptLower.includes('pitch')) {
-            slides = [
-                { title: 'Cover Slide', icon: '🚀', type: 'title' },
-                { title: 'The Problem', icon: '❓', type: 'bullets' },
-                { title: 'Our Solution', icon: '💡', type: 'bullets' },
-                { title: 'Market Opportunity', icon: '🌍', type: 'chart' },
-                { title: 'Business Model', icon: '💰', type: 'diagram' },
-                { title: 'Traction', icon: '📈', type: 'chart' },
-                { title: 'The Team', icon: '👥', type: 'team' },
-                { title: 'Financials', icon: '📊', type: 'table' },
-                { title: 'The Ask', icon: '🎯', type: 'bullets' },
-                { title: 'Contact', icon: '📧', type: 'contact' }
-            ];
-        } else if (promptLower.includes('sales') || promptLower.includes('kpi')) {
+        // Extract key information from prompt
+        const extractedInfo = this.extractPromptInfo(prompt);
+
+        // Always start with a title slide
+        slides.push({
+            title: extractedInfo.companyName || 'Presentation',
+            subtitle: extractedInfo.presentationType || 'Business Overview',
+            icon: '📋',
+            type: 'title',
+            content: extractedInfo.location ? `Based in ${extractedInfo.location}` : ''
+        });
+
+        // Generate slides based on what was requested
+        const requestedSlides = this.parseRequestedSlides(prompt, extractedInfo);
+        slides = slides.concat(requestedSlides);
+
+        // Trim or pad to target count
+        if (slides.length > targetSlideCount) {
+            slides = slides.slice(0, targetSlideCount);
+        } else {
+            // Add relevant filler slides
+            const fillerSlides = this.getFillerSlides(extractedInfo, targetSlideCount - slides.length);
+            slides = slides.concat(fillerSlides);
+        }
+
+        return slides.slice(0, targetSlideCount);
+    }
+
+    // Extract useful information from the prompt
+    extractPromptInfo(prompt) {
+        const info = {
+            companyName: null,
+            location: null,
+            industry: null,
+            presentationType: null,
+            topics: [],
+            hasImages: false,
+            hasCharts: false,
+            hasComparison: false
+        };
+
+        // Extract company name
+        const companyMatch = prompt.match(/(?:for|my company|called|named)\s+([A-Z][a-zA-Z\s]+?)(?:\s+a|\s+in|\s*,|$)/i);
+        if (companyMatch) info.companyName = companyMatch[1].trim();
+
+        // Extract location
+        const locationMatch = prompt.match(/(?:in|located in|based in)\s+([A-Za-z\s,]+?)(?:\s*,|\s+need|\s+show|$)/i);
+        if (locationMatch) info.location = locationMatch[1].trim();
+
+        // Detect industry
+        if (prompt.match(/vacation|rental|airbnb|hotel|hospitality/i)) info.industry = 'hospitality';
+        if (prompt.match(/tech|software|saas|startup/i)) info.industry = 'tech';
+        if (prompt.match(/real estate|property/i)) info.industry = 'real_estate';
+        if (prompt.match(/retail|store|shop/i)) info.industry = 'retail';
+
+        // Detect presentation type
+        if (prompt.match(/status|update|progress/i)) info.presentationType = 'Status Update';
+        if (prompt.match(/investor|pitch|funding/i)) info.presentationType = 'Investor Pitch';
+        if (prompt.match(/financial|report|quarterly/i)) info.presentationType = 'Financial Report';
+        if (prompt.match(/sales|revenue/i)) info.presentationType = 'Sales Report';
+        if (prompt.match(/project|proposal/i)) info.presentationType = 'Project Proposal';
+
+        // Detect specific requests
+        info.hasImages = prompt.match(/picture|image|photo|visual/i) !== null;
+        info.hasCharts = prompt.match(/chart|graph|pie|bar/i) !== null;
+        info.hasComparison = prompt.match(/vs|versus|compare|comparison|fancy.*cheap|expensive.*affordable/i) !== null;
+
+        // Extract specific topics mentioned
+        const topicMatches = prompt.match(/(?:show|include|need|want)\s+([^,.]+)/gi);
+        if (topicMatches) {
+            info.topics = topicMatches.map(t => t.replace(/^(?:show|include|need|want)\s+/i, '').trim());
+        }
+
+        return info;
+    }
+
+    // Parse specific slides requested in prompt
+    parseRequestedSlides(prompt, info) {
+        const slides = [];
+        const promptLower = prompt.toLowerCase();
+
+        // Check for year-over-year
+        if (promptLower.match(/year.over.year|yoy|year.*year/i)) {
+            slides.push({
+                title: `${info.companyName || 'Company'} - Year Over Year Performance`,
+                icon: '📈',
+                type: 'comparison',
+                content: 'Year over year growth metrics and trends'
+            });
+        }
+
+        // Check for pro forma
+        if (promptLower.match(/pro.?forma|projection|forecast/i)) {
+            slides.push({
+                title: 'Pro Forma Projections',
+                icon: '🔮',
+                type: 'table',
+                content: 'Financial projections and forecasts'
+            });
+        }
+
+        // Check for pie chart / cost breakdown
+        if (promptLower.match(/pie.*chart|cost.*chart|breakdown|expense/i)) {
+            slides.push({
+                title: 'Cost Breakdown',
+                icon: '🥧',
+                type: 'chart',
+                chartType: 'pie',
+                content: 'Expense distribution analysis'
+            });
+        }
+
+        // Check for comparison (fancy vs cheap)
+        if (info.hasComparison) {
+            slides.push({
+                title: 'Option Comparison',
+                icon: '⚖️',
+                type: 'comparison',
+                content: 'Premium vs Standard options with pricing'
+            });
+            slides.push({
+                title: 'Premium Option Features',
+                icon: '✨',
+                type: 'bullets',
+                content: 'High-end features and benefits'
+            });
+            slides.push({
+                title: 'Standard Option Features',
+                icon: '💰',
+                type: 'bullets',
+                content: 'Budget-friendly option details'
+            });
+        }
+
+        // Check for reasons/justification
+        if (promptLower.match(/reason|why|justify|competition|competitor/i)) {
+            slides.push({
+                title: 'Why This Investment?',
+                icon: '🎯',
+                type: 'bullets',
+                content: 'Key reasons and competitive analysis'
+            });
+        }
+
+        // Check for images/visuals
+        if (info.hasImages) {
+            if (info.industry === 'hospitality' || promptLower.includes('beach')) {
+                slides.push({
+                    title: `${info.location || 'Property'} Visual Gallery`,
+                    icon: '🏖️',
+                    type: 'gallery',
+                    content: 'Property and location highlights'
+                });
+            } else {
+                slides.push({
+                    title: 'Visual Overview',
+                    icon: '🖼️',
+                    type: 'gallery',
+                    content: 'Key visuals and imagery'
+                });
+            }
+        }
+
+        // Check for financing options
+        if (promptLower.match(/financ|gate|loan|funding|invest/i)) {
+            slides.push({
+                title: 'Financing Options',
+                icon: '💳',
+                type: 'table',
+                content: 'Available financing and payment structures'
+            });
+        }
+
+        return slides;
+    }
+
+    // Get filler slides based on context
+    getFillerSlides(info, count) {
+        const fillers = [];
+        const allFillers = [
+            { title: 'Executive Summary', icon: '📋', type: 'bullets', content: 'Key highlights and overview' },
+            { title: 'Market Analysis', icon: '📊', type: 'chart', content: 'Industry trends and positioning' },
+            { title: 'Key Metrics', icon: '🎯', type: 'kpi', content: 'Performance indicators' },
+            { title: 'Timeline', icon: '📅', type: 'timeline', content: 'Project milestones and schedule' },
+            { title: 'Next Steps', icon: '➡️', type: 'bullets', content: 'Action items and recommendations' },
+            { title: 'Contact Information', icon: '📧', type: 'contact', content: 'Get in touch' }
+        ];
+
+        // Add industry-specific fillers
+        if (info.industry === 'hospitality') {
+            allFillers.unshift(
+                { title: 'Property Overview', icon: '🏠', type: 'bullets', content: 'Property details and amenities' },
+                { title: 'Occupancy Rates', icon: '📈', type: 'chart', content: 'Booking and occupancy trends' },
+                { title: 'Guest Reviews', icon: '⭐', type: 'bullets', content: 'Customer testimonials and ratings' }
+            );
+        }
+
+        for (let i = 0; i < count && i < allFillers.length; i++) {
+            fillers.push(allFillers[i]);
+        }
+
+        return fillers;
+    }
+
+    // Legacy method for backward compatibility
+    createSlidesFromPromptLegacy(prompt) {
+        const promptLower = prompt.toLowerCase();
+        let slides = [];
+
+        if (promptLower.includes('sales') || promptLower.includes('kpi')) {
             slides = [
                 { title: 'Sales Overview', icon: '📊', type: 'title' },
                 { title: 'Revenue by Region', icon: '🗺️', type: 'chart' },
@@ -1553,6 +2111,23 @@ class AIPresentationChat {
             btn.classList.toggle('active', btn.dataset.theme === theme);
         });
         this.currentTheme = theme;
+    }
+
+    setSlideCount(count) {
+        const maxSlides = this.getMaxSlides();
+        if (count > maxSlides) {
+            this.showUpgradeModal('feature');
+            return;
+        }
+
+        this.selectedSlideCount = count;
+
+        // Update button states
+        document.querySelectorAll('.slide-count-btn').forEach(btn => {
+            const btnCount = parseInt(btn.dataset.count);
+            btn.classList.toggle('active', btnCount === count);
+            btn.classList.toggle('disabled', btnCount > maxSlides);
+        });
     }
 
     showAvatarSelector() {
