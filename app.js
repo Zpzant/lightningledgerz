@@ -982,9 +982,10 @@ async function updateNavigationWithUser() {
 
     const welcomeNav = document.getElementById('userWelcomeNav');
     const welcomeText = document.getElementById('welcomeText');
-    const badge = document.getElementById('membershipBadge');
+    const packageBanner = document.getElementById('packageBanner');
     const navAvatarContainer = document.getElementById('navAvatarContainer');
     const navElement = document.querySelector('nav');
+    const logoElement = document.querySelector('.logo');
 
     // Use first name, username, or email as fallback
     const displayName = currentUserProfile.first_name ||
@@ -993,19 +994,47 @@ async function updateNavigationWithUser() {
 
     welcomeText.textContent = `Hi, ${displayName}!`;
 
-    // Set badge color and nav theme based on tier
-    badge.className = 'membership-badge';
+    // Set package banner and logo styling based on tier
     navElement.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
+    if (logoElement) {
+        logoElement.classList.remove('logo-basic', 'logo-gold', 'logo-diamond');
+    }
+    if (packageBanner) {
+        packageBanner.className = 'package-banner';
+    }
 
-    if (currentUserProfile.package_tier === 'basic') {
-        badge.classList.add('badge-basic');
+    // Store tier for other components
+    localStorage.setItem('userTier', currentUserProfile.package_tier || 'free');
+    window.currentUserTier = currentUserProfile.package_tier || 'free';
+
+    const tier = currentUserProfile.package_tier || 'free';
+
+    if (tier === 'basic') {
         navElement.classList.add('tier-basic');
-    } else if (currentUserProfile.package_tier === 'gold') {
-        badge.classList.add('badge-gold');
+        if (packageBanner) {
+            packageBanner.classList.add('package-basic');
+            packageBanner.innerHTML = '⚡ BASIC MEMBER';
+        }
+    } else if (tier === 'gold') {
         navElement.classList.add('tier-gold');
-    } else if (currentUserProfile.package_tier === 'diamond') {
-        badge.classList.add('badge-diamond');
+        if (logoElement) logoElement.classList.add('logo-gold');
+        if (packageBanner) {
+            packageBanner.classList.add('package-gold');
+            packageBanner.innerHTML = '✨ GOLD MEMBER';
+        }
+    } else if (tier === 'diamond') {
         navElement.classList.add('tier-diamond');
+        if (logoElement) logoElement.classList.add('logo-diamond');
+        if (packageBanner) {
+            packageBanner.classList.add('package-diamond');
+            packageBanner.innerHTML = '💎 DIAMOND MEMBER';
+        }
+    } else {
+        // Free tier
+        if (packageBanner) {
+            packageBanner.classList.add('package-free');
+            packageBanner.innerHTML = 'FREE TIER';
+        }
     }
 
     // Load and display avatar
@@ -1052,6 +1081,14 @@ function hideUserWelcome() {
     if (navElement) {
         navElement.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
     }
+    // Remove tier theming from logo
+    const logoElement = document.querySelector('.logo');
+    if (logoElement) {
+        logoElement.classList.remove('logo-basic', 'logo-gold', 'logo-diamond');
+    }
+    // Clear tier from localStorage
+    localStorage.removeItem('userTier');
+    window.currentUserTier = 'free';
 
     // Reset dropdown menu items for logged-out state
     const dropdownSignUp = document.getElementById('dropdownSignUp');
@@ -1218,13 +1255,20 @@ async function handleAdminClick(event) {
 function scrollToPackage(id) {
     const target = document.getElementById(id);
     if (target) {
-        // Make sure services section is visible first
+        // Make sure all main sections are visible (not hidden from profile/dashboard view)
         const services = document.getElementById('services');
+        const about = document.getElementById('about');
+        const contact = document.getElementById('contact');
         const profile = document.getElementById('profile');
         const dashboard = document.getElementById('dashboard');
         const admin = document.getElementById('admin');
 
+        // Show main page sections
         if (services) services.style.display = 'block';
+        if (about) about.style.display = 'block';
+        if (contact) contact.style.display = 'block';
+
+        // Hide profile/dashboard/admin views
         if (profile) profile.classList.add('hidden');
         if (dashboard) dashboard.classList.add('hidden');
         if (admin) admin.classList.add('hidden');
@@ -1257,6 +1301,50 @@ function scrollToPackage(id) {
             target.classList.remove('highlighted');
         }, 5000);
     }
+}
+
+// Navigate to a main section (Services, About, Contact)
+function navigateToSection(sectionId, event) {
+    if (event) event.preventDefault();
+
+    // Show all main sections
+    const services = document.getElementById('services');
+    const about = document.getElementById('about');
+    const contact = document.getElementById('contact');
+    const profile = document.getElementById('profile');
+    const dashboard = document.getElementById('dashboard');
+    const admin = document.getElementById('admin');
+
+    if (services) services.style.display = 'block';
+    if (about) about.style.display = 'block';
+    if (contact) contact.style.display = 'block';
+
+    // Hide profile/dashboard/admin
+    if (profile) profile.classList.add('hidden');
+    if (dashboard) dashboard.classList.add('hidden');
+    if (admin) admin.classList.add('hidden');
+
+    // Highlight the active nav link
+    document.querySelectorAll('.nav-links > a').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + sectionId) {
+            link.classList.add('active');
+        }
+    });
+
+    // Scroll to section
+    const target = document.getElementById(sectionId);
+    if (target) {
+        setTimeout(() => {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+    }
+
+    // Close mobile menu if open
+    const navLinks = document.getElementById('navLinks');
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    if (navLinks) navLinks.classList.remove('active');
+    if (hamburgerBtn) hamburgerBtn.classList.remove('active');
 }
 
 // =====================================================
@@ -2304,6 +2392,7 @@ window.signOutUser = signOutUser;
 window.handleDashboardClick = handleDashboardClick;
 window.handleAdminClick = handleAdminClick;
 window.scrollToPackage = scrollToPackage;
+window.navigateToSection = navigateToSection;
 window.selectPackage = selectPackage;
 window.switchProfileTab = switchProfileTab;
 window.toggleAvatarType = toggleAvatarType;

@@ -7,6 +7,18 @@ class AIPresentationChat {
     constructor() {
         this.messages = [];
         this.currentAvatar = 'zac'; // Default
+
+        // FREEMIUM MODEL - Slide limits per tier
+        this.tierLimits = {
+            free: { slides: 5, presentations: 2, name: 'Free', canExport: false, premiumTemplates: false },
+            basic: { slides: 20, presentations: 10, name: 'Basic', canExport: true, premiumTemplates: false },
+            gold: { slides: 100, presentations: 50, name: 'Gold', canExport: true, premiumTemplates: true },
+            diamond: { slides: -1, presentations: -1, name: 'Diamond', canExport: true, premiumTemplates: true } // -1 = unlimited
+        };
+
+        this.currentTier = this.detectUserTier();
+        this.usage = this.loadUsage();
+
         this.avatarData = {
             zac: {
                 name: 'Zac',
@@ -62,6 +74,309 @@ class AIPresentationChat {
         }
     }
 
+    // FREEMIUM: Detect user's membership tier
+    detectUserTier() {
+        // Check from Supabase user data or localStorage
+        const userTier = localStorage.getItem('userTier') || window.currentUserTier;
+        if (userTier && this.tierLimits[userTier]) {
+            return userTier;
+        }
+        // Check if user is logged in with a subscription
+        if (window.currentUser && window.currentUser.package_tier) {
+            return window.currentUser.package_tier;
+        }
+        return 'free';
+    }
+
+    // FREEMIUM: Load usage from localStorage
+    loadUsage() {
+        const saved = localStorage.getItem('presentationUsage');
+        if (saved) {
+            const usage = JSON.parse(saved);
+            // Reset if it's a new month
+            const now = new Date();
+            const savedMonth = new Date(usage.resetDate);
+            if (now.getMonth() !== savedMonth.getMonth() || now.getFullYear() !== savedMonth.getFullYear()) {
+                return this.resetUsage();
+            }
+            return usage;
+        }
+        return this.resetUsage();
+    }
+
+    // FREEMIUM: Reset monthly usage
+    resetUsage() {
+        const usage = {
+            slidesCreated: 0,
+            presentationsCreated: 0,
+            resetDate: new Date().toISOString()
+        };
+        localStorage.setItem('presentationUsage', JSON.stringify(usage));
+        return usage;
+    }
+
+    // FREEMIUM: Save usage
+    saveUsage() {
+        localStorage.setItem('presentationUsage', JSON.stringify(this.usage));
+    }
+
+    // FREEMIUM: Check if user can create more slides
+    canCreateSlides(count = 1) {
+        const limit = this.tierLimits[this.currentTier].slides;
+        if (limit === -1) return true; // Unlimited
+        return (this.usage.slidesCreated + count) <= limit;
+    }
+
+    // FREEMIUM: Get remaining slides
+    getRemainingSlides() {
+        const limit = this.tierLimits[this.currentTier].slides;
+        if (limit === -1) return '∞';
+        return Math.max(0, limit - this.usage.slidesCreated);
+    }
+
+    // FREEMIUM: Show upgrade modal
+    showUpgradeModal(reason = 'limit') {
+        const modal = document.createElement('div');
+        modal.className = 'upgrade-modal-overlay';
+        modal.innerHTML = `
+            <div class="upgrade-modal">
+                <button class="upgrade-modal-close" onclick="this.closest('.upgrade-modal-overlay').remove()">&times;</button>
+                <div class="upgrade-icon">🚀</div>
+                <h2>${reason === 'limit' ? 'You\'ve Hit Your Limit!' : 'Upgrade to Unlock'}</h2>
+                <p class="upgrade-subtitle">
+                    ${reason === 'limit'
+                        ? `You've created ${this.usage.slidesCreated} slides this month. Upgrade to create more amazing presentations!`
+                        : 'This feature is available on higher tiers. Upgrade to unlock premium templates, unlimited slides, and more!'}
+                </p>
+                <div class="upgrade-tiers">
+                    <div class="upgrade-tier">
+                        <h3>⚡ Basic</h3>
+                        <div class="tier-price">$29<span>/month</span></div>
+                        <ul>
+                            <li>✓ 20 slides/month</li>
+                            <li>✓ 10 presentations</li>
+                            <li>✓ Export to PPTX</li>
+                            <li>✓ Remove watermark</li>
+                        </ul>
+                        <button onclick="showSignUp(); this.closest('.upgrade-modal-overlay').remove();" class="tier-btn basic">Get Basic</button>
+                    </div>
+                    <div class="upgrade-tier featured">
+                        <div class="tier-badge">MOST POPULAR</div>
+                        <h3>✨ Gold</h3>
+                        <div class="tier-price">$49<span>/month</span></div>
+                        <ul>
+                            <li>✓ 100 slides/month</li>
+                            <li>✓ 50 presentations</li>
+                            <li>✓ Premium templates</li>
+                            <li>✓ AI image generation</li>
+                            <li>✓ Custom branding</li>
+                        </ul>
+                        <button onclick="showSignUp(); this.closest('.upgrade-modal-overlay').remove();" class="tier-btn gold">Get Gold</button>
+                    </div>
+                    <div class="upgrade-tier">
+                        <h3>💎 Diamond</h3>
+                        <div class="tier-price">$99<span>/month</span></div>
+                        <ul>
+                            <li>✓ Unlimited slides</li>
+                            <li>✓ Unlimited presentations</li>
+                            <li>✓ All premium features</li>
+                            <li>✓ Priority support</li>
+                            <li>✓ 1-on-1 coaching</li>
+                        </ul>
+                        <button onclick="showSignUp(); this.closest('.upgrade-modal-overlay').remove();" class="tier-btn diamond">Get Diamond</button>
+                    </div>
+                </div>
+                <p class="upgrade-note">All plans include a 15-day free trial. No credit card required to start.</p>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        this.addUpgradeModalStyles();
+    }
+
+    // FREEMIUM: Update usage display in header
+    updateUsageDisplay() {
+        const counter = document.getElementById('slide-usage-counter');
+        if (counter) {
+            const remaining = this.getRemainingSlides();
+            const limit = this.tierLimits[this.currentTier].slides;
+            if (limit === -1) {
+                counter.innerHTML = `<span class="usage-unlimited">∞ Unlimited Slides</span>`;
+            } else {
+                const percentage = ((limit - this.usage.slidesCreated) / limit) * 100;
+                let colorClass = 'usage-good';
+                if (percentage <= 20) colorClass = 'usage-warning';
+                if (percentage <= 0) colorClass = 'usage-empty';
+                counter.innerHTML = `
+                    <span class="${colorClass}">${remaining}/${limit} slides left</span>
+                    <div class="usage-bar">
+                        <div class="usage-fill ${colorClass}" style="width: ${Math.max(0, percentage)}%"></div>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    // FREEMIUM: Add upgrade modal styles
+    addUpgradeModalStyles() {
+        if (document.getElementById('upgrade-modal-styles')) return;
+        const styles = document.createElement('style');
+        styles.id = 'upgrade-modal-styles';
+        styles.textContent = `
+            .upgrade-modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.9);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 200000;
+                animation: fadeIn 0.3s ease;
+            }
+            .upgrade-modal {
+                background: linear-gradient(135deg, #1a1a2e, #16213e);
+                border-radius: 24px;
+                padding: 40px;
+                max-width: 900px;
+                width: 95%;
+                max-height: 90vh;
+                overflow-y: auto;
+                position: relative;
+                border: 2px solid rgba(255,51,51,0.3);
+                box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            }
+            .upgrade-modal-close {
+                position: absolute;
+                top: 15px;
+                right: 20px;
+                background: none;
+                border: none;
+                color: #888;
+                font-size: 32px;
+                cursor: pointer;
+            }
+            .upgrade-modal-close:hover { color: #ff3333; }
+            .upgrade-icon {
+                font-size: 64px;
+                text-align: center;
+                margin-bottom: 16px;
+            }
+            .upgrade-modal h2 {
+                text-align: center;
+                color: #fff;
+                font-size: 2rem;
+                margin-bottom: 8px;
+            }
+            .upgrade-subtitle {
+                text-align: center;
+                color: rgba(255,255,255,0.7);
+                margin-bottom: 32px;
+                font-size: 1.1rem;
+            }
+            .upgrade-tiers {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+            .upgrade-tier {
+                background: rgba(255,255,255,0.05);
+                border: 2px solid rgba(255,255,255,0.1);
+                border-radius: 16px;
+                padding: 24px;
+                text-align: center;
+                position: relative;
+            }
+            .upgrade-tier.featured {
+                border-color: #ffd700;
+                background: rgba(255,215,0,0.05);
+                transform: scale(1.05);
+            }
+            .tier-badge {
+                position: absolute;
+                top: -12px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, #ffd700, #ffed4e);
+                color: #000;
+                padding: 4px 16px;
+                border-radius: 20px;
+                font-size: 0.75rem;
+                font-weight: 700;
+            }
+            .upgrade-tier h3 {
+                color: #fff;
+                margin-bottom: 12px;
+                font-size: 1.3rem;
+            }
+            .tier-price {
+                font-size: 2.5rem;
+                font-weight: 800;
+                color: #ff3333;
+                margin-bottom: 16px;
+            }
+            .tier-price span {
+                font-size: 1rem;
+                font-weight: 400;
+                color: rgba(255,255,255,0.5);
+            }
+            .upgrade-tier ul {
+                list-style: none;
+                padding: 0;
+                margin: 0 0 20px 0;
+                text-align: left;
+            }
+            .upgrade-tier li {
+                color: rgba(255,255,255,0.8);
+                padding: 8px 0;
+                font-size: 0.9rem;
+            }
+            .tier-btn {
+                width: 100%;
+                padding: 14px;
+                border: none;
+                border-radius: 10px;
+                font-size: 1rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+            .tier-btn.basic {
+                background: linear-gradient(135deg, #ff3333, #cc0000);
+                color: #fff;
+            }
+            .tier-btn.gold {
+                background: linear-gradient(135deg, #ffd700, #ffed4e);
+                color: #000;
+            }
+            .tier-btn.diamond {
+                background: linear-gradient(135deg, #fff, #e0e0e0);
+                color: #000;
+            }
+            .tier-btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 20px rgba(255,51,51,0.4);
+            }
+            .upgrade-note {
+                text-align: center;
+                color: rgba(255,255,255,0.5);
+                font-size: 0.85rem;
+                margin-top: 24px;
+            }
+            @media (max-width: 768px) {
+                .upgrade-tiers {
+                    grid-template-columns: 1fr;
+                }
+                .upgrade-tier.featured {
+                    transform: scale(1);
+                    order: -1;
+                }
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+
     createInterface() {
         // Remove existing if any
         const existing = document.getElementById('ai-pres-chat-modal');
@@ -79,8 +394,13 @@ class AIPresentationChat {
                     <div class="ai-pres-chat-title">
                         <span class="lightning-icon">⚡</span>
                         <span>AI Presentation Builder</span>
+                        <div id="slide-usage-counter" class="slide-usage-counter"></div>
                     </div>
                     <div class="ai-pres-chat-actions">
+                        <button class="ai-pres-btn-upgrade" onclick="aiPresChat.showUpgradeModal('feature')" id="header-upgrade-btn">
+                            <span>🚀</span>
+                            <span>Upgrade</span>
+                        </button>
                         <button class="ai-pres-btn-secondary" onclick="aiPresChat.toggleSlidePanel()">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="3" y="3" width="7" height="7"></rect>
@@ -305,6 +625,71 @@ class AIPresentationChat {
                 opacity: 0.5;
                 cursor: not-allowed;
             }
+
+            /* Upgrade Button */
+            .ai-pres-btn-upgrade {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 8px 16px;
+                background: linear-gradient(135deg, #ffd700, #ffed4e);
+                border: none;
+                color: #000;
+                border-radius: 20px;
+                cursor: pointer;
+                font-size: 0.85rem;
+                font-weight: 700;
+                transition: all 0.2s;
+                animation: upgradeGlow 2s ease-in-out infinite;
+            }
+
+            .ai-pres-btn-upgrade:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 20px rgba(255, 215, 0, 0.5);
+            }
+
+            @keyframes upgradeGlow {
+                0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+                50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+            }
+
+            /* Usage Counter */
+            .slide-usage-counter {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                margin-left: 16px;
+                padding-left: 16px;
+                border-left: 1px solid rgba(255,255,255,0.2);
+            }
+
+            .slide-usage-counter span {
+                font-size: 0.75rem;
+                font-weight: 500;
+            }
+
+            .usage-good { color: #4ade80; }
+            .usage-warning { color: #fbbf24; }
+            .usage-empty { color: #ef4444; }
+            .usage-unlimited { color: #ffd700; }
+
+            .usage-bar {
+                width: 80px;
+                height: 4px;
+                background: rgba(255,255,255,0.1);
+                border-radius: 2px;
+                overflow: hidden;
+            }
+
+            .usage-fill {
+                height: 100%;
+                border-radius: 2px;
+                transition: width 0.3s ease;
+            }
+
+            .usage-fill.usage-good { background: #4ade80; }
+            .usage-fill.usage-warning { background: #fbbf24; }
+            .usage-fill.usage-empty { background: #ef4444; }
 
             .ai-pres-close {
                 background: none;
@@ -863,9 +1248,19 @@ class AIPresentationChat {
 
     open() {
         this.detectAvatar(); // Re-detect in case it changed
+        this.currentTier = this.detectUserTier(); // Re-detect tier
         this.createInterface(); // Rebuild with current avatar
         document.getElementById('ai-pres-chat-modal').classList.add('active');
         document.body.style.overflow = 'hidden';
+
+        // Initialize usage display
+        this.updateUsageDisplay();
+
+        // Hide upgrade button for Diamond users
+        const upgradeBtn = document.getElementById('header-upgrade-btn');
+        if (upgradeBtn && this.currentTier === 'diamond') {
+            upgradeBtn.style.display = 'none';
+        }
     }
 
     close() {
@@ -1012,30 +1407,55 @@ class AIPresentationChat {
         this.hideTyping();
 
         // Generate slides based on prompt
-        const slides = this.createSlidesFromPrompt(prompt);
-        this.slides = slides;
+        const slidesToCreate = this.createSlidesFromPrompt(prompt);
+
+        // FREEMIUM: Check if user can create these slides
+        if (!this.canCreateSlides(slidesToCreate.length)) {
+            const remaining = this.getRemainingSlides();
+            const avatar = this.avatarData[this.currentAvatar];
+
+            if (remaining === 0) {
+                // No slides left - show upgrade modal
+                this.addMessage(`You've used all ${this.tierLimits[this.currentTier].slides} free slides this month! Upgrade to create more amazing presentations.`, 'ai');
+                this.showUpgradeModal('limit');
+                return;
+            } else {
+                // Can create some but not all slides
+                this.addMessage(`I can only create ${remaining} more slides on your ${this.tierLimits[this.currentTier].name} plan. Want me to create a shorter presentation, or upgrade for more?`, 'ai');
+                // Truncate slides to what's available
+                slidesToCreate.splice(remaining);
+            }
+        }
+
+        this.slides = slidesToCreate;
+
+        // FREEMIUM: Update usage
+        this.usage.slidesCreated += slidesToCreate.length;
+        this.usage.presentationsCreated += 1;
+        this.saveUsage();
+        this.updateUsageDisplay();
 
         const avatar = this.avatarData[this.currentAvatar];
         let responseText = '';
 
         switch (avatar.style) {
             case 'energetic':
-                responseText = `Boom! 💥 I've created ${slides.length} slides for you! Here's what we've got:`;
+                responseText = `Boom! 💥 I've created ${slidesToCreate.length} slides for you! Here's what we've got:`;
                 break;
             case 'warm':
-                responseText = `I've put together ${slides.length} beautiful slides for your presentation. Take a look:`;
+                responseText = `I've put together ${slidesToCreate.length} beautiful slides for your presentation. Take a look:`;
                 break;
             case 'fast':
-                responseText = `Done! ${slides.length} slides ready. Here they are:`;
+                responseText = `Done! ${slidesToCreate.length} slides ready. Here they are:`;
                 break;
             case 'powerful':
-                responseText = `Behold! ${slides.length} powerful slides that will command attention:`;
+                responseText = `Behold! ${slidesToCreate.length} powerful slides that will command attention:`;
                 break;
             default:
-                responseText = `I've generated ${slides.length} slides for you:`;
+                responseText = `I've generated ${slidesToCreate.length} slides for you:`;
         }
 
-        this.addMessageWithSlides(responseText, slides);
+        this.addMessageWithSlides(responseText, slidesToCreate);
         this.updateSlidesPanel();
     }
 
