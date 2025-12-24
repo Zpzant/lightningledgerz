@@ -1621,22 +1621,32 @@
                 font-size: 0.9rem;
             }
 
-            /* Make package sidebar smaller on mobile */
+            /* MOBILE: Hide package sidebar and speech bubbles to reduce spam */
             .package-sidebar {
-                left: 10px;
-                bottom: 10px;
+                display: none !important;
             }
 
-            .package-btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.85rem;
+            /* Hide all avatar speech bubbles on mobile */
+            #zac-speech-bubble,
+            #bolt-speech-bubble,
+            #zeus-speech-bubble,
+            #alaina-speech-bubble,
+            [id$="-speech-bubble"] {
+                display: none !important;
             }
 
-            /* Bring back Zac button mobile */
+            /* Hide bring-back-zac button on mobile - too cluttered */
             .bring-back-zac {
-                width: 40px !important;
-                height: 40px !important;
-                font-size: 18px !important;
+                display: none !important;
+            }
+
+            /* Make avatar container smaller on mobile */
+            .avatar-container,
+            #zac-avatar-container,
+            #bolt-avatar-container,
+            #zeus-avatar-container,
+            #alaina-avatar-container {
+                transform: scale(0.7) !important;
                 bottom: 10px !important;
                 right: 10px !important;
             }
@@ -1731,7 +1741,7 @@
             <a onclick="openFinancialReports()" style="cursor: pointer; color: #ffd700;">Financial Models</a>
             <a onclick="openProFormaPlanner()" style="cursor: pointer; color: #4caf50;">Pro Forma</a>
             <a onclick="openQuickBooksDashboard()" style="cursor: pointer; color: #2E7D32;">QuickBooks</a>
-            <a onclick="openPowerPointBuilder()" style="cursor: pointer; color: #ff5722;">Pro Decks</a>
+            <a onclick="openAIPresentationChat()" style="cursor: pointer; color: #ff5722;">Pro Decks</a>
             <a onclick="openReportBuilder()" style="cursor: pointer; color: #9c27b0;">Reports</a>
 
             <!-- Upload Financials Button - Always visible, prominent -->
@@ -3093,6 +3103,7 @@
     <script src="deck-builder-pro.js"></script>
     <script src="ai-presentation-builder.js"></script>
     <script src="ai-excel-system.js"></script>
+    <script src="ai-presentation-chat.js"></script>
     <script src="geo-map-visualizer.js"></script>
     <script src="deck-visuals.js"></script>
 
