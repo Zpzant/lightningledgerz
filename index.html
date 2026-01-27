@@ -178,9 +178,27 @@
         }
 
         @media (max-width: 900px) {
-            .nav-links { display: none; }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, 0.95);
+                flex-direction: column;
+                padding: 20px;
+                gap: 15px;
+                border-top: 1px solid rgba(255, 51, 51, 0.3);
+            }
+            .nav-links li { list-style: none; }
+            .nav-links a {
+                display: block;
+                padding: 10px 0;
+                font-size: 1.1rem;
+            }
             .nav-cta { display: none; }
             .nav-mobile-toggle { display: block; }
+            nav { position: relative; }
         }
 
         /* ============================================
@@ -634,6 +652,8 @@
             transition: all 0.3s ease;
             border: 2px solid rgba(255, 51, 51, 0.3);
             aspect-ratio: 16/10;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         .portfolio-item:hover {
@@ -683,6 +703,19 @@
 
         .portfolio-item:hover .portfolio-overlay {
             opacity: 1;
+        }
+
+        /* Mobile: show overlay always since no hover */
+        @media (max-width: 768px) {
+            .portfolio-overlay {
+                opacity: 1;
+                background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
+                justify-content: flex-end;
+                padding-bottom: 25px;
+            }
+            .portfolio-overlay h4 { font-size: 1rem; }
+            .portfolio-overlay p { font-size: 0.8rem; display: none; }
+            .portfolio-overlay .click-hint { margin-top: 8px; }
         }
 
         .portfolio-overlay h4 {
@@ -1381,7 +1414,7 @@
         }
 
         function selectPackage(packageType) {
-            console.log('selectPackage called:', packageType);
+            if (event) event.stopPropagation();
 
             // Remove active class from all sidebar buttons
             document.querySelectorAll('.package-btn').forEach(btn => btn.classList.remove('active'));
@@ -1392,30 +1425,19 @@
             const btn = document.getElementById('btn-' + packageType);
             const card = document.getElementById(packageType + '-card');
 
-            console.log('Button found:', btn);
-            console.log('Card found:', card);
-
             if (btn) btn.classList.add('active');
             if (card) {
                 card.classList.add('highlight');
-                // Scroll to the pricing section first, then center on the card
-                const pricingSection = document.getElementById('pricing');
-                if (pricingSection) {
-                    pricingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-                // Then scroll to center on the specific card
-                setTimeout(() => {
-                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 300);
-            } else {
-                console.error('Card not found for:', packageType + '-card');
+                // Scroll to the card with offset for mobile
+                const cardTop = card.getBoundingClientRect().top + window.pageYOffset - 100;
+                window.scrollTo({ top: cardTop, behavior: 'smooth' });
             }
         }
 
         function toggleMobileMenu() {
-            // Simple mobile menu toggle
             const links = document.querySelector('.nav-links');
-            links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+            const isHidden = getComputedStyle(links).display === 'none';
+            links.style.display = isHidden ? 'flex' : 'none';
         }
 
         // ===========================================
@@ -1484,12 +1506,18 @@
         // LIGHTBOX
         // ===========================================
         function openLightbox(src) {
-            document.getElementById('lightbox-img').src = src;
-            document.getElementById('lightbox').classList.add('active');
+            event.stopPropagation();
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeLightbox() {
-            document.getElementById('lightbox').classList.remove('active');
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
         }
 
         // ===========================================
