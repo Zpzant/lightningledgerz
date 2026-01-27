@@ -222,20 +222,23 @@
             /* Add padding to body so content isn't hidden under fixed nav */
             body { padding-top: 70px; }
             /* Show Get Started in mobile menu */
-            .mobile-only { display: list-item; }
+            .mobile-only { display: list-item !important; }
             .mobile-cta {
                 background: linear-gradient(45deg, var(--red), var(--red-light)) !important;
                 color: white !important;
                 border-radius: 25px !important;
                 text-align: center !important;
                 font-weight: 700 !important;
-                margin-top: 10px !important;
+                padding: 15px 20px !important;
+                margin-bottom: 10px !important;
             }
         }
 
         /* Hide mobile-only items on desktop */
-        .mobile-only {
-            display: none;
+        @media (min-width: 901px) {
+            .mobile-only {
+                display: none !important;
+            }
         }
 
         /* ============================================
@@ -1385,14 +1388,14 @@
             <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo">
         </a>
         <ul class="nav-links" id="nav-links">
+            <li class="mobile-only"><a href="#portal" onclick="closeMobileMenu()" class="mobile-cta">Get Started</a></li>
             <li><a href="#pricing" onclick="closeMobileMenu()">Services</a></li>
             <li><a href="#work" onclick="closeMobileMenu()">Portfolio</a></li>
             <li><a href="#about" onclick="closeMobileMenu()">About</a></li>
             <li><a href="#portal" onclick="closeMobileMenu()">Portal</a></li>
-            <li class="mobile-only"><a href="#portal" onclick="closeMobileMenu()" class="mobile-cta">Get Started</a></li>
         </ul>
         <a href="#portal" class="nav-cta">Get Started</a>
-        <button class="nav-mobile-toggle" onclick="toggleMobileMenu(event)">☰</button>
+        <button class="nav-mobile-toggle" id="hamburger-btn">☰</button>
     </nav>
 
     <!-- Package Sidebar Buttons -->
@@ -2285,11 +2288,17 @@
             initSupabase();
             initFileUpload();
 
-            // Add touch support for hamburger menu
-            const mobileToggle = document.querySelector('.nav-mobile-toggle');
+            // Add click AND touch support for hamburger menu
+            const mobileToggle = document.getElementById('hamburger-btn');
             if (mobileToggle) {
+                mobileToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleMobileMenu(e);
+                });
                 mobileToggle.addEventListener('touchend', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     toggleMobileMenu(e);
                 }, { passive: false });
             }
