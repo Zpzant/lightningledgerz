@@ -650,6 +650,16 @@
             letter-spacing: 1px;
         }
 
+        /* Ensure package card buttons are clickable */
+        .package-card .btn-primary {
+            position: relative;
+            z-index: 10;
+            display: inline-block;
+            margin-top: 20px;
+            touch-action: manipulation;
+            cursor: pointer;
+        }
+
         .guarantee-box {
             max-width: 700px;
             margin: 50px auto 0;
@@ -1067,8 +1077,7 @@
             <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo">
         </a>
         <ul class="nav-links" id="nav-links">
-            <li><a href="#services" onclick="closeMobileMenu()">Services</a></li>
-            <li><a href="#pricing" onclick="closeMobileMenu()">Pricing</a></li>
+            <li><a href="#pricing" onclick="closeMobileMenu()">Services</a></li>
             <li><a href="#work" onclick="closeMobileMenu()">Portfolio</a></li>
             <li><a href="#about" onclick="closeMobileMenu()">About</a></li>
             <li><a href="#portal" onclick="closeMobileMenu()">Portal</a></li>
@@ -1095,7 +1104,7 @@
         <div class="hero-logo">
             <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz">
         </div>
-        <p class="hero-subtitle">Budget vs. Actual reporting, financial modeling, boardroom-ready decks and dashboards crafted by an expert — not an algorithm. Lightning fast so you can focus on what makes your business shine.</p>
+        <p class="hero-subtitle">Who says lightning never strikes twice? Budget vs. Actual reporting, financial modeling, boardroom-ready decks and dashboards crafted by an expert — not an algorithm. Lightning fast so you can focus on what makes your business shine.</p>
         <div class="hero-buttons">
             <a href="#work" class="btn-primary">View Work</a>
             <a href="#portal" class="btn-secondary">Get Started</a>
@@ -1485,13 +1494,8 @@
             if (btn) btn.classList.add('active');
             if (card) {
                 card.classList.add('highlight');
-                // Scroll to the card
-                setTimeout(() => {
-                    const rect = card.getBoundingClientRect();
-                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    const targetY = rect.top + scrollTop - (window.innerHeight / 2) + (rect.height / 2);
-                    window.scrollTo({ top: targetY, behavior: 'smooth' });
-                }, 100);
+                // Scroll to the card - use scrollIntoView for reliability
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
 
@@ -1615,6 +1619,51 @@
         // ===========================================
         document.addEventListener('DOMContentLoaded', () => {
             initSupabase();
+
+            // Add touch support for hamburger menu
+            const mobileToggle = document.querySelector('.nav-mobile-toggle');
+            if (mobileToggle) {
+                mobileToggle.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    toggleMobileMenu(e);
+                }, { passive: false });
+            }
+
+            // Add touch support for lightbox (portfolio items)
+            document.querySelectorAll('.portfolio-item').forEach(item => {
+                item.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    const img = this.querySelector('img');
+                    if (img) openLightbox(e, img.src);
+                }, { passive: false });
+            });
+
+            // Add touch support for package buttons
+            document.querySelectorAll('.package-btn').forEach(btn => {
+                btn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    const type = this.id.replace('btn-', '');
+                    selectPackage(e, type);
+                }, { passive: false });
+            });
+
+            // Add touch support for lightbox close
+            const lightbox = document.getElementById('lightbox');
+            if (lightbox) {
+                lightbox.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    closeLightbox();
+                }, { passive: false });
+            }
+
+            // Add touch support for "Start Free Trial" buttons in package cards
+            document.querySelectorAll('.package-card .btn-primary').forEach(btn => {
+                btn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    // Open the Stripe link
+                    window.open(this.href, '_blank');
+                }, { passive: false });
+            });
         });
 
         // Close lightbox on Escape
