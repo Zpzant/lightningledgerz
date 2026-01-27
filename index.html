@@ -65,16 +65,22 @@
         .video-background video,
         .video-background iframe {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 100vw;
-            min-height: 100vh;
-            width: 177.78vh; /* 16:9 aspect ratio */
-            height: 100vh;
-            transform: translate(-50%, -50%);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
             pointer-events: none;
             border: none;
+        }
+
+        @media (max-width: 768px) {
+            .video-background video,
+            .video-background iframe {
+                width: 100vw;
+                height: 100vh;
+                object-fit: cover;
+            }
         }
 
         .video-overlay {
@@ -176,10 +182,11 @@
             position: fixed;
             left: 20px;
             bottom: 30px;
-            z-index: 999;
+            z-index: 9999;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            pointer-events: auto;
         }
 
         .package-btn {
@@ -192,14 +199,15 @@
             font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 2px solid transparent;
+            border: 3px solid #fff;
             min-width: 160px;
+            pointer-events: auto;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .package-btn.basic {
             background: transparent;
             color: #fff;
-            border-color: var(--red);
         }
 
         .package-btn.basic:hover {
@@ -211,7 +219,6 @@
         .package-btn.gold {
             background: transparent;
             color: var(--gold);
-            border-color: var(--gold);
             font-weight: 700;
         }
 
@@ -225,7 +232,6 @@
         .package-btn.diamond {
             background: transparent;
             color: #fff;
-            border-color: #fff;
         }
 
         .package-btn.diamond:hover {
@@ -253,16 +259,19 @@
 
         /* Highlight effect for selected package cards */
         .package-card.highlight {
-            box-shadow: -8px 0 30px rgba(255, 51, 51, 0.8), 0 0 40px rgba(255, 51, 51, 0.4);
-            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 0 50px rgba(255, 51, 51, 1), 0 0 80px rgba(255, 51, 51, 0.6), inset 0 0 20px rgba(255, 51, 51, 0.2);
+            transform: translateY(-10px) scale(1.05);
+            border-color: var(--red) !important;
         }
 
         .package-card.gold.highlight {
-            box-shadow: -8px 0 30px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 1), 0 0 80px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 215, 0, 0.2);
+            border-color: var(--gold) !important;
         }
 
         .package-card.diamond.highlight {
-            box-shadow: -8px 0 30px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 50px rgba(255, 255, 255, 1), 0 0 80px rgba(255, 255, 255, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.2);
+            border-color: #fff !important;
         }
 
         @media (max-width: 768px) {
@@ -935,9 +944,20 @@
 <body>
     <!-- Video Background -->
     <div class="video-background">
-        <iframe id="bg-video" src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1&loop=1&muted=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="eager"></iframe>
+        <video id="bg-video" autoplay muted loop playsinline>
+            <source src="https://cdn-cf-east.streamable.com/video/mp4/0ek0up.mp4?Expires=1769558400&Key-Pair-Id=APKAIEYUVEN4EVB2OKEQ&Signature=placeholder" type="video/mp4">
+        </video>
+        <!-- Fallback iframe for browsers that block direct video -->
+        <iframe id="bg-video-fallback" src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1&loop=1&muted=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" style="display:none;"></iframe>
     </div>
     <div class="video-overlay"></div>
+    <script>
+        // Try native video first, fallback to iframe if needed
+        document.getElementById('bg-video').addEventListener('error', function() {
+            this.style.display = 'none';
+            document.getElementById('bg-video-fallback').style.display = 'block';
+        });
+    </script>
 
     <!-- Navigation -->
     <nav>
@@ -973,7 +993,6 @@
         <div class="hero-logo">
             <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz">
         </div>
-        <p class="hero-tagline">100% CUSTOM WORK</p>
         <p class="hero-subtitle">Budget vs. Actual reporting, financial modeling, boardroom-ready decks and dashboards crafted by an expert — not an algorithm. Lightning fast so you can focus on what makes your business shine.</p>
         <div class="hero-buttons">
             <a href="#work" class="btn-primary">View Work</a>
@@ -1050,51 +1069,51 @@
 
         <div class="portfolio-grid">
             <div class="portfolio-item" onclick="openLightbox('slide-budget-vs-actual.png')">
-                <div class="portfolio-label">Budget vs. Actual</div>
+                <div class="portfolio-label">Budget vs. Actual Updates</div>
                 <div class="portfolio-image">
-                    <img src="slide-budget-vs-actual.png" alt="Budget vs Actual Analysis">
+                    <img src="slide-budget-vs-actual.png" alt="Budget vs Actual Monthly Updates">
                 </div>
-                <p class="portfolio-desc">Monthly variance analysis with executive commentary</p>
+                <p class="portfolio-desc">P&L with YoY single month variance analysis</p>
             </div>
 
-            <div class="portfolio-item" onclick="openLightbox('slide-yoy-analysis.png')">
-                <div class="portfolio-label">YOY Net Income Analysis</div>
+            <div class="portfolio-item" onclick="openLightbox('slide-income-benchmarking.png')">
+                <div class="portfolio-label">Income Benchmarking</div>
                 <div class="portfolio-image">
-                    <img src="slide-yoy-analysis.png" alt="Year over Year Analysis">
+                    <img src="slide-income-benchmarking.png" alt="Income Benchmarking Year over Year">
                 </div>
-                <p class="portfolio-desc">Year-over-year performance tracking</p>
+                <p class="portfolio-desc">Revenue projection vs. last year trends</p>
             </div>
 
-            <div class="portfolio-item" onclick="openLightbox('slide-waterfall.png')">
-                <div class="portfolio-label">Waterfall Analysis</div>
+            <div class="portfolio-item" onclick="openLightbox('slide-expense-waterfall.png')">
+                <div class="portfolio-label">Expense Waterfall</div>
                 <div class="portfolio-image">
-                    <img src="slide-waterfall.png" alt="Waterfall Chart Analysis">
+                    <img src="slide-expense-waterfall.png" alt="Operating Expense Waterfall">
                 </div>
-                <p class="portfolio-desc">Bridge charts showing drivers of change</p>
+                <p class="portfolio-desc">Bridge chart showing expense drivers YTD</p>
             </div>
 
-            <div class="portfolio-item" onclick="openLightbox('slide-cost-analysis.png')">
-                <div class="portfolio-label">Cost Analysis</div>
+            <div class="portfolio-item" onclick="openLightbox('slide-cost-comparison.png')">
+                <div class="portfolio-label">Cost Comparison YoY</div>
                 <div class="portfolio-image">
-                    <img src="slide-cost-analysis.png" alt="Cost Analysis">
+                    <img src="slide-cost-comparison.png" alt="Cost Comparison Year over Year">
                 </div>
-                <p class="portfolio-desc">Detailed expense breakdown and trends</p>
+                <p class="portfolio-desc">Operating expense breakdown by category</p>
             </div>
 
             <div class="portfolio-item" onclick="openLightbox('slide-revenue-by-customer.png')">
                 <div class="portfolio-label">Revenue by Customer</div>
                 <div class="portfolio-image">
-                    <img src="slide-revenue-by-customer.png" alt="Revenue by Customer">
+                    <img src="slide-revenue-by-customer.png" alt="Revenue Analysis by Customer">
                 </div>
-                <p class="portfolio-desc">Customer segmentation and concentration</p>
+                <p class="portfolio-desc">Client revenue trends with strategic highlights</p>
             </div>
 
-            <div class="portfolio-item" onclick="openLightbox('slide-digital-strategy.png')">
-                <div class="portfolio-label">Strategic Analysis</div>
+            <div class="portfolio-item" onclick="openLightbox('slide-profit-margin.png')">
+                <div class="portfolio-label">Profit Margin vs. Sales</div>
                 <div class="portfolio-image">
-                    <img src="slide-digital-strategy.png" alt="Digital Strategy">
+                    <img src="slide-profit-margin.png" alt="Profit Margin vs Sales by Year">
                 </div>
-                <p class="portfolio-desc">Data-driven strategic recommendations</p>
+                <p class="portfolio-desc">Revenue, gross profit & EBITDA trends</p>
             </div>
         </div>
     </section>
@@ -1239,18 +1258,25 @@
         }
 
         function selectPackage(packageType) {
+            console.log('selectPackage called:', packageType);
+
             // Remove active class from all sidebar buttons
             document.querySelectorAll('.package-btn').forEach(btn => btn.classList.remove('active'));
             // Remove highlight from all package cards
             document.querySelectorAll('.package-card').forEach(card => card.classList.remove('highlight'));
 
             // Add active class to clicked button
-            document.getElementById('btn-' + packageType).classList.add('active');
-            // Add highlight to corresponding card
-            document.getElementById(packageType + '-card').classList.add('highlight');
+            const btn = document.getElementById('btn-' + packageType);
+            const card = document.getElementById(packageType + '-card');
 
-            // Scroll to pricing section
-            document.getElementById(packageType + '-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (btn) btn.classList.add('active');
+            if (card) {
+                card.classList.add('highlight');
+                // Scroll to the card
+                setTimeout(() => {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
         }
 
         function toggleMobileMenu() {
