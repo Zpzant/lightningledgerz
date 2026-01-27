@@ -186,6 +186,13 @@
         }
 
         @media (max-width: 900px) {
+            nav {
+                position: fixed !important;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 10000;
+            }
             .nav-links {
                 display: none;
                 position: absolute;
@@ -200,6 +207,9 @@
                 z-index: 9999;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             }
+            .nav-links.active {
+                display: flex;
+            }
             .nav-links li { list-style: none; }
             .nav-links a {
                 display: block;
@@ -209,7 +219,23 @@
             }
             .nav-cta { display: none; }
             .nav-mobile-toggle { display: block; }
-            nav { position: relative; z-index: 1000; }
+            /* Add padding to body so content isn't hidden under fixed nav */
+            body { padding-top: 70px; }
+            /* Show Get Started in mobile menu */
+            .mobile-only { display: list-item; }
+            .mobile-cta {
+                background: linear-gradient(45deg, var(--red), var(--red-light)) !important;
+                color: white !important;
+                border-radius: 25px !important;
+                text-align: center !important;
+                font-weight: 700 !important;
+                margin-top: 10px !important;
+            }
+        }
+
+        /* Hide mobile-only items on desktop */
+        .mobile-only {
+            display: none;
         }
 
         /* ============================================
@@ -1340,6 +1366,7 @@
             <li><a href="#work" onclick="closeMobileMenu()">Portfolio</a></li>
             <li><a href="#about" onclick="closeMobileMenu()">About</a></li>
             <li><a href="#portal" onclick="closeMobileMenu()">Portal</a></li>
+            <li class="mobile-only"><a href="#portal" onclick="closeMobileMenu()" class="mobile-cta">Get Started</a></li>
         </ul>
         <a href="#portal" class="nav-cta">Get Started</a>
         <button class="nav-mobile-toggle" onclick="toggleMobileMenu(event)">☰</button>
@@ -1813,19 +1840,13 @@
                 e.stopPropagation();
             }
             const links = document.querySelector('.nav-links');
-            const isHidden = getComputedStyle(links).display === 'none';
-            if (isHidden) {
-                links.style.display = 'flex';
-                links.style.flexDirection = 'column';
-            } else {
-                links.style.display = 'none';
-            }
+            links.classList.toggle('active');
         }
 
         function closeMobileMenu() {
             const links = document.querySelector('.nav-links');
             if (window.innerWidth <= 900) {
-                links.style.display = 'none';
+                links.classList.remove('active');
             }
         }
 
