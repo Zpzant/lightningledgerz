@@ -1426,7 +1426,7 @@
             <p>Ready to supercharge your financial reporting?</p>
         </div>
         <div style="text-align: center;">
-            <a href="mailto:zprizant@lightningledgerz.com" class="btn-primary" style="font-size: 1.2rem;">zprizant@lightningledgerz.com</a>
+            <a href="mailto:zprizant@lightningledgerz.com" class="btn-primary contact-email" style="font-size: 1.2rem;">zprizant@lightningledgerz.com</a>
         </div>
     </section>
 
@@ -1438,10 +1438,10 @@
             </a>
         </div>
         <div class="footer-links">
-            <a href="#services">Services</a>
-            <a href="#pricing">Pricing</a>
+            <a href="#pricing">Services</a>
             <a href="#work">Portfolio</a>
-            <a href="https://linkedin.com/in/zacprizant" target="_blank">LinkedIn</a>
+            <a href="#about">About</a>
+            <a href="#portal">Portal</a>
         </div>
         <p class="footer-copy">© 2025 Lightning Ledgerz. All rights reserved.</p>
     </footer>
@@ -1669,6 +1669,19 @@
                     e.preventDefault();
                     // Open the Stripe link
                     window.open(this.href, '_blank');
+                }, { passive: false });
+            });
+
+            // Add click/touch support for portal tabs
+            const portalTabs = document.querySelectorAll('.portal-tab');
+            portalTabs.forEach((tab, index) => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    switchTab(index === 0 ? 'login' : 'register');
+                });
+                tab.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    switchTab(index === 0 ? 'login' : 'register');
                 }, { passive: false });
             });
         });
