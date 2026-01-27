@@ -910,13 +910,15 @@
 
         .credentials {
             display: flex;
-            gap: 30px;
+            gap: 25px;
             margin-top: 30px;
             flex-wrap: wrap;
+            justify-content: flex-start;
         }
 
         @media (max-width: 768px) {
-            .credentials { justify-content: center; gap: 20px; }
+            .credentials { justify-content: center; gap: 15px; }
+            .credential-item { min-width: 100px; }
         }
 
         .credential-item {
@@ -924,7 +926,7 @@
         }
 
         .credential-number {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: var(--red);
             white-space: nowrap;
@@ -1298,6 +1300,14 @@
                 <p>Cornell University MPS in Management. $500MM+ in closed real estate transactions. Launched a Fractional CFO division. Every deliverable is crafted personally, ensuring your specific context and needs are reflected.</p>
 
                 <div class="credentials">
+                    <div class="credential-item">
+                        <div class="credential-number">50+</div>
+                        <div class="credential-label">Projects Delivered</div>
+                    </div>
+                    <div class="credential-item">
+                        <div class="credential-number">15,000+</div>
+                        <div class="credential-label">Hours Automated</div>
+                    </div>
                     <div class="credential-item">
                         <div class="credential-number">8hrs→7min</div>
                         <div class="credential-label">Budget Time Reduced</div>
