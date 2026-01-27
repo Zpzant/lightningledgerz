@@ -910,12 +910,13 @@
 
         .credentials {
             display: flex;
-            gap: 40px;
+            gap: 30px;
             margin-top: 30px;
+            flex-wrap: wrap;
         }
 
         @media (max-width: 768px) {
-            .credentials { justify-content: center; }
+            .credentials { justify-content: center; gap: 20px; }
         }
 
         .credential-item {
@@ -923,9 +924,10 @@
         }
 
         .credential-number {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
             color: var(--red);
+            white-space: nowrap;
         }
 
         .credential-label {
@@ -1291,18 +1293,22 @@
                 <img src="zac_mps.jpg" alt="Zac Prizant" onerror="this.style.display='none'">
             </div>
             <div class="about-text">
-                <h3>Zac Prizant, MBA</h3>
+                <h3>Zac Prizant, MPS</h3>
                 <p>I believe the best financial insights come from human expertise—not automated dashboards. With experience across hospitality, private equity, and corporate FP&A, I deliver the kind of analysis that drives real decisions.</p>
-                <p>Cornell University MBA. $500MM+ in closed real estate transactions. Every deliverable is crafted personally, ensuring your specific context and needs are reflected.</p>
+                <p>Cornell University MPS in Management. $500MM+ in closed real estate transactions. Launched a Fractional CFO division. Every deliverable is crafted personally, ensuring your specific context and needs are reflected.</p>
 
                 <div class="credentials">
                     <div class="credential-item">
-                        <div class="credential-number">50+</div>
-                        <div class="credential-label">Projects Delivered</div>
+                        <div class="credential-number">8hrs→7min</div>
+                        <div class="credential-label">Budget Time Reduced</div>
+                    </div>
+                    <div class="credential-item">
+                        <div class="credential-number">$1B+</div>
+                        <div class="credential-label">Portfolio Budgeted</div>
                     </div>
                     <div class="credential-item">
                         <div class="credential-number">$500M+</div>
-                        <div class="credential-label">Transactions</div>
+                        <div class="credential-label">Transactions Closed</div>
                     </div>
                 </div>
             </div>
