@@ -197,37 +197,72 @@
         }
 
         .package-btn.basic {
-            background: rgba(0, 0, 0, 0.8);
+            background: transparent;
             color: #fff;
             border-color: var(--red);
         }
 
         .package-btn.basic:hover {
             background: var(--red);
+            color: #fff;
             transform: translateX(5px);
         }
 
         .package-btn.gold {
-            background: linear-gradient(135deg, var(--gold), var(--gold-light));
-            color: #000;
+            background: transparent;
+            color: var(--gold);
+            border-color: var(--gold);
             font-weight: 700;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
         }
 
         .package-btn.gold:hover {
-            transform: translateX(5px) scale(1.02);
-            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: #000;
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
         }
 
         .package-btn.diamond {
-            background: rgba(0, 0, 0, 0.8);
+            background: transparent;
             color: #fff;
             border-color: #fff;
         }
 
         .package-btn.diamond:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: #fff;
+            color: #000;
             transform: translateX(5px);
+        }
+
+        /* Active/Selected states for sidebar buttons */
+        .package-btn.basic.active {
+            background: var(--red);
+            color: #fff;
+        }
+
+        .package-btn.gold.active {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: #000;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .package-btn.diamond.active {
+            background: #fff;
+            color: #000;
+        }
+
+        /* Highlight effect for selected package cards */
+        .package-card.highlight {
+            box-shadow: -8px 0 30px rgba(255, 51, 51, 0.8), 0 0 40px rgba(255, 51, 51, 0.4);
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .package-card.gold.highlight {
+            box-shadow: -8px 0 30px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.4);
+        }
+
+        .package-card.diamond.highlight {
+            box-shadow: -8px 0 30px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.4);
         }
 
         @media (max-width: 768px) {
@@ -506,6 +541,7 @@
         }
 
         .package-card.gold .package-features li:before {
+            content: "✨";
             color: var(--gold);
         }
 
@@ -564,66 +600,72 @@
         /* ============================================
            PORTFOLIO / WORK SECTION
         ============================================ */
-        .work-grid {
+        .portfolio-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .work-card {
-            position: relative;
+        .portfolio-item {
+            background: rgba(0, 0, 0, 0.6);
             border-radius: 15px;
             overflow: hidden;
             cursor: pointer;
-            aspect-ratio: 16/10;
+            transition: all 0.3s ease;
             border: 2px solid rgba(255, 51, 51, 0.3);
-            transition: all 0.4s ease;
         }
 
-        .work-card:hover {
-            transform: translateY(-10px);
+        .portfolio-item:hover {
+            transform: translateY(-8px);
             border-color: var(--red);
-            box-shadow: 0 15px 40px rgba(255, 51, 51, 0.3);
+            box-shadow: 0 0 30px rgba(255, 51, 51, 0.5), 0 15px 40px rgba(255, 51, 51, 0.3);
         }
 
-        .work-card img {
+        .portfolio-label {
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--red);
+            border-bottom: 1px solid rgba(255, 51, 51, 0.2);
+        }
+
+        .portfolio-image {
+            position: relative;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+        }
+
+        .portfolio-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .work-card:hover img {
-            transform: scale(1.1);
-        }
-
-        .work-card-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 25px 20px;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.95));
-            transform: translateY(100%);
             transition: transform 0.4s ease;
         }
 
-        .work-card:hover .work-card-overlay {
-            transform: translateY(0);
+        .portfolio-item:hover .portfolio-image img {
+            transform: scale(1.05);
         }
 
-        .work-card-title {
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 600;
+        /* Lightning Ledgerz watermark on slides */
+        .portfolio-image::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            background: url('LightningLedgerzLogo.png') no-repeat center;
+            background-size: contain;
+            opacity: 0.8;
         }
 
-        .work-card-client {
-            color: var(--red);
-            font-size: 0.85rem;
-            margin-top: 5px;
+        .portfolio-desc {
+            padding: 15px 20px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
         }
 
         /* ============================================
@@ -915,13 +957,13 @@
 
     <!-- Package Sidebar Buttons -->
     <div class="package-sidebar">
-        <button class="package-btn basic" onclick="scrollToSection('#pricing')">
+        <button class="package-btn basic" id="btn-basic" onclick="selectPackage('basic')">
             ⚡ Basic Package
         </button>
-        <button class="package-btn gold" onclick="scrollToSection('#pricing')">
+        <button class="package-btn gold" id="btn-gold" onclick="selectPackage('gold')">
             ✨ Gold Package
         </button>
-        <button class="package-btn diamond" onclick="scrollToSection('#pricing')">
+        <button class="package-btn diamond" id="btn-diamond" onclick="selectPackage('diamond')">
             💎 Diamond Package
         </button>
     </div>
@@ -931,44 +973,14 @@
         <div class="hero-logo">
             <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz">
         </div>
-        <p class="hero-tagline">BUDGET. SAVE. BUILD.</p>
-        <p class="hero-subtitle">From supercharged budgets to sparky strategy — we deliver results at lightning speed.</p>
+        <p class="hero-tagline">100% CUSTOM WORK</p>
+        <p class="hero-subtitle">Budget vs. Actual reporting, financial modeling, boardroom-ready decks and dashboards crafted by an expert — not an algorithm. Lightning fast so you can focus on what makes your business shine.</p>
         <div class="hero-buttons">
-            <a href="#portal" class="btn-primary">Start Free Trial</a>
-            <a href="#contact" class="btn-secondary">Contact Us</a>
+            <a href="#work" class="btn-primary">View Work</a>
+            <a href="#portal" class="btn-secondary">Get Started</a>
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section class="section section-dark" id="services">
-        <div class="section-header">
-            <h2>Our Services</h2>
-            <p>Premium FP&A advisory delivered with precision and speed.</p>
-        </div>
-
-        <div class="services-grid">
-            <div class="service-card">
-                <div class="service-icon">📊</div>
-                <h3>Budget vs. Actual Reporting</h3>
-                <p>Comprehensive variance analysis with intelligent commentary explaining the story behind your numbers. Monthly packages delivered on your timeline.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">📈</div>
-                <h3>Financial Modeling</h3>
-                <p>Custom Excel models with dynamic scenarios, sensitivity analysis, and presentation-ready outputs for investors and board meetings.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">🎯</div>
-                <h3>Executive Dashboards</h3>
-                <p>Clean, professional dashboards that surface key metrics instantly. Interactive filters with locked formulas—your data stays protected.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">💼</div>
-                <h3>Strategic Advisory</h3>
-                <p>General consulting on financial resource management. We advise on steps necessary to maintain or improve financial health.</p>
-            </div>
-        </div>
-    </section>
 
     <!-- Pricing Section -->
     <section class="section" id="pricing">
@@ -978,7 +990,7 @@
         </div>
 
         <div class="package-grid">
-            <div class="package-card">
+            <div class="package-card" id="basic-card">
                 <h3>⚡ Basic Package</h3>
                 <div class="package-price">$799/month</div>
                 <div class="package-trial">First month FREE</div>
@@ -992,7 +1004,7 @@
                 <a href="https://buy.stripe.com/dRmfZheTUbkcgT7fuNbsc02" target="_blank" class="btn-primary">Start Free Trial</a>
             </div>
 
-            <div class="package-card gold">
+            <div class="package-card gold" id="gold-card">
                 <div class="package-popular">Most Popular</div>
                 <h3>✨ Gold Package</h3>
                 <div class="package-price">$1,299/month</div>
@@ -1008,7 +1020,7 @@
                 <a href="https://buy.stripe.com/28E28r1348805apeqJbsc01" target="_blank" class="btn-primary">Start Free Trial</a>
             </div>
 
-            <div class="package-card diamond">
+            <div class="package-card diamond" id="diamond-card">
                 <h3>💎 Diamond Package</h3>
                 <div class="package-price">$3,999/month</div>
                 <div class="package-trial">First month FREE</div>
@@ -1032,38 +1044,57 @@
     <!-- Portfolio Section -->
     <section class="section section-dark" id="work">
         <div class="section-header">
-            <h2>Recent Work</h2>
-            <p>Dashboards, presentations, and strategic analysis.</p>
+            <h2>Sample Deliverables</h2>
+            <p>Real boardroom-ready slides and dashboards. Click to expand.</p>
         </div>
 
-        <div class="work-grid">
-            <div class="work-card" onclick="openLightbox('dashboard-royal-gorge.png')">
-                <img src="dashboard-royal-gorge.png" alt="Revenue Analytics Dashboard">
-                <div class="work-card-overlay">
-                    <div class="work-card-title">Revenue Analytics Dashboard</div>
-                    <div class="work-card-client">Royal Gorge Route Railroad</div>
+        <div class="portfolio-grid">
+            <div class="portfolio-item" onclick="openLightbox('slide-budget-vs-actual.png')">
+                <div class="portfolio-label">Budget vs. Actual</div>
+                <div class="portfolio-image">
+                    <img src="slide-budget-vs-actual.png" alt="Budget vs Actual Analysis">
                 </div>
+                <p class="portfolio-desc">Monthly variance analysis with executive commentary</p>
             </div>
-            <div class="work-card" onclick="openLightbox('avasant-digital-implementation.png')">
-                <img src="avasant-digital-implementation.png" alt="Digital Implementation Strategy">
-                <div class="work-card-overlay">
-                    <div class="work-card-title">Digital Implementation Strategy</div>
-                    <div class="work-card-client">Avasant</div>
+
+            <div class="portfolio-item" onclick="openLightbox('slide-yoy-analysis.png')">
+                <div class="portfolio-label">YOY Net Income Analysis</div>
+                <div class="portfolio-image">
+                    <img src="slide-yoy-analysis.png" alt="Year over Year Analysis">
                 </div>
+                <p class="portfolio-desc">Year-over-year performance tracking</p>
             </div>
-            <div class="work-card" onclick="openLightbox('avasant-africa-energy.png')">
-                <img src="avasant-africa-energy.png" alt="Energy Sector Analysis">
-                <div class="work-card-overlay">
-                    <div class="work-card-title">International Energy & Power Sector</div>
-                    <div class="work-card-client">Avasant</div>
+
+            <div class="portfolio-item" onclick="openLightbox('slide-waterfall.png')">
+                <div class="portfolio-label">Waterfall Analysis</div>
+                <div class="portfolio-image">
+                    <img src="slide-waterfall.png" alt="Waterfall Chart Analysis">
                 </div>
+                <p class="portfolio-desc">Bridge charts showing drivers of change</p>
             </div>
-            <div class="work-card" onclick="openLightbox('pta-clients-overview.png')">
-                <img src="pta-clients-overview.png" alt="Client Coverage Map">
-                <div class="work-card-overlay">
-                    <div class="work-card-title">National Client Coverage</div>
-                    <div class="work-card-client">Professional Tax Alliance</div>
+
+            <div class="portfolio-item" onclick="openLightbox('slide-cost-analysis.png')">
+                <div class="portfolio-label">Cost Analysis</div>
+                <div class="portfolio-image">
+                    <img src="slide-cost-analysis.png" alt="Cost Analysis">
                 </div>
+                <p class="portfolio-desc">Detailed expense breakdown and trends</p>
+            </div>
+
+            <div class="portfolio-item" onclick="openLightbox('slide-revenue-by-customer.png')">
+                <div class="portfolio-label">Revenue by Customer</div>
+                <div class="portfolio-image">
+                    <img src="slide-revenue-by-customer.png" alt="Revenue by Customer">
+                </div>
+                <p class="portfolio-desc">Customer segmentation and concentration</p>
+            </div>
+
+            <div class="portfolio-item" onclick="openLightbox('slide-digital-strategy.png')">
+                <div class="portfolio-label">Strategic Analysis</div>
+                <div class="portfolio-image">
+                    <img src="slide-digital-strategy.png" alt="Digital Strategy">
+                </div>
+                <p class="portfolio-desc">Data-driven strategic recommendations</p>
             </div>
         </div>
     </section>
@@ -1205,6 +1236,21 @@
 
         function scrollToSection(selector) {
             document.querySelector(selector)?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectPackage(packageType) {
+            // Remove active class from all sidebar buttons
+            document.querySelectorAll('.package-btn').forEach(btn => btn.classList.remove('active'));
+            // Remove highlight from all package cards
+            document.querySelectorAll('.package-card').forEach(card => card.classList.remove('highlight'));
+
+            // Add active class to clicked button
+            document.getElementById('btn-' + packageType).classList.add('active');
+            // Add highlight to corresponding card
+            document.getElementById(packageType + '-card').classList.add('highlight');
+
+            // Scroll to pricing section
+            document.getElementById(packageType + '-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function toggleMobileMenu() {
