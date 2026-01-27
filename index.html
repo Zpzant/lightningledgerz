@@ -1444,9 +1444,10 @@
             if (btn) btn.classList.add('active');
             if (card) {
                 card.classList.add('highlight');
-                // Scroll to the card with offset for mobile
-                const cardTop = card.getBoundingClientRect().top + window.pageYOffset - 100;
-                window.scrollTo({ top: cardTop, behavior: 'smooth' });
+                // Scroll to the card - use scrollIntoView for better cross-browser support
+                setTimeout(() => {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 50);
             }
         }
 
