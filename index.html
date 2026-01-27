@@ -919,6 +919,191 @@
             box-shadow: 0 8px 25px rgba(255, 51, 51, 0.5);
         }
 
+        /* Portal Dashboard (Logged In) */
+        .portal-dashboard {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--red);
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dashboard-header h3 {
+            color: var(--red);
+            margin: 0;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .upload-section, .deliverables-section {
+            margin-bottom: 30px;
+        }
+
+        .upload-section h4, .deliverables-section h4 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .upload-description {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .upload-dropzone {
+            border: 2px dashed rgba(255, 51, 51, 0.5);
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-dropzone:hover, .upload-dropzone.dragover {
+            border-color: var(--red);
+            background: rgba(255, 51, 51, 0.1);
+        }
+
+        .dropzone-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .dropzone-content p {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 5px 0;
+        }
+
+        .upload-browse {
+            color: var(--red);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .upload-hint {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .uploaded-files {
+            margin-top: 20px;
+        }
+
+        .uploaded-file {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .uploaded-file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .uploaded-file-icon {
+            font-size: 1.5rem;
+        }
+
+        .uploaded-file-name {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .uploaded-file-size {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+        }
+
+        .uploaded-file-remove {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .uploaded-file-remove:hover {
+            color: var(--red);
+        }
+
+        .deliverables-empty {
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .portal-disclaimers {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .portal-disclaimers h5 {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .portal-disclaimers ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .portal-disclaimers li {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .portal-disclaimers li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--red);
+        }
+
+        .portal-disclaimers li strong {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
         /* ============================================
            ABOUT SECTION
         ============================================ */
@@ -1417,6 +1602,54 @@
                 <button type="submit" class="form-submit">Create Account</button>
             </form>
         </div>
+
+        <!-- Logged In Dashboard (hidden by default) -->
+        <div class="portal-dashboard" id="portal-dashboard" style="display: none;">
+            <div class="dashboard-header">
+                <h3>Welcome, <span id="user-display-name">Client</span>!</h3>
+                <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+            </div>
+
+            <!-- File Upload Section -->
+            <div class="upload-section">
+                <h4>📁 Upload Financial Documents</h4>
+                <p class="upload-description">Securely upload your financial files for analysis. Accepted formats: Excel (.xlsx, .xls), CSV, PDF</p>
+
+                <div class="upload-dropzone" id="upload-dropzone">
+                    <div class="dropzone-content">
+                        <span class="dropzone-icon">📤</span>
+                        <p>Drag & drop files here or <label for="file-input" class="upload-browse">browse</label></p>
+                        <input type="file" id="file-input" accept=".xlsx,.xls,.csv,.pdf" multiple style="display: none;">
+                        <p class="upload-hint">Max file size: 25MB per file</p>
+                    </div>
+                </div>
+
+                <div class="uploaded-files" id="uploaded-files">
+                    <!-- Uploaded files will appear here -->
+                </div>
+            </div>
+
+            <!-- Deliverables Section -->
+            <div class="deliverables-section">
+                <h4>📊 Your Deliverables</h4>
+                <p class="deliverables-empty" id="deliverables-empty">No deliverables yet. Once your analysis is complete, files will appear here.</p>
+                <div class="deliverables-list" id="deliverables-list">
+                    <!-- Deliverables will appear here -->
+                </div>
+            </div>
+
+            <!-- Disclaimers -->
+            <div class="portal-disclaimers">
+                <h5>Important Notices</h5>
+                <ul>
+                    <li><strong>Confidentiality:</strong> All uploaded documents are treated as strictly confidential and are encrypted in transit and at rest.</li>
+                    <li><strong>Data Handling:</strong> Your financial data is used solely for the purpose of providing FP&A services and is never shared with third parties.</li>
+                    <li><strong>No Financial Advice:</strong> Lightning Ledgerz provides financial planning & analysis services, not financial, tax, or legal advice. Consult appropriate professionals for such matters.</li>
+                    <li><strong>Retention:</strong> Files are retained for 90 days after project completion unless otherwise requested.</li>
+                    <li><strong>Security:</strong> We employ industry-standard security measures, but you are responsible for ensuring uploaded data complies with your organization's policies.</li>
+                </ul>
+            </div>
+        </div>
     </section>
 
     <!-- Contact Section -->
@@ -1541,12 +1774,17 @@
         // ===========================================
         // AUTH
         // ===========================================
+        let currentUserData = null;
+
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
             if (!supabase) {
+                // Demo mode - show dashboard
+                currentUserData = { email, name: email.split('@')[0] };
+                showLoggedInDashboard(currentUserData.name);
                 showToast('Welcome! (Demo mode)', 'success');
                 return;
             }
@@ -1554,6 +1792,8 @@
             try {
                 const { data, error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) throw error;
+                currentUserData = { email, name: data.user?.user_metadata?.full_name || email.split('@')[0] };
+                showLoggedInDashboard(currentUserData.name);
                 showToast('Welcome back!', 'success');
             } catch (error) {
                 showToast(error.message, 'error');
@@ -1567,6 +1807,9 @@
             const password = document.getElementById('register-password').value;
 
             if (!supabase) {
+                // Demo mode - show dashboard
+                currentUserData = { email, name };
+                showLoggedInDashboard(name);
                 showToast('Account created! (Demo mode)', 'success');
                 return;
             }
@@ -1582,6 +1825,116 @@
             } catch (error) {
                 showToast(error.message, 'error');
             }
+        }
+
+        function showLoggedInDashboard(name) {
+            document.querySelector('.portal-card').style.display = 'none';
+            document.getElementById('portal-dashboard').style.display = 'block';
+            document.getElementById('user-display-name').textContent = name;
+        }
+
+        function showLoginForm() {
+            document.querySelector('.portal-card').style.display = 'block';
+            document.getElementById('portal-dashboard').style.display = 'none';
+        }
+
+        async function handleLogout() {
+            if (supabase) {
+                await supabase.auth.signOut();
+            }
+            currentUserData = null;
+            showLoginForm();
+            showToast('Signed out successfully', 'success');
+        }
+
+        // ===========================================
+        // FILE UPLOAD
+        // ===========================================
+        let uploadedFiles = [];
+
+        function initFileUpload() {
+            const dropzone = document.getElementById('upload-dropzone');
+            const fileInput = document.getElementById('file-input');
+
+            if (!dropzone || !fileInput) return;
+
+            // Click to browse
+            dropzone.addEventListener('click', () => fileInput.click());
+
+            // File input change
+            fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+            // Drag and drop
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.classList.add('dragover');
+            });
+
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.classList.remove('dragover');
+            });
+
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
+        }
+
+        function handleFiles(files) {
+            const maxSize = 25 * 1024 * 1024; // 25MB
+            const allowedTypes = ['.xlsx', '.xls', '.csv', '.pdf'];
+
+            Array.from(files).forEach(file => {
+                const ext = '.' + file.name.split('.').pop().toLowerCase();
+
+                if (!allowedTypes.includes(ext)) {
+                    showToast(`Invalid file type: ${file.name}`, 'error');
+                    return;
+                }
+
+                if (file.size > maxSize) {
+                    showToast(`File too large: ${file.name}`, 'error');
+                    return;
+                }
+
+                uploadedFiles.push(file);
+                displayUploadedFile(file);
+                showToast(`Uploaded: ${file.name}`, 'success');
+            });
+        }
+
+        function displayUploadedFile(file) {
+            const container = document.getElementById('uploaded-files');
+            const ext = file.name.split('.').pop().toLowerCase();
+            const icons = { xlsx: '📊', xls: '📊', csv: '📄', pdf: '📕' };
+
+            const fileEl = document.createElement('div');
+            fileEl.className = 'uploaded-file';
+            fileEl.innerHTML = `
+                <div class="uploaded-file-info">
+                    <span class="uploaded-file-icon">${icons[ext] || '📁'}</span>
+                    <div>
+                        <div class="uploaded-file-name">${file.name}</div>
+                        <div class="uploaded-file-size">${formatFileSize(file.size)}</div>
+                    </div>
+                </div>
+                <button class="uploaded-file-remove" onclick="removeFile('${file.name}')">&times;</button>
+            `;
+            container.appendChild(fileEl);
+        }
+
+        function removeFile(fileName) {
+            uploadedFiles = uploadedFiles.filter(f => f.name !== fileName);
+            const container = document.getElementById('uploaded-files');
+            container.innerHTML = '';
+            uploadedFiles.forEach(file => displayUploadedFile(file));
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
         }
 
         // ===========================================
@@ -1620,6 +1973,7 @@
         // ===========================================
         document.addEventListener('DOMContentLoaded', () => {
             initSupabase();
+            initFileUpload();
 
             // Add touch support for hamburger menu
             const mobileToggle = document.querySelector('.nav-mobile-toggle');
