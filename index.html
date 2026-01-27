@@ -2267,10 +2267,18 @@
                     const type = this.id.replace('btn-', '');
                     const card = document.getElementById(type + '-card');
                     if (card) {
-                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        // Highlight the card
+                        // Remove highlight from all cards first
                         document.querySelectorAll('.package-card').forEach(c => c.classList.remove('highlight'));
-                        card.classList.add('highlight');
+                        // Scroll to the card
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // Add highlight after scroll starts
+                        setTimeout(() => {
+                            card.classList.add('highlight');
+                        }, 300);
+                        // Remove highlight after 5 seconds
+                        setTimeout(() => {
+                            card.classList.remove('highlight');
+                        }, 5000);
                     }
                 });
                 // Touch handler for mobile
@@ -2279,9 +2287,14 @@
                     const type = this.id.replace('btn-', '');
                     const card = document.getElementById(type + '-card');
                     if (card) {
-                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         document.querySelectorAll('.package-card').forEach(c => c.classList.remove('highlight'));
-                        card.classList.add('highlight');
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        setTimeout(() => {
+                            card.classList.add('highlight');
+                        }, 300);
+                        setTimeout(() => {
+                            card.classList.remove('highlight');
+                        }, 5000);
                     }
                 }, { passive: false });
             });
