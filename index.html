@@ -1241,6 +1241,79 @@
         .toast.error {
             border-left-color: #dc3545;
         }
+
+        .toast.info {
+            border-left-color: #17a2b8;
+        }
+
+        /* ============================================
+           TIER-BASED THEMING
+        ============================================ */
+        /* Gold Tier Theme */
+        body.tier-gold .portal-dashboard {
+            border-color: var(--gold);
+        }
+        body.tier-gold .portal-dashboard h3,
+        body.tier-gold .portal-dashboard h4 {
+            color: var(--gold);
+        }
+        body.tier-gold .upload-dropzone {
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+        body.tier-gold .upload-dropzone:hover {
+            border-color: var(--gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+        body.tier-gold .upload-browse {
+            color: var(--gold);
+        }
+        body.tier-gold .btn-logout:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        body.tier-gold .portal-disclaimers li:before {
+            color: var(--gold);
+        }
+        body.tier-gold .dashboard-header h3 {
+            background: linear-gradient(45deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Diamond Tier Theme */
+        body.tier-diamond .portal-dashboard {
+            border-color: #fff;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+        body.tier-diamond .portal-dashboard h3,
+        body.tier-diamond .portal-dashboard h4 {
+            color: #fff;
+        }
+        body.tier-diamond .upload-dropzone {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        body.tier-diamond .upload-dropzone:hover {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        body.tier-diamond .upload-browse {
+            color: #fff;
+        }
+        body.tier-diamond .btn-logout:hover {
+            border-color: #fff;
+            color: #fff;
+        }
+        body.tier-diamond .portal-disclaimers li:before {
+            color: #fff;
+        }
+        body.tier-diamond .dashboard-header h3 {
+            background: linear-gradient(45deg, #fff, #e0e0e0, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -1687,7 +1760,7 @@
         // SUPABASE CONFIGURATION
         // ===========================================
         const SUPABASE_URL = 'https://uxicgilvxcqpoxavilxp.supabase.co';
-        const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4aWNnaWx2eGNxcG94YXZpbHhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzYwNzYsImV4cCI6MjA3NjY1MjA3Nn0.W6_iO15HAxjzvNfp_FHWSS0HYOpaJb7-oC-Z3_KaZaw';
 
         let supabase = null;
         let currentUser = null;
@@ -1780,62 +1853,177 @@
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+
+            submitBtn.textContent = 'Signing in...';
+            submitBtn.disabled = true;
 
             if (!supabase) {
                 // Demo mode - show dashboard
-                currentUserData = { email, name: email.split('@')[0] };
-                showLoggedInDashboard(currentUserData.name);
+                currentUserData = { email, name: email.split('@')[0], tier: 'basic' };
+                showLoggedInDashboard(currentUserData.name, currentUserData.tier);
                 showToast('Welcome! (Demo mode)', 'success');
+                submitBtn.textContent = 'Sign In';
+                submitBtn.disabled = false;
                 return;
             }
 
             try {
                 const { data, error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) throw error;
-                currentUserData = { email, name: data.user?.user_metadata?.full_name || email.split('@')[0] };
-                showLoggedInDashboard(currentUserData.name);
-                showToast('Welcome back!', 'success');
+
+                // Get user profile with tier
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', data.user.id)
+                    .single();
+
+                const userName = profile?.first_name || data.user?.user_metadata?.full_name || email.split('@')[0];
+                const userTier = profile?.package_tier || 'basic';
+
+                currentUserData = {
+                    id: data.user.id,
+                    email,
+                    name: userName,
+                    tier: userTier,
+                    profile: profile
+                };
+
+                showLoggedInDashboard(userName, userTier);
+                showToast('Welcome back, ' + userName + '!', 'success');
             } catch (error) {
                 showToast(error.message, 'error');
             }
+
+            submitBtn.textContent = 'Sign In';
+            submitBtn.disabled = false;
         }
 
         async function handleRegister(e) {
             e.preventDefault();
             const name = document.getElementById('register-name').value;
+            const company = document.getElementById('register-company')?.value || '';
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+
+            submitBtn.textContent = 'Creating account...';
+            submitBtn.disabled = true;
 
             if (!supabase) {
                 // Demo mode - show dashboard
-                currentUserData = { email, name };
-                showLoggedInDashboard(name);
+                currentUserData = { email, name, tier: 'basic' };
+                showLoggedInDashboard(name, 'basic');
                 showToast('Account created! (Demo mode)', 'success');
+                submitBtn.textContent = 'Create Account';
+                submitBtn.disabled = false;
                 return;
             }
 
             try {
+                // Split name into first/last
+                const nameParts = name.trim().split(' ');
+                const firstName = nameParts[0];
+                const lastName = nameParts.slice(1).join(' ') || '';
+
                 const { data, error } = await supabase.auth.signUp({
                     email,
                     password,
-                    options: { data: { full_name: name } }
+                    options: {
+                        data: {
+                            full_name: name,
+                            first_name: firstName,
+                            last_name: lastName
+                        }
+                    }
                 });
                 if (error) throw error;
-                showToast('Check your email to verify!', 'success');
+
+                // Create profile
+                if (data.user) {
+                    await supabase.from('profiles').insert([{
+                        id: data.user.id,
+                        email: email,
+                        first_name: firstName,
+                        last_name: lastName,
+                        package_tier: 'basic'
+                    }]);
+
+                    currentUserData = {
+                        id: data.user.id,
+                        email,
+                        name: firstName,
+                        tier: 'basic'
+                    };
+
+                    showLoggedInDashboard(firstName, 'basic');
+                    showToast('Welcome to Lightning Ledgerz, ' + firstName + '!', 'success');
+                } else {
+                    showToast('Check your email to verify your account!', 'success');
+                }
             } catch (error) {
                 showToast(error.message, 'error');
             }
+
+            submitBtn.textContent = 'Create Account';
+            submitBtn.disabled = false;
         }
 
-        function showLoggedInDashboard(name) {
+        function showLoggedInDashboard(name, tier = 'basic') {
             document.querySelector('.portal-card').style.display = 'none';
             document.getElementById('portal-dashboard').style.display = 'block';
             document.getElementById('user-display-name').textContent = name;
+
+            // Apply tier-based theming
+            applyTierTheme(tier);
+
+            // Load user's previously uploaded files
+            loadUserFiles();
+        }
+
+        function applyTierTheme(tier) {
+            const body = document.body;
+            const logos = document.querySelectorAll('.logo img, .hero-logo img, .footer-logo img');
+            const dashboard = document.getElementById('portal-dashboard');
+
+            // Remove any existing tier classes
+            body.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
+            dashboard.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
+
+            // Add new tier class
+            body.classList.add('tier-' + tier);
+            dashboard.classList.add('tier-' + tier);
+
+            // Update logos based on tier
+            const logoMap = {
+                basic: 'LightningLedgerzLogo.png',
+                gold: 'LightningLedgerzLogo-gold.png',
+                diamond: 'LightningLedgerzLogo-diamond.png'
+            };
+
+            logos.forEach(logo => {
+                logo.src = logoMap[tier] || logoMap.basic;
+            });
+        }
+
+        function resetTheme() {
+            const body = document.body;
+            const dashboard = document.getElementById('portal-dashboard');
+            const logos = document.querySelectorAll('.logo img, .hero-logo img, .footer-logo img');
+
+            body.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
+            if (dashboard) dashboard.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
+
+            logos.forEach(logo => {
+                logo.src = 'LightningLedgerzLogo.png';
+            });
         }
 
         function showLoginForm() {
             document.querySelector('.portal-card').style.display = 'block';
             document.getElementById('portal-dashboard').style.display = 'none';
+            resetTheme();
         }
 
         async function handleLogout() {
@@ -1881,57 +2069,134 @@
             });
         }
 
-        function handleFiles(files) {
+        async function handleFiles(files) {
             const maxSize = 25 * 1024 * 1024; // 25MB
             const allowedTypes = ['.xlsx', '.xls', '.csv', '.pdf'];
 
-            Array.from(files).forEach(file => {
+            for (const file of Array.from(files)) {
                 const ext = '.' + file.name.split('.').pop().toLowerCase();
 
                 if (!allowedTypes.includes(ext)) {
                     showToast(`Invalid file type: ${file.name}`, 'error');
-                    return;
+                    continue;
                 }
 
                 if (file.size > maxSize) {
                     showToast(`File too large: ${file.name}`, 'error');
-                    return;
+                    continue;
                 }
 
-                uploadedFiles.push(file);
-                displayUploadedFile(file);
-                showToast(`Uploaded: ${file.name}`, 'success');
-            });
+                // Show uploading state
+                showToast(`Uploading: ${file.name}...`, 'info');
+
+                try {
+                    // Upload to Supabase Storage if available and user is logged in
+                    if (supabase && currentUserData?.id) {
+                        const filePath = `${currentUserData.id}/${Date.now()}_${file.name}`;
+
+                        const { data: uploadData, error: uploadError } = await supabase.storage
+                            .from('user-documents')
+                            .upload(filePath, file);
+
+                        if (uploadError) throw uploadError;
+
+                        // Save file record to database
+                        await supabase.from('user_documents').insert([{
+                            user_id: currentUserData.id,
+                            file_name: file.name,
+                            file_path: filePath,
+                            file_size: file.size,
+                            file_type: file.type || ext
+                        }]);
+
+                        uploadedFiles.push({ name: file.name, size: file.size, path: filePath });
+                        displayUploadedFile({ name: file.name, size: file.size, path: filePath });
+                        showToast(`Uploaded: ${file.name}`, 'success');
+                    } else {
+                        // Local/demo mode - just display
+                        uploadedFiles.push({ name: file.name, size: file.size, file: file });
+                        displayUploadedFile({ name: file.name, size: file.size });
+                        showToast(`Uploaded: ${file.name} (local)`, 'success');
+                    }
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    showToast(`Failed to upload: ${file.name}`, 'error');
+                }
+            }
         }
 
-        function displayUploadedFile(file) {
+        function displayUploadedFile(fileInfo) {
             const container = document.getElementById('uploaded-files');
-            const ext = file.name.split('.').pop().toLowerCase();
+            const ext = fileInfo.name.split('.').pop().toLowerCase();
             const icons = { xlsx: '📊', xls: '📊', csv: '📄', pdf: '📕' };
 
             const fileEl = document.createElement('div');
             fileEl.className = 'uploaded-file';
+            fileEl.dataset.path = fileInfo.path || '';
             fileEl.innerHTML = `
                 <div class="uploaded-file-info">
                     <span class="uploaded-file-icon">${icons[ext] || '📁'}</span>
                     <div>
-                        <div class="uploaded-file-name">${file.name}</div>
-                        <div class="uploaded-file-size">${formatFileSize(file.size)}</div>
+                        <div class="uploaded-file-name">${fileInfo.name}</div>
+                        <div class="uploaded-file-size">${formatFileSize(fileInfo.size)}</div>
                     </div>
                 </div>
-                <button class="uploaded-file-remove" onclick="removeFile('${file.name}')">&times;</button>
+                <button class="uploaded-file-remove" onclick="removeFile('${fileInfo.name}', '${fileInfo.path || ''}')">&times;</button>
             `;
             container.appendChild(fileEl);
         }
 
-        function removeFile(fileName) {
+        async function removeFile(fileName, filePath) {
+            if (supabase && filePath && currentUserData?.id) {
+                try {
+                    // Delete from Supabase Storage
+                    await supabase.storage.from('user-documents').remove([filePath]);
+                    // Delete from database
+                    await supabase.from('user_documents')
+                        .delete()
+                        .eq('user_id', currentUserData.id)
+                        .eq('file_path', filePath);
+                } catch (error) {
+                    console.error('Delete error:', error);
+                }
+            }
+
             uploadedFiles = uploadedFiles.filter(f => f.name !== fileName);
             const container = document.getElementById('uploaded-files');
             container.innerHTML = '';
             uploadedFiles.forEach(file => displayUploadedFile(file));
+            showToast('File removed', 'success');
+        }
+
+        async function loadUserFiles() {
+            if (!supabase || !currentUserData?.id) return;
+
+            try {
+                const { data, error } = await supabase
+                    .from('user_documents')
+                    .select('*')
+                    .eq('user_id', currentUserData.id)
+                    .order('uploaded_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    uploadedFiles = data.map(d => ({
+                        name: d.file_name,
+                        size: d.file_size,
+                        path: d.file_path
+                    }));
+                    const container = document.getElementById('uploaded-files');
+                    container.innerHTML = '';
+                    uploadedFiles.forEach(file => displayUploadedFile(file));
+                }
+            } catch (error) {
+                console.error('Error loading files:', error);
+            }
         }
 
         function formatFileSize(bytes) {
+            if (!bytes) return '';
             if (bytes < 1024) return bytes + ' B';
             if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
             return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
