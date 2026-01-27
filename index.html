@@ -1408,7 +1408,7 @@
             <li><a href="#portal" onclick="closeMobileMenu()">Portal</a></li>
         </ul>
         <a href="#portal" class="nav-cta">Get Started</a>
-        <button class="nav-mobile-toggle" id="hamburger-btn">☰</button>
+        <button class="nav-mobile-toggle" id="hamburger-btn" onclick="toggleMobileMenu()">☰</button>
     </nav>
 
     <!-- Package Sidebar Buttons -->
@@ -1878,14 +1878,18 @@
                 e.preventDefault();
                 e.stopPropagation();
             }
-            const links = document.querySelector('.nav-links');
-            links.classList.toggle('active');
+            var links = document.getElementById('nav-links');
+            if (links.style.display === 'flex') {
+                links.style.display = 'none';
+            } else {
+                links.style.display = 'flex';
+            }
         }
 
         function closeMobileMenu() {
-            const links = document.querySelector('.nav-links');
+            var links = document.getElementById('nav-links');
             if (window.innerWidth <= 900) {
-                links.classList.remove('active');
+                links.style.display = 'none';
             }
         }
 
@@ -2271,16 +2275,16 @@
                 e.preventDefault();
                 e.stopPropagation();
             }
-            const lightbox = document.getElementById('lightbox');
-            const img = document.getElementById('lightbox-img');
+            var lightbox = document.getElementById('lightbox');
+            var img = document.getElementById('lightbox-img');
             img.src = src;
-            lightbox.classList.add('active');
+            lightbox.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
 
         function closeLightbox() {
-            const lightbox = document.getElementById('lightbox');
-            lightbox.classList.remove('active');
+            var lightbox = document.getElementById('lightbox');
+            lightbox.style.display = 'none';
             document.body.style.overflow = '';
         }
 
@@ -2298,40 +2302,38 @@
         // PACKAGE CARD HIGHLIGHT
         // ===========================================
         function highlightPackageCard(cardId) {
-            const card = document.getElementById(cardId);
+            var card = document.getElementById(cardId);
             if (!card) return;
 
-            // Determine the color based on card type
-            let glowColor = '255, 51, 51'; // red for basic
-            if (card.classList.contains('gold')) {
-                glowColor = '255, 215, 0'; // gold
-            } else if (card.classList.contains('diamond')) {
-                glowColor = '255, 255, 255'; // white
+            // Determine the glow color
+            var glowColor = '255, 51, 51'; // red for basic
+            if (cardId === 'gold-card') {
+                glowColor = '255, 215, 0';
+            } else if (cardId === 'diamond-card') {
+                glowColor = '255, 255, 255';
             }
 
-            // Remove highlight from all cards first
-            document.querySelectorAll('.package-card').forEach(c => {
-                c.style.transform = '';
-                c.style.boxShadow = '';
-                c.style.zIndex = '';
-                c.classList.remove('highlight');
-            });
+            // Reset all cards first
+            var allCards = document.querySelectorAll('.package-card');
+            for (var i = 0; i < allCards.length; i++) {
+                allCards[i].style.transform = '';
+                allCards[i].style.boxShadow = '';
+                allCards[i].style.zIndex = '';
+            }
 
             // Scroll to the card
             card.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-            // Apply highlight styles directly via JavaScript
+            // Apply highlight
             card.style.transform = 'translateY(-20px) scale(1.08)';
-            card.style.boxShadow = `0 0 80px rgba(${glowColor}, 1), 0 0 120px rgba(${glowColor}, 0.8), 0 30px 60px rgba(${glowColor}, 0.6)`;
+            card.style.boxShadow = '0 0 80px rgba(' + glowColor + ', 1), 0 0 120px rgba(' + glowColor + ', 0.8), 0 30px 60px rgba(' + glowColor + ', 0.6)';
             card.style.zIndex = '100';
-            card.classList.add('highlight');
 
             // Remove highlight after 8 seconds
-            setTimeout(() => {
+            setTimeout(function() {
                 card.style.transform = '';
                 card.style.boxShadow = '';
                 card.style.zIndex = '';
-                card.classList.remove('highlight');
             }, 8000);
         }
 
