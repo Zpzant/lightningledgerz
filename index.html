@@ -60,26 +60,34 @@
             height: 100vh;
             z-index: -2;
             overflow: hidden;
+            background: #000;
         }
 
-        .video-background video,
         .video-background iframe {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 177.77vh; /* 16:9 aspect ratio */
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 56.25vw; /* 16:9 aspect ratio */
             pointer-events: none;
             border: none;
         }
 
         @media (max-width: 768px) {
-            .video-background video,
+            .video-background iframe {
+                width: 300vw;
+                height: 100vh;
+                min-width: 300vw;
+            }
+        }
+
+        @media (max-aspect-ratio: 16/9) {
             .video-background iframe {
                 width: 100vw;
-                height: 100vh;
-                object-fit: cover;
+                height: 56.25vw;
             }
         }
 
@@ -218,7 +226,7 @@
 
         .package-btn.gold {
             background: transparent;
-            color: var(--gold);
+            color: #fff;
             font-weight: 700;
         }
 
@@ -966,22 +974,17 @@
     </style>
 </head>
 <body>
-    <!-- Video Background -->
+    <!-- Video Background - Using iframe for universal compatibility including iOS -->
     <div class="video-background">
-        <video id="bg-video" autoplay muted loop playsinline>
-            <source src="https://cdn-cf-east.streamable.com/video/mp4/0ek0up.mp4?Expires=1769558400&Key-Pair-Id=APKAIEYUVEN4EVB2OKEQ&Signature=placeholder" type="video/mp4">
-        </video>
-        <!-- Fallback iframe for browsers that block direct video -->
-        <iframe id="bg-video-fallback" src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1&loop=1&muted=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" style="display:none;"></iframe>
+        <iframe
+            id="bg-video"
+            src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1&loop=1&muted=1"
+            frameborder="0"
+            allow="autoplay; fullscreen"
+            allowfullscreen>
+        </iframe>
     </div>
     <div class="video-overlay"></div>
-    <script>
-        // Try native video first, fallback to iframe if needed
-        document.getElementById('bg-video').addEventListener('error', function() {
-            this.style.display = 'none';
-            document.getElementById('bg-video-fallback').style.display = 'block';
-        });
-    </script>
 
     <!-- Navigation -->
     <nav>
@@ -1389,13 +1392,23 @@
             const btn = document.getElementById('btn-' + packageType);
             const card = document.getElementById(packageType + '-card');
 
+            console.log('Button found:', btn);
+            console.log('Card found:', card);
+
             if (btn) btn.classList.add('active');
             if (card) {
                 card.classList.add('highlight');
-                // Scroll to the card
+                // Scroll to the pricing section first, then center on the card
+                const pricingSection = document.getElementById('pricing');
+                if (pricingSection) {
+                    pricingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                // Then scroll to center on the specific card
                 setTimeout(() => {
                     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
+                }, 300);
+            } else {
+                console.error('Card not found for:', packageType + '-card');
             }
         }
 
