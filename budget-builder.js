@@ -1592,10 +1592,16 @@ class BudgetBuilder {
         }
     }
 
+    // Get user-specific storage key
+    getStorageKey() {
+        const userId = window.currentUser?.id || window.currentUserProfile?.id || 'guest';
+        return `lightning_budgets_${userId}`;
+    }
+
     // Save budget to local storage
     saveBudget() {
         const budgetName = this.budgetData.businessInfo.name || `Budget_${Date.now()}`;
-        const savedBudgets = JSON.parse(localStorage.getItem('lightning_budgets') || '[]');
+        const savedBudgets = JSON.parse(localStorage.getItem(this.getStorageKey()) || '[]');
 
         savedBudgets.push({
             id: Date.now(),
@@ -1604,7 +1610,7 @@ class BudgetBuilder {
             data: this.budgetData
         });
 
-        localStorage.setItem('lightning_budgets', JSON.stringify(savedBudgets));
+        localStorage.setItem(this.getStorageKey(), JSON.stringify(savedBudgets));
         alert(`Budget "${budgetName}" saved successfully!`);
     }
 }

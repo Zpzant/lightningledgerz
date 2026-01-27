@@ -206,9 +206,237 @@ When you're ready for production, you can:
 
 Once all steps are complete, your Supabase backend will be fully configured and ready for the Lightning Ledgerz application!
 
+---
+
+# Supabase CLI Setup (For VS Code Development)
+
+## Step A: Install Supabase CLI
+
+### On Windows (PowerShell as Administrator):
+```powershell
+# Using Scoop (recommended)
+scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
+scoop install supabase
+
+# OR using npm (if you have Node.js)
+npm install -g supabase
+```
+
+### Verify installation:
+```bash
+supabase --version
+```
+
+## Step B: Login to Supabase CLI
+
+1. Generate an access token:
+   - Go to https://supabase.com/dashboard/account/tokens
+   - Click **Generate new token**
+   - Copy the token
+
+2. Login via CLI:
+```bash
+supabase login
+```
+   - Paste your access token when prompted
+
+## Step C: Link Your Project
+
+1. Navigate to your project folder:
+```bash
+cd "c:\Users\zpzan\OneDrive\Desktop\lightningledgerz"
+```
+
+2. Initialize Supabase locally:
+```bash
+supabase init
+```
+
+3. Link to your existing project:
+```bash
+supabase link --project-ref uxicgilvxcqpoxavilxp
+```
+   - When prompted for database password, enter your Supabase database password
+   - Find this in: Project Settings > Database > Connection string
+
+## Step D: Common CLI Commands
+
+### Pull remote schema to local:
+```bash
+supabase db pull
+```
+
+### Push local changes to remote:
+```bash
+supabase db push
+```
+
+### Generate TypeScript types from your schema:
+```bash
+supabase gen types typescript --linked > types/supabase.ts
+```
+
+### Run migrations:
+```bash
+supabase migration up
+```
+
+### Create a new migration:
+```bash
+supabase migration new add_session_history
+```
+
+### View database diff:
+```bash
+supabase db diff
+```
+
+## Step E: VS Code Integration
+
+### Recommended Extensions:
+1. **Supabase** - Official extension for Supabase
+2. **PostgreSQL** - For SQL syntax highlighting
+3. **SQL Formatter** - To format SQL files
+
+### Configure settings.json:
+Add to your VS Code settings:
+```json
+{
+    "files.associations": {
+        "*.sql": "sql"
+    },
+    "editor.formatOnSave": true
+}
+```
+
+## Step F: Environment Variables
+
+Create a `.env` file in your project root (add to .gitignore!):
+```
+SUPABASE_URL=https://uxicgilvxcqpoxavilxp.supabase.co
+SUPABASE_ANON_KEY=your_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+```
+
+### Where to find your keys:
+1. Go to https://supabase.com/dashboard/project/uxicgilvxcqpoxavilxp/settings/api
+2. Copy **URL** for SUPABASE_URL
+3. Copy **anon public** key for SUPABASE_ANON_KEY
+4. Copy **service_role** key for SUPABASE_SERVICE_ROLE_KEY (keep secret!)
+
+---
+
+# Configure auth.js with Your Credentials
+
+Update these lines in [auth.js](auth.js#L10-L11):
+
+```javascript
+const SUPABASE_URL = 'https://uxicgilvxcqpoxavilxp.supabase.co';
+const SUPABASE_ANON_KEY = 'your_anon_key_here';  // Get from API settings
+```
+
+---
+
+# New Session Tracking Feature
+
+The auth system now tracks user sessions with these capabilities:
+
+## Session History Table
+- Tracks login sessions with device info, browser, OS
+- Records last activity timestamp
+- Stores session state (what page user was on)
+
+## User Workspace Table
+- Saves user preferences (theme, sidebar state)
+- Remembers last visited section
+- Persists dashboard filters and chart preferences
+
+## API Functions Available:
+```javascript
+// Track page navigation
+LightningAuth.updateSessionActivity('dashboard', 'viewed_charts');
+
+// Load previous sessions
+const sessions = await LightningAuth.loadSessionHistory();
+
+// Save workspace state
+await LightningAuth.saveWorkspaceState({
+    theme: 'dark',
+    sidebar_collapsed: false,
+    last_visited_section: 'dashboard'
+});
+
+// Load workspace state
+const workspace = await LightningAuth.loadWorkspaceState();
+```
+
+---
+
+# Run the New Migration
+
+If you already have the old tables, run this additional SQL in Supabase SQL Editor:
+
+```sql
+-- SESSION HISTORY TABLE
+CREATE TABLE IF NOT EXISTS public.session_history (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+    session_token TEXT,
+    ip_address TEXT,
+    user_agent TEXT,
+    device_type TEXT CHECK (device_type IN ('desktop', 'mobile', 'tablet', 'unknown')),
+    browser TEXT,
+    os TEXT,
+    started_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    ended_at TIMESTAMP WITH TIME ZONE,
+    last_activity TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    is_active BOOLEAN DEFAULT TRUE,
+    session_data JSONB DEFAULT '{}'::jsonb,
+    last_page TEXT,
+    last_action TEXT
+);
+
+ALTER TABLE public.session_history ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own session history"
+    ON public.session_history FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can insert own session history"
+    ON public.session_history FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can update own session history"
+    ON public.session_history FOR UPDATE USING (auth.uid() = user_id);
+
+-- USER WORKSPACE TABLE
+CREATE TABLE IF NOT EXISTS public.user_workspace (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+    active_dashboard_id UUID REFERENCES public.dashboard_data(id),
+    active_document_id UUID REFERENCES public.user_documents(id),
+    sidebar_collapsed BOOLEAN DEFAULT FALSE,
+    theme TEXT DEFAULT 'dark',
+    last_visited_section TEXT DEFAULT 'home',
+    dashboard_filters JSONB DEFAULT '{}'::jsonb,
+    chart_preferences JSONB DEFAULT '{}'::jsonb,
+    notification_settings JSONB DEFAULT '{"email": true, "browser": true}'::jsonb,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    UNIQUE(user_id)
+);
+
+ALTER TABLE public.user_workspace ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own workspace"
+    ON public.user_workspace FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can insert own workspace"
+    ON public.user_workspace FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can update own workspace"
+    ON public.user_workspace FOR UPDATE USING (auth.uid() = user_id);
+```
+
+---
+
 ## Next Steps
 
-The updated HTML file will handle:
+The updated system now handles:
 - ✅ User authentication with Supabase
 - ✅ Avatar customization and storage
 - ✅ File uploads with RLS
@@ -216,3 +444,6 @@ The updated HTML file will handle:
 - ✅ PowerPoint generation (Gold/Diamond)
 - ✅ QuickBooks integration (Diamond)
 - ✅ Admin dashboard for you to view all users
+- ✅ **Session tracking and history**
+- ✅ **Workspace state persistence**
+- ✅ **User data isolation via RLS**

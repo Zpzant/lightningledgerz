@@ -84,9 +84,15 @@ class ProDeckBuilder {
         this.isOpen = false;
     }
 
+    // Get user-specific storage key
+    getStorageKey() {
+        const userId = window.currentUser?.id || window.currentUserProfile?.id || 'guest';
+        return `proDeckData_${userId}`;
+    }
+
     // Load saved deck from storage
     loadSavedDeck() {
-        const saved = localStorage.getItem('proDeckData');
+        const saved = localStorage.getItem(this.getStorageKey());
         if (saved) {
             try {
                 const data = JSON.parse(saved);
@@ -224,7 +230,7 @@ class ProDeckBuilder {
             companyName: this.companyName,
             theme: this.theme
         };
-        localStorage.setItem('proDeckData', JSON.stringify(data));
+        localStorage.setItem(this.getStorageKey(), JSON.stringify(data));
         if (window.toast) {
             window.toast.success('Deck Saved', 'Your presentation has been saved');
         }

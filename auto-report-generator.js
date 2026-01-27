@@ -36,9 +36,15 @@ class AutoReportGenerator {
         this.setupEventListeners();
     }
 
+    // Get user-specific storage key
+    getStorageKey(baseKey) {
+        const userId = window.currentUser?.id || window.currentUserProfile?.id || 'guest';
+        return `${baseKey}_${userId}`;
+    }
+
     loadSettings() {
         try {
-            const stored = localStorage.getItem('auto_report_settings');
+            const stored = localStorage.getItem(this.getStorageKey('auto_report_settings'));
             if (stored) {
                 this.settings = { ...this.settings, ...JSON.parse(stored) };
             }
@@ -48,7 +54,7 @@ class AutoReportGenerator {
     }
 
     saveSettings() {
-        localStorage.setItem('auto_report_settings', JSON.stringify(this.settings));
+        localStorage.setItem(this.getStorageKey('auto_report_settings'), JSON.stringify(this.settings));
     }
 
     // =====================================================
@@ -765,15 +771,16 @@ class AutoReportGenerator {
     }
 
     displayInDashboard(reports) {
-        // Store reports for dashboard access
-        const stored = JSON.parse(localStorage.getItem('generated_reports') || '[]');
+        // Store reports for dashboard access (user-specific)
+        const storageKey = this.getStorageKey('generated_reports');
+        const stored = JSON.parse(localStorage.getItem(storageKey) || '[]');
         stored.unshift({
             id: Date.now(),
             generatedAt: new Date().toISOString(),
             reports: reports
         });
         // Keep last 12 reports
-        localStorage.setItem('generated_reports', JSON.stringify(stored.slice(0, 12)));
+        localStorage.setItem(storageKey, JSON.stringify(stored.slice(0, 12)));
 
         // Update dashboard if visible
         window.dispatchEvent(new CustomEvent('dashboard-reports-update', { detail: reports }));

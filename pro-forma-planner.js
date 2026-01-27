@@ -366,6 +366,12 @@ class ProFormaPlannerSystem {
         return mapping[accountType] || null;
     }
 
+    // Get user-specific storage key
+    getStorageKey() {
+        const userId = window.currentUser?.id || window.currentUserProfile?.id || 'guest';
+        return `proFormaPlannerData_${userId}`;
+    }
+
     // Storage
     saveToStorage() {
         const data = {
@@ -375,11 +381,11 @@ class ProFormaPlannerSystem {
             historicalData: this.historicalData,
             quickbooksConnected: this.quickbooksConnected
         };
-        localStorage.setItem('proFormaPlannerData', JSON.stringify(data));
+        localStorage.setItem(this.getStorageKey(), JSON.stringify(data));
     }
 
     loadFromStorage() {
-        const saved = localStorage.getItem('proFormaPlannerData');
+        const saved = localStorage.getItem(this.getStorageKey());
         if (saved) {
             try {
                 const data = JSON.parse(saved);

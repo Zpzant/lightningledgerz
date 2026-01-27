@@ -58,9 +58,15 @@ class QuickBooksIntegration {
     // AUTHENTICATION
     // =====================================================
 
+    // Get user-specific storage key
+    getStorageKey() {
+        const userId = window.currentUser?.id || window.currentUserProfile?.id || 'guest';
+        return `qb_credentials_${userId}`;
+    }
+
     loadStoredCredentials() {
         try {
-            const stored = localStorage.getItem('qb_credentials');
+            const stored = localStorage.getItem(this.getStorageKey());
             if (stored) {
                 const creds = JSON.parse(stored);
                 this.accessToken = creds.accessToken;
@@ -93,7 +99,7 @@ class QuickBooksIntegration {
             companyInfo: this.companyInfo,
             lastSync: this.lastSync?.toISOString()
         };
-        localStorage.setItem('qb_credentials', JSON.stringify(creds));
+        localStorage.setItem(this.getStorageKey(), JSON.stringify(creds));
     }
 
     // Initiate OAuth flow
