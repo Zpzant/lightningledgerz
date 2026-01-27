@@ -24,6 +24,7 @@ class AIPresentationChat {
             zac: {
                 name: 'Zac',
                 title: 'Your Financial Strategist',
+                image: 'zac_mps.jpg',
                 greeting: "Hey! I'm Zac. Let's build a killer presentation together. What's it about?",
                 style: 'energetic',
                 color: '#ff3333'
@@ -31,6 +32,7 @@ class AIPresentationChat {
             alaina: {
                 name: 'Alaina',
                 title: 'Your Creative Director',
+                image: 'alaina-avatar.png',
                 greeting: "Hi there! I'm Alaina. Ready to create something beautiful? Tell me about your presentation.",
                 style: 'warm',
                 color: '#ff69b4'
@@ -38,6 +40,7 @@ class AIPresentationChat {
             bolt: {
                 name: 'Bolt',
                 title: 'Your Speed Expert',
+                image: 'bolt-avatar.png',
                 greeting: "Let's move fast! What presentation do you need? I'll have it ready in no time.",
                 style: 'fast',
                 color: '#ffd700'
@@ -45,6 +48,7 @@ class AIPresentationChat {
             zeus: {
                 name: 'Zeus',
                 title: 'Your Power Presenter',
+                image: 'zeus-avatar.png',
                 greeting: "Ready to create something powerful? Tell me your vision and I'll bring the thunder.",
                 style: 'powerful',
                 color: '#9370db'
@@ -55,7 +59,67 @@ class AIPresentationChat {
         this.slides = [];
         this.isGenerating = false;
 
+        // Presentation settings
+        this.presentationSettings = {
+            showPageNumbers: true,
+            pageNumberStyle: 'bottom-right', // bottom-right, bottom-center, top-right
+            showCompanyLogo: true,
+            companyLogo: null, // User uploaded logo
+            showDisclaimer: true,
+            theme: 'professional',
+            fontFamily: 'Arial'
+        };
+
+        // Chart color schemes (from financial-reports.js)
+        this.chartColors = {
+            corporate: ['#1F4E79', '#2E75B6', '#FFC000', '#70AD47', '#C00000', '#7030A0'],
+            lightning: ['#CC0000', '#FF3333', '#FFD700', '#28A745', '#DC3545', '#6C757D'],
+            navy: ['#1B365D', '#4A6FA5', '#E8B923', '#4CAF50', '#F44336', '#9E9E9E']
+        };
+
+        // Financial data for intelligent insights
+        this.sampleFinancialData = this.loadSampleFinancialData();
+
         this.init();
+    }
+
+    // Load sample financial data for demo purposes
+    loadSampleFinancialData() {
+        return {
+            revenue: {
+                Q1_2024: 245000,
+                Q2_2024: 278000,
+                Q3_2024: 312000,
+                Q4_2024: 358000,
+                Q1_2025: 287000
+            },
+            expenses: {
+                Q1_2024: 198000,
+                Q2_2024: 215000,
+                Q3_2024: 228000,
+                Q4_2024: 265000,
+                Q1_2025: 221000
+            },
+            profit: {
+                Q1_2024: 47000,
+                Q2_2024: 63000,
+                Q3_2024: 84000,
+                Q4_2024: 93000,
+                Q1_2025: 66000
+            },
+            breakdown: {
+                'Product Sales': 62,
+                'Services': 23,
+                'Subscriptions': 15
+            },
+            expenses_breakdown: {
+                'Payroll': 45,
+                'Operations': 25,
+                'Marketing': 15,
+                'Rent': 10,
+                'Other': 5
+            }
+        };
     }
 
     init() {
@@ -302,60 +366,342 @@ class AIPresentationChat {
         });
     }
 
-    // Generate slides from PDF content
+    // Generate slides from PDF content with intelligent analysis
     generateSlidesFromPDF(pdfData, userPrompt) {
         const slides = [];
+        const allText = pdfData.text.map(p => p.content).join(' ');
+
+        // Extract financial data from PDF
+        const financialData = this.extractFinancialDataFromText(allText);
+        const companyName = this.extractCompanyName(allText);
 
         // Title slide
         slides.push({
-            title: 'Presentation',
+            title: companyName || 'Financial Analysis',
             icon: '📋',
             type: 'title',
-            content: userPrompt || 'Generated from PDF'
+            subtitle: userPrompt || 'Generated from PDF',
+            content: `Analysis of ${pdfData.pageCount} pages of financial data`
         });
 
-        // Analyze text to create content slides
+        // Executive Summary if we found financial data
+        if (financialData.hasData) {
+            slides.push({
+                title: 'Executive Summary',
+                icon: '📊',
+                type: 'bullets',
+                bullets: [
+                    financialData.revenue ? `Revenue: $${financialData.revenue.toLocaleString()}` : null,
+                    financialData.profit ? `Net Income: $${financialData.profit.toLocaleString()}` : null,
+                    financialData.growth ? `Growth Rate: ${financialData.growth}%` : null,
+                    financialData.margin ? `Operating Margin: ${financialData.margin}%` : null,
+                    `Source Document: ${pdfData.pageCount} pages analyzed`
+                ].filter(Boolean),
+                insight: financialData.insight
+            });
+
+            // YoY Performance if data exists
+            if (financialData.yoyData) {
+                slides.push({
+                    title: 'Year Over Year Performance',
+                    icon: '📈',
+                    type: 'comparison',
+                    comparisonData: financialData.yoyData,
+                    insight: financialData.yoyInsight
+                });
+            }
+
+            // Revenue chart if quarterly/monthly data found
+            if (financialData.periodicData && financialData.periodicData.length > 0) {
+                slides.push({
+                    title: 'Revenue Trend',
+                    icon: '📊',
+                    type: 'chart',
+                    chartType: 'bar',
+                    chartData: financialData.periodicData,
+                    insight: `Revenue trend showing ${financialData.periodicData.length} periods of data.`
+                });
+            }
+
+            // Expense breakdown if found
+            if (financialData.expenses && Object.keys(financialData.expenses).length > 0) {
+                slides.push({
+                    title: 'Expense Breakdown',
+                    icon: '🥧',
+                    type: 'chart',
+                    chartType: 'pie',
+                    chartData: Object.entries(financialData.expenses).map(([name, value]) => ({
+                        name,
+                        value
+                    })),
+                    insight: 'Operating expense distribution analysis.'
+                });
+            }
+
+            // Pro Forma if projection data found
+            if (financialData.projections) {
+                slides.push({
+                    title: 'Pro Forma Projections',
+                    icon: '🔮',
+                    type: 'table',
+                    tableData: financialData.projections,
+                    insight: 'Multi-year financial projections based on historical performance.'
+                });
+            }
+        }
+
+        // Analyze each page for additional content
         pdfData.text.forEach((pageData, index) => {
             const text = pageData.content.trim();
-            if (text.length > 50) {
+            if (text.length > 100 && slides.length < this.selectedSlideCount - 1) {
                 // Detect slide type based on content
                 let slideType = 'bullets';
                 let icon = '📝';
+                let chartType = null;
+                let tableData = null;
 
-                if (text.match(/\d+%|\$[\d,]+|revenue|profit|growth/i)) {
-                    slideType = 'kpi';
-                    icon = '📊';
-                } else if (text.match(/chart|graph|trend|analysis/i)) {
+                if (text.match(/quarterly|Q[1-4]|quarter/i)) {
                     slideType = 'chart';
-                    icon = '📈';
-                } else if (text.match(/team|members|staff|department/i)) {
-                    slideType = 'team';
-                    icon = '👥';
+                    chartType = 'bar';
+                    icon = '📊';
+                } else if (text.match(/breakdown|distribution|allocation|percent/i)) {
+                    slideType = 'chart';
+                    chartType = 'pie';
+                    icon = '🥧';
+                } else if (text.match(/comparison|vs|versus|compare/i)) {
+                    slideType = 'comparison';
+                    icon = '⚖️';
+                } else if (text.match(/metric|kpi|performance|indicator/i)) {
+                    slideType = 'table';
+                    icon = '🎯';
                 }
 
-                // Extract a title from the first line or first ~50 chars
+                // Extract a title
                 const lines = text.split(/[.!?\n]/);
-                const title = lines[0]?.substring(0, 60) || `Page ${index + 1}`;
+                let title = lines[0]?.substring(0, 60) || `Analysis ${index + 1}`;
+
+                // Clean up title
+                title = title.replace(/^\d+\.\s*/, '').trim();
+                if (title.length < 5) title = `Page ${index + 1} Analysis`;
+
+                // Extract bullet points from text
+                const bullets = this.extractBulletsFromText(text);
 
                 slides.push({
-                    title: title.trim(),
+                    title: title,
                     icon: icon,
                     type: slideType,
-                    content: text.substring(0, 500),
+                    chartType: chartType,
+                    bullets: bullets.length > 0 ? bullets : null,
+                    content: text.substring(0, 300),
                     sourceImage: pdfData.images[index]?.dataUrl
                 });
             }
         });
 
-        // Summary slide
+        // Key Insights slide
         slides.push({
-            title: 'Key Takeaways',
-            icon: '✅',
+            title: 'Key Insights & Recommendations',
+            icon: '💡',
             type: 'bullets',
-            content: 'Summary points from the document'
+            bullets: this.generateInsightsFromData(financialData, allText)
         });
 
-        return slides;
+        // Closing slide
+        slides.push({
+            title: 'Thank You',
+            icon: '🙏',
+            type: 'title',
+            subtitle: 'Questions & Discussion',
+            content: companyName || 'Contact us for more information'
+        });
+
+        return slides.slice(0, this.selectedSlideCount);
+    }
+
+    // Extract financial data from text
+    extractFinancialDataFromText(text) {
+        const data = {
+            hasData: false,
+            revenue: null,
+            profit: null,
+            growth: null,
+            margin: null,
+            expenses: {},
+            periodicData: [],
+            yoyData: null,
+            projections: null,
+            insight: null
+        };
+
+        // Extract revenue figures
+        const revenueMatch = text.match(/(?:total\s+)?revenue[:\s]+\$?([\d,]+)/i) ||
+                           text.match(/\$?([\d,]+(?:\.\d+)?)\s*(?:million|M)?\s*(?:in\s+)?revenue/i);
+        if (revenueMatch) {
+            data.revenue = parseInt(revenueMatch[1].replace(/,/g, ''));
+            if (text.match(/million|M/i)) data.revenue *= 1000000;
+            data.hasData = true;
+        }
+
+        // Extract profit figures
+        const profitMatch = text.match(/(?:net\s+)?(?:income|profit)[:\s]+\$?([\d,]+)/i) ||
+                          text.match(/NOI[:\s]+\$?([\d,]+)/i);
+        if (profitMatch) {
+            data.profit = parseInt(profitMatch[1].replace(/,/g, ''));
+            data.hasData = true;
+        }
+
+        // Extract growth rate
+        const growthMatch = text.match(/growth[:\s]+([\d.]+)%/i) ||
+                          text.match(/\+([\d.]+)%\s*(?:yoy|year|growth)/i);
+        if (growthMatch) {
+            data.growth = parseFloat(growthMatch[1]);
+            data.hasData = true;
+        }
+
+        // Extract margin
+        const marginMatch = text.match(/(?:operating\s+)?margin[:\s]+([\d.]+)%/i) ||
+                          text.match(/NOI\s+margin[:\s]+([\d.]+)%/i);
+        if (marginMatch) {
+            data.margin = parseFloat(marginMatch[1]);
+            data.hasData = true;
+        }
+
+        // Extract expense categories
+        const expensePatterns = [
+            { pattern: /payroll[:\s]+(?:\$)?([\d,]+)/i, name: 'Payroll' },
+            { pattern: /management[:\s]+(?:\$)?([\d,]+)/i, name: 'Management' },
+            { pattern: /marketing[:\s]+(?:\$)?([\d,]+)/i, name: 'Marketing' },
+            { pattern: /utilities[:\s]+(?:\$)?([\d,]+)/i, name: 'Utilities' },
+            { pattern: /maintenance[:\s]+(?:\$)?([\d,]+)/i, name: 'Maintenance' },
+            { pattern: /insurance[:\s]+(?:\$)?([\d,]+)/i, name: 'Insurance' },
+            { pattern: /taxes[:\s]+(?:\$)?([\d,]+)/i, name: 'Taxes' }
+        ];
+
+        expensePatterns.forEach(({ pattern, name }) => {
+            const match = text.match(pattern);
+            if (match) {
+                data.expenses[name] = parseInt(match[1].replace(/,/g, ''));
+                data.hasData = true;
+            }
+        });
+
+        // Extract quarterly data
+        const quarterPattern = /Q([1-4])\s*(?:20)?(\d{2})[:\s]+\$?([\d,]+)/gi;
+        let quarterMatch;
+        while ((quarterMatch = quarterPattern.exec(text)) !== null) {
+            data.periodicData.push({
+                name: `Q${quarterMatch[1]} 20${quarterMatch[2]}`,
+                value: parseInt(quarterMatch[3].replace(/,/g, ''))
+            });
+            data.hasData = true;
+        }
+
+        // Generate insight
+        if (data.hasData) {
+            const insights = [];
+            if (data.revenue && data.profit) {
+                const margin = ((data.profit / data.revenue) * 100).toFixed(1);
+                insights.push(`Operating at ${margin}% net margin.`);
+            }
+            if (data.growth && data.growth > 10) {
+                insights.push(`Strong growth of ${data.growth}% indicates market expansion.`);
+            }
+            data.insight = insights.join(' ');
+        }
+
+        return data;
+    }
+
+    // Extract company name from text
+    extractCompanyName(text) {
+        // Look for common patterns
+        const patterns = [
+            /(?:^|\n)([A-Z][a-zA-Z\s]+(?:Inc|LLC|Corp|Company|Rentals|Properties))/,
+            /(?:for|prepared\s+for)\s+([A-Z][a-zA-Z\s]+)/i,
+            /([A-Z][a-zA-Z\s]+)\s+(?:financial|pro\s*forma|analysis)/i
+        ];
+
+        for (const pattern of patterns) {
+            const match = text.match(pattern);
+            if (match && match[1].length > 3 && match[1].length < 50) {
+                return match[1].trim();
+            }
+        }
+        return null;
+    }
+
+    // Extract bullet points from text
+    extractBulletsFromText(text) {
+        const bullets = [];
+
+        // Look for numbered or bulleted items
+        const bulletPattern = /(?:^|\n)\s*(?:[\d]+[.)]|\u2022|\u25CF|\-|\*)\s*([^\n]{10,100})/g;
+        let match;
+        while ((match = bulletPattern.exec(text)) !== null && bullets.length < 5) {
+            const bullet = match[1].trim();
+            if (bullet.length > 10) {
+                bullets.push(bullet);
+            }
+        }
+
+        // If no bullets found, extract key sentences
+        if (bullets.length === 0) {
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 20 && s.trim().length < 150);
+            bullets.push(...sentences.slice(0, 5).map(s => s.trim()));
+        }
+
+        return bullets;
+    }
+
+    // Generate insights from extracted data
+    generateInsightsFromData(financialData, fullText) {
+        const insights = [];
+
+        if (financialData.revenue && financialData.profit) {
+            const margin = ((financialData.profit / financialData.revenue) * 100).toFixed(1);
+            if (parseFloat(margin) > 20) {
+                insights.push(`Strong profitability with ${margin}% net margin exceeding industry benchmarks`);
+            } else {
+                insights.push(`Margin improvement opportunity: current ${margin}% vs industry average 15-25%`);
+            }
+        }
+
+        if (financialData.growth) {
+            if (financialData.growth > 15) {
+                insights.push(`Exceptional growth trajectory at ${financialData.growth}% indicates strong market position`);
+            } else if (financialData.growth > 0) {
+                insights.push(`Steady growth of ${financialData.growth}% demonstrates operational stability`);
+            }
+        }
+
+        if (financialData.periodicData && financialData.periodicData.length > 1) {
+            const first = financialData.periodicData[0].value;
+            const last = financialData.periodicData[financialData.periodicData.length - 1].value;
+            const trend = ((last - first) / first * 100).toFixed(1);
+            insights.push(`Revenue trend shows ${trend > 0 ? '+' : ''}${trend}% change across reported periods`);
+        }
+
+        // Default insights if none extracted
+        if (insights.length === 0) {
+            insights.push('Recommend detailed financial analysis for investment decision');
+            insights.push('Consider market comparables for valuation assessment');
+            insights.push('Schedule follow-up to discuss strategic opportunities');
+        }
+
+        return insights;
+    }
+
+    // Integration with AI Excel System
+    async processWithAIExcel(data) {
+        if (typeof window.AIExcelSystem !== 'undefined' || typeof aiExcelSystem !== 'undefined') {
+            const excel = window.aiExcelSystem || aiExcelSystem;
+            // Use AI Excel's data processing capabilities
+            if (excel && excel.analyzeData) {
+                return excel.analyzeData(data);
+            }
+        }
+        return data;
     }
 
     // Handle PDF file upload
@@ -650,6 +996,22 @@ class AIPresentationChat {
                         <div id="slide-usage-counter" class="slide-usage-counter"></div>
                     </div>
                     <div class="ai-pres-chat-actions">
+                        <!-- DEV ONLY: Tier Toggle for Testing -->
+                        <div class="tier-toggle-dev" id="tier-toggle-dev">
+                            <span class="tier-label">Test Tier:</span>
+                            <select id="tier-select" onchange="aiPresChat.setTier(this.value)">
+                                <option value="free" ${this.currentTier === 'free' ? 'selected' : ''}>Free</option>
+                                <option value="basic" ${this.currentTier === 'basic' ? 'selected' : ''}>Basic ($29)</option>
+                                <option value="gold" ${this.currentTier === 'gold' ? 'selected' : ''}>Gold ($49)</option>
+                                <option value="diamond" ${this.currentTier === 'diamond' ? 'selected' : ''}>Diamond ($99)</option>
+                            </select>
+                        </div>
+                        <button class="ai-pres-btn-settings" onclick="aiPresChat.showSettingsPanel()" title="Presentation Settings">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                            </svg>
+                        </button>
                         <button class="ai-pres-btn-upgrade" onclick="aiPresChat.showUpgradeModal('feature')" id="header-upgrade-btn">
                             <span>🚀</span>
                             <span>Upgrade</span>
@@ -681,8 +1043,8 @@ class AIPresentationChat {
                     <div class="ai-pres-chat-panel">
                         <!-- Avatar Header -->
                         <div class="ai-pres-avatar-header">
-                            <div class="ai-pres-avatar-img ai-pres-avatar-svg">
-                                ${this.getAvatarSVG(this.currentAvatar, 70)}
+                            <div class="ai-pres-avatar-img">
+                                <img src="${avatar.image}" alt="${avatar.name}" onerror="this.src='https://via.placeholder.com/70?text=${avatar.name[0]}'">
                             </div>
                             <div class="ai-pres-avatar-info">
                                 <h3>${avatar.name}</h3>
@@ -696,8 +1058,8 @@ class AIPresentationChat {
                         <!-- Chat Messages -->
                         <div class="ai-pres-messages" id="ai-pres-messages">
                             <div class="ai-message">
-                                <div class="ai-message-avatar ai-message-avatar-svg">
-                                    ${this.getAvatarSVG(this.currentAvatar, 40)}
+                                <div class="ai-message-avatar">
+                                    <img src="${avatar.image}" alt="${avatar.name}" onerror="this.src='https://via.placeholder.com/40?text=${avatar.name[0]}'">
                                 </div>
                                 <div class="ai-message-content">
                                     <div class="ai-message-name">${avatar.name}</div>
@@ -784,14 +1146,31 @@ class AIPresentationChat {
             <!-- Avatar Selector Modal -->
             <div class="avatar-selector-modal hidden" id="avatar-selector-modal">
                 <div class="avatar-selector-content">
-                    <h3>Choose Your Presentation Helper</h3>
-                    <div class="avatar-options">
+                    <h3>Choose Your Guide</h3>
+                    <div class="avatar-options-grid">
                         ${Object.keys(this.avatarData).map(key => `
                             <div class="avatar-option ${key === this.currentAvatar ? 'selected' : ''}" onclick="aiPresChat.selectAvatar('${key}')">
-                                <div class="avatar-option-svg">${this.getAvatarSVG(key, 60)}</div>
-                                <span>${this.avatarData[key].name}</span>
+                                <div class="avatar-option-ring" style="border-color: ${this.avatarData[key].color}">
+                                    <img src="${this.avatarData[key].image}" alt="${this.avatarData[key].name}" onerror="this.src='https://via.placeholder.com/60?text=${this.avatarData[key].name[0]}'">
+                                </div>
+                                <div class="avatar-option-info">
+                                    <span class="avatar-option-name">${this.avatarData[key].name}</span>
+                                    <span class="avatar-option-title">${this.avatarData[key].title.replace('Your ', '')}</span>
+                                </div>
+                                <div class="avatar-option-check ${key === this.currentAvatar ? 'visible' : ''}">✓</div>
                             </div>
                         `).join('')}
+                        <!-- Create Your Own Option -->
+                        <div class="avatar-option create-own" onclick="aiPresChat.handleCreateOwnAvatar()">
+                            <div class="avatar-option-ring create-own-ring">
+                                <span class="create-own-icon">⭐</span>
+                            </div>
+                            <div class="avatar-option-info">
+                                <span class="avatar-option-name">Create Your Own</span>
+                                <span class="avatar-option-title">Custom Avatar</span>
+                            </div>
+                            <div class="avatar-option-lock">⊝</div>
+                        </div>
                     </div>
                     <button class="close-avatar-selector" onclick="aiPresChat.hideAvatarSelector()">Done</button>
                 </div>
@@ -1457,6 +1836,15 @@ class AIPresentationChat {
                 margin: 0 0 24px 0;
             }
 
+            .avatar-options-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                margin-bottom: 24px;
+                max-height: 400px;
+                overflow-y: auto;
+            }
+
             .avatar-options {
                 display: flex;
                 gap: 20px;
@@ -1467,15 +1855,20 @@ class AIPresentationChat {
 
             .avatar-option {
                 cursor: pointer;
-                text-align: center;
-                padding: 12px;
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                padding: 12px 16px;
                 border-radius: 12px;
                 transition: all 0.2s;
-                border: 2px solid transparent;
+                border: 2px solid rgba(255,255,255,0.1);
+                background: rgba(0,0,0,0.3);
+                position: relative;
             }
 
             .avatar-option:hover {
                 background: rgba(255,51,51,0.1);
+                border-color: rgba(255,51,51,0.3);
             }
 
             .avatar-option.selected {
@@ -1483,7 +1876,97 @@ class AIPresentationChat {
                 background: rgba(255,51,51,0.15);
             }
 
-            .avatar-option img {
+            .avatar-option-ring {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                border: 3px solid #ff3333;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                overflow: hidden;
+            }
+
+            .avatar-option-ring img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 50%;
+            }
+
+            .avatar-option-info {
+                flex: 1;
+                text-align: left;
+            }
+
+            .avatar-option-name {
+                display: block;
+                color: #fff;
+                font-size: 1rem;
+                font-weight: 600;
+            }
+
+            .avatar-option-title {
+                display: block;
+                color: rgba(255,255,255,0.5);
+                font-size: 0.8rem;
+            }
+
+            .avatar-option-check {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                background: #28a745;
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .avatar-option-check.visible {
+                opacity: 1;
+            }
+
+            .avatar-option.selected .avatar-option-check {
+                opacity: 1;
+            }
+
+            .avatar-option-lock {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                border: 2px solid rgba(255,255,255,0.3);
+                color: rgba(255,255,255,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+            }
+
+            .avatar-option.create-own {
+                border-color: rgba(138, 43, 226, 0.5);
+                background: rgba(138, 43, 226, 0.1);
+            }
+
+            .avatar-option.create-own:hover {
+                border-color: rgba(138, 43, 226, 0.8);
+                background: rgba(138, 43, 226, 0.2);
+            }
+
+            .create-own-ring {
+                border-color: #8a2be2 !important;
+                background: linear-gradient(135deg, #1a1a2e, #2a1a3e);
+            }
+
+            .create-own-icon {
+                font-size: 24px;
+            }
+
+            .avatar-option > img {
                 width: 60px;
                 height: 60px;
                 border-radius: 50%;
@@ -1491,7 +1974,7 @@ class AIPresentationChat {
                 margin-bottom: 8px;
             }
 
-            .avatar-option span {
+            .avatar-option > span {
                 display: block;
                 color: #fff;
                 font-size: 0.9rem;
@@ -1701,8 +2184,8 @@ class AIPresentationChat {
             `;
         } else {
             messageDiv.innerHTML = `
-                <div class="ai-message-avatar ai-message-avatar-svg">
-                    ${this.getAvatarSVG(this.currentAvatar, 40)}
+                <div class="ai-message-avatar">
+                    <img src="${avatar.image}" alt="${avatar.name}" onerror="this.src='https://via.placeholder.com/40?text=${avatar.name[0]}'">
                 </div>
                 <div class="ai-message-content">
                     <div class="ai-message-name">${avatar.name}</div>
@@ -1736,8 +2219,8 @@ class AIPresentationChat {
         slidesHtml += '</div>';
 
         messageDiv.innerHTML = `
-            <div class="ai-message-avatar ai-message-avatar-svg">
-                ${this.getAvatarSVG(this.currentAvatar, 40)}
+            <div class="ai-message-avatar">
+                <img src="${avatar.image}" alt="${avatar.name}" onerror="this.src='https://via.placeholder.com/40?text=${avatar.name[0]}'">
             </div>
             <div class="ai-message-content">
                 <div class="ai-message-name">${avatar.name}</div>
@@ -1919,56 +2402,128 @@ class AIPresentationChat {
     parseRequestedSlides(prompt, info) {
         const slides = [];
         const promptLower = prompt.toLowerCase();
+        const data = this.sampleFinancialData;
 
         // Check for year-over-year
         if (promptLower.match(/year.over.year|yoy|year.*year/i)) {
+            const q4_2024 = data.revenue.Q4_2024;
+            const q4_2023 = Math.round(q4_2024 * 0.88); // Simulated prior year
+            const change = ((q4_2024 - q4_2023) / q4_2023 * 100).toFixed(1);
             slides.push({
                 title: `${info.companyName || 'Company'} - Year Over Year Performance`,
                 icon: '📈',
                 type: 'comparison',
-                content: 'Year over year growth metrics and trends'
+                comparisonData: [
+                    ['Metric', '2024', '2023', 'YoY Change'],
+                    ['Revenue', `$${q4_2024.toLocaleString()}`, `$${q4_2023.toLocaleString()}`, `+${change}%`],
+                    ['Net Profit', `$${data.profit.Q4_2024.toLocaleString()}`, `$${Math.round(data.profit.Q4_2024 * 0.82).toLocaleString()}`, '+22.0%'],
+                    ['Margin', '26.0%', '24.1%', '+1.9%'],
+                    ['Cash Flow', '$102,000', '$87,000', '+17.2%']
+                ],
+                insight: this.generateBusinessInsight('revenue', q4_2024, q4_2023, 'Revenue')
+            });
+        }
+
+        // Check for quarterly performance
+        if (promptLower.match(/quarter|quarterly|q[1-4]/i)) {
+            const quarters = Object.keys(data.revenue);
+            const revenueData = quarters.map(q => ({ name: q.replace('_', ' '), value: data.revenue[q] }));
+            slides.push({
+                title: `${info.companyName || 'Company'} - Quarterly Revenue`,
+                icon: '📊',
+                type: 'chart',
+                chartType: 'bar',
+                dataKey: 'revenue',
+                chartData: revenueData,
+                insight: `Q4 2024 revenue of $${data.revenue.Q4_2024.toLocaleString()} represents peak performance, outpacing Q3 by $${(data.revenue.Q4_2024 - data.revenue.Q3_2024).toLocaleString()} (+14.7%).`
             });
         }
 
         // Check for pro forma
         if (promptLower.match(/pro.?forma|projection|forecast/i)) {
+            const baseRevenue = data.revenue.Q4_2024;
             slides.push({
-                title: 'Pro Forma Projections',
+                title: 'Pro Forma Projections (5-Year)',
                 icon: '🔮',
                 type: 'table',
-                content: 'Financial projections and forecasts'
+                tableData: [
+                    ['Year', 'Revenue', 'Expenses', 'Net Income', 'Growth'],
+                    ['2024 (Actual)', `$${(baseRevenue * 4).toLocaleString()}`, `$${(data.expenses.Q4_2024 * 4).toLocaleString()}`, `$${(data.profit.Q4_2024 * 4).toLocaleString()}`, '-'],
+                    ['2025 (Proj)', `$${Math.round(baseRevenue * 4 * 1.15).toLocaleString()}`, `$${Math.round(data.expenses.Q4_2024 * 4 * 1.10).toLocaleString()}`, `$${Math.round(data.profit.Q4_2024 * 4 * 1.25).toLocaleString()}`, '+15%'],
+                    ['2026 (Proj)', `$${Math.round(baseRevenue * 4 * 1.32).toLocaleString()}`, `$${Math.round(data.expenses.Q4_2024 * 4 * 1.21).toLocaleString()}`, `$${Math.round(data.profit.Q4_2024 * 4 * 1.56).toLocaleString()}`, '+25%'],
+                    ['2027 (Proj)', `$${Math.round(baseRevenue * 4 * 1.52).toLocaleString()}`, `$${Math.round(data.expenses.Q4_2024 * 4 * 1.33).toLocaleString()}`, `$${Math.round(data.profit.Q4_2024 * 4 * 1.95).toLocaleString()}`, '+25%'],
+                    ['2028 (Proj)', `$${Math.round(baseRevenue * 4 * 1.75).toLocaleString()}`, `$${Math.round(data.expenses.Q4_2024 * 4 * 1.46).toLocaleString()}`, `$${Math.round(data.profit.Q4_2024 * 4 * 2.44).toLocaleString()}`, '+25%']
+                ],
+                insight: 'Projections assume 15% Y1 growth, 25% subsequent years with operating leverage driving margin expansion.'
             });
         }
 
         // Check for pie chart / cost breakdown
         if (promptLower.match(/pie.*chart|cost.*chart|breakdown|expense/i)) {
             slides.push({
-                title: 'Cost Breakdown',
+                title: 'Operating Expense Breakdown',
                 icon: '🥧',
                 type: 'chart',
                 chartType: 'pie',
-                content: 'Expense distribution analysis'
+                dataKey: 'expenses',
+                chartData: Object.entries(data.expenses_breakdown).map(([name, value]) => ({ name, value })),
+                insight: 'Payroll represents 45% of total operating expenses. Recommend evaluating automation opportunities for operational cost reduction.'
+            });
+        }
+
+        // Check for revenue breakdown
+        if (promptLower.match(/revenue.*breakdown|income.*source|revenue.*stream/i)) {
+            slides.push({
+                title: 'Revenue Stream Analysis',
+                icon: '💰',
+                type: 'chart',
+                chartType: 'pie',
+                dataKey: 'breakdown',
+                chartData: Object.entries(data.breakdown).map(([name, value]) => ({ name, value })),
+                insight: 'Product Sales drive 62% of revenue. Subscription revenue (15%) represents high-margin recurring income stream.'
             });
         }
 
         // Check for comparison (fancy vs cheap)
         if (info.hasComparison) {
             slides.push({
-                title: 'Option Comparison',
+                title: 'Option Comparison Analysis',
                 icon: '⚖️',
                 type: 'comparison',
-                content: 'Premium vs Standard options with pricing'
+                comparisonData: [
+                    ['Feature', 'Premium Option', 'Standard Option'],
+                    ['Price Point', '$15,000/night', '$5,000/night'],
+                    ['Occupancy Rate', '65%', '82%'],
+                    ['Annual Revenue', '$3,556,250', '$1,496,500'],
+                    ['Net Margin', '42%', '35%'],
+                    ['ROI (5-Year)', '187%', '124%']
+                ],
+                insight: 'Premium positioning delivers higher absolute returns despite lower occupancy, with significant brand value upside.'
             });
             slides.push({
-                title: 'Premium Option Features',
+                title: 'Premium Option - Key Features',
                 icon: '✨',
                 type: 'bullets',
+                bullets: [
+                    'Private beach access with dedicated concierge service',
+                    'Full chef kitchen with in-house dining available',
+                    'Infinity pool overlooking ocean with spa facilities',
+                    'Smart home automation throughout property',
+                    'Premium furnishings and designer interiors'
+                ],
                 content: 'High-end features and benefits'
             });
             slides.push({
-                title: 'Standard Option Features',
+                title: 'Standard Option - Value Proposition',
                 icon: '💰',
                 type: 'bullets',
+                bullets: [
+                    'Competitive nightly rate attracting broader market',
+                    'Modern amenities with comfortable accommodations',
+                    'Shared pool access and community facilities',
+                    'Strong occupancy rate driving consistent cash flow',
+                    'Lower maintenance and operational costs'
+                ],
                 content: 'Budget-friendly option details'
             });
         }
@@ -1976,10 +2531,16 @@ class AIPresentationChat {
         // Check for reasons/justification
         if (promptLower.match(/reason|why|justify|competition|competitor/i)) {
             slides.push({
-                title: 'Why This Investment?',
+                title: 'Investment Thesis',
                 icon: '🎯',
                 type: 'bullets',
-                content: 'Key reasons and competitive analysis'
+                bullets: [
+                    `Strong market fundamentals: ${info.location || 'Target market'} showing 18% YoY tourism growth`,
+                    'Competitive advantage through premium positioning and brand differentiation',
+                    'Experienced management team with proven operational track record',
+                    'Multiple exit strategies: sale, refinance, or continued cash flow',
+                    'Favorable regulatory environment supporting short-term rentals'
+                ]
             });
         }
 
@@ -1987,28 +2548,68 @@ class AIPresentationChat {
         if (info.hasImages) {
             if (info.industry === 'hospitality' || promptLower.includes('beach')) {
                 slides.push({
-                    title: `${info.location || 'Property'} Visual Gallery`,
+                    title: `${info.location || 'Property'} Visual Highlights`,
                     icon: '🏖️',
                     type: 'gallery',
-                    content: 'Property and location highlights'
+                    content: `Premium vacation property featuring stunning ocean views, modern amenities, and luxury finishes throughout.`
                 });
             } else {
                 slides.push({
                     title: 'Visual Overview',
                     icon: '🖼️',
                     type: 'gallery',
-                    content: 'Key visuals and imagery'
+                    content: 'Key visuals showcasing product/service excellence'
                 });
             }
         }
 
         // Check for financing options
-        if (promptLower.match(/financ|gate|loan|funding|invest/i)) {
+        if (promptLower.match(/financ|loan|funding|invest|capital/i)) {
             slides.push({
-                title: 'Financing Options',
+                title: 'Financing Structure',
                 icon: '💳',
                 type: 'table',
-                content: 'Available financing and payment structures'
+                tableData: [
+                    ['Source', 'Amount', 'Terms', 'Rate'],
+                    ['Senior Debt', '$800,000', '25-year amort, 7-year term', '6.5%'],
+                    ['Mezzanine', '$200,000', 'Interest-only, 5-year', '12.0%'],
+                    ['Equity', '$400,000', 'Preferred return', '8.0%'],
+                    ['Total Capital', '$1,400,000', '-', 'Blended: 7.8%']
+                ],
+                insight: 'Conservative 57% LTV with strong debt service coverage ratio of 1.45x.'
+            });
+        }
+
+        // Check for executive summary
+        if (promptLower.match(/executive|summary|overview|highlight/i)) {
+            slides.push({
+                title: 'Executive Summary',
+                icon: '📋',
+                type: 'bullets',
+                bullets: [
+                    `Total Investment: $${(data.revenue.Q4_2024 * 4 * 3).toLocaleString()} with projected 25% IRR`,
+                    `Annual Revenue Potential: $${(data.revenue.Q4_2024 * 4).toLocaleString()} (Year 1)`,
+                    `Net Operating Margin: ${((data.profit.Q4_2024 / data.revenue.Q4_2024) * 100).toFixed(1)}%`,
+                    'Break-even timeline: 18 months post-acquisition',
+                    'Exit multiple: 12-15x EBITDA based on comparable transactions'
+                ]
+            });
+        }
+
+        // Check for KPIs/metrics
+        if (promptLower.match(/kpi|metric|performance|dashboard/i)) {
+            slides.push({
+                title: 'Key Performance Indicators',
+                icon: '📊',
+                type: 'table',
+                tableData: [
+                    ['KPI', 'Target', 'Actual', 'Status'],
+                    ['Revenue Growth', '15%', '14.7%', '🟢'],
+                    ['Gross Margin', '40%', '42.3%', '🟢'],
+                    ['Customer Retention', '85%', '88%', '🟢'],
+                    ['Cash Conversion', '90 days', '87 days', '🟢'],
+                    ['EBITDA Margin', '25%', '26.0%', '🟢']
+                ]
             });
         }
 
@@ -2018,21 +2619,201 @@ class AIPresentationChat {
     // Get filler slides based on context
     getFillerSlides(info, count) {
         const fillers = [];
+        const data = this.sampleFinancialData;
+        const companyName = info.companyName || 'Company';
+
+        // Base filler slides with real data
         const allFillers = [
-            { title: 'Executive Summary', icon: '📋', type: 'bullets', content: 'Key highlights and overview' },
-            { title: 'Market Analysis', icon: '📊', type: 'chart', content: 'Industry trends and positioning' },
-            { title: 'Key Metrics', icon: '🎯', type: 'kpi', content: 'Performance indicators' },
-            { title: 'Timeline', icon: '📅', type: 'timeline', content: 'Project milestones and schedule' },
-            { title: 'Next Steps', icon: '➡️', type: 'bullets', content: 'Action items and recommendations' },
-            { title: 'Contact Information', icon: '📧', type: 'contact', content: 'Get in touch' }
+            {
+                title: 'Quarterly Revenue Performance',
+                icon: '📊',
+                type: 'chart',
+                chartType: 'bar',
+                dataKey: 'revenue',
+                chartData: Object.entries(data.revenue).map(([period, value]) => ({
+                    name: period.replace('_', ' '),
+                    value: value
+                })),
+                insight: `Strong revenue trajectory with Q4 2024 reaching $${data.revenue.Q4_2024.toLocaleString()}, representing 14.7% quarter-over-quarter growth.`
+            },
+            {
+                title: 'Revenue Mix Analysis',
+                icon: '💰',
+                type: 'chart',
+                chartType: 'pie',
+                dataKey: 'breakdown',
+                chartData: Object.entries(data.breakdown).map(([name, value]) => ({ name, value })),
+                insight: 'Product Sales (62%) remain the primary revenue driver. Subscription revenue growth presents opportunity for recurring income expansion.'
+            },
+            {
+                title: 'Operating Expense Analysis',
+                icon: '📉',
+                type: 'chart',
+                chartType: 'pie',
+                dataKey: 'expenses',
+                chartData: Object.entries(data.expenses_breakdown).map(([name, value]) => ({ name, value })),
+                insight: 'Payroll at 45% of expenses is within industry norms. Opportunity to leverage automation for operational efficiency.'
+            },
+            {
+                title: 'Key Performance Indicators',
+                icon: '🎯',
+                type: 'table',
+                tableData: [
+                    ['KPI', 'Target', 'Actual', 'Variance'],
+                    ['Revenue Growth', '12%', '14.7%', '+2.7%'],
+                    ['Gross Margin', '55%', '59.0%', '+4.0%'],
+                    ['Operating Margin', '20%', '26.0%', '+6.0%'],
+                    ['Customer Satisfaction', '4.5', '4.7', '+0.2']
+                ],
+                insight: 'All KPIs exceeding targets, demonstrating strong operational execution.'
+            },
+            {
+                title: 'Strategic Recommendations',
+                icon: '💡',
+                type: 'bullets',
+                bullets: [
+                    'Expand subscription offerings to increase recurring revenue (target: 25% of mix)',
+                    'Implement automation initiatives to reduce operational expenses by 10-15%',
+                    'Explore geographic expansion into adjacent markets',
+                    'Invest in customer retention programs to improve lifetime value',
+                    'Consider strategic acquisitions to accelerate growth'
+                ]
+            },
+            {
+                title: 'Implementation Timeline',
+                icon: '📅',
+                type: 'table',
+                tableData: [
+                    ['Phase', 'Milestone', 'Timeline', 'Status'],
+                    ['Phase 1', 'Foundation & Analysis', 'Q1 2025', 'In Progress'],
+                    ['Phase 2', 'System Implementation', 'Q2 2025', 'Planned'],
+                    ['Phase 3', 'Scale & Optimize', 'Q3-Q4 2025', 'Planned'],
+                    ['Phase 4', 'Market Expansion', '2026', 'Future']
+                ]
+            },
+            {
+                title: 'Next Steps & Action Items',
+                icon: '➡️',
+                type: 'bullets',
+                bullets: [
+                    'Schedule follow-up meeting to discuss detailed implementation plan',
+                    'Finalize budget allocation for approved initiatives',
+                    'Assign project leads and establish governance structure',
+                    'Set up tracking dashboards for KPI monitoring',
+                    'Begin Phase 1 activities within 30 days'
+                ]
+            },
+            {
+                title: 'Thank You',
+                icon: '🙏',
+                type: 'title',
+                subtitle: 'Questions & Discussion',
+                content: 'Contact us for more information'
+            }
         ];
 
         // Add industry-specific fillers
         if (info.industry === 'hospitality') {
             allFillers.unshift(
-                { title: 'Property Overview', icon: '🏠', type: 'bullets', content: 'Property details and amenities' },
-                { title: 'Occupancy Rates', icon: '📈', type: 'chart', content: 'Booking and occupancy trends' },
-                { title: 'Guest Reviews', icon: '⭐', type: 'bullets', content: 'Customer testimonials and ratings' }
+                {
+                    title: `${info.location || 'Property'} Overview`,
+                    icon: '🏠',
+                    type: 'bullets',
+                    bullets: [
+                        'Premium beachfront location with ocean views',
+                        '5-bedroom, 4-bathroom luxury accommodation',
+                        'Private pool, hot tub, and outdoor entertainment area',
+                        'Smart home automation and premium amenities',
+                        'Steps from beach access and local attractions'
+                    ]
+                },
+                {
+                    title: 'Occupancy Performance',
+                    icon: '📈',
+                    type: 'table',
+                    tableData: [
+                        ['Season', 'Occupancy', 'ADR', 'RevPAR'],
+                        ['Peak (Jun-Aug)', '94%', '$2,350', '$2,209'],
+                        ['Shoulder (Apr-May, Sep-Oct)', '82%', '$1,850', '$1,517'],
+                        ['Off-Peak (Nov-Mar)', '68%', '$1,200', '$816'],
+                        ['Annual Average', '81%', '$2,045', '$1,677']
+                    ],
+                    insight: 'Strong occupancy across all seasons with premium ADR positioning.'
+                },
+                {
+                    title: 'Guest Satisfaction Highlights',
+                    icon: '⭐',
+                    type: 'bullets',
+                    bullets: [
+                        '★★★★★ 4.9/5.0 average rating across 200+ reviews',
+                        '"Best vacation rental we\'ve ever stayed at" - Recent Guest',
+                        '95% of guests recommend to friends and family',
+                        'Superhost status maintained for 24+ consecutive months',
+                        'Featured in "Top 10 Luxury Rentals" by Travel Magazine'
+                    ]
+                }
+            );
+        }
+
+        if (info.industry === 'tech' || info.industry === 'saas') {
+            allFillers.unshift(
+                {
+                    title: 'Product Roadmap',
+                    icon: '🚀',
+                    type: 'table',
+                    tableData: [
+                        ['Release', 'Feature', 'Impact', 'Timeline'],
+                        ['v2.1', 'AI-Powered Analytics', 'High', 'Q1 2025'],
+                        ['v2.2', 'Enterprise SSO', 'Medium', 'Q2 2025'],
+                        ['v3.0', 'Mobile App', 'High', 'Q3 2025'],
+                        ['v3.1', 'API Marketplace', 'Medium', 'Q4 2025']
+                    ]
+                },
+                {
+                    title: 'SaaS Metrics Dashboard',
+                    icon: '📊',
+                    type: 'table',
+                    tableData: [
+                        ['Metric', 'Current', 'Target', 'Industry'],
+                        ['MRR', '$287K', '$350K', '-'],
+                        ['ARR Growth', '+42%', '+40%', '+30%'],
+                        ['Churn Rate', '2.1%', '<3%', '5-7%'],
+                        ['CAC Payback', '8 mo', '<12 mo', '12-18 mo'],
+                        ['LTV:CAC', '4.2x', '>3x', '3x']
+                    ],
+                    insight: 'Best-in-class metrics with strong unit economics and growth trajectory.'
+                }
+            );
+        }
+
+        if (info.industry === 'real_estate') {
+            allFillers.unshift(
+                {
+                    title: 'Investment Summary',
+                    icon: '🏢',
+                    type: 'table',
+                    tableData: [
+                        ['Metric', 'Value'],
+                        ['Purchase Price', '$3,200,000'],
+                        ['Cap Rate', '7.8%'],
+                        ['Cash-on-Cash', '12.4%'],
+                        ['5-Year IRR', '18.5%'],
+                        ['DSCR', '1.45x']
+                    ]
+                },
+                {
+                    title: 'Comparable Sales Analysis',
+                    icon: '📈',
+                    type: 'table',
+                    tableData: [
+                        ['Property', 'Sale Price', 'Cap Rate', 'Date'],
+                        ['123 Beach Dr', '$2,950,000', '7.2%', 'Oct 2024'],
+                        ['456 Ocean Ave', '$3,400,000', '8.1%', 'Sep 2024'],
+                        ['789 Gulf Blvd', '$3,150,000', '7.5%', 'Aug 2024'],
+                        ['Subject Property', '$3,200,000', '7.8%', 'Current']
+                    ],
+                    insight: 'Pricing in line with comparable transactions; favorable cap rate relative to market.'
+                }
             );
         }
 
@@ -2139,12 +2920,22 @@ class AIPresentationChat {
     }
 
     selectAvatar(avatarKey) {
+        if (!this.avatarData[avatarKey]) return;
+
         this.currentAvatar = avatarKey;
         localStorage.setItem('selectedAvatar', avatarKey);
 
         // Update selection UI
         document.querySelectorAll('.avatar-option').forEach(opt => {
-            opt.classList.toggle('selected', opt.querySelector('span').textContent === this.avatarData[avatarKey].name);
+            const nameEl = opt.querySelector('.avatar-option-name') || opt.querySelector('span');
+            if (nameEl) {
+                const isSelected = nameEl.textContent === this.avatarData[avatarKey].name;
+                opt.classList.toggle('selected', isSelected);
+                const checkEl = opt.querySelector('.avatar-option-check');
+                if (checkEl) {
+                    checkEl.classList.toggle('visible', isSelected);
+                }
+            }
         });
 
         // Rebuild interface with new avatar
@@ -2153,40 +2944,840 @@ class AIPresentationChat {
         document.getElementById('ai-pres-chat-modal').classList.add('active');
     }
 
+    // Handle "Create Your Own" avatar option - requires login
+    handleCreateOwnAvatar() {
+        // Check if user is logged in
+        const isLoggedIn = window.currentUser || localStorage.getItem('supabase.auth.token') || localStorage.getItem('userLoggedIn');
+
+        if (!isLoggedIn) {
+            // Show login required message
+            this.hideAvatarSelector();
+            this.showLoginRequiredModal();
+            return;
+        }
+
+        // User is logged in - show custom avatar creator
+        this.hideAvatarSelector();
+        this.showCustomAvatarCreator();
+    }
+
+    // Show login required modal
+    showLoginRequiredModal() {
+        const modal = document.createElement('div');
+        modal.className = 'login-required-modal-overlay';
+        modal.innerHTML = `
+            <div class="login-required-modal">
+                <button class="modal-close" onclick="this.closest('.login-required-modal-overlay').remove()">&times;</button>
+                <div class="modal-icon">🔐</div>
+                <h2>Login Required</h2>
+                <p>Creating custom avatars is a premium feature. Please log in or sign up to unlock this feature.</p>
+                <div class="modal-buttons">
+                    <button class="btn-login" onclick="this.closest('.login-required-modal-overlay').remove(); if(typeof showAuthModal === 'function') showAuthModal('login');">
+                        Log In
+                    </button>
+                    <button class="btn-signup" onclick="this.closest('.login-required-modal-overlay').remove(); if(typeof showAuthModal === 'function') showAuthModal('signup');">
+                        Sign Up Free
+                    </button>
+                </div>
+                <p class="modal-note">Already have an account? Log in to access all features.</p>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        this.addLoginModalStyles();
+    }
+
+    // Add login modal styles
+    addLoginModalStyles() {
+        if (document.getElementById('login-modal-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'login-modal-styles';
+        style.textContent = `
+            .login-required-modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.85);
+                z-index: 100003;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .login-required-modal {
+                background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+                border: 2px solid rgba(255,51,51,0.5);
+                border-radius: 20px;
+                padding: 40px;
+                text-align: center;
+                max-width: 400px;
+                position: relative;
+            }
+            .login-required-modal .modal-close {
+                position: absolute;
+                top: 15px;
+                right: 20px;
+                background: none;
+                border: none;
+                color: #888;
+                font-size: 24px;
+                cursor: pointer;
+            }
+            .login-required-modal .modal-icon {
+                font-size: 48px;
+                margin-bottom: 16px;
+            }
+            .login-required-modal h2 {
+                color: #fff;
+                margin: 0 0 12px 0;
+            }
+            .login-required-modal p {
+                color: rgba(255,255,255,0.7);
+                margin: 0 0 24px 0;
+            }
+            .login-required-modal .modal-buttons {
+                display: flex;
+                gap: 12px;
+                justify-content: center;
+            }
+            .login-required-modal .btn-login {
+                background: transparent;
+                border: 2px solid #ff3333;
+                color: #ff3333;
+                padding: 12px 32px;
+                border-radius: 25px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            .login-required-modal .btn-login:hover {
+                background: rgba(255,51,51,0.1);
+            }
+            .login-required-modal .btn-signup {
+                background: linear-gradient(135deg, #ff3333, #cc0000);
+                border: none;
+                color: #fff;
+                padding: 12px 32px;
+                border-radius: 25px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            .login-required-modal .btn-signup:hover {
+                transform: scale(1.05);
+            }
+            .login-required-modal .modal-note {
+                font-size: 0.85rem;
+                color: rgba(255,255,255,0.5);
+                margin-top: 16px;
+                margin-bottom: 0;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Show custom avatar creator (for logged-in users)
+    showCustomAvatarCreator() {
+        this.addMessage("Custom avatar creation coming soon! For now, choose from our existing guides.", 'ai');
+        this.showAvatarSelector();
+    }
+
+    // Set tier for testing
+    setTier(tier) {
+        if (this.tierLimits[tier]) {
+            this.currentTier = tier;
+            localStorage.setItem('userTier', tier);
+
+            // Reset daily usage when switching tiers for testing
+            this.usage.dailyTries = 0;
+            this.saveUsage();
+
+            // Update UI
+            this.updateUsageCounter();
+            const limitNote = document.getElementById('slide-limit-note');
+            if (limitNote) {
+                const maxSlides = this.getMaxSlides();
+                limitNote.textContent = `(max ${maxSlides === -1 ? 'unlimited' : maxSlides} for ${this.tierLimits[tier].name})`;
+            }
+
+            // Hide upgrade button for paid tiers
+            const upgradeBtn = document.getElementById('header-upgrade-btn');
+            if (upgradeBtn) {
+                upgradeBtn.style.display = tier === 'diamond' ? 'none' : 'flex';
+            }
+
+            this.addMessage(`✓ Switched to ${this.tierLimits[tier].name} tier for testing. ${tier === 'diamond' ? 'Unlimited presentations!' : `${this.tierLimits[tier].triesPerDay} presentations per day.`}`, 'ai');
+        }
+    }
+
+    // Show settings panel
+    showSettingsPanel() {
+        const existing = document.getElementById('pres-settings-panel');
+        if (existing) existing.remove();
+
+        const panel = document.createElement('div');
+        panel.id = 'pres-settings-panel';
+        panel.className = 'pres-settings-panel';
+        panel.innerHTML = `
+            <div class="settings-overlay" onclick="aiPresChat.hideSettingsPanel()"></div>
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h3>⚙️ Presentation Settings</h3>
+                    <button onclick="aiPresChat.hideSettingsPanel()">&times;</button>
+                </div>
+
+                <div class="settings-body">
+                    <div class="settings-section">
+                        <h4>📄 Page Numbers</h4>
+                        <label class="settings-toggle">
+                            <input type="checkbox" id="setting-page-numbers" ${this.presentationSettings.showPageNumbers ? 'checked' : ''}>
+                            <span>Show page numbers</span>
+                        </label>
+                        <div class="settings-row" id="page-number-style-row">
+                            <label>Position:</label>
+                            <select id="setting-page-style">
+                                <option value="bottom-right" ${this.presentationSettings.pageNumberStyle === 'bottom-right' ? 'selected' : ''}>Bottom Right</option>
+                                <option value="bottom-center" ${this.presentationSettings.pageNumberStyle === 'bottom-center' ? 'selected' : ''}>Bottom Center</option>
+                                <option value="top-right" ${this.presentationSettings.pageNumberStyle === 'top-right' ? 'selected' : ''}>Top Right</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h4>🏢 Company Branding</h4>
+                        <label class="settings-toggle">
+                            <input type="checkbox" id="setting-company-logo" ${this.presentationSettings.showCompanyLogo ? 'checked' : ''}>
+                            <span>Show company logo</span>
+                        </label>
+                        <div class="settings-row">
+                            <label>Upload Logo:</label>
+                            <input type="file" id="logo-upload" accept="image/*" onchange="aiPresChat.handleLogoUpload(this.files[0])">
+                        </div>
+                        ${this.presentationSettings.companyLogo ? `
+                            <div class="logo-preview">
+                                <img src="${this.presentationSettings.companyLogo}" alt="Company Logo">
+                                <button onclick="aiPresChat.removeLogo()">Remove</button>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="settings-section">
+                        <h4>⚡ Lightning Ledgerz Branding</h4>
+                        <label class="settings-toggle">
+                            <input type="checkbox" id="setting-disclaimer" ${this.presentationSettings.showDisclaimer ? 'checked' : ''}>
+                            <span>Show "Powered by Lightning Ledgerz" disclaimer</span>
+                        </label>
+                    </div>
+
+                    <div class="settings-section">
+                        <h4>🎨 Theme & Style</h4>
+                        <div class="settings-row">
+                            <label>Font Family:</label>
+                            <select id="setting-font">
+                                <option value="Arial" ${this.presentationSettings.fontFamily === 'Arial' ? 'selected' : ''}>Arial</option>
+                                <option value="Helvetica" ${this.presentationSettings.fontFamily === 'Helvetica' ? 'selected' : ''}>Helvetica</option>
+                                <option value="Calibri" ${this.presentationSettings.fontFamily === 'Calibri' ? 'selected' : ''}>Calibri</option>
+                                <option value="Georgia" ${this.presentationSettings.fontFamily === 'Georgia' ? 'selected' : ''}>Georgia</option>
+                                <option value="Roboto" ${this.presentationSettings.fontFamily === 'Roboto' ? 'selected' : ''}>Roboto</option>
+                            </select>
+                        </div>
+                        <div class="settings-row">
+                            <label>Color Scheme:</label>
+                            <div class="color-scheme-options">
+                                <button class="color-scheme-btn ${this.presentationSettings.colorScheme === 'lightning' ? 'active' : ''}" data-scheme="lightning" onclick="aiPresChat.setColorScheme('lightning')">
+                                    <span class="scheme-preview" style="background: linear-gradient(90deg, #CC0000, #FFD700);"></span>
+                                    Lightning
+                                </button>
+                                <button class="color-scheme-btn ${this.presentationSettings.colorScheme === 'corporate' ? 'active' : ''}" data-scheme="corporate" onclick="aiPresChat.setColorScheme('corporate')">
+                                    <span class="scheme-preview" style="background: linear-gradient(90deg, #1F4E79, #FFC000);"></span>
+                                    Corporate
+                                </button>
+                                <button class="color-scheme-btn ${this.presentationSettings.colorScheme === 'navy' ? 'active' : ''}" data-scheme="navy" onclick="aiPresChat.setColorScheme('navy')">
+                                    <span class="scheme-preview" style="background: linear-gradient(90deg, #1B365D, #E8B923);"></span>
+                                    Navy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-footer">
+                    <button class="settings-save-btn" onclick="aiPresChat.saveSettings()">Save Settings</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(panel);
+        this.addSettingsStyles();
+    }
+
+    hideSettingsPanel() {
+        const panel = document.getElementById('pres-settings-panel');
+        if (panel) panel.remove();
+    }
+
+    saveSettings() {
+        this.presentationSettings.showPageNumbers = document.getElementById('setting-page-numbers').checked;
+        this.presentationSettings.pageNumberStyle = document.getElementById('setting-page-style').value;
+        this.presentationSettings.showCompanyLogo = document.getElementById('setting-company-logo').checked;
+        this.presentationSettings.showDisclaimer = document.getElementById('setting-disclaimer').checked;
+        this.presentationSettings.fontFamily = document.getElementById('setting-font').value;
+
+        localStorage.setItem('presSettings', JSON.stringify(this.presentationSettings));
+        this.hideSettingsPanel();
+        this.addMessage('✓ Settings saved!', 'ai');
+    }
+
+    handleLogoUpload(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            this.presentationSettings.companyLogo = e.target.result;
+            localStorage.setItem('presSettings', JSON.stringify(this.presentationSettings));
+            this.showSettingsPanel(); // Refresh to show preview
+        };
+        reader.readAsDataURL(file);
+    }
+
+    removeLogo() {
+        this.presentationSettings.companyLogo = null;
+        localStorage.setItem('presSettings', JSON.stringify(this.presentationSettings));
+        this.showSettingsPanel(); // Refresh
+    }
+
+    setColorScheme(scheme) {
+        this.presentationSettings.colorScheme = scheme;
+        document.querySelectorAll('.color-scheme-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.scheme === scheme);
+        });
+    }
+
+    addSettingsStyles() {
+        if (document.getElementById('pres-settings-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'pres-settings-styles';
+        style.textContent = `
+            .pres-settings-panel {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 100002;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .settings-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.8);
+            }
+            .settings-content {
+                position: relative;
+                background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+                border-radius: 16px;
+                border: 2px solid rgba(255,51,51,0.5);
+                width: 90%;
+                max-width: 500px;
+                max-height: 80vh;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+            .settings-header {
+                padding: 1rem 1.5rem;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .settings-header h3 {
+                color: #fff;
+                margin: 0;
+            }
+            .settings-header button {
+                background: none;
+                border: none;
+                color: #888;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+            .settings-body {
+                padding: 1.5rem;
+                overflow-y: auto;
+                flex: 1;
+            }
+            .settings-section {
+                margin-bottom: 1.5rem;
+                padding-bottom: 1.5rem;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            .settings-section:last-child {
+                border-bottom: none;
+            }
+            .settings-section h4 {
+                color: #ff3333;
+                margin: 0 0 1rem 0;
+                font-size: 0.9rem;
+            }
+            .settings-toggle {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: #ccc;
+                margin-bottom: 0.75rem;
+                cursor: pointer;
+            }
+            .settings-toggle input {
+                width: 18px;
+                height: 18px;
+                accent-color: #ff3333;
+            }
+            .settings-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 0.75rem;
+            }
+            .settings-row label {
+                color: #888;
+            }
+            .settings-row select, .settings-row input[type="file"] {
+                background: rgba(0,0,0,0.3);
+                border: 1px solid rgba(255,255,255,0.2);
+                color: #fff;
+                padding: 0.5rem;
+                border-radius: 6px;
+            }
+            .logo-preview {
+                margin-top: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+            .logo-preview img {
+                height: 40px;
+                border-radius: 4px;
+            }
+            .logo-preview button {
+                background: rgba(255,0,0,0.2);
+                border: 1px solid #ff3333;
+                color: #ff3333;
+                padding: 0.25rem 0.5rem;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            .color-scheme-options {
+                display: flex;
+                gap: 0.5rem;
+                margin-top: 0.5rem;
+            }
+            .color-scheme-btn {
+                flex: 1;
+                background: rgba(255,255,255,0.05);
+                border: 2px solid transparent;
+                padding: 0.5rem;
+                border-radius: 8px;
+                cursor: pointer;
+                text-align: center;
+                color: #ccc;
+                font-size: 0.75rem;
+            }
+            .color-scheme-btn.active {
+                border-color: #ff3333;
+                background: rgba(255,51,51,0.1);
+            }
+            .scheme-preview {
+                display: block;
+                height: 20px;
+                border-radius: 4px;
+                margin-bottom: 0.25rem;
+            }
+            .settings-footer {
+                padding: 1rem 1.5rem;
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+            .settings-save-btn {
+                width: 100%;
+                background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%);
+                border: none;
+                color: #fff;
+                padding: 0.75rem;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+            }
+            .tier-toggle-dev {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: rgba(255,215,0,0.1);
+                padding: 4px 10px;
+                border-radius: 6px;
+                border: 1px solid rgba(255,215,0,0.3);
+            }
+            .tier-toggle-dev .tier-label {
+                color: #ffd700;
+                font-size: 0.75rem;
+            }
+            .tier-toggle-dev select {
+                background: rgba(0,0,0,0.3);
+                border: 1px solid rgba(255,215,0,0.3);
+                color: #ffd700;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 0.75rem;
+            }
+            .ai-pres-btn-settings {
+                background: rgba(255,255,255,0.1);
+                border: 1px solid rgba(255,255,255,0.2);
+                color: #fff;
+                padding: 8px;
+                border-radius: 8px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .ai-pres-btn-settings:hover {
+                background: rgba(255,255,255,0.2);
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Generate intelligent business insights
+    generateBusinessInsight(metric, currentValue, previousValue, metricName) {
+        const change = previousValue ? ((currentValue - previousValue) / previousValue * 100) : 0;
+        const changeAbs = Math.abs(change).toFixed(1);
+        const changeDir = change >= 0 ? 'increased' : 'decreased';
+        const changeSign = change >= 0 ? '+' : '';
+        const dollarChange = Math.abs(currentValue - previousValue);
+
+        if (metric === 'revenue') {
+            if (change > 10) {
+                return `Revenue ${changeDir} ${changeAbs}% (${changeSign}$${dollarChange.toLocaleString()}), significantly outperforming prior period. This represents strong organic growth.`;
+            } else if (change > 0) {
+                return `Revenue shows steady growth of ${changeAbs}%, adding $${dollarChange.toLocaleString()} in top-line income. Consistent with market expectations.`;
+            } else {
+                return `Revenue declined ${changeAbs}% ($${dollarChange.toLocaleString()}). Recommend reviewing sales pipeline and market positioning.`;
+            }
+        }
+
+        if (metric === 'profit') {
+            if (change > 15) {
+                return `Net income surged ${changeAbs}%, generating $${dollarChange.toLocaleString()} in additional profit. Margin expansion demonstrates operational efficiency.`;
+            } else if (change > 0) {
+                return `Profitability improved ${changeAbs}%, contributing $${dollarChange.toLocaleString()} to bottom line. Cost management initiatives are delivering results.`;
+            } else {
+                return `Profit margin compressed by ${changeAbs}%. Analysis indicates cost pressures in operations. Recommend margin improvement initiatives.`;
+            }
+        }
+
+        return `${metricName} ${changeDir} by ${changeAbs}% period-over-period.`;
+    }
+
+    // Generate chart data for slides
+    generateChartData(chartType, dataKey) {
+        const data = this.sampleFinancialData;
+
+        if (chartType === 'bar' && dataKey === 'revenue') {
+            return Object.entries(data.revenue).map(([period, value]) => ({
+                name: period.replace('_', ' '),
+                value: value
+            }));
+        }
+
+        if (chartType === 'pie' && dataKey === 'breakdown') {
+            return Object.entries(data.breakdown).map(([name, value]) => ({
+                name: name,
+                value: value
+            }));
+        }
+
+        if (chartType === 'pie' && dataKey === 'expenses') {
+            return Object.entries(data.expenses_breakdown).map(([name, value]) => ({
+                name: name,
+                value: value
+            }));
+        }
+
+        if (chartType === 'waterfall') {
+            const quarters = Object.keys(data.profit);
+            return quarters.map((q, i) => ({
+                name: q.replace('_', ' '),
+                value: data.profit[q],
+                change: i > 0 ? data.profit[q] - data.profit[quarters[i-1]] : 0
+            }));
+        }
+
+        return [];
+    }
+
     async downloadDeck() {
         if (this.slides.length === 0) return;
 
         // Use PptxGenJS if available
         if (typeof PptxGenJS !== 'undefined') {
             const pptx = new PptxGenJS();
+            pptx.layout = 'LAYOUT_16x9';
             pptx.title = 'AI Generated Presentation';
             pptx.author = 'Lightning Ledgerz';
 
-            this.slides.forEach(slide => {
+            const colors = this.chartColors[this.presentationSettings.colorScheme || 'lightning'];
+            const primaryColor = colors[0].replace('#', '');
+            const accentColor = colors[2].replace('#', '');
+
+            this.slides.forEach((slide, index) => {
                 const pptSlide = pptx.addSlide();
 
-                // Add title
-                pptSlide.addText(slide.title, {
-                    x: 0.5,
-                    y: 0.5,
-                    w: '90%',
-                    fontSize: 32,
-                    bold: true,
-                    color: '333333'
-                });
+                // Set slide background
+                pptSlide.background = { color: 'FFFFFF' };
 
-                // Add icon/placeholder
-                pptSlide.addText(slide.icon, {
-                    x: '40%',
-                    y: '40%',
-                    fontSize: 72
-                });
+                // Add company logo if enabled
+                if (this.presentationSettings.showCompanyLogo && this.presentationSettings.companyLogo) {
+                    pptSlide.addImage({
+                        data: this.presentationSettings.companyLogo,
+                        x: 0.3,
+                        y: 0.2,
+                        w: 1,
+                        h: 0.5
+                    });
+                }
+
+                // Title slide
+                if (slide.type === 'title' || index === 0) {
+                    pptSlide.background = { color: '0A0A1A' };
+                    pptSlide.addText(slide.title, {
+                        x: 0.5,
+                        y: 2.5,
+                        w: '90%',
+                        fontSize: 44,
+                        bold: true,
+                        color: 'FFFFFF',
+                        align: 'center'
+                    });
+                    if (slide.subtitle) {
+                        pptSlide.addText(slide.subtitle, {
+                            x: 0.5,
+                            y: 3.5,
+                            w: '90%',
+                            fontSize: 24,
+                            color: primaryColor,
+                            align: 'center'
+                        });
+                    }
+                    if (slide.content) {
+                        pptSlide.addText(slide.content, {
+                            x: 0.5,
+                            y: 4.2,
+                            w: '90%',
+                            fontSize: 16,
+                            color: '888888',
+                            align: 'center'
+                        });
+                    }
+                } else {
+                    // Regular content slide
+                    pptSlide.addText(slide.title, {
+                        x: 0.5,
+                        y: 0.3,
+                        w: '90%',
+                        fontSize: 28,
+                        bold: true,
+                        color: primaryColor
+                    });
+
+                    // Add chart if applicable
+                    if (slide.type === 'chart' && slide.chartType) {
+                        this.addChartToSlide(pptSlide, slide, colors);
+                    } else if (slide.type === 'comparison') {
+                        this.addComparisonToSlide(pptSlide, slide, colors);
+                    } else if (slide.type === 'bullets' && slide.bullets) {
+                        this.addBulletsToSlide(pptSlide, slide, colors);
+                    } else if (slide.type === 'table' && slide.tableData) {
+                        this.addTableToSlide(pptSlide, slide, colors);
+                    } else {
+                        // Default content
+                        pptSlide.addText(slide.content || '', {
+                            x: 0.5,
+                            y: 1.5,
+                            w: '90%',
+                            fontSize: 16,
+                            color: '333333'
+                        });
+
+                        // Add icon as visual placeholder
+                        pptSlide.addText(slide.icon || '📊', {
+                            x: 3.5,
+                            y: 2.5,
+                            w: 3,
+                            fontSize: 72,
+                            align: 'center'
+                        });
+
+                        // Add AI insight if financial slide
+                        if (slide.insight) {
+                            pptSlide.addText(slide.insight, {
+                                x: 0.5,
+                                y: 4.5,
+                                w: '90%',
+                                fontSize: 12,
+                                color: '666666',
+                                italic: true
+                            });
+                        }
+                    }
+                }
+
+                // Add page number if enabled
+                if (this.presentationSettings.showPageNumbers) {
+                    const pageNumPos = {
+                        'bottom-right': { x: 9, y: 5.2 },
+                        'bottom-center': { x: 4.5, y: 5.2 },
+                        'top-right': { x: 9, y: 0.2 }
+                    };
+                    const pos = pageNumPos[this.presentationSettings.pageNumberStyle] || pageNumPos['bottom-right'];
+                    pptSlide.addText(`${index + 1}`, {
+                        x: pos.x,
+                        y: pos.y,
+                        fontSize: 10,
+                        color: '888888'
+                    });
+                }
+
+                // Add Lightning Ledgerz disclaimer if enabled
+                if (this.presentationSettings.showDisclaimer) {
+                    pptSlide.addText('Powered by Lightning Ledgerz ⚡', {
+                        x: 0.3,
+                        y: 5.2,
+                        fontSize: 8,
+                        color: 'AAAAAA'
+                    });
+                }
             });
 
             await pptx.writeFile({ fileName: 'Lightning_Ledgerz_Presentation.pptx' });
+            this.addMessage('✓ Presentation downloaded! Check your downloads folder.', 'ai');
         } else {
             alert('PowerPoint generation requires PptxGenJS. Please ensure it is loaded.');
         }
+    }
+
+    // Add bar/pie chart to slide
+    addChartToSlide(pptSlide, slide, colors) {
+        const chartData = slide.chartData || this.generateChartData(slide.chartType, slide.dataKey || 'revenue');
+
+        if (slide.chartType === 'pie') {
+            pptSlide.addChart(pptSlide.pptx.ChartType.pie, [{
+                name: slide.title,
+                labels: chartData.map(d => d.name),
+                values: chartData.map(d => d.value)
+            }], {
+                x: 1.5,
+                y: 1.5,
+                w: 6,
+                h: 3.5,
+                chartColors: colors,
+                showLegend: true,
+                legendPos: 'r'
+            });
+        } else if (slide.chartType === 'bar') {
+            pptSlide.addChart(pptSlide.pptx.ChartType.bar, [{
+                name: slide.dataKey || 'Revenue',
+                labels: chartData.map(d => d.name),
+                values: chartData.map(d => d.value)
+            }], {
+                x: 0.5,
+                y: 1.5,
+                w: 9,
+                h: 3.5,
+                chartColors: [colors[0]],
+                barDir: 'col',
+                showValue: true,
+                dataLabelPosition: 'outEnd',
+                valAxisMaxVal: Math.max(...chartData.map(d => d.value)) * 1.2
+            });
+        }
+
+        // Add insight below chart
+        if (slide.insight) {
+            pptSlide.addText(slide.insight, {
+                x: 0.5,
+                y: 5,
+                w: 9,
+                fontSize: 11,
+                color: '666666',
+                italic: true
+            });
+        }
+    }
+
+    // Add comparison table to slide
+    addComparisonToSlide(pptSlide, slide, colors) {
+        const comparisonData = slide.comparisonData || [
+            ['Metric', 'Current Period', 'Prior Period', 'Change'],
+            ['Revenue', '$358,000', '$312,000', '+14.7%'],
+            ['Expenses', '$265,000', '$228,000', '+16.2%'],
+            ['Net Profit', '$93,000', '$84,000', '+10.7%'],
+            ['Margin', '26.0%', '26.9%', '-0.9%']
+        ];
+
+        pptSlide.addTable(comparisonData, {
+            x: 0.5,
+            y: 1.5,
+            w: 9,
+            colW: [3, 2, 2, 2],
+            border: { type: 'solid', color: 'CCCCCC', pt: 1 },
+            fontFace: this.presentationSettings.fontFamily,
+            fontSize: 12,
+            color: '333333',
+            align: 'center',
+            valign: 'middle'
+        });
+    }
+
+    // Add bullet points to slide
+    addBulletsToSlide(pptSlide, slide, colors) {
+        const bullets = slide.bullets || [
+            'Key point 1',
+            'Key point 2',
+            'Key point 3'
+        ];
+
+        pptSlide.addText(bullets.map(b => ({ text: b, options: { bullet: true } })), {
+            x: 0.5,
+            y: 1.5,
+            w: 9,
+            fontSize: 18,
+            color: '333333',
+            fontFace: this.presentationSettings.fontFamily
+        });
+    }
+
+    // Add data table to slide
+    addTableToSlide(pptSlide, slide, colors) {
+        const tableData = slide.tableData || [
+            ['Category', 'Amount', '% of Total'],
+            ['Payroll', '$119,250', '45%'],
+            ['Operations', '$66,250', '25%'],
+            ['Marketing', '$39,750', '15%'],
+            ['Other', '$39,750', '15%']
+        ];
+
+        pptSlide.addTable(tableData, {
+            x: 0.5,
+            y: 1.5,
+            w: 9,
+            border: { type: 'solid', color: 'DDDDDD', pt: 1 },
+            fontFace: this.presentationSettings.fontFamily,
+            fontSize: 14,
+            color: '333333',
+            align: 'center'
+        });
     }
 }
 

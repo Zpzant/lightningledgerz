@@ -1,0 +1,3364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lightning Ledgerz - Budget. Save. Build.</title>
+
+    <!-- Favicon - Optimized for all devices -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="favicon-512x512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="msapplication-TileImage" content="favicon-192x192.png">
+
+    <!-- Chart.js for dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- PDF.js for PDF processing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- XLSX for Excel processing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+
+    <!-- PPTX-Gen for PowerPoint generation -->
+    <script src="https://cdn.jsdelivr.net/npm/pptxgen@3.12.0/dist/pptxgen.umd.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .video-background video,
+        .video-background iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100vw;
+            min-height: 100vh;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            object-fit: cover;
+        }
+
+        .video-background video.active,
+        .video-background iframe.active {
+            opacity: 1;
+        }
+
+        .lightning-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ff3333;
+            z-index: -1;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: #ff3333;
+        }
+
+        .nav-links a.active {
+            color: #ff3333;
+            border-bottom: 2px solid #ff3333;
+            padding-bottom: 3px;
+        }
+
+        /* User Welcome Section in Nav */
+        .user-welcome {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 51, 51, 0.1);
+            border-radius: 25px;
+            border: 1px solid #ff3333;
+        }
+
+        .user-avatar-nav {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: rgba(255, 51, 51, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-text-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .welcome-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .package-banner {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .package-free {
+            background: rgba(255, 255, 255, 0.1);
+            color: #888;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .package-basic {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.2), rgba(200, 0, 0, 0.2));
+            color: #ff3333;
+            border: 1px solid #ff3333;
+        }
+
+        .package-gold {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #000;
+            animation: goldShimmer 3s ease-in-out infinite;
+        }
+
+        .package-diamond {
+            background: linear-gradient(135deg, #fff, #e0e0e0);
+            color: #000;
+            animation: diamondSparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes goldShimmer {
+            0%, 100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); }
+        }
+
+        @keyframes diamondSparkle {
+            0%, 100% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 255, 255, 0.4); }
+        }
+
+        /* Logo Package Styling */
+        .logo.logo-gold img {
+            filter: drop-shadow(0 0 10px #ffd700) drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+        }
+
+        .logo.logo-diamond img {
+            filter: drop-shadow(0 0 10px #fff) drop-shadow(0 0 25px rgba(255, 255, 255, 0.7)) brightness(1.1);
+        }
+
+        .logo.logo-gold::after {
+            content: '✨';
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            font-size: 1.2rem;
+            animation: twinkle 1.5s ease-in-out infinite;
+        }
+
+        .logo.logo-diamond::after {
+            content: '💎';
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            font-size: 1.2rem;
+            animation: twinkle 1s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .logo {
+            position: relative;
+        }
+
+        .membership-badge {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .badge-basic {
+            background: #ff3333;
+            box-shadow: 0 0 10px #ff3333;
+        }
+
+        .badge-gold {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            box-shadow: 0 0 10px #ffd700;
+        }
+
+        .badge-diamond {
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            box-shadow: 0 0 10px #fff;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 2rem 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #ccc;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff3333, #ff6666);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 51, 51, 0.6);
+            background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
+        }
+
+        .package-sidebar {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .package-btn {
+            padding: 1rem 1.5rem;
+            border: 2px solid #fff;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        .package-btn:hover {
+            transform: translateX(10px);
+        }
+
+        .package-btn:active {
+            transform: scale(0.95);
+            opacity: 0.9;
+        }
+
+        .package-btn.basic:hover {
+            background: #ff3333;
+            border-color: #ff3333;
+            box-shadow: 0 0 20px #ff3333;
+        }
+
+        .package-btn.gold:hover {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #000;
+            border-color: #ffd700;
+            box-shadow: 0 0 20px #ffd700;
+        }
+
+        .package-btn.diamond:hover {
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            color: #000;
+            border-color: #fff;
+            box-shadow: 0 0 20px #fff;
+        }
+
+        /* Active state for package buttons */
+        .package-btn.basic.active {
+            background: #ff3333;
+            border-color: #ff3333;
+            box-shadow: 0 0 20px #ff3333;
+            color: #fff;
+        }
+
+        .package-btn.gold.active {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px #ffd700;
+            color: #000 !important;
+        }
+
+        .package-btn.diamond.active {
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            border-color: #fff;
+            box-shadow: 0 0 20px #fff;
+            color: #000 !important;
+        }
+
+        /* Package card highlighted state */
+        .package-card {
+            transition: all 0.5s ease;
+        }
+
+        .package-card.highlighted {
+            transform: scale(1.08);
+            z-index: 100;
+            animation: packageGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .package-card.basic.highlighted {
+            box-shadow: 0 0 60px rgba(255, 51, 51, 1), 0 0 120px rgba(255, 51, 51, 0.8), 0 0 180px rgba(255, 51, 51, 0.5) !important;
+            border-color: #ff3333 !important;
+            border-width: 5px !important;
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.35), rgba(0, 0, 0, 0.9)) !important;
+        }
+
+        .package-card.gold.highlighted {
+            box-shadow: 0 0 60px rgba(255, 215, 0, 1), 0 0 120px rgba(255, 215, 0, 0.8), 0 0 180px rgba(255, 215, 0, 0.5) !important;
+            border-color: #ffd700 !important;
+            border-width: 5px !important;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.35), rgba(0, 0, 0, 0.9)) !important;
+        }
+
+        .package-card.diamond.highlighted {
+            box-shadow: 0 0 60px rgba(255, 255, 255, 1), 0 0 120px rgba(255, 255, 255, 0.8), 0 0 180px rgba(255, 255, 255, 0.5) !important;
+            border-color: #fff !important;
+            border-width: 5px !important;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(0, 0, 0, 0.9)) !important;
+        }
+
+        @keyframes packageGlow {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.3); }
+        }
+
+        /* Bring back Zac button */
+        .bring-back-zac {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff3333, #cc0000);
+            border: 2px solid #ff6666;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 9990;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(255, 51, 51, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .bring-back-zac:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(255, 51, 51, 0.7);
+        }
+
+        .bring-back-zac.visible {
+            display: flex;
+        }
+
+        /* Membership tier theming for nav */
+        nav.tier-basic {
+            border-bottom: 2px solid #ff3333;
+        }
+
+        nav.tier-gold {
+            border-bottom: 2px solid #ffd700;
+        }
+
+        nav.tier-gold .logo img {
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+        }
+
+        nav.tier-gold .upload-financials-btn {
+            background: linear-gradient(135deg, #ffd700, #cc9900);
+        }
+
+        nav.tier-diamond {
+            border-bottom: 2px solid #fff;
+            background: linear-gradient(90deg, rgba(0,0,0,0.95), rgba(30,30,50,0.95), rgba(0,0,0,0.95));
+        }
+
+        nav.tier-diamond .logo img {
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+        }
+
+        nav.tier-diamond .upload-financials-btn {
+            background: linear-gradient(135deg, #fff, #e0e0e0);
+            color: #000;
+        }
+
+        /* Diamond pattern overlay for diamond tier */
+        nav.tier-diamond::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.03) 10px,
+                rgba(255,255,255,0.03) 20px
+            );
+            pointer-events: none;
+        }
+
+        /* Membership badge styling */
+        .membership-badge.badge-basic {
+            background: linear-gradient(135deg, #ff3333, #cc0000);
+        }
+
+        .membership-badge.badge-gold {
+            background: linear-gradient(135deg, #ffd700, #cc9900);
+            color: #000;
+        }
+
+        .membership-badge.badge-diamond {
+            background: linear-gradient(135deg, #fff, #c0c0c0);
+            color: #000;
+            text-shadow: 0 0 3px rgba(0,0,0,0.2);
+        }
+
+        .section {
+            min-height: 100vh;
+            padding: 6rem 2rem 2rem;
+            background: rgba(0, 0, 0, 0.9);
+            margin-top: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #ff3333;
+        }
+
+        .package-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .package-card {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
+            border: 2px solid #ff3333;
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .package-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(255, 51, 51, 0.4);
+        }
+
+        .package-card h3 {
+            color: #ff3333;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        #gold-package h3 {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        #gold-package:hover {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px #ffd700;
+        }
+
+        #diamond-package h3 {
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        #diamond-package:hover {
+            border-color: #fff;
+            box-shadow: 0 0 20px #fff;
+        }
+
+        .package-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .package-features {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .package-features li {
+            margin-bottom: 0.8rem;
+            padding-left: 1rem;
+            position: relative;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .package-features li:before {
+            content: "⚡";
+            position: absolute;
+            left: -0.5rem;
+            color: #ff3333;
+            font-weight: bold;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff3333, #ff6666);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 51, 51, 0.6);
+            background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Dashboard Styles */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
+            border: 1px solid #ff3333;
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 51, 51, 0.3);
+        }
+
+        .stat-card h3 {
+            color: #ff3333;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .stat-value.positive {
+            color: #4caf50;
+        }
+
+        .stat-value.negative {
+            color: #f44336;
+        }
+
+        .stat-value.neutral {
+            color: #ffd700;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            border-radius: 15px;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .progress-fill.over-budget {
+            background: linear-gradient(90deg, #f44336, #ff5722);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 2rem 0;
+        }
+
+        .alert-box {
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-box.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+        }
+
+        .alert-box.warning {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid #ffc107;
+        }
+
+        .alert-box.error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+        }
+
+        /* Avatar Builder Styles */
+        .avatar-builder {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff3333;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .avatar-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .avatar-option {
+            margin-bottom: 1rem;
+        }
+
+        .avatar-option label {
+            display: block;
+            color: #ff3333;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .avatar-option select,
+        .avatar-option input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .avatar-preview-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .avatar-preview {
+            background: rgba(255, 51, 51, 0.05);
+            border: 2px solid #ff3333;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .avatar-preview h4 {
+            color: #ff3333;
+            margin-bottom: 1rem;
+        }
+
+        .avatar-display {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .pose-previews {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .pose-preview {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ff3333;
+            border-radius: 10px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pose-preview:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.5);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .about-photo {
+            background: transparent;
+            text-align: center;
+            padding: 0;
+            border: 3px solid #ff3333;
+            border-radius: 15px;
+            overflow: hidden;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .about-photo img {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            display: block;
+            object-fit: contain;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 3rem auto;
+            background: rgba(255, 51, 51, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #ff3333;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #ff3333;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #333;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff3333;
+            box-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
+        }
+
+        .profile-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .profile-card {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
+            border: 1px solid #ff3333;
+            border-radius: 15px;
+            padding: 2rem;
+        }
+
+        .profile-card h3 {
+            color: #ff3333;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .profile-info p {
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-toggle {
+            color: #fff;
+            cursor: pointer;
+            font-weight: 500;
+            padding: 0.5rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .dropdown-toggle:hover {
+            color: #ff3333;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 120%;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.95);
+            min-width: 150px;
+            z-index: 999;
+            border: 1px solid #ff3333;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(255, 51, 51, 0.3);
+        }
+
+        .dropdown-menu a {
+            color: #fff;
+            padding: 0.8rem 1rem;
+            display: block;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #ff3333;
+            color: #000;
+        }
+
+        .dropdown:hover .dropdown-menu,
+        .dropdown.active .dropdown-menu {
+            display: block;
+        }
+
+        /* Prominent Sign Up Button in Nav */
+        .sign-up-btn-nav {
+            background: linear-gradient(45deg, #ff3333, #ff6666);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
+            animation: signUpPulse 2s infinite;
+        }
+
+        .sign-up-btn-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 51, 51, 0.6);
+            background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
+        }
+
+        @keyframes signUpPulse {
+            0%, 100% { box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4); }
+            50% { box-shadow: 0 4px 25px rgba(255, 51, 51, 0.7), 0 0 10px rgba(255, 215, 0, 0.3); }
+        }
+
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .auth-box {
+            background: #111;
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 2px solid #ff3333;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .auth-box h2 {
+            color: #ff3333;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-box input {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            margin: 1rem 0;
+            border: 1px solid #333;
+            border-radius: 0.5rem;
+            background: #222;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .auth-box button {
+            background: linear-gradient(45deg, #ff3333, #ff6666);
+            border: none;
+            padding: 0.75rem 2rem;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .auth-box button:hover {
+            background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
+            transform: translateY(-2px);
+        }
+
+        /* Google Sign In Button Styling */
+        .google-auth-btn {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            margin-bottom: 1rem;
+            background: #fff !important;
+            color: #333 !important;
+            border: 2px solid #ddd !important;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .google-auth-btn:hover {
+            background: #f8f8f8 !important;
+            border-color: #4285F4 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
+        }
+
+        .google-auth-btn:active {
+            transform: translateY(0);
+        }
+
+        .auth-box .text-link {
+            color: #ff6666;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .upload-area {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 2px dashed #ff3333;
+        }
+
+        .upload-area input[type="file"] {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .document-item {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .document-item strong {
+            color: #ff3333;
+        }
+
+        .document-item p {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 0.3rem;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #ff3333;
+        }
+
+        .tab-button {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .tab-button.active {
+            color: #ff3333;
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #ff3333;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Logout Button Style */
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #ff3333;
+            color: #ff3333;
+            padding: 0.4rem 0.6rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-btn:hover {
+            background: #ff3333;
+            color: #fff;
+        }
+
+        /* Company Logo Upload Section */
+        .company-logo-section {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 998;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff3333;
+            border-radius: 15px;
+            padding: 1rem;
+            display: none;
+        }
+
+        .company-logo-section.visible {
+            display: block;
+        }
+
+        .company-logo-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: rgba(255, 51, 51, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            border: 2px solid #ff3333;
+        }
+
+        .company-logo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* PowerPoint Showcase Section */
+        .ppt-showcase {
+            background: linear-gradient(135deg, rgba(20, 20, 30, 0.95), rgba(10, 10, 15, 0.98));
+            border: 1px solid rgba(255, 51, 51, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem auto;
+            max-width: 1200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ppt-showcase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff3333, #ffd700, #ff3333);
+        }
+
+        .ppt-showcase h3 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .ppt-showcase .subtitle {
+            color: #888;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .ppt-slides-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .ppt-slide {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(255, 51, 51, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            min-height: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .ppt-slide:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 51, 51, 0.2);
+            border-color: #ff3333;
+        }
+
+        .ppt-slide-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ppt-slide-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #ff3333, #ff6666);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .ppt-slide-title {
+            font-weight: bold;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .ppt-chart-placeholder {
+            background: rgba(255, 51, 51, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-typing-text {
+            font-family: 'Courier New', monospace;
+            color: #4caf50;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            min-height: 60px;
+        }
+
+        .ai-typing-text .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: #4caf50;
+            animation: blink 0.7s infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .ppt-cta {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        /* Report Templates Section */
+        .report-templates {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .report-template-card {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.8));
+            border: 2px solid rgba(255, 51, 51, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .report-template-card:hover {
+            border-color: #ff3333;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 51, 51, 0.3);
+        }
+
+        .report-template-card.selected {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .report-template-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .report-template-name {
+            color: #ff3333;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-template-desc {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Upload Financials Button */
+        .upload-financials-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ff3333, #cc0000);
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
+            animation: pulse-glow 2s infinite;
+        }
+
+        .upload-financials-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 51, 51, 0.6);
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4); }
+            50% { box-shadow: 0 4px 25px rgba(255, 51, 51, 0.7); }
+        }
+
+        /* Hamburger Menu Button */
+        .hamburger-btn {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 40px;
+            height: 35px;
+            background: rgba(255, 51, 51, 0.1);
+            border: 2px solid #ff3333;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 6px;
+            z-index: 1001;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .hamburger-btn:active {
+            background: rgba(255, 51, 51, 0.3);
+            transform: scale(0.95);
+        }
+
+        .hamburger-btn span {
+            width: 24px;
+            height: 3px;
+            background: #ff3333;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .hamburger-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* Upload Modal */
+        .upload-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .upload-modal.active {
+            display: flex;
+        }
+
+        .upload-modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 2px solid #ff3333;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .upload-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-modal-header h2 {
+            color: #ff3333;
+            margin: 0;
+        }
+
+        .upload-modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .upload-dropzone {
+            border: 3px dashed #ff3333;
+            border-radius: 15px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 51, 51, 0.05);
+        }
+
+        .upload-dropzone:hover, .upload-dropzone.dragover {
+            background: rgba(255, 51, 51, 0.15);
+            border-color: #ff6666;
+        }
+
+        .upload-dropzone svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+            stroke: #ff3333;
+        }
+
+        .upload-dropzone p {
+            color: #ccc;
+            margin: 0.5rem 0;
+        }
+
+        .upload-file-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .file-type-badge {
+            background: rgba(255, 51, 51, 0.2);
+            border: 1px solid #ff3333;
+            color: #ff3333;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+            .profile-content {
+                grid-template-columns: 1fr !important;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .avatar-preview-container {
+                grid-template-columns: 1fr;
+            }
+
+            /* Mobile Navigation */
+            .hamburger-btn {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.98);
+                flex-direction: column;
+                padding: 80px 2rem 2rem;
+                transition: right 0.3s ease;
+                z-index: 9999;
+                border-left: 2px solid #ff3333;
+                display: flex !important;
+                overflow-y: auto;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            /* Mobile menu overlay */
+            body.menu-open::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 9998;
+            }
+
+            .nav-links a {
+                padding: 1rem 0;
+                border-bottom: 1px solid rgba(255, 51, 51, 0.2);
+            }
+
+            .upload-financials-btn {
+                width: 100%;
+                justify-content: center;
+                margin: 1rem 0;
+            }
+
+            .dropdown {
+                width: 100%;
+            }
+
+            .dropdown-menu {
+                position: static;
+                width: 100%;
+                display: none;
+                border: none;
+                background: rgba(255, 51, 51, 0.1);
+            }
+
+            /* Mobile: Remove hover behavior, only use active class (tap) */
+            .dropdown:hover .dropdown-menu {
+                display: none;
+            }
+
+            .dropdown.active .dropdown-menu {
+                display: block;
+            }
+
+            /* Mobile Sign Up Button */
+            .sign-up-btn-nav {
+                width: 100%;
+                padding: 1rem;
+                font-size: 1.1rem;
+                margin: 0.5rem 0;
+                order: -1; /* Show at top of mobile menu */
+            }
+
+            /* Mobile user welcome - prevent overlap */
+            .user-welcome {
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 0.8rem;
+                font-size: 0.85rem;
+                width: 100%;
+                text-align: center;
+            }
+
+            .user-avatar-nav {
+                width: 35px;
+                height: 35px;
+            }
+
+            #welcomeText {
+                font-size: 0.9rem;
+            }
+
+            /* MOBILE: Hide package sidebar and speech bubbles to reduce spam */
+            .package-sidebar {
+                display: none !important;
+            }
+
+            /* Hide all avatar speech bubbles on mobile */
+            #zac-speech-bubble,
+            #bolt-speech-bubble,
+            #zeus-speech-bubble,
+            #alaina-speech-bubble,
+            [id$="-speech-bubble"] {
+                display: none !important;
+            }
+
+            /* Hide bring-back-zac button on mobile - too cluttered */
+            .bring-back-zac {
+                display: none !important;
+            }
+
+            /* Make avatar container smaller on mobile */
+            .avatar-container,
+            #zac-avatar-container,
+            #bolt-avatar-container,
+            #zeus-avatar-container,
+            #alaina-avatar-container {
+                transform: scale(0.7) !important;
+                bottom: 10px !important;
+                right: 10px !important;
+            }
+
+            /* MOBILE SIGN-IN FIX */
+            .auth-modal {
+                padding: 15px;
+                align-items: flex-start;
+                padding-top: 60px;
+            }
+
+            .auth-box {
+                padding: 1.5rem 1rem;
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
+                border-radius: 12px;
+                max-height: calc(100vh - 80px);
+            }
+
+            .auth-box h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .auth-box input {
+                padding: 1rem;
+                font-size: 16px !important; /* Prevents iOS zoom */
+                margin: 0.75rem 0;
+                border-radius: 8px;
+                -webkit-appearance: none;
+                appearance: none;
+            }
+
+            .auth-box button {
+                padding: 1rem;
+                font-size: 1rem;
+                margin-top: 0.75rem;
+                min-height: 50px;
+            }
+
+            .auth-box .text-link {
+                padding: 10px;
+                display: block;
+                font-size: 1rem;
+            }
+
+            /* Google sign in button mobile */
+            .google-auth-btn {
+                min-height: 50px;
+                font-size: 1rem;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="video-background" id="videoBackground">
+        <!-- iOS-friendly video element -->
+        <video id="bgVideo" autoplay loop muted playsinline webkit-playsinline preload="auto" class="active" style="pointer-events: none;">
+            <!-- Add your video source here when available -->
+            <!-- <source src="path/to/video.mp4" type="video/mp4"> -->
+        </video>
+        <!-- Fallback to iframe - shows by default until video file is added -->
+        <iframe id="bgIframe" src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1&loop=1&muted=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen class="active" loading="eager"></iframe>
+    </div>
+
+    <script>
+        // iOS Video Autoplay Fix
+        (function() {
+            const video = document.getElementById('bgVideo');
+            const iframe = document.getElementById('bgIframe');
+
+            // Check if video has a source
+            const hasSource = video && video.querySelector('source');
+
+            if (hasSource) {
+                // We have a video source, try to play it
+                video.style.display = 'block';
+                iframe.style.display = 'none';
+
+                const playPromise = video.play();
+
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log('✓ Video autoplaying');
+                    }).catch(error => {
+                        // Fallback to iframe on autoplay failure
+                        console.log('Video autoplay blocked, using iframe');
+                        video.style.display = 'none';
+                        iframe.style.display = 'block';
+                    });
+                }
+
+                // Force play on any user interaction (for iOS)
+                const forcePlay = function() {
+                    if (video && video.paused) {
+                        video.play().catch(e => console.log('Play retry failed:', e));
+                    }
+                };
+
+                document.addEventListener('touchstart', forcePlay, { once: true });
+                document.addEventListener('click', forcePlay, { once: true });
+            } else {
+                // No video source yet, use iframe
+                video.style.display = 'none';
+                iframe.style.display = 'block';
+                console.log('Using iframe until video file is added');
+            }
+        })();
+    </script>
+
+    <div class="lightning-flash" id="lightningFlash"></div>
+    <div class="overlay"></div>
+
+    <!-- Company Logo Upload Section (visible when logged in) -->
+    <div id="companyLogoSection" class="company-logo-section">
+        <div class="company-logo-preview" id="companyLogoPreview">
+            <span style="color: #888; font-size: 0.7rem;">Your Logo</span>
+        </div>
+        <input type="file" id="companyLogoInput" accept="image/*" style="display: none;" onchange="handleCompanyLogoUpload(event)">
+        <button onclick="document.getElementById('companyLogoInput').click()" class="btn btn-small btn-primary" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">
+            Upload Logo
+        </button>
+    </div>
+
+    <nav>
+        <a href="#top" class="logo">
+            <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="height: 55px;">
+        </a>
+
+        <!-- Hamburger Menu Button (Mobile) -->
+        <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()" ontouchend="toggleMobileMenu(); event.preventDefault();">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="nav-links" id="navLinks">
+            <a href="#services" onclick="navigateToSection('services', event)">Services</a>
+            <a href="#about" onclick="navigateToSection('about', event)">About</a>
+            <a href="#contact" onclick="navigateToSection('contact', event)">Contact</a>
+            <a onclick="openDashboardBuilder()" style="cursor: pointer; color: #00bcd4;">Dashboards</a>
+            <a onclick="openFinancialHub()" style="cursor: pointer; color: #ff3333; font-weight: 600;">📊 Financial Hub</a>
+            <a onclick="openExcelAI()" style="cursor: pointer; color: #28a745; font-weight: 600;">📐 Excel AI</a>
+            <a onclick="openFinancialReports()" style="cursor: pointer; color: #ffd700;">Financial Models</a>
+            <a onclick="openProFormaPlanner()" style="cursor: pointer; color: #4caf50;">Pro Forma</a>
+            <a onclick="openQuickBooksDashboard()" style="cursor: pointer; color: #2E7D32;">QuickBooks</a>
+            <a onclick="openAIPresentationChat()" style="cursor: pointer; color: #ff5722;">Pro Decks</a>
+            <a onclick="openAIWorkspace()" style="cursor: pointer; color: #8b5cf6;">✨ AI Studio</a>
+            <a onclick="openReportBuilder()" style="cursor: pointer; color: #9c27b0;">Reports</a>
+
+            <!-- Upload Financials Button - Always visible, prominent -->
+            <button class="upload-financials-btn" onclick="showUploadModal()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                Upload Financials
+            </button>
+
+            <!-- User Welcome Section (Hidden when not logged in) -->
+            <div id="userWelcomeNav" class="user-welcome hidden">
+                <div class="user-avatar-nav" id="navAvatarContainer"></div>
+                <div class="welcome-text-container">
+                    <span class="welcome-name" id="welcomeText">Hi, User!</span>
+                    <span class="package-banner package-free" id="packageBanner">FREE TIER</span>
+                </div>
+                <button onclick="signOutUser()" class="logout-btn" title="Sign Out">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Prominent Sign Up Button - Always Visible -->
+            <button onclick="showSignUp(event)" class="sign-up-btn-nav" id="navSignUpBtn">
+                Sign Up Free
+            </button>
+
+            <div class="dropdown">
+                <a class="dropdown-toggle">Get Started</a>
+                <div class="dropdown-menu">
+                    <a href="#signup" onclick="showSignUp(event)" id="dropdownSignUp">Sign Up</a>
+                    <a href="#signin" onclick="showSignIn(event)" id="dropdownSignIn">Sign In</a>
+                    <a href="#profile" onclick="handleMyProfileClick(event)">My Profile</a>
+                    <a href="#profile" onclick="previewFeatures(event)" id="dropdownPreview">Preview Features (Guest)</a>
+                    <a href="#dashboard" onclick="handleDashboardClick(event)">Dashboard</a>
+                    <div style="border-top: 1px solid rgba(139, 92, 246, 0.3); padding-top: 8px; margin-top: 8px;">
+                        <a href="#" onclick="openAvatarUpload(); return false;" style="color: #8b5cf6;">📁 Upload & Create</a>
+                        <a href="#" onclick="openAIWorkspace('slides'); return false;" style="color: #6366f1;">📽️ AI Slides</a>
+                        <a href="#" onclick="openAIWorkspace('sheets'); return false;" style="color: #10b981;">📊 AI Sheets</a>
+                        <a href="#" onclick="openAIWorkspace('images'); return false;" style="color: #f59e0b;">🖼️ AI Images</a>
+                    </div>
+                    <a id="adminLink" href="#admin" onclick="handleAdminClick(event)" class="hidden">Admin</a>
+                    <a href="#" onclick="signOutUser(); return false;" id="dropdownLogout" class="hidden" style="color: #ff3333; border-top: 1px solid rgba(255,51,51,0.3);">Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo" style="max-width: 350px; width: 80%; height: auto;">
+        <p style="max-width: 800px; margin: 1rem auto;">
+            From supercharged budgets to sparky strategy — we deliver results at lightning speed.
+        </p>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+            <button onclick="openAvatarUpload()" class="cta-button" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); border: none; font-size: 1.1rem; padding: 1rem 2rem;">
+                📁 Upload & Create
+            </button>
+            <button onclick="showSignUp(event)" class="cta-button" style="background: linear-gradient(45deg, #ff3333, #ff6666);">Start Free Trial</button>
+            <a href="#contact" class="cta-button" style="background: transparent; border: 2px solid #ff3333;">Contact Us</a>
+        </div>
+    </section>
+
+    <div class="package-sidebar">
+        <div class="package-btn basic" onclick="scrollToPackage('basic-package')" ontouchend="scrollToPackage('basic-package'); event.preventDefault();">⚡ Basic Package</div>
+        <div class="package-btn gold" onclick="scrollToPackage('gold-package')" ontouchend="scrollToPackage('gold-package'); event.preventDefault();">✨ Gold Package</div>
+        <div class="package-btn diamond" onclick="scrollToPackage('diamond-package')" ontouchend="scrollToPackage('diamond-package'); event.preventDefault();">💎 Diamond Package</div>
+    </div>
+
+    <section id="services" class="section">
+        <div class="container">
+            <h2>Our Service Packages</h2>
+            <div class="package-grid">
+                <div id="basic-package" class="package-card basic">
+                    <h3>⚡ Basic Package</h3>
+                    <div class="package-price">$29/month</div>
+                    <ul class="package-features">
+                        <li>Live Financial Dashboard</li>
+                        <li>File Upload System (PDF, Excel)</li>
+                        <li>Basic Analytics & Charts</li>
+                        <li>Budget Tracking</li>
+                        <li>Spending Categories</li>
+                        <li>Email Support</li>
+                    </ul>
+                    <a href="https://buy.stripe.com/dRmfZheTUbkcgT7fuNbsc02" target="_blank" class="btn btn-primary">Buy Now</a>
+                </div>
+
+                <div id="gold-package" class="package-card gold">
+                    <h3>✨ Gold Package</h3>
+                    <div class="package-price">$49/month</div>
+                    <ul class="package-features">
+                        <li>Everything in Basic</li>
+                        <li>Auto-Generated PowerPoint Decks</li>
+                        <li>Year-over-year analysis</li>
+                        <li>AI-generated insights</li>
+                        <li>Custom brand colors</li>
+                        <li>Advanced Analytics</li>
+                        <li>Priority Support</li>
+                    </ul>
+                    <a href="https://buy.stripe.com/28E28r1348805apeqJbsc01" target="_blank" class="btn btn-primary">Buy Now</a>
+                </div>
+
+                <div id="diamond-package" class="package-card diamond">
+                    <h3>💎 Diamond Package</h3>
+                    <div class="package-price">$99/month</div>
+                    <ul class="package-features">
+                        <li>Everything in Gold</li>
+                        <li>QuickBooks Integration</li>
+                        <li>Automatic data sync</li>
+                        <li>Real-time financial updates</li>
+                        <li>1-on-1 Coaching Sessions</li>
+                        <li>Custom Reports</li>
+                        <li>Direct Phone Support</li>
+                    </ul>
+                    <a href="https://buy.stripe.com/dRm9ATbHIdsk5ap0zTbsc00" target="_blank" class="btn btn-primary">Buy Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DASHBOARD SECTION -->
+    <section id="dashboard" class="section hidden">
+        <div class="container">
+            <h2>Financial Dashboard</h2>
+            <div id="dashboardContent">
+                <p style="text-align: center;">Loading dashboard...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROFILE SECTION -->
+    <section id="profile" class="section hidden">
+        <div class="container">
+            <h2>My Profile</h2>
+
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchProfileTab('account')">Account</button>
+                <button class="tab-button" onclick="switchProfileTab('avatar')">Avatar</button>
+                <button class="tab-button" onclick="switchProfileTab('documents')">Documents</button>
+                <button class="tab-button" onclick="switchProfileTab('powerpoint')" id="pptTab" class="hidden">Pro Decks</button>
+                <button class="tab-button" onclick="switchProfileTab('proforma')" id="proformaTab">Pro Forma</button>
+                <button class="tab-button" onclick="switchProfileTab('quickbooks')" id="qbTab" class="hidden">QuickBooks</button>
+            </div>
+
+            <!-- Account Tab -->
+            <div id="tab-account" class="tab-content active">
+                <div class="profile-content" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div class="profile-card">
+                        <h3>Account Information</h3>
+                        <div class="profile-info">
+                            <p><strong>Name:</strong> <span id="userFullName">Loading...</span></p>
+                            <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+                            <p><strong>Username:</strong> <span id="userUsername">Not set</span></p>
+                            <p><strong>Plan:</strong> <span id="userPlan">basic</span></p>
+                            <p><strong>Status:</strong> <span style="color: #4CAF50;">Active</span></p>
+                        </div>
+                        <button class="btn btn-primary" onclick="signOutUser()" style="margin-top: 1rem;">Sign Out</button>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Edit Profile</h3>
+                        <div class="form-group">
+                            <label for="edit-first-name">First Name</label>
+                            <input type="text" id="edit-first-name" placeholder="Your first name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-last-name">Last Name</label>
+                            <input type="text" id="edit-last-name" placeholder="Your last name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-company-name">Company Name</label>
+                            <input type="text" id="edit-company-name" placeholder="Your company name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-username">Username</label>
+                            <input type="text" id="edit-username" placeholder="Choose a username">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-phone">Phone Number</label>
+                            <input type="tel" id="edit-phone" placeholder="(555) 123-4567">
+                        </div>
+                        <button class="btn btn-primary" onclick="saveProfileChanges()" style="margin-top: 1rem;">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Avatar Tab -->
+            <div id="tab-avatar" class="tab-content">
+                <div class="avatar-builder">
+                    <h3 style="color: #ff3333; margin-bottom: 1rem;">Customize Your Avatar</h3>
+
+                    <div class="form-group">
+                        <label>Avatar Type:</label>
+                        <select id="avatar-type" onchange="toggleAvatarType()">
+                            <option value="custom">Custom Avatar</option>
+                            <option value="logo">Company Logo</option>
+                        </select>
+                    </div>
+
+                    <div id="logo-upload-section" class="hidden">
+                        <div class="form-group">
+                            <label>Upload Company Logo:</label>
+                            <input type="file" id="logo-file" accept="image/*">
+                            <button class="btn btn-primary" onclick="uploadLogo()">Upload Logo</button>
+                        </div>
+                    </div>
+
+                    <div id="custom-avatar-section">
+                        <div class="avatar-options">
+                            <div class="avatar-option">
+                                <label>Gender:</label>
+                                <select id="avatar-gender" onchange="updateAvatarPreview()">
+                                    <option value="nonbinary">Non-binary</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Skin Tone:</label>
+                                <select id="avatar-skin" onchange="updateAvatarPreview()">
+                                    <option value="light">Light</option>
+                                    <option value="medium-light">Medium Light</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="medium-dark">Medium Dark</option>
+                                    <option value="dark">Dark</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Eye Color:</label>
+                                <select id="avatar-eyes" onchange="updateAvatarPreview()">
+                                    <option value="brown" selected>Brown</option>
+                                    <option value="blue">Blue</option>
+                                    <option value="green">Green</option>
+                                    <option value="hazel">Hazel</option>
+                                    <option value="gray">Gray</option>
+                                    <option value="amber">Amber</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Hair Style:</label>
+                                <select id="avatar-hair-style" onchange="updateAvatarPreview()">
+                                    <option value="short" selected>Short</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="long">Long</option>
+                                    <option value="bald">Bald</option>
+                                    <option value="buzz-cut">Buzz Cut</option>
+                                    <option value="pixie">Pixie</option>
+                                    <option value="bob">Bob</option>
+                                    <option value="ponytail">Ponytail</option>
+                                    <option value="bun">Bun</option>
+                                    <option value="braids">Braids</option>
+                                    <option value="afro">Afro</option>
+                                    <option value="dreadlocks">Dreadlocks</option>
+                                    <option value="curly">Curly</option>
+                                    <option value="wavy">Wavy</option>
+                                    <option value="straight">Straight</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Hair Color:</label>
+                                <select id="avatar-hair-color" onchange="updateAvatarPreview()">
+                                    <option value="brown" selected>Brown</option>
+                                    <option value="black">Black</option>
+                                    <option value="blonde">Blonde</option>
+                                    <option value="red">Red</option>
+                                    <option value="gray">Gray</option>
+                                    <option value="white">White</option>
+                                    <option value="blue">Blue</option>
+                                    <option value="purple">Purple</option>
+                                    <option value="pink">Pink</option>
+                                    <option value="green">Green</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Body Type:</label>
+                                <select id="avatar-body" onchange="updateAvatarPreview()">
+                                    <option value="slim">Slim</option>
+                                    <option value="athletic">Athletic</option>
+                                    <option value="average" selected>Average</option>
+                                    <option value="muscular">Muscular</option>
+                                    <option value="curvy">Curvy</option>
+                                    <option value="plus-size">Plus Size</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Outfit Type:</label>
+                                <select id="avatar-outfit" onchange="updateAvatarPreview()">
+                                    <option value="business-suit" selected>Business Suit</option>
+                                    <option value="blazer">Blazer</option>
+                                    <option value="dress-shirt">Dress Shirt</option>
+                                    <option value="t-shirt">T-Shirt</option>
+                                    <option value="dress-professional">Professional Dress</option>
+                                    <option value="dress-casual">Casual Dress</option>
+                                    <option value="skirt-professional">Professional Skirt</option>
+                                    <option value="skirt-casual">Casual Skirt</option>
+                                    <option value="casual-wear">Casual Wear</option>
+                                    <option value="formal-wear">Formal Wear</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Outfit Color:</label>
+                                <select id="avatar-outfit-color" onchange="updateAvatarPreview()">
+                                    <option value="navy" selected>Navy</option>
+                                    <option value="black">Black</option>
+                                    <option value="gray">Gray</option>
+                                    <option value="white">White</option>
+                                    <option value="red">Red</option>
+                                    <option value="blue">Blue</option>
+                                    <option value="green">Green</option>
+                                    <option value="purple">Purple</option>
+                                    <option value="pink">Pink</option>
+                                    <option value="beige">Beige</option>
+                                </select>
+                            </div>
+
+                            <div class="avatar-option">
+                                <label>Design Theme:</label>
+                                <select id="avatar-theme" onchange="updateAvatarPreview()">
+                                    <option value="lightning" selected>⚡ Lightning</option>
+                                    <option value="fire">🔥 Fire</option>
+                                    <option value="star">⭐ Star</option>
+                                    <option value="crown">👑 Crown</option>
+                                    <option value="rocket">🚀 Rocket</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="avatar-preview-container">
+                            <div class="avatar-preview">
+                                <h4>Main Avatar</h4>
+                                <div class="avatar-display" id="avatar-preview"></div>
+                            </div>
+
+                            <div class="avatar-preview">
+                                <h4>Poses Preview</h4>
+                                <div class="pose-previews">
+                                    <div class="pose-preview" id="pose-standing" title="Standing"></div>
+                                    <div class="pose-preview" id="pose-waving" title="Waving"></div>
+                                    <div class="pose-preview" id="pose-analyzing" title="Analyzing"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="saveAvatarCustomization()" style="margin-top: 1rem;">Save Avatar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents Tab -->
+            <div id="tab-documents" class="tab-content">
+                <!-- File Manager with Categorized Uploads -->
+                <div id="file-manager-mount"></div>
+
+                <!-- Legacy Upload Section -->
+                <div class="profile-card" style="margin-top: 20px;">
+                    <h3>📎 Additional Documents</h3>
+                    <p style="color: #888; margin-bottom: 15px;">Upload any other supporting documents</p>
+                    <div class="upload-area">
+                        <input type="file" id="fileUpload" accept=".pdf,.xlsx,.xls,.csv" multiple>
+                        <button class="btn btn-primary" onclick="uploadDocuments()">Upload Files</button>
+                        <div id="uploadProgress" style="margin-top: 1rem; display: none;">
+                            <div style="background: #333; height: 20px; border-radius: 10px; overflow: hidden;">
+                                <div id="uploadBar" style="background: #ff3333; height: 100%; width: 0%; transition: width 0.3s;"></div>
+                            </div>
+                            <p id="uploadStatus" style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem;"></p>
+                        </div>
+                    </div>
+
+                    <h4 style="margin-top: 2rem; color: #ff3333;">Uploaded Files</h4>
+                    <div id="documentsList" style="margin-top: 1rem;">
+                        <p style="color: #888;">No additional documents uploaded yet.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pro Decks Tab (Gold/Diamond Only) -->
+            <div id="tab-powerpoint" class="tab-content">
+                <div class="profile-card">
+                    <h3>Create Pro Deck</h3>
+                    <p>Create boardroom-ready presentations with your financial data</p>
+                    <button class="btn btn-primary" onclick="generatePowerPoint()" style="margin-top: 1rem;">Generate Pro Deck</button>
+
+                    <h4 style="margin-top: 2rem; color: #ff3333;">Your Pro Deck Files</h4>
+                    <div id="powerpointList" style="margin-top: 1rem;">
+                        <p style="color: #888;">No files generated yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pro Forma Planning Tab -->
+            <div id="tab-proforma" class="tab-content">
+                <div class="profile-card" style="max-width: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div>
+                            <h3 style="color: #ff3333; margin: 0;">📊 Pro Forma Financial Model</h3>
+                            <p style="color: #888; margin-top: 5px;">Build professional financial projections with multiple forecasting methods</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openProFormaPlanner()" style="padding: 12px 24px;">
+                            <span style="margin-right: 8px;">🚀</span> Open Full Planner
+                        </button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                        <div style="background: rgba(255,51,51,0.1); border: 1px solid #ff3333; border-radius: 10px; padding: 1.5rem; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 10px;">📈</div>
+                            <h4 style="color: #fff; margin: 0 0 5px;">Revenue Planning</h4>
+                            <p style="color: #888; font-size: 0.85rem; margin: 0;">Multiple revenue categories with dropdown selection</p>
+                        </div>
+                        <div style="background: rgba(76,175,80,0.1); border: 1px solid #4caf50; border-radius: 10px; padding: 1.5rem; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 10px;">💰</div>
+                            <h4 style="color: #fff; margin: 0 0 5px;">Expense Management</h4>
+                            <p style="color: #888; font-size: 0.85rem; margin: 0;">Fixed & variable expenses with helper notes</p>
+                        </div>
+                        <div style="background: rgba(33,150,243,0.1); border: 1px solid #2196f3; border-radius: 10px; padding: 1.5rem; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 10px;">🎯</div>
+                            <h4 style="color: #fff; margin: 0 0 5px;">Smart Projections</h4>
+                            <p style="color: #888; font-size: 0.85rem; margin: 0;">T3, T6, T12, YoY, and percentage methods</p>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 1.5rem;">
+                        <h4 style="color: #ff3333; margin: 0 0 1rem;">Projection Methods Available:</h4>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 0.9rem;">
+                            <div style="color: #ccc;">• <strong>T12/T6/T3:</strong> Trailing month averages</div>
+                            <div style="color: #ccc;">• <strong>Last Year:</strong> Match previous year totals</div>
+                            <div style="color: #ccc;">• <strong>Same Month LY:</strong> Last year same month</div>
+                            <div style="color: #ccc;">• <strong>% Increase:</strong> Growth projections</div>
+                            <div style="color: #ccc;">• <strong>Last Month:</strong> Carry forward values</div>
+                            <div style="color: #ccc;">• <strong>Manual:</strong> Custom entry per month</div>
+                        </div>
+                    </div>
+
+                    <div id="proforma-preview" style="margin-top: 2rem;"></div>
+                </div>
+            </div>
+
+            <!-- QuickBooks Tab (Diamond Only) -->
+            <div id="tab-quickbooks" class="tab-content">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <!-- Connection Card -->
+                    <div class="profile-card">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 1.5rem;">
+                            <div style="width: 60px; height: 60px; background: #2CA01C; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <span style="font-size: 28px; color: white; font-weight: bold;">QB</span>
+                            </div>
+                            <div>
+                                <h3 style="margin: 0; color: #ff3333;">QuickBooks Online</h3>
+                                <p style="margin: 5px 0 0; color: #888; font-size: 14px;">Sync your accounting data</p>
+                            </div>
+                        </div>
+                        <div id="quickbooksStatus">
+                            <div style="background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 10px; padding: 1.5rem; margin-bottom: 1rem;">
+                                <p style="color: #ff9800; margin-bottom: 1rem;">⚠️ Not Connected</p>
+                                <p style="color: #aaa; font-size: 14px; line-height: 1.6;">Connect your QuickBooks Online account to automatically sync your financial data, including P&L, Balance Sheet, and Cash Flow statements.</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="connectQuickBooks()" style="width: 100%; padding: 1rem; font-size: 16px;">
+                                <span style="margin-right: 8px;">🔗</span> Connect QuickBooks
+                            </button>
+                            <button class="btn" onclick="demoQuickBooks()" style="width: 100%; margin-top: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid #444;">
+                                <span style="margin-right: 8px;">👁️</span> Try Demo Mode
+                            </button>
+                        </div>
+                        <div id="quickbooksConnected" class="hidden">
+                            <div style="background: rgba(76, 175, 80, 0.1); border: 1px solid #4caf50; border-radius: 10px; padding: 1.5rem; margin-bottom: 1rem;">
+                                <p style="color: #4caf50; font-weight: 600; margin-bottom: 0.5rem;">✓ Connected</p>
+                                <p style="color: #aaa; font-size: 14px;">Company: <span id="qbCompanyName">Demo Company</span></p>
+                                <p style="color: #aaa; font-size: 14px;">Last sync: <span id="lastSync">Just now</span></p>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-primary" onclick="syncQuickBooks()" style="flex: 1;">
+                                    <span style="margin-right: 8px;">🔄</span> Sync Now
+                                </button>
+                                <button class="btn" onclick="disconnectQuickBooks()" style="background: rgba(255,0,0,0.2); border: 1px solid #ff3333;">
+                                    Disconnect
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Preview Card -->
+                    <div class="profile-card">
+                        <h3 style="color: #ff3333; margin-bottom: 1rem;">Synced Data</h3>
+                        <div id="qbDataPreview">
+                            <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div><span style="margin-right: 10px;">📊</span> Profit & Loss</div>
+                                <span id="qbPnLStatus" style="color: #666;">--</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div><span style="margin-right: 10px;">📋</span> Balance Sheet</div>
+                                <span id="qbBSStatus" style="color: #666;">--</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div><span style="margin-right: 10px;">💵</span> Cash Flow</div>
+                                <span id="qbCFStatus" style="color: #666;">--</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div><span style="margin-right: 10px;">📝</span> Invoices</div>
+                                <span id="qbInvStatus" style="color: #666;">--</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div><span style="margin-right: 10px;">👥</span> Customers</div>
+                                <span id="qbCustStatus" style="color: #666;">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="profile-card" style="margin-top: 2rem;">
+                    <h3 style="color: #ff3333; margin-bottom: 1rem;">Quick Actions</h3>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                        <button onclick="qbGeneratePnL()" class="btn" style="padding: 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 8px; background: rgba(255,255,255,0.05);">
+                            <span style="font-size: 24px;">📈</span>
+                            <span>Generate P&L Report</span>
+                        </button>
+                        <button onclick="qbGenerateBS()" class="btn" style="padding: 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 8px; background: rgba(255,255,255,0.05);">
+                            <span style="font-size: 24px;">📊</span>
+                            <span>Balance Sheet</span>
+                        </button>
+                        <button onclick="qbGenerateCF()" class="btn" style="padding: 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 8px; background: rgba(255,255,255,0.05);">
+                            <span style="font-size: 24px;">💰</span>
+                            <span>Cash Flow Analysis</span>
+                        </button>
+                        <button onclick="qbCreateDeck()" class="btn" style="padding: 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 8px; background: rgba(255,255,255,0.05);">
+                            <span style="font-size: 24px;">🎯</span>
+                            <span>Create Presentation</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ADMIN SECTION -->
+    <section id="admin" class="section hidden">
+        <div class="container">
+            <h2>Admin Dashboard</h2>
+            <div id="adminContent">
+                <p style="text-align: center;">Loading admin data...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI PRESENTATION BUILDER SECTION - PopAI Style -->
+    <section id="ppt-showcase-section" class="section" style="margin-top: 0; padding-top: 4rem; background: linear-gradient(180deg, rgba(0,0,0,0.95), rgba(10,10,10,1));">
+        <div class="container" style="max-width: 1400px;">
+
+            <!-- Header -->
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <div style="display: inline-flex; align-items: center; gap: 15px; margin-bottom: 1rem;">
+                    <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #ff3333, #cc0000); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">⚡</div>
+                    <h2 style="color: #fff; font-size: 2.5rem; margin: 0;">AI <span style="color: #ff3333;">Presentation</span></h2>
+                </div>
+                <p style="color: rgba(255,255,255,0.6); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                    Describe what you want for your slides. The AI agent will generate a full presentation for you like a human assistant.
+                </p>
+            </div>
+
+            <!-- AI Prompt Input -->
+            <div style="max-width: 900px; margin: 0 auto 3rem;">
+                <div id="ai-pres-prompt-inline" style="position: relative; background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 8px; transition: all 0.3s;" onmouseenter="this.style.borderColor='rgba(255,51,51,0.5)'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.1)'">
+                    <textarea id="inline-pres-prompt" placeholder="Create a Q4 financial report for my SaaS business with KPIs, revenue trends, and strategic recommendations..." style="width: 100%; background: transparent; border: none; color: #fff; font-size: 1.1rem; padding: 15px 130px 15px 20px; outline: none; resize: none; min-height: 60px; font-family: inherit;" rows="2"></textarea>
+                    <div style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); display: flex; gap: 10px;">
+                        <button onclick="document.getElementById('inline-pres-prompt').value = ''" style="width: 45px; height: 45px; border-radius: 12px; border: none; cursor: pointer; background: rgba(255,255,255,0.1); color: #fff; font-size: 18px; transition: all 0.2s;" onmouseenter="this.style.transform='scale(1.1)'" onmouseleave="this.style.transform='scale(1)'">+</button>
+                        <button onclick="aiPresentationBuilder.open(); document.getElementById('ai-prompt-input').value = document.getElementById('inline-pres-prompt').value;" style="width: 45px; height: 45px; border-radius: 12px; border: none; cursor: pointer; background: linear-gradient(135deg, #ff3333, #cc0000); color: #fff; font-size: 18px; transition: all 0.2s; display: flex; align-items: center; justify-content: center;" onmouseenter="this.style.transform='scale(1.1)'; this.style.boxShadow='0 5px 20px rgba(255,51,51,0.4)'" onmouseleave="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Tabs -->
+            <div style="display: flex; gap: 10px; margin-bottom: 2rem; flex-wrap: wrap; justify-content: center;" id="inline-category-tabs">
+                <button class="ai-cat-btn active" data-cat="all" onclick="filterInlineTemplates('all', this)">🎯 ALL</button>
+                <button class="ai-cat-btn" data-cat="business" onclick="filterInlineTemplates('business', this)">💼 Business & Finance</button>
+                <button class="ai-cat-btn" data-cat="investor" onclick="filterInlineTemplates('investor', this)">🚀 Investor Pitch</button>
+                <button class="ai-cat-btn" data-cat="analysis" onclick="filterInlineTemplates('analysis', this)">📊 Analysis</button>
+                <button class="ai-cat-btn" data-cat="reporting" onclick="filterInlineTemplates('reporting', this)">📈 Reports</button>
+                <button class="ai-cat-btn" data-cat="minimal" onclick="filterInlineTemplates('minimal', this)">◻️ Minimal</button>
+                <button class="ai-cat-btn" data-cat="dark" onclick="filterInlineTemplates('dark', this)">🌙 Dark</button>
+            </div>
+
+            <style>
+                .ai-cat-btn {
+                    padding: 10px 20px;
+                    border-radius: 25px;
+                    border: 1px solid rgba(255,255,255,0.1);
+                    background: rgba(255,255,255,0.03);
+                    color: rgba(255,255,255,0.7);
+                    font-size: 0.9rem;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                }
+                .ai-cat-btn:hover {
+                    background: rgba(255,255,255,0.08);
+                    color: #fff;
+                }
+                .ai-cat-btn.active {
+                    background: #ff3333;
+                    border-color: #ff3333;
+                    color: #fff;
+                }
+                .ai-tpl-card {
+                    background: rgba(255,255,255,0.03);
+                    border: 1px solid rgba(255,255,255,0.08);
+                    border-radius: 16px;
+                    overflow: hidden;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                }
+                .ai-tpl-card:hover {
+                    transform: translateY(-8px);
+                    border-color: rgba(255,51,51,0.5);
+                    box-shadow: 0 20px 50px rgba(255,51,51,0.2);
+                }
+                .ai-tpl-card.selected {
+                    border-color: #ff3333;
+                    box-shadow: 0 0 0 2px rgba(255,51,51,0.3);
+                }
+                .ai-tpl-preview {
+                    width: 100%;
+                    aspect-ratio: 16/9;
+                    background: #1a1a1a;
+                }
+                .ai-tpl-info {
+                    padding: 15px;
+                }
+                .ai-tpl-name {
+                    color: #fff;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    margin-bottom: 5px;
+                }
+                .ai-tpl-desc {
+                    color: rgba(255,255,255,0.5);
+                    font-size: 0.85rem;
+                }
+                .ai-tpl-premium {
+                    position: absolute;
+                    top: 12px;
+                    right: 12px;
+                    background: linear-gradient(135deg, #ffd700, #ffed4e);
+                    color: #000;
+                    padding: 4px 10px;
+                    border-radius: 12px;
+                    font-size: 0.7rem;
+                    font-weight: 700;
+                }
+            </style>
+
+            <!-- Themes Section Title -->
+            <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 1.5rem; font-weight: 600;">Themes</h3>
+
+            <!-- Templates Grid -->
+            <div id="inline-templates-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 2rem;">
+
+                <!-- Executive Blue -->
+                <div class="ai-tpl-card" data-categories="business,reporting" onclick="selectInlineTemplate(this, 'executive-blue')">
+                    <div class="ai-tpl-preview">
+                        <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="320" height="180" fill="#f8f9fa"/>
+                            <rect x="0" y="0" width="320" height="40" fill="#0066CC"/>
+                            <text x="20" y="26" fill="white" font-size="14" font-weight="bold">Executive Summary</text>
+                            <rect x="20" y="55" width="120" height="50" rx="4" fill="#0066CC" opacity="0.1"/>
+                            <rect x="25" y="60" width="40" height="6" fill="#0066CC"/>
+                            <text x="25" y="85" fill="#0066CC" font-size="18" font-weight="bold">$1.2M</text>
+                            <text x="25" y="98" fill="#666" font-size="8">Revenue</text>
+                            <rect x="160" y="55" width="140" height="50" rx="4" fill="#0066CC" opacity="0.05"/>
+                            <rect x="170" y="70" width="60" height="8" fill="#0066CC" opacity="0.3"/>
+                            <rect x="170" y="85" width="100" height="8" fill="#0066CC" opacity="0.2"/>
+                            <rect x="20" y="115" width="280" height="50" rx="4" fill="#fff" stroke="#0066CC" stroke-width="1"/>
+                            <rect x="30" y="125" width="30" height="30" fill="#0066CC" opacity="0.8"/>
+                            <rect x="70" y="125" width="30" height="25" fill="#0066CC" opacity="0.6"/>
+                            <rect x="110" y="125" width="30" height="35" fill="#0066CC" opacity="0.9"/>
+                            <rect x="150" y="125" width="30" height="20" fill="#0066CC" opacity="0.5"/>
+                        </svg>
+                    </div>
+                    <div class="ai-tpl-info">
+                        <div class="ai-tpl-name">Executive Summary</div>
+                        <div class="ai-tpl-desc">Clean, professional blue theme for board meetings</div>
+                    </div>
+                </div>
+
+                <!-- Investor Pitch -->
+                <div class="ai-tpl-card" data-categories="investor,business" onclick="selectInlineTemplate(this, 'investor-pitch')">
+                    <div class="ai-tpl-preview">
+                        <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="320" height="180" fill="#faf5ff"/>
+                            <rect x="0" y="0" width="320" height="50" fill="#6B46C1"/>
+                            <text x="160" y="32" fill="white" font-size="16" font-weight="bold" text-anchor="middle">Investor Pitch</text>
+                            <circle cx="80" cy="110" r="35" fill="#6B46C1" opacity="0.2"/>
+                            <circle cx="80" cy="110" r="25" fill="#6B46C1" opacity="0.4"/>
+                            <circle cx="80" cy="110" r="15" fill="#6B46C1"/>
+                            <rect x="140" y="75" width="160" height="12" rx="2" fill="#6B46C1" opacity="0.3"/>
+                            <rect x="140" y="95" width="140" height="8" rx="2" fill="#6B46C1" opacity="0.2"/>
+                            <rect x="140" y="110" width="120" height="8" rx="2" fill="#6B46C1" opacity="0.15"/>
+                            <rect x="140" y="125" width="100" height="8" rx="2" fill="#6B46C1" opacity="0.1"/>
+                            <text x="160" y="160" fill="#6B46C1" font-size="10" font-weight="bold">Series A - $5M</text>
+                        </svg>
+                    </div>
+                    <div class="ai-tpl-info">
+                        <div class="ai-tpl-name">Investor Pitch Deck</div>
+                        <div class="ai-tpl-desc">Compelling pitch deck for fundraising</div>
+                    </div>
+                </div>
+
+                <!-- Financial Analysis -->
+                <div class="ai-tpl-card" data-categories="analysis,reporting" onclick="selectInlineTemplate(this, 'financial-analysis')">
+                    <div class="ai-tpl-preview">
+                        <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="320" height="180" fill="#f0fdf4"/>
+                            <rect x="0" y="0" width="320" height="35" fill="#059669"/>
+                            <text x="20" y="23" fill="white" font-size="12" font-weight="bold">Financial Analysis</text>
+                            <polyline points="30,140 80,100 130,120 180,80 230,90 280,60" fill="none" stroke="#059669" stroke-width="3"/>
+                            <circle cx="30" cy="140" r="4" fill="#059669"/>
+                            <circle cx="80" cy="100" r="4" fill="#059669"/>
+                            <circle cx="130" cy="120" r="4" fill="#059669"/>
+                            <circle cx="180" cy="80" r="4" fill="#059669"/>
+                            <circle cx="230" cy="90" r="4" fill="#059669"/>
+                            <circle cx="280" cy="60" r="4" fill="#059669"/>
+                            <rect x="20" y="150" width="280" height="20" rx="2" fill="#059669" opacity="0.1"/>
+                        </svg>
+                    </div>
+                    <div class="ai-tpl-info">
+                        <div class="ai-tpl-name">Financial Deep Dive</div>
+                        <div class="ai-tpl-desc">Detailed financial analysis with charts</div>
+                    </div>
+                </div>
+
+                <!-- Monthly Report -->
+                <div class="ai-tpl-card" data-categories="reporting,business" onclick="selectInlineTemplate(this, 'monthly-report')">
+                    <div class="ai-tpl-preview">
+                        <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="320" height="180" fill="#fef2f2"/>
+                            <rect x="0" y="0" width="320" height="40" fill="#DC2626"/>
+                            <text x="20" y="26" fill="white" font-size="14" font-weight="bold">Monthly Report</text>
+                            <rect x="20" y="55" width="85" height="55" rx="4" fill="white" stroke="#DC2626" stroke-width="1"/>
+                            <text x="30" y="75" fill="#DC2626" font-size="8">Revenue</text>
+                            <text x="30" y="95" fill="#DC2626" font-size="14" font-weight="bold">+15%</text>
+                            <rect x="115" y="55" width="85" height="55" rx="4" fill="white" stroke="#DC2626" stroke-width="1"/>
+                            <text x="125" y="75" fill="#DC2626" font-size="8">Profit</text>
+                            <text x="125" y="95" fill="#DC2626" font-size="14" font-weight="bold">+22%</text>
+                            <rect x="210" y="55" width="90" height="55" rx="4" fill="white" stroke="#DC2626" stroke-width="1"/>
+                            <text x="220" y="75" fill="#DC2626" font-size="8">Growth</text>
+                            <text x="220" y="95" fill="#DC2626" font-size="14" font-weight="bold">+8%</text>
+                            <rect x="20" y="120" width="280" height="45" rx="4" fill="#DC2626" opacity="0.1"/>
+                        </svg>
+                    </div>
+                    <div class="ai-tpl-info">
+                        <div class="ai-tpl-name">Monthly Performance</div>
+                        <div class="ai-tpl-desc">Monthly business performance report</div>
+                    </div>
+                </div>
+
+                <!-- Dark Professional -->
+                <div class="ai-tpl-card" data-categories="dark,business" onclick="selectInlineTemplate(this, 'dark-professional')">
+                    <div class="ai-tpl-preview">
+                        <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="320" height="180" fill="#1a1a1a"/>
+                            <rect x="0" y="0" width="320" height="40" fill="#FF3333"/>
+                            <text x="20" y="26" fill="white" font-size="14" font-weight="bold">Dark Professional</text>
+                            <rect x="20" y="55" width="140" height="50" rx="4" fill="#2a2a2a"/>
+                            <rect x="30" y="65" width="60" height="8" fill="#FF3333"/>
+                            <rect x="30" y="80" width="100" height="6" fill="#444"/>
+                            <rect x="30" y="92" width="80" height="6" fill="#333"/>
+                            <rect x="180" y="55" width="120" height="50" rx="4" fill="#2a2a2a"/>
+                            <circle cx="240" cy="80" r="20" fill="#FF3333" opacity="0.3"/>
+                            <text x="240" y="85" fill="#FF3333" font-size="12" text-anchor="middle">42%</text>
+                            <rect x="20" y="115" width="280" height="50" rx="4" fill="#2a2a2a"/>
+                            <rect x="30" y="130" width="30" height="25" fill="#FF3333"/>
+                            <rect x="70" y="140" width="30" height="15" fill="#FF3333" opacity="0.6"/>
+                            <rect x="110" y="125" width="30" height="30" fill="#FF3333" opacity="0.8"/>
+                        </svg>
+                    </div>
+                    <div class="ai-tpl-info">
+                        <div class="ai-tpl-name">Dark Professional</div>
+                        <div class="ai-tpl-desc">Sleek dark theme for modern presentations</div>
+                    </div>
+                </div>
+
+                <!-- Minimal Clean -->
+                <div class="ai-tpl-card" data-categories="minimal,business" onclick="selectInlineTemplate(this, 'minimal-white')">
+                    <div class="ai-tpl-preview">
+                        <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="320" height="180" fill="#ffffff"/>
+                            <line x1="0" y1="40" x2="320" y2="40" stroke="#1A1A1A" stroke-width="2"/>
+                            <text x="20" y="26" fill="#1A1A1A" font-size="14" font-weight="300">Minimal Clean</text>
+                            <rect x="20" y="60" width="280" height="1" fill="#eee"/>
+                            <rect x="20" y="70" width="200" height="8" fill="#1A1A1A" opacity="0.1"/>
+                            <rect x="20" y="85" width="160" height="6" fill="#1A1A1A" opacity="0.05"/>
+                            <rect x="20" y="100" width="280" height="1" fill="#eee"/>
+                            <text x="20" y="130" fill="#1A1A1A" font-size="24" font-weight="200">$2.4M</text>
+                            <rect x="20" y="145" width="100" height="4" fill="#1A1A1A" opacity="0.2"/>
+                            <rect x="20" y="155" width="80" height="4" fill="#1A1A1A" opacity="0.1"/>
+                        </svg>
+                    </div>
+                    <div class="ai-tpl-info">
+                        <div class="ai-tpl-name">Minimal Clean</div>
+                        <div class="ai-tpl-desc">Ultra-clean minimalist design</div>
+                    </div>
+                </div>
+
+                <!-- Startup Pitch (Premium) -->
+                <div class="ai-tpl-card" data-categories="investor" onclick="selectInlineTemplate(this, 'startup-pitch')" style="position: relative;">
+                    <div class="ai-tpl-premium">PREMIUM</div>
+                    <div class="ai-tpl-preview">
+                        <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="320" height="180" fill="#fffbeb"/>
+                            <rect x="0" y="0" width="320" height="50" fill="#F59E0B"/>
+                            <text x="160" y="32" fill="white" font-size="16" font-weight="bold" text-anchor="middle">Startup Pitch</text>
+                            <polygon points="160,65 180,100 200,100 170,120 180,155 160,135 140,155 150,120 120,100 140,100" fill="#F59E0B" opacity="0.8"/>
+                            <rect x="20" y="100" width="70" height="60" rx="4" fill="white" stroke="#F59E0B"/>
+                            <text x="55" y="135" fill="#F59E0B" font-size="8" text-anchor="middle">$10M TAM</text>
+                            <rect x="230" y="100" width="70" height="60" rx="4" fill="white" stroke="#F59E0B"/>
+                            <text x="265" y="135" fill="#F59E0B" font-size="8" text-anchor="middle">10x Growth</text>
+                        </svg>
+                    </div>
+                    <div class="ai-tpl-info">
+                        <div class="ai-tpl-name">Startup Pitch</div>
+                        <div class="ai-tpl-desc">Y-Combinator style startup pitch</div>
+                    </div>
+                </div>
+
+                <!-- Board Meeting (Premium) -->
+                <div class="ai-tpl-card" data-categories="business,reporting" onclick="selectInlineTemplate(this, 'board-meeting')" style="position: relative;">
+                    <div class="ai-tpl-premium">PREMIUM</div>
+                    <div class="ai-tpl-preview">
+                        <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="320" height="180" fill="#eff6ff"/>
+                            <rect x="0" y="0" width="320" height="45" fill="#1E40AF"/>
+                            <text x="160" y="28" fill="white" font-size="14" font-weight="bold" text-anchor="middle">Board Meeting</text>
+                            <rect x="20" y="55" width="90" height="55" rx="4" fill="white" stroke="#1E40AF"/>
+                            <text x="65" y="90" fill="#1E40AF" font-size="10" text-anchor="middle">Financials</text>
+                            <rect x="120" y="55" width="90" height="55" rx="4" fill="white" stroke="#1E40AF"/>
+                            <text x="165" y="90" fill="#1E40AF" font-size="10" text-anchor="middle">Operations</text>
+                            <rect x="220" y="55" width="80" height="55" rx="4" fill="white" stroke="#1E40AF"/>
+                            <text x="260" y="90" fill="#1E40AF" font-size="10" text-anchor="middle">Strategy</text>
+                            <rect x="20" y="120" width="280" height="45" rx="4" fill="#1E40AF" opacity="0.1"/>
+                            <text x="160" y="148" fill="#1E40AF" font-size="12" text-anchor="middle">Resolutions</text>
+                        </svg>
+                    </div>
+                    <div class="ai-tpl-info">
+                        <div class="ai-tpl-name">Board Meeting</div>
+                        <div class="ai-tpl-desc">Formal board meeting presentation</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Generate Button -->
+            <div style="text-align: center; padding: 2rem 0; border-top: 1px solid rgba(255,255,255,0.1);">
+                <button id="inline-generate-btn" onclick="openAIBuilderWithTemplate()" style="background: linear-gradient(135deg, #ff3333, #cc0000); color: #fff; border: none; padding: 18px 50px; border-radius: 14px; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 12px;" onmouseenter="this.style.transform='scale(1.05)'; this.style.boxShadow='0 15px 40px rgba(255,51,51,0.4)'" onmouseleave="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                    <span>Generate Presentation</span>
+                    <span style="font-size: 1.4rem;">✨</span>
+                </button>
+                <p style="color: rgba(255,255,255,0.4); margin-top: 1rem; font-size: 0.9rem;">Select a template or describe your presentation above</p>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        // Inline template selection and filtering
+        let selectedInlineTemplate = null;
+
+        function filterInlineTemplates(category, btn) {
+            // Update active button
+            document.querySelectorAll('.ai-cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Filter templates
+            document.querySelectorAll('.ai-tpl-card').forEach(card => {
+                const cats = card.dataset.categories?.split(',') || [];
+                if (category === 'all' || cats.includes(category)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function selectInlineTemplate(card, templateId) {
+            // Update selection
+            document.querySelectorAll('.ai-tpl-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedInlineTemplate = templateId;
+        }
+
+        function openAIBuilderWithTemplate() {
+            if (window.aiPresentationBuilder) {
+                aiPresentationBuilder.open();
+
+                // Transfer prompt if any
+                const prompt = document.getElementById('inline-pres-prompt')?.value;
+                if (prompt) {
+                    setTimeout(() => {
+                        const input = document.getElementById('ai-prompt-input');
+                        if (input) input.value = prompt;
+                    }, 100);
+                }
+
+                // Select template if any
+                if (selectedInlineTemplate) {
+                    setTimeout(() => {
+                        aiPresentationBuilder.selectedTemplate = selectedInlineTemplate;
+                        const cards = document.querySelectorAll('.ai-template-card');
+                        cards.forEach(c => {
+                            if (c.onclick?.toString().includes(selectedInlineTemplate)) {
+                                c.classList.add('selected');
+                            }
+                        });
+                    }, 100);
+                }
+            }
+        }
+    </script>
+
+    <!-- AI EXCEL SYSTEM SECTION - Proforma Builder -->
+    <section id="ai-excel-section" class="section" style="margin-top: 0; padding-top: 4rem; padding-bottom: 4rem; background: linear-gradient(180deg, rgba(10,10,10,1), rgba(15,15,25,1));">
+        <div class="container" style="max-width: 1400px;">
+
+            <!-- Header -->
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <div style="display: inline-flex; align-items: center; gap: 15px; margin-bottom: 1rem;">
+                    <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">⚡</div>
+                    <h2 style="color: #fff; font-size: 2.5rem; margin: 0;">AI <span style="background: linear-gradient(90deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Excel Builder</span></h2>
+                </div>
+                <p style="color: rgba(255,255,255,0.6); font-size: 1.1rem; max-width: 700px; margin: 0 auto;">
+                    Transform messy QuickBooks data into professional proformas with SUMIF, SUMIFS, INDEX MATCH, and trailing period calculations - all auto-generated.
+                </p>
+            </div>
+
+            <!-- Feature Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 3rem;">
+
+                <!-- Drop-In Sheet -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,215,0,0.2); border-radius: 16px; padding: 24px; transition: all 0.3s;" onmouseenter="this.style.transform='translateY(-5px)'; this.style.borderColor='rgba(255,215,0,0.5)'; this.style.boxShadow='0 20px 40px rgba(255,215,0,0.1)'" onmouseleave="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,215,0,0.2)'; this.style.boxShadow='none'">
+                    <div style="font-size: 32px; margin-bottom: 12px;">📁</div>
+                    <h3 style="color: #FFD700; font-size: 1.1rem; margin-bottom: 8px;">Drop-In Sheet</h3>
+                    <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">COUNTIF UNIQUE deduplication extracts clean line items from raw QuickBooks data</p>
+                </div>
+
+                <!-- Proforma Structure -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,215,0,0.2); border-radius: 16px; padding: 24px; transition: all 0.3s;" onmouseenter="this.style.transform='translateY(-5px)'; this.style.borderColor='rgba(255,215,0,0.5)'; this.style.boxShadow='0 20px 40px rgba(255,215,0,0.1)'" onmouseleave="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,215,0,0.2)'; this.style.boxShadow='none'">
+                    <div style="font-size: 32px; margin-bottom: 12px;">📊</div>
+                    <h3 style="color: #FFD700; font-size: 1.1rem; margin-bottom: 8px;">Proforma Generator</h3>
+                    <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">Auto-build monthly columns with SUMIF yearly rollups and INDEX MATCH references</p>
+                </div>
+
+                <!-- Trailing Periods -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,215,0,0.2); border-radius: 16px; padding: 24px; transition: all 0.3s;" onmouseenter="this.style.transform='translateY(-5px)'; this.style.borderColor='rgba(255,215,0,0.5)'; this.style.boxShadow='0 20px 40px rgba(255,215,0,0.1)'" onmouseleave="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,215,0,0.2)'; this.style.boxShadow='none'">
+                    <div style="font-size: 32px; margin-bottom: 12px;">📈</div>
+                    <h3 style="color: #FFD700; font-size: 1.1rem; margin-bottom: 8px;">Trailing T-1 to T-12</h3>
+                    <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">SUMIFS with auto-annualization: T-1×12, T-3×4, T-6×2, T-12×1</p>
+                </div>
+
+                <!-- Scenario Toggle -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,215,0,0.2); border-radius: 16px; padding: 24px; transition: all 0.3s;" onmouseenter="this.style.transform='translateY(-5px)'; this.style.borderColor='rgba(255,215,0,0.5)'; this.style.boxShadow='0 20px 40px rgba(255,215,0,0.1)'" onmouseleave="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,215,0,0.2)'; this.style.boxShadow='none'">
+                    <div style="font-size: 32px; margin-bottom: 12px;">🎯</div>
+                    <h3 style="color: #FFD700; font-size: 1.1rem; margin-bottom: 8px;">Scenario Toggle</h3>
+                    <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">INDEX MATCH driven - toggle valuation date updates all formulas instantly</p>
+                </div>
+
+            </div>
+
+            <!-- Template Selection Grid -->
+            <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 1.5rem; font-weight: 600;">Industry Templates</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 2rem;">
+
+                <!-- Real Estate -->
+                <div class="excel-tpl-card" onclick="openAIExcel()" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center;" onmouseenter="this.style.transform='translateY(-5px)'; this.style.borderColor='rgba(255,215,0,0.5)'; this.style.background='rgba(255,215,0,0.05)'" onmouseleave="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,255,255,0.08)'; this.style.background='rgba(255,255,255,0.03)'">
+                    <div style="font-size: 36px; margin-bottom: 10px;">🏢</div>
+                    <div style="color: #fff; font-weight: 600; margin-bottom: 4px;">Real Estate</div>
+                    <div style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">NOI, Cap Rate, Cash Flow</div>
+                </div>
+
+                <!-- SaaS -->
+                <div class="excel-tpl-card" onclick="openAIExcel()" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center;" onmouseenter="this.style.transform='translateY(-5px)'; this.style.borderColor='rgba(255,215,0,0.5)'; this.style.background='rgba(255,215,0,0.05)'" onmouseleave="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,255,255,0.08)'; this.style.background='rgba(255,255,255,0.03)'">
+                    <div style="font-size: 36px; margin-bottom: 10px;">💻</div>
+                    <div style="color: #fff; font-weight: 600; margin-bottom: 4px;">SaaS Business</div>
+                    <div style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">MRR, ARR, Churn, CAC</div>
+                </div>
+
+                <!-- E-Commerce -->
+                <div class="excel-tpl-card" onclick="openAIExcel()" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center;" onmouseenter="this.style.transform='translateY(-5px)'; this.style.borderColor='rgba(255,215,0,0.5)'; this.style.background='rgba(255,215,0,0.05)'" onmouseleave="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,255,255,0.08)'; this.style.background='rgba(255,255,255,0.03)'">
+                    <div style="font-size: 36px; margin-bottom: 10px;">🛒</div>
+                    <div style="color: #fff; font-weight: 600; margin-bottom: 4px;">E-Commerce</div>
+                    <div style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">Gross Margin, Inventory</div>
+                </div>
+
+                <!-- Consulting -->
+                <div class="excel-tpl-card" onclick="openAIExcel()" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center;" onmouseenter="this.style.transform='translateY(-5px)'; this.style.borderColor='rgba(255,215,0,0.5)'; this.style.background='rgba(255,215,0,0.05)'" onmouseleave="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,255,255,0.08)'; this.style.background='rgba(255,255,255,0.03)'">
+                    <div style="font-size: 36px; margin-bottom: 10px;">👔</div>
+                    <div style="color: #fff; font-weight: 600; margin-bottom: 4px;">Professional Services</div>
+                    <div style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">Utilization, Billing Rates</div>
+                </div>
+
+                <!-- Restaurant -->
+                <div class="excel-tpl-card" onclick="openAIExcel()" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center;" onmouseenter="this.style.transform='translateY(-5px)'; this.style.borderColor='rgba(255,215,0,0.5)'; this.style.background='rgba(255,215,0,0.05)'" onmouseleave="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,255,255,0.08)'; this.style.background='rgba(255,255,255,0.03)'">
+                    <div style="font-size: 36px; margin-bottom: 10px;">🍽️</div>
+                    <div style="color: #fff; font-weight: 600; margin-bottom: 4px;">Restaurant / F&B</div>
+                    <div style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">Food Cost, 4-Wall EBITDA</div>
+                </div>
+
+                <!-- Custom -->
+                <div class="excel-tpl-card" onclick="openAIExcel()" style="background: rgba(255,215,0,0.05); border: 1px solid rgba(255,215,0,0.3); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center;" onmouseenter="this.style.transform='translateY(-5px)'; this.style.borderColor='#FFD700'; this.style.boxShadow='0 10px 30px rgba(255,215,0,0.2)'" onmouseleave="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,215,0,0.3)'; this.style.boxShadow='none'">
+                    <div style="font-size: 36px; margin-bottom: 10px;">📊</div>
+                    <div style="color: #FFD700; font-weight: 600; margin-bottom: 4px;">QuickBooks Import</div>
+                    <div style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">Auto-detect structure</div>
+                </div>
+
+            </div>
+
+            <!-- CTA Button -->
+            <div style="text-align: center;">
+                <button onclick="openAIExcel()" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; border: none; padding: 16px 40px; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s;" onmouseenter="this.style.transform='scale(1.05)'; this.style.boxShadow='0 10px 40px rgba(255,215,0,0.4)'" onmouseleave="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                    ⚡ Build Your Proforma
+                </button>
+                <p style="color: rgba(255,255,255,0.4); font-size: 0.85rem; margin-top: 12px;">Free • No signup required • Export to Excel</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <div class="container">
+            <h2>About Our Founder</h2>
+            <div class="about-content">
+                <div class="about-photo">
+                    <img src="zac_mps.jpg" alt="Zac Prizant Headshot">
+                </div>
+                <div class="about-text">
+                    <p>Zac Prizant is a Cornell University and Cornell SC Johnson School Graduate School of Management alumnus, and elite endurance athlete who ran 3,000 miles across the country with his twin brother from San Francisco to NYC. After closing $500M+ in investment banking and private equity deals, Zac managed a portfolio of 60+ hotels, transforming an antiquated eight-hour-per-budget procedure into a seven-minute one.</p>
+                    <p>He went on to serve as a fractional CFO for businesses in various industries ranging from logistics, to law, entertainment, and tech. He launched Lightning Ledgerz to bring elite budgeting and strategy to the masses.</p>
+                    <p>He now trains jiu jitsu in Las Vegas and coaches clients with the intensity of a champion and the heart of a brother.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            <form action="https://formspree.io/f/manjdppp" method="POST" class="contact-form">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="cta-button">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- SIGN UP MODAL -->
+    <div id="signup-modal" class="auth-modal hidden" onclick="if(event.target===this)hideSignUp()">
+        <div class="auth-box">
+            <button onclick="hideSignUp()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; color: #ff3333; font-size: 24px; cursor: pointer; padding: 0; width: 30px; height: 30px;">&times;</button>
+            <h2>Start Your Free Trial</h2>
+            <p style="color: #ff6666; margin-bottom: 1rem; font-size: 0.95rem;">15 days free - No credit card required</p>
+
+            <!-- Google Sign Up Button -->
+            <button onclick="signInWithGoogle()" class="google-auth-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Sign up with Google
+            </button>
+
+            <div style="text-align: center; margin: 1rem 0; color: #666;">— or —</div>
+
+            <form id="signup-form">
+                <input type="text" id="signup-company" placeholder="Company Name" required />
+                <input type="text" id="signup-firstname" placeholder="Your First Name" required />
+                <input type="text" id="signup-lastname" placeholder="Your Last Name" required />
+                <input type="email" id="signup-email" placeholder="Work Email" required />
+                <input type="password" id="signup-password" placeholder="Password (min 6 characters)" required />
+                <button type="submit">Start Free Trial</button>
+            </form>
+            <p style="color: #888; font-size: 0.8rem; margin-top: 1rem;">By signing up, you agree to our Terms of Service</p>
+            <a class="text-link" onclick="switchToSignIn()">Already have an account? Sign in</a>
+        </div>
+    </div>
+
+    <!-- SIGN IN MODAL -->
+    <div id="signin-modal" class="auth-modal hidden" onclick="if(event.target===this)hideSignIn()">
+        <div class="auth-box">
+            <button onclick="hideSignIn()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; color: #ff3333; font-size: 24px; cursor: pointer; padding: 0; width: 30px; height: 30px;">&times;</button>
+            <h2>Sign In</h2>
+
+            <!-- Google Sign In Button -->
+            <button onclick="signInWithGoogle()" class="google-auth-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Continue with Google
+            </button>
+
+            <div style="text-align: center; margin: 1rem 0; color: #666;">— or —</div>
+
+            <form id="signin-form" onsubmit="return handleSignInSubmit(event)">
+                <input type="email" id="signin-email" placeholder="Email" required />
+                <input type="password" id="signin-password" placeholder="Password" required />
+                <button type="submit">Log In</button>
+            </form>
+            <a class="text-link" id="forgot-password">Forgot Password?</a><br>
+            <a class="text-link" onclick="switchToSignUp()">Need an account? Sign up</a>
+        </div>
+    </div>
+
+    <!-- PASSWORD RESET MODAL -->
+    <div id="reset-password-modal" class="auth-modal hidden">
+        <div class="auth-box">
+            <h2>Reset Your Password</h2>
+            <form id="reset-password-form">
+                <input type="password" id="new-password" placeholder="New Password (min 6 characters)" required />
+                <input type="password" id="confirm-password" placeholder="Confirm New Password" required />
+                <button type="submit">Update Password</button>
+            </form>
+            <p style="color: #888; font-size: 0.9rem; margin-top: 1rem;">After updating your password, you'll be signed in automatically.</p>
+        </div>
+    </div>
+
+    <!-- Critical Modal Functions - Inline for immediate availability -->
+    <script>
+        // Define modal functions immediately so they work even if other scripts fail
+        function showSignUp(e) {
+            if (e) e.preventDefault();
+            var modal = document.getElementById('signup-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+        function showSignIn(e) {
+            if (e) e.preventDefault();
+            var modal = document.getElementById('signin-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+        function hideSignUp() {
+            var modal = document.getElementById('signup-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+        function hideSignIn() {
+            var modal = document.getElementById('signin-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+        function switchToSignIn() {
+            hideSignUp();
+            showSignIn();
+        }
+        function switchToSignUp() {
+            hideSignIn();
+            showSignUp();
+        }
+        // Handle Sign In Submit - Test Account Bypass
+        async function handleSignInSubmit(e) {
+            e.preventDefault();
+
+            var email = document.getElementById('signin-email').value.trim();
+            var password = document.getElementById('signin-password').value;
+            var submitBtn = e.target.querySelector('button[type="submit"]');
+
+            console.log('Sign in attempt for:', email);
+
+            // Show loading
+            var originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Signing in...';
+            submitBtn.disabled = true;
+
+            // TEST ACCOUNT - Emily
+            if (email === 'zacily14@gmail.com' && password === 'Snailman1!') {
+                console.log('Emily test account login');
+
+                var mockUser = {
+                    id: 'test-emily-001',
+                    email: 'zacily14@gmail.com',
+                    user_metadata: { first_name: 'Emily' }
+                };
+
+                var mockProfile = {
+                    id: 'test-emily-001',
+                    email: 'zacily14@gmail.com',
+                    first_name: 'Emily',
+                    username: 'emily',
+                    avatar_url: null,
+                    selected_avatar: 'alaina',
+                    package_tier: 'diamond'
+                };
+
+                // Set global state
+                window.currentUser = mockUser;
+                window.currentUserProfile = mockProfile;
+
+                // Save session
+                localStorage.setItem('testUserSession', JSON.stringify({
+                    user: mockUser,
+                    profile: mockProfile,
+                    timestamp: Date.now()
+                }));
+
+                // Close modal
+                hideSignIn();
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+
+                // Welcome message
+                alert('Hi Emily! Welcome back.');
+
+                // Update nav
+                var signinBtn = document.getElementById('nav-signin');
+                var signupBtn = document.getElementById('nav-signup');
+                if (signinBtn) signinBtn.style.display = 'none';
+                if (signupBtn) signupBtn.style.display = 'none';
+
+                // Navigate to profile
+                document.getElementById('services').style.display = 'none';
+                document.getElementById('about').style.display = 'none';
+                document.getElementById('contact').style.display = 'none';
+                document.getElementById('dashboard').classList.add('hidden');
+                document.getElementById('admin').classList.add('hidden');
+                document.getElementById('profile').classList.remove('hidden');
+
+                // Initialize file manager
+                setTimeout(function() {
+                    if (window.fileManager) {
+                        window.fileManager.init('test-emily-001', null);
+                        var mountPoint = document.getElementById('file-manager-mount');
+                        if (mountPoint && !mountPoint.hasChildNodes()) {
+                            mountPoint.appendChild(window.fileManager.createUI());
+                        }
+                    }
+                }, 200);
+
+                window.location.href = '#profile';
+                return false;
+            }
+
+            // For other accounts, try Supabase
+            if (window.supabase) {
+                try {
+                    var result = await window.supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
+
+                    if (result.error) {
+                        alert('Login failed: ' + result.error.message);
+                    } else {
+                        hideSignIn();
+                        // The auth state change handler will take over
+                    }
+                } catch (err) {
+                    alert('Login error: ' + err.message);
+                }
+            } else {
+                alert('Invalid email or password.');
+            }
+
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            return false;
+        }
+
+        // Export to window
+        window.showSignUp = showSignUp;
+        window.showSignIn = showSignIn;
+        window.hideSignUp = hideSignUp;
+        window.hideSignIn = hideSignIn;
+        window.switchToSignIn = switchToSignIn;
+        window.switchToSignUp = switchToSignUp;
+        window.handleSignInSubmit = handleSignInSubmit;
+        console.log('✓ Modal functions loaded inline');
+    </script>
+
+    <!-- Avatar Builder Script -->
+    <script src="avatar-builder.js"></script>
+
+    <!-- Homepage Animations - Floating Graphs -->
+    <script src="homepage-animations.js"></script>
+
+    <!-- Upload Financials Modal -->
+    <div class="upload-modal" id="uploadModal">
+        <div class="upload-modal-content">
+            <div class="upload-modal-header">
+                <h2>Upload Your Financials</h2>
+                <button class="upload-modal-close" onclick="closeUploadModal()">&times;</button>
+            </div>
+            <div class="upload-dropzone" id="uploadDropzone" onclick="document.getElementById('fileUploadInput').click()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <p style="font-size: 1.2rem; color: #fff; font-weight: 600;">Drop files here or click to upload</p>
+                <p>We'll analyze your data and generate insights</p>
+                <input type="file" id="fileUploadInput" multiple accept=".pdf,.xlsx,.xls,.csv,.pptx,.ppt,.doc,.docx" style="display: none;" onchange="handleFileUpload(event)">
+            </div>
+            <div class="upload-file-types">
+                <span class="file-type-badge">PDF</span>
+                <span class="file-type-badge">Excel</span>
+                <span class="file-type-badge">CSV</span>
+                <span class="file-type-badge">PowerPoint</span>
+                <span class="file-type-badge">Word</span>
+            </div>
+            <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(255, 51, 51, 0.1); border-radius: 10px;">
+                <p style="color: #ccc; font-size: 0.9rem; margin: 0;">
+                    <strong style="color: #ff3333;">Supported documents:</strong><br>
+                    Proformas, Budgets, Financial Statements, Customer Lists, Expense Reports, Property Data, Comparable Analysis
+                </p>
+            </div>
+            <div id="uploadedFilesList" style="margin-top: 1rem;"></div>
+        </div>
+    </div>
+
+    <!-- Bring Back Zac Button (shown when Zac is dismissed) -->
+    <button class="bring-back-zac" id="bringBackZacBtn" onclick="bringBackZac()" title="Bring back Zac">
+        ⚡
+    </button>
+
+    <!-- Avatar Characters -->
+    <script src="zac-avatar.js"></script>
+    <script src="bolt-avatar.js"></script>
+    <script src="zeus-avatar.js"></script>
+    <script src="alaina-avatar.js"></script>
+    <script src="avatar-selector.js"></script>
+
+    <!-- New Lightning Ledgerz Modules -->
+    <script src="presentation-builder.js"></script>
+    <script src="powerpoint-templates.js"></script>
+    <script src="presentation-images.js"></script>
+    <script src="budget-builder.js"></script>
+    <script src="financial-reports.js"></script>
+    <script src="avatar-3d-system.js"></script>
+    <script src="quickbooks-integration.js"></script>
+    <script src="auto-report-generator.js"></script>
+    <script src="data-synthesizer.js"></script>
+    <script src="avatar-system-enhanced.js"></script>
+    <script src="ai-financial-analyst.js"></script>
+    <script src="referral-system.js"></script>
+    <script src="advanced-features.js"></script>
+    <script src="report-builder-system.js"></script>
+    <script src="deck-templates.js"></script>
+    <script src="claude-avatar-ai.js"></script>
+    <script src="file-manager.js"></script>
+    <script src="enhancements.js"></script>
+    <script src="dashboard-builder.js"></script>
+    <script src="ai-presentation-chat.js"></script>
+    <script src="financial-analysis-pro.js"></script>
+    <script src="investor-deck-pro.js"></script>
+    <script src="avatar-personality.js"></script>
+    <script src="budget-forecasting.js"></script>
+    <script src="onboarding-tutorial.js"></script>
+    <script src="data-export.js"></script>
+    <script src="pptx-generator.js"></script>
+    <script src="pro-forma-planner.js"></script>
+    <script src="deck-builder-pro.js"></script>
+    <script src="ai-presentation-builder.js"></script>
+    <script src="ai-excel-system.js"></script>
+    <script src="ai-presentation-chat.js"></script>
+    <script src="presentation-showcase.js"></script>
+    <script src="geo-map-visualizer.js"></script>
+    <script src="deck-visuals.js"></script>
+
+    <!-- CORE FINANCIAL TOOLS - What Lightning Ledgerz Actually Does -->
+    <script src="budget-vs-actual.js"></script>
+    <script src="pl-statement-builder.js"></script>
+    <script src="financial-upload-hub.js"></script>
+    <script src="professional-assistant.js"></script>
+    <script src="excel-ai-formulas.js"></script>
+    <script src="consulting-deck-templates.js"></script>
+    <script src="admin-dashboard.js"></script>
+    <script src="data-isolation-test.js"></script>
+
+    <!-- Main Application Script -->
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+
+    <!-- Mobile Failsafe Script -->
+    <script>
+        // FORCE override toggleMobileMenu to ensure it works
+        window.toggleMobileMenu = function() {
+            var hamburger = document.getElementById('hamburgerBtn');
+            var navLinks = document.getElementById('navLinks');
+
+            if (hamburger) hamburger.classList.toggle('active');
+            if (navLinks) navLinks.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+
+            console.log('Menu toggled:', navLinks ? navLinks.classList.contains('active') : 'no navLinks');
+        };
+
+        // FORCE override scrollToPackage to ensure it works
+        window.scrollToPackage = function(id) {
+            console.log('scrollToPackage called with:', id);
+            var target = document.getElementById(id);
+            if (!target) {
+                console.log('Target not found:', id);
+                return;
+            }
+
+            // Remove highlight from all
+            document.querySelectorAll('.package-card').forEach(function(card) {
+                card.classList.remove('highlighted');
+            });
+
+            // Add highlight to target
+            target.classList.add('highlighted');
+
+            // Update button active states
+            var packageType = id.replace('-package', '');
+            document.querySelectorAll('.package-btn').forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            var clickedBtn = document.querySelector('.package-btn.' + packageType);
+            if (clickedBtn) clickedBtn.classList.add('active');
+
+            // Scroll to target
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Remove highlight after 5 seconds
+            setTimeout(function() {
+                target.classList.remove('highlighted');
+            }, 5000);
+
+            console.log('Scrolled to and highlighted:', id);
+        };
+
+        // Close mobile menu when clicking nav links
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.nav-links a') || e.target.closest('.nav-links button')) {
+                var hamburger = document.getElementById('hamburgerBtn');
+                var navLinks = document.getElementById('navLinks');
+                if (hamburger) hamburger.classList.remove('active');
+                if (navLinks) navLinks.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            }
+        });
+
+        // Close menu when clicking overlay
+        document.addEventListener('click', function(e) {
+            if (document.body.classList.contains('menu-open')) {
+                var navLinks = document.getElementById('navLinks');
+                var hamburger = document.getElementById('hamburgerBtn');
+                if (navLinks && !navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+                    hamburger.classList.remove('active');
+                    navLinks.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                }
+            }
+        });
+
+        console.log('✓ Mobile failsafe script loaded (forced override)');
+    </script>
+</body>
+</html>
