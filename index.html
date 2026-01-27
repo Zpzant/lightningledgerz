@@ -173,8 +173,13 @@
             background: none;
             border: none;
             color: white;
-            font-size: 1.5rem;
+            font-size: 2rem;
             cursor: pointer;
+            padding: 10px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            z-index: 1001;
         }
 
         @media (max-width: 900px) {
@@ -184,21 +189,24 @@
                 top: 100%;
                 left: 0;
                 right: 0;
-                background: rgba(0, 0, 0, 0.95);
+                background: rgba(0, 0, 0, 0.98);
                 flex-direction: column;
                 padding: 20px;
                 gap: 15px;
-                border-top: 1px solid rgba(255, 51, 51, 0.3);
+                border-top: 2px solid var(--red);
+                z-index: 9999;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             }
             .nav-links li { list-style: none; }
             .nav-links a {
                 display: block;
-                padding: 10px 0;
-                font-size: 1.1rem;
+                padding: 15px 10px;
+                font-size: 1.2rem;
+                touch-action: manipulation;
             }
             .nav-cta { display: none; }
             .nav-mobile-toggle { display: block; }
-            nav { position: relative; }
+            nav { position: relative; z-index: 1000; }
         }
 
         /* ============================================
@@ -229,6 +237,8 @@
             min-width: 160px;
             pointer-events: auto;
             -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
         }
 
         .package-btn.basic {
@@ -1053,26 +1063,26 @@
         <a href="#top" class="logo" onclick="goHome()">
             <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo">
         </a>
-        <ul class="nav-links">
-            <li><a href="#services">Services</a></li>
-            <li><a href="#pricing">Pricing</a></li>
-            <li><a href="#work">Portfolio</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#portal">Portal</a></li>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#services" onclick="closeMobileMenu()">Services</a></li>
+            <li><a href="#pricing" onclick="closeMobileMenu()">Pricing</a></li>
+            <li><a href="#work" onclick="closeMobileMenu()">Portfolio</a></li>
+            <li><a href="#about" onclick="closeMobileMenu()">About</a></li>
+            <li><a href="#portal" onclick="closeMobileMenu()">Portal</a></li>
         </ul>
         <button class="nav-cta" onclick="scrollToSection('#portal')">Get Started</button>
-        <button class="nav-mobile-toggle" onclick="toggleMobileMenu()">☰</button>
+        <button class="nav-mobile-toggle" onclick="toggleMobileMenu(event)">☰</button>
     </nav>
 
     <!-- Package Sidebar Buttons -->
     <div class="package-sidebar">
-        <button class="package-btn basic" id="btn-basic" onclick="selectPackage('basic')">
+        <button class="package-btn basic" id="btn-basic" onclick="selectPackage(event, 'basic')">
             ⚡ Basic Package
         </button>
-        <button class="package-btn gold" id="btn-gold" onclick="selectPackage('gold')">
+        <button class="package-btn gold" id="btn-gold" onclick="selectPackage(event, 'gold')">
             ✨ Gold Package
         </button>
-        <button class="package-btn diamond" id="btn-diamond" onclick="selectPackage('diamond')">
+        <button class="package-btn diamond" id="btn-diamond" onclick="selectPackage(event, 'diamond')">
             💎 Diamond Package
         </button>
     </div>
@@ -1158,7 +1168,7 @@
 
         <div class="portfolio-grid">
             <!-- Services Overview -->
-            <div class="portfolio-item" onclick="openLightbox('slide-services.png')">
+            <div class="portfolio-item" onclick="openLightbox(event, 'slide-services.png')">
                 <div class="portfolio-image">
                     <img src="slide-services.png" alt="Services Overview">
                 </div>
@@ -1170,7 +1180,7 @@
             </div>
 
             <!-- Budget vs. Actual -->
-            <div class="portfolio-item" onclick="openLightbox('slide-budget-vs-actual.png')">
+            <div class="portfolio-item" onclick="openLightbox(event, 'slide-budget-vs-actual.png')">
                 <div class="portfolio-image">
                     <img src="slide-budget-vs-actual.png" alt="Budget vs Actual Monthly Updates">
                 </div>
@@ -1182,7 +1192,7 @@
             </div>
 
             <!-- Income Benchmarking -->
-            <div class="portfolio-item" onclick="openLightbox('slide-income-benchmarking.png')">
+            <div class="portfolio-item" onclick="openLightbox(event, 'slide-income-benchmarking.png')">
                 <div class="portfolio-image">
                     <img src="slide-income-benchmarking.png" alt="Income Benchmarking Year over Year">
                 </div>
@@ -1194,7 +1204,7 @@
             </div>
 
             <!-- Client Analysis -->
-            <div class="portfolio-item" onclick="openLightbox('slide-client-analysis.png')">
+            <div class="portfolio-item" onclick="openLightbox(event, 'slide-client-analysis.png')">
                 <div class="portfolio-image">
                     <img src="slide-client-analysis.png" alt="Client Analysis">
                 </div>
@@ -1206,7 +1216,7 @@
             </div>
 
             <!-- Cost Comparison YoY -->
-            <div class="portfolio-item" onclick="openLightbox('slide-cost-comparison.png')">
+            <div class="portfolio-item" onclick="openLightbox(event, 'slide-cost-comparison.png')">
                 <div class="portfolio-image">
                     <img src="slide-cost-comparison.png" alt="Cost Comparison Year over Year">
                 </div>
@@ -1218,7 +1228,7 @@
             </div>
 
             <!-- Revenue by Customer -->
-            <div class="portfolio-item" onclick="openLightbox('slide-revenue-by-customer.png')">
+            <div class="portfolio-item" onclick="openLightbox(event, 'slide-revenue-by-customer.png')">
                 <div class="portfolio-image">
                     <img src="slide-revenue-by-customer.png" alt="Revenue Analysis by Customer">
                 </div>
@@ -1230,7 +1240,7 @@
             </div>
 
             <!-- Expense Waterfall -->
-            <div class="portfolio-item" onclick="openLightbox('slide-expense-waterfall.png')">
+            <div class="portfolio-item" onclick="openLightbox(event, 'slide-expense-waterfall.png')">
                 <div class="portfolio-image">
                     <img src="slide-expense-waterfall.png" alt="Operating Expense Waterfall">
                 </div>
@@ -1242,7 +1252,7 @@
             </div>
 
             <!-- Profit Margin vs. Sales -->
-            <div class="portfolio-item" onclick="openLightbox('slide-profit-margin.png')">
+            <div class="portfolio-item" onclick="openLightbox(event, 'slide-profit-margin.png')">
                 <div class="portfolio-image">
                     <img src="slide-profit-margin.png" alt="Profit Margin vs Sales by Year">
                 </div>
@@ -1254,7 +1264,7 @@
             </div>
 
             <!-- Expense Breakdown -->
-            <div class="portfolio-item" onclick="openLightbox('slide-expense-breakdown.png')">
+            <div class="portfolio-item" onclick="openLightbox(event, 'slide-expense-breakdown.png')">
                 <div class="portfolio-image">
                     <img src="slide-expense-breakdown.png" alt="Expense Breakdown by Category">
                 </div>
@@ -1266,7 +1276,7 @@
             </div>
 
             <!-- Revenue Trend Analysis -->
-            <div class="portfolio-item" onclick="openLightbox('slide-revenue-trend.png')">
+            <div class="portfolio-item" onclick="openLightbox(event, 'slide-revenue-trend.png')">
                 <div class="portfolio-image">
                     <img src="slide-revenue-trend.png" alt="Revenue Trend Analysis">
                 </div>
@@ -1278,7 +1288,7 @@
             </div>
 
             <!-- Operational Goals -->
-            <div class="portfolio-item" onclick="openLightbox('slide-operational-goals.png')">
+            <div class="portfolio-item" onclick="openLightbox(event, 'slide-operational-goals.png')">
                 <div class="portfolio-image">
                     <img src="slide-operational-goals.png" alt="Operational Goals">
                 </div>
@@ -1290,7 +1300,7 @@
             </div>
 
             <!-- Market Analysis -->
-            <div class="portfolio-item" onclick="openLightbox('slide-market-analysis.png')">
+            <div class="portfolio-item" onclick="openLightbox(event, 'slide-market-analysis.png')">
                 <div class="portfolio-image">
                     <img src="slide-market-analysis.png" alt="Market Analysis">
                 </div>
@@ -1322,7 +1332,7 @@
             <div class="about-text">
                 <h3>Zac Prizant, MPS</h3>
                 <p>I believe the best financial insights come from human expertise—not automated dashboards. With experience across hospitality, private equity, and corporate FP&A, I deliver the kind of analysis that drives real decisions.</p>
-                <p>Cornell University MPS in Management. $500MM+ in closed real estate transactions. Launched a Fractional CFO division. Every deliverable is crafted personally, ensuring your specific context and needs are reflected.</p>
+                <p>Cornell University MPS in Management. $500MM+ in closed real estate transactions. Every deliverable is crafted personally, ensuring your specific context and needs are reflected.</p>
 
                 <div class="credentials">
                     <div class="credential-item">
@@ -1454,8 +1464,11 @@
             document.querySelector(selector)?.scrollIntoView({ behavior: 'smooth' });
         }
 
-        function selectPackage(packageType) {
-            if (event) event.stopPropagation();
+        function selectPackage(e, packageType) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
 
             // Remove active class from all sidebar buttons
             document.querySelectorAll('.package-btn').forEach(btn => btn.classList.remove('active'));
@@ -1469,17 +1482,36 @@
             if (btn) btn.classList.add('active');
             if (card) {
                 card.classList.add('highlight');
-                // Scroll to the card - use scrollIntoView for better cross-browser support
+                // Scroll to the card
                 setTimeout(() => {
-                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 50);
+                    const rect = card.getBoundingClientRect();
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    const targetY = rect.top + scrollTop - (window.innerHeight / 2) + (rect.height / 2);
+                    window.scrollTo({ top: targetY, behavior: 'smooth' });
+                }, 100);
             }
         }
 
-        function toggleMobileMenu() {
+        function toggleMobileMenu(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             const links = document.querySelector('.nav-links');
             const isHidden = getComputedStyle(links).display === 'none';
-            links.style.display = isHidden ? 'flex' : 'none';
+            if (isHidden) {
+                links.style.display = 'flex';
+                links.style.flexDirection = 'column';
+            } else {
+                links.style.display = 'none';
+            }
+        }
+
+        function closeMobileMenu() {
+            const links = document.querySelector('.nav-links');
+            if (window.innerWidth <= 900) {
+                links.style.display = 'none';
+            }
         }
 
         // ===========================================
@@ -1547,8 +1579,11 @@
         // ===========================================
         // LIGHTBOX
         // ===========================================
-        function openLightbox(src) {
-            event.stopPropagation();
+        function openLightbox(e, src) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             const lightbox = document.getElementById('lightbox');
             const img = document.getElementById('lightbox-img');
             img.src = src;
