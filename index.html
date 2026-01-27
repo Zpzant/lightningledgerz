@@ -2261,16 +2261,28 @@
 
             // Add click AND touch support for package buttons
             document.querySelectorAll('.package-btn').forEach(btn => {
-                // Click handler
+                // Click handler - prevent default anchor behavior and scroll manually
                 btn.addEventListener('click', function(e) {
+                    e.preventDefault();
                     const type = this.id.replace('btn-', '');
-                    selectPackage(e, type);
+                    const card = document.getElementById(type + '-card');
+                    if (card) {
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // Highlight the card
+                        document.querySelectorAll('.package-card').forEach(c => c.classList.remove('highlight'));
+                        card.classList.add('highlight');
+                    }
                 });
                 // Touch handler for mobile
                 btn.addEventListener('touchend', function(e) {
                     e.preventDefault();
                     const type = this.id.replace('btn-', '');
-                    selectPackage(e, type);
+                    const card = document.getElementById(type + '-card');
+                    if (card) {
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        document.querySelectorAll('.package-card').forEach(c => c.classList.remove('highlight'));
+                        card.classList.add('highlight');
+                    }
                 }, { passive: false });
             });
 
