@@ -1413,13 +1413,13 @@
 
     <!-- Package Sidebar Buttons -->
     <div class="package-sidebar">
-        <a href="#basic-card" class="package-btn basic" id="btn-basic">
+        <a href="#basic-card" class="package-btn basic" id="btn-basic" onclick="highlightPackageCard('basic-card'); return false;">
             ⚡ Basic Package
         </a>
-        <a href="#gold-card" class="package-btn gold" id="btn-gold">
+        <a href="#gold-card" class="package-btn gold" id="btn-gold" onclick="highlightPackageCard('gold-card'); return false;">
             ✨ Gold Package
         </a>
-        <a href="#diamond-card" class="package-btn diamond" id="btn-diamond">
+        <a href="#diamond-card" class="package-btn diamond" id="btn-diamond" onclick="highlightPackageCard('diamond-card'); return false;">
             💎 Diamond Package
         </a>
     </div>
@@ -2295,6 +2295,25 @@
         }
 
         // ===========================================
+        // PACKAGE CARD HIGHLIGHT
+        // ===========================================
+        function highlightPackageCard(cardId) {
+            const card = document.getElementById(cardId);
+            if (card) {
+                // Remove highlight from all cards first
+                document.querySelectorAll('.package-card').forEach(c => c.classList.remove('highlight'));
+                // Scroll to the card
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Add highlight immediately
+                card.classList.add('highlight');
+                // Remove highlight after 8 seconds
+                setTimeout(() => {
+                    card.classList.remove('highlight');
+                }, 8000);
+            }
+        }
+
+        // ===========================================
         // INIT
         // ===========================================
         document.addEventListener('DOMContentLoaded', () => {
@@ -2322,43 +2341,6 @@
                     e.preventDefault();
                     const img = this.querySelector('img');
                     if (img) openLightbox(e, img.src);
-                }, { passive: false });
-            });
-
-            // Add click AND touch support for package buttons
-            function highlightPackageCard(cardId) {
-                const card = document.getElementById(cardId);
-                if (card) {
-                    // Remove highlight from all cards first
-                    document.querySelectorAll('.package-card').forEach(c => c.classList.remove('highlight'));
-                    // Scroll to the card
-                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    // Add highlight immediately AND after scroll completes
-                    card.classList.add('highlight');
-                    setTimeout(() => {
-                        card.classList.add('highlight');
-                    }, 500);
-                    // Remove highlight after 8 seconds
-                    setTimeout(() => {
-                        card.classList.remove('highlight');
-                    }, 8000);
-                }
-            }
-
-            document.querySelectorAll('.package-btn').forEach(btn => {
-                // Click handler - prevent default anchor behavior and scroll manually
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const type = this.id.replace('btn-', '');
-                    highlightPackageCard(type + '-card');
-                });
-                // Touch handler for mobile
-                btn.addEventListener('touchend', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const type = this.id.replace('btn-', '');
-                    highlightPackageCard(type + '-card');
                 }, { passive: false });
             });
 
