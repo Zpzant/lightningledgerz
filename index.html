@@ -326,46 +326,59 @@
             color: #000;
         }
 
-        /* Highlight effect for selected package cards */
+        /* Highlight effect for selected package cards - simulates hover */
         .package-card.highlight {
-            box-shadow: 0 0 50px rgba(255, 51, 51, 1), 0 0 80px rgba(255, 51, 51, 0.6), inset 0 0 20px rgba(255, 51, 51, 0.2) !important;
-            transform: translateY(-10px) scale(1.08) !important;
-            border-color: var(--red) !important;
-            z-index: 10;
-            animation: pulseHighlight 1.5s ease-in-out infinite;
+            transform: translateY(-15px) scale(1.05) !important;
+            box-shadow: 0 0 60px rgba(255, 51, 51, 1), 0 0 100px rgba(255, 51, 51, 0.8), 0 20px 50px rgba(255, 51, 51, 0.6), inset 0 0 30px rgba(255, 51, 51, 0.3) !important;
+            border-color: var(--red-light) !important;
+            z-index: 100 !important;
+            position: relative !important;
+            animation: pulseHighlight 0.8s ease-in-out infinite !important;
         }
 
         .package-card.gold.highlight {
-            box-shadow: 0 0 50px rgba(255, 215, 0, 1), 0 0 80px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 215, 0, 0.2) !important;
-            border-color: var(--gold) !important;
+            box-shadow: 0 0 60px rgba(255, 215, 0, 1), 0 0 100px rgba(255, 215, 0, 0.8), 0 20px 50px rgba(255, 215, 0, 0.6), inset 0 0 30px rgba(255, 215, 0, 0.3) !important;
+            border-color: var(--gold-light) !important;
+            animation: pulseHighlightGold 0.8s ease-in-out infinite !important;
         }
 
         .package-card.diamond.highlight {
-            box-shadow: 0 0 50px rgba(255, 255, 255, 1), 0 0 80px rgba(255, 255, 255, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 0 60px rgba(255, 255, 255, 1), 0 0 100px rgba(255, 255, 255, 0.8), 0 20px 50px rgba(255, 255, 255, 0.6), inset 0 0 30px rgba(255, 255, 255, 0.3) !important;
             border-color: #fff !important;
+            animation: pulseHighlightDiamond 0.8s ease-in-out infinite !important;
         }
 
         @keyframes pulseHighlight {
-            0%, 100% { box-shadow: 0 0 50px rgba(255, 51, 51, 1), 0 0 80px rgba(255, 51, 51, 0.6); }
-            50% { box-shadow: 0 0 70px rgba(255, 51, 51, 1), 0 0 100px rgba(255, 51, 51, 0.8); }
-        }
-
-        .package-card.gold.highlight {
-            animation: pulseHighlightGold 1.5s ease-in-out infinite;
+            0%, 100% {
+                box-shadow: 0 0 60px rgba(255, 51, 51, 1), 0 0 100px rgba(255, 51, 51, 0.8), 0 20px 50px rgba(255, 51, 51, 0.6);
+                transform: translateY(-15px) scale(1.05);
+            }
+            50% {
+                box-shadow: 0 0 80px rgba(255, 51, 51, 1), 0 0 120px rgba(255, 51, 51, 0.9), 0 25px 60px rgba(255, 51, 51, 0.7);
+                transform: translateY(-18px) scale(1.06);
+            }
         }
 
         @keyframes pulseHighlightGold {
-            0%, 100% { box-shadow: 0 0 50px rgba(255, 215, 0, 1), 0 0 80px rgba(255, 215, 0, 0.6); }
-            50% { box-shadow: 0 0 70px rgba(255, 215, 0, 1), 0 0 100px rgba(255, 215, 0, 0.8); }
-        }
-
-        .package-card.diamond.highlight {
-            animation: pulseHighlightDiamond 1.5s ease-in-out infinite;
+            0%, 100% {
+                box-shadow: 0 0 60px rgba(255, 215, 0, 1), 0 0 100px rgba(255, 215, 0, 0.8), 0 20px 50px rgba(255, 215, 0, 0.6);
+                transform: translateY(-15px) scale(1.05);
+            }
+            50% {
+                box-shadow: 0 0 80px rgba(255, 215, 0, 1), 0 0 120px rgba(255, 215, 0, 0.9), 0 25px 60px rgba(255, 215, 0, 0.7);
+                transform: translateY(-18px) scale(1.06);
+            }
         }
 
         @keyframes pulseHighlightDiamond {
-            0%, 100% { box-shadow: 0 0 50px rgba(255, 255, 255, 1), 0 0 80px rgba(255, 255, 255, 0.6); }
-            50% { box-shadow: 0 0 70px rgba(255, 255, 255, 1), 0 0 100px rgba(255, 255, 255, 0.8); }
+            0%, 100% {
+                box-shadow: 0 0 60px rgba(255, 255, 255, 1), 0 0 100px rgba(255, 255, 255, 0.8), 0 20px 50px rgba(255, 255, 255, 0.6);
+                transform: translateY(-15px) scale(1.05);
+            }
+            50% {
+                box-shadow: 0 0 80px rgba(255, 255, 255, 1), 0 0 120px rgba(255, 255, 255, 0.9), 0 25px 60px rgba(255, 255, 255, 0.7);
+                transform: translateY(-18px) scale(1.06);
+            }
         }
 
         @media (max-width: 768px) {
@@ -2313,42 +2326,39 @@
             });
 
             // Add click AND touch support for package buttons
+            function highlightPackageCard(cardId) {
+                const card = document.getElementById(cardId);
+                if (card) {
+                    // Remove highlight from all cards first
+                    document.querySelectorAll('.package-card').forEach(c => c.classList.remove('highlight'));
+                    // Scroll to the card
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Add highlight immediately AND after scroll completes
+                    card.classList.add('highlight');
+                    setTimeout(() => {
+                        card.classList.add('highlight');
+                    }, 500);
+                    // Remove highlight after 8 seconds
+                    setTimeout(() => {
+                        card.classList.remove('highlight');
+                    }, 8000);
+                }
+            }
+
             document.querySelectorAll('.package-btn').forEach(btn => {
                 // Click handler - prevent default anchor behavior and scroll manually
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const type = this.id.replace('btn-', '');
-                    const card = document.getElementById(type + '-card');
-                    if (card) {
-                        // Remove highlight from all cards first
-                        document.querySelectorAll('.package-card').forEach(c => c.classList.remove('highlight'));
-                        // Scroll to the card
-                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        // Add highlight after scroll starts
-                        setTimeout(() => {
-                            card.classList.add('highlight');
-                        }, 300);
-                        // Remove highlight after 5 seconds
-                        setTimeout(() => {
-                            card.classList.remove('highlight');
-                        }, 5000);
-                    }
+                    highlightPackageCard(type + '-card');
                 });
                 // Touch handler for mobile
                 btn.addEventListener('touchend', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const type = this.id.replace('btn-', '');
-                    const card = document.getElementById(type + '-card');
-                    if (card) {
-                        document.querySelectorAll('.package-card').forEach(c => c.classList.remove('highlight'));
-                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        setTimeout(() => {
-                            card.classList.add('highlight');
-                        }, 300);
-                        setTimeout(() => {
-                            card.classList.remove('highlight');
-                        }, 5000);
-                    }
+                    highlightPackageCard(type + '-card');
                 }, { passive: false });
             });
 
