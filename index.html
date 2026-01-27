@@ -1477,10 +1477,7 @@
         }
 
         function selectPackage(e, packageType) {
-            if (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
+            console.log('selectPackage called:', packageType);
 
             // Remove active class from all sidebar buttons
             document.querySelectorAll('.package-btn').forEach(btn => btn.classList.remove('active'));
@@ -1491,11 +1488,15 @@
             const btn = document.getElementById('btn-' + packageType);
             const card = document.getElementById(packageType + '-card');
 
+            console.log('Found card:', card);
+
             if (btn) btn.classList.add('active');
             if (card) {
                 card.classList.add('highlight');
                 // Scroll to the card - use scrollIntoView for reliability
-                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 50);
             }
         }
 
@@ -1638,8 +1639,14 @@
                 }, { passive: false });
             });
 
-            // Add touch support for package buttons
+            // Add click AND touch support for package buttons
             document.querySelectorAll('.package-btn').forEach(btn => {
+                // Click handler
+                btn.addEventListener('click', function(e) {
+                    const type = this.id.replace('btn-', '');
+                    selectPackage(e, type);
+                });
+                // Touch handler for mobile
                 btn.addEventListener('touchend', function(e) {
                     e.preventDefault();
                     const type = this.id.replace('btn-', '');
