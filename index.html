@@ -285,19 +285,44 @@
 
         /* Highlight effect for selected package cards */
         .package-card.highlight {
-            box-shadow: 0 0 50px rgba(255, 51, 51, 1), 0 0 80px rgba(255, 51, 51, 0.6), inset 0 0 20px rgba(255, 51, 51, 0.2);
-            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 0 50px rgba(255, 51, 51, 1), 0 0 80px rgba(255, 51, 51, 0.6), inset 0 0 20px rgba(255, 51, 51, 0.2) !important;
+            transform: translateY(-10px) scale(1.08) !important;
             border-color: var(--red) !important;
+            z-index: 10;
+            animation: pulseHighlight 1.5s ease-in-out infinite;
         }
 
         .package-card.gold.highlight {
-            box-shadow: 0 0 50px rgba(255, 215, 0, 1), 0 0 80px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 1), 0 0 80px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 215, 0, 0.2) !important;
             border-color: var(--gold) !important;
         }
 
         .package-card.diamond.highlight {
-            box-shadow: 0 0 50px rgba(255, 255, 255, 1), 0 0 80px rgba(255, 255, 255, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 50px rgba(255, 255, 255, 1), 0 0 80px rgba(255, 255, 255, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.2) !important;
             border-color: #fff !important;
+        }
+
+        @keyframes pulseHighlight {
+            0%, 100% { box-shadow: 0 0 50px rgba(255, 51, 51, 1), 0 0 80px rgba(255, 51, 51, 0.6); }
+            50% { box-shadow: 0 0 70px rgba(255, 51, 51, 1), 0 0 100px rgba(255, 51, 51, 0.8); }
+        }
+
+        .package-card.gold.highlight {
+            animation: pulseHighlightGold 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulseHighlightGold {
+            0%, 100% { box-shadow: 0 0 50px rgba(255, 215, 0, 1), 0 0 80px rgba(255, 215, 0, 0.6); }
+            50% { box-shadow: 0 0 70px rgba(255, 215, 0, 1), 0 0 100px rgba(255, 215, 0, 0.8); }
+        }
+
+        .package-card.diamond.highlight {
+            animation: pulseHighlightDiamond 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulseHighlightDiamond {
+            0%, 100% { box-shadow: 0 0 50px rgba(255, 255, 255, 1), 0 0 80px rgba(255, 255, 255, 0.6); }
+            50% { box-shadow: 0 0 70px rgba(255, 255, 255, 1), 0 0 100px rgba(255, 255, 255, 0.8); }
         }
 
         @media (max-width: 768px) {
