@@ -242,6 +242,7 @@
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
             user-select: none;
+            text-decoration: none;
         }
 
         .package-btn.basic {
@@ -1346,15 +1347,15 @@
 
     <!-- Package Sidebar Buttons -->
     <div class="package-sidebar">
-        <button class="package-btn basic" id="btn-basic" onclick="selectPackage(event, 'basic')">
+        <a href="#basic-card" class="package-btn basic" id="btn-basic">
             ⚡ Basic Package
-        </button>
-        <button class="package-btn gold" id="btn-gold" onclick="selectPackage(event, 'gold')">
+        </a>
+        <a href="#gold-card" class="package-btn gold" id="btn-gold">
             ✨ Gold Package
-        </button>
-        <button class="package-btn diamond" id="btn-diamond" onclick="selectPackage(event, 'diamond')">
+        </a>
+        <a href="#diamond-card" class="package-btn diamond" id="btn-diamond">
             💎 Diamond Package
-        </button>
+        </a>
     </div>
 
     <!-- Hero Section -->
