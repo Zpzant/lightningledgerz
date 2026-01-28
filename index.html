@@ -1548,6 +1548,78 @@
             color: rgba(255, 255, 255, 0.6);
         }
 
+        /* Core Values */
+        .core-values {
+            max-width: 1000px;
+            margin: 60px auto 0;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .values-title {
+            text-align: center;
+            color: var(--red);
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0;
+        }
+
+        @media (max-width: 768px) {
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .value-card {
+            padding: 35px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .value-card h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .value-card p {
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        /* Efficiency - Red */
+        .value-efficiency {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.15), rgba(255, 51, 51, 0.05));
+            border-left: 4px solid var(--red);
+        }
+        .value-efficiency h4 { color: var(--red); }
+
+        /* Adventure - Gold */
+        .value-adventure {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+            border-left: 4px solid var(--gold);
+        }
+        .value-adventure h4 { color: var(--gold); }
+
+        /* Kindness - Green */
+        .value-kindness {
+            background: linear-gradient(135deg, rgba(45, 212, 191, 0.15), rgba(45, 212, 191, 0.05));
+            border-left: 4px solid #2dd4bf;
+        }
+        .value-kindness h4 { color: #2dd4bf; }
+
+        /* Stewardship - Blue/White */
+        .value-stewardship {
+            background: linear-gradient(135deg, rgba(99, 179, 237, 0.15), rgba(99, 179, 237, 0.05));
+            border-left: 4px solid #63b3ed;
+        }
+        .value-stewardship h4 { color: #63b3ed; }
+
         /* ============================================
            FOOTER
         ============================================ */
@@ -2004,6 +2076,29 @@
                         <div class="credential-number">$500M+</div>
                         <div class="credential-label">Transactions Closed</div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Core Values -->
+        <div class="core-values">
+            <h3 class="values-title">Core Values</h3>
+            <div class="values-grid">
+                <div class="value-card value-efficiency">
+                    <h4>Efficiency</h4>
+                    <p>Time is your most valuable asset. I streamline financial processes, automate repetitive tasks, and deliver insights at lightning speed—so you can focus on growing your business, not wrestling with spreadsheets.</p>
+                </div>
+                <div class="value-card value-adventure">
+                    <h4>Adventure</h4>
+                    <p>Every business has a unique story and path forward. I embrace the journey with you, tackling complex financial challenges with curiosity and creativity. The best solutions often come from exploring uncharted territory together.</p>
+                </div>
+                <div class="value-card value-kindness">
+                    <h4>Kindness</h4>
+                    <p>Behind every balance sheet is a person building something meaningful. I treat every client relationship with respect, patience, and genuine care—because great partnerships are built on trust, not transactions.</p>
+                </div>
+                <div class="value-card value-stewardship">
+                    <h4>Stewardship</h4>
+                    <p>Your financial data and business goals are sacred. I take responsibility for protecting your information, maximizing your resources, and delivering work that serves your long-term success—not just today's deadline.</p>
                 </div>
             </div>
         </div>
