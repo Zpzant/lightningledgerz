@@ -985,6 +985,109 @@
             box-shadow: 0 8px 25px rgba(255, 51, 51, 0.5);
         }
 
+        /* Google Sign-In Button */
+        .google-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: #ffffff;
+            color: #333;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .google-btn:hover {
+            background: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .google-btn svg {
+            flex-shrink: 0;
+        }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .auth-divider span {
+            padding: 0 15px;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .form-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: var(--red);
+        }
+
+        .form-checkbox label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .form-link {
+            color: var(--red-light);
+            text-decoration: underline;
+        }
+
+        .form-link:hover {
+            color: var(--red);
+        }
+
+        .form-submit-green {
+            background: linear-gradient(45deg, #2dd4bf, #14b8a6);
+        }
+
+        .form-submit-green:hover {
+            box-shadow: 0 8px 25px rgba(45, 212, 191, 0.5);
+        }
+
         /* Portal Dashboard (Logged In) */
         .portal-dashboard {
             max-width: 700px;
@@ -1710,6 +1813,21 @@
                 <button class="portal-tab" onclick="switchTab('register')">Create Account</button>
             </div>
 
+            <!-- Google Sign-In Button -->
+            <button type="button" class="google-btn" onclick="handleGoogleLogin()">
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Sign in with Google
+            </button>
+
+            <div class="auth-divider">
+                <span>or sign in with email</span>
+            </div>
+
             <form class="portal-form active" id="login-form" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label class="form-label">Email Address</label>
@@ -1723,23 +1841,35 @@
             </form>
 
             <form class="portal-form" id="register-form" onsubmit="handleRegister(event)">
-                <div class="form-group">
-                    <label class="form-label">Full Name</label>
-                    <input type="text" class="form-input" id="register-name" placeholder="John Smith" required>
+                <p class="form-subtitle">14-day trial. No credit card required.</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="register-firstname" placeholder="First Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="register-lastname" placeholder="Last Name" required>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Company</label>
-                    <input type="text" class="form-input" id="register-company" placeholder="Acme Corp">
+                    <input type="email" class="form-input" id="register-email" placeholder="Work Email" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" class="form-input" id="register-email" placeholder="you@company.com" required>
+                    <input type="text" class="form-input" id="register-company" placeholder="Company Name" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-input" id="register-password" placeholder="Minimum 8 characters" required minlength="8">
+                    <input type="tel" class="form-input" id="register-phone" placeholder="Phone" required>
                 </div>
-                <button type="submit" class="form-submit">Create Account</button>
+                <div class="form-group">
+                    <input type="text" class="form-input" id="register-referral" placeholder="Referral Code (Optional)">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-input" id="register-password" placeholder="Create Password (min 8 characters)" required minlength="8">
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" id="register-terms" required>
+                    <label for="register-terms">I agree to the <a href="#" class="form-link">Terms of Service</a> and <a href="#" class="form-link">Privacy Policy</a></label>
+                </div>
+                <button type="submit" class="form-submit form-submit-green">Get Started</button>
             </form>
         </div>
 
@@ -1975,59 +2105,94 @@
             submitBtn.disabled = false;
         }
 
+        async function handleGoogleLogin() {
+            var btn = document.querySelector('.google-btn');
+            btn.textContent = 'Connecting...';
+            btn.disabled = true;
+
+            if (!supabase) {
+                // Demo mode
+                currentUserData = { email: 'demo@gmail.com', name: 'Demo User', tier: 'basic' };
+                showLoggedInDashboard('Demo User', 'basic');
+                showToast('Welcome! (Demo mode - Supabase not configured)', 'success');
+                btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Sign in with Google';
+                btn.disabled = false;
+                return;
+            }
+
+            try {
+                var { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + window.location.pathname
+                    }
+                });
+                if (error) throw error;
+                // User will be redirected to Google, then back
+            } catch (error) {
+                showToast(error.message, 'error');
+                btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Sign in with Google';
+                btn.disabled = false;
+            }
+        }
+
         async function handleRegister(e) {
             e.preventDefault();
-            const name = document.getElementById('register-name').value;
-            const company = document.getElementById('register-company')?.value || '';
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            const submitBtn = e.target.querySelector('button[type="submit"]');
+            var firstName = document.getElementById('register-firstname').value;
+            var lastName = document.getElementById('register-lastname').value;
+            var email = document.getElementById('register-email').value;
+            var company = document.getElementById('register-company').value;
+            var phone = document.getElementById('register-phone').value;
+            var referral = document.getElementById('register-referral').value || '';
+            var password = document.getElementById('register-password').value;
+            var fullName = firstName + ' ' + lastName;
+            var submitBtn = e.target.querySelector('button[type="submit"]');
 
             submitBtn.textContent = 'Creating account...';
             submitBtn.disabled = true;
 
             if (!supabase) {
                 // Demo mode - show dashboard
-                currentUserData = { email, name, tier: 'basic' };
-                showLoggedInDashboard(name, 'basic');
+                currentUserData = { email: email, name: firstName, tier: 'basic' };
+                showLoggedInDashboard(firstName, 'basic');
                 showToast('Account created! (Demo mode)', 'success');
-                submitBtn.textContent = 'Create Account';
+                submitBtn.textContent = 'Get Started';
                 submitBtn.disabled = false;
                 return;
             }
 
             try {
-                // Split name into first/last
-                const nameParts = name.trim().split(' ');
-                const firstName = nameParts[0];
-                const lastName = nameParts.slice(1).join(' ') || '';
-
-                const { data, error } = await supabase.auth.signUp({
-                    email,
-                    password,
+                var { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
                     options: {
                         data: {
-                            full_name: name,
+                            full_name: fullName,
                             first_name: firstName,
-                            last_name: lastName
+                            last_name: lastName,
+                            company: company,
+                            phone: phone
                         }
                     }
                 });
                 if (error) throw error;
 
-                // Create profile
+                // Create profile with all fields
                 if (data.user) {
                     await supabase.from('profiles').insert([{
                         id: data.user.id,
                         email: email,
                         first_name: firstName,
                         last_name: lastName,
+                        company: company,
+                        phone: phone,
+                        referral_code: referral,
                         package_tier: 'basic'
                     }]);
 
                     currentUserData = {
                         id: data.user.id,
-                        email,
+                        email: email,
                         name: firstName,
                         tier: 'basic'
                     };
@@ -2041,7 +2206,7 @@
                 showToast(error.message, 'error');
             }
 
-            submitBtn.textContent = 'Create Account';
+            submitBtn.textContent = 'Get Started';
             submitBtn.disabled = false;
         }
 
