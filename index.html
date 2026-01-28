@@ -1273,6 +1273,215 @@
             color: rgba(255, 255, 255, 0.8);
         }
 
+        /* Dashboard Layout */
+        .dashboard-greeting {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .dashboard-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .dashboard-tier-badge {
+            background: linear-gradient(45deg, var(--red), var(--red-light));
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dashboard-section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+        }
+
+        .section-title h4 {
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .section-subtitle {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* File Cards Grid */
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .file-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .file-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--red);
+            transform: translateY(-3px);
+        }
+
+        .file-thumbnail {
+            width: 100%;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .file-thumbnail img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .file-thumbnail .file-icon {
+            font-size: 2.5rem;
+        }
+
+        .file-name {
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-date {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+        }
+
+        .file-download {
+            display: inline-block;
+            margin-top: 10px;
+            color: var(--red);
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+
+        .file-download:hover {
+            text-decoration: underline;
+        }
+
+        .empty-state {
+            color: rgba(255, 255, 255, 0.4);
+            font-style: italic;
+            text-align: center;
+            padding: 30px;
+            grid-column: 1 / -1;
+        }
+
+        /* Tier Theming - Gold */
+        .portal-dashboard.tier-gold {
+            border-color: var(--gold);
+        }
+
+        .portal-dashboard.tier-gold .dashboard-header h3 {
+            background: linear-gradient(45deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .portal-dashboard.tier-gold .dashboard-tier-badge {
+            background: linear-gradient(45deg, var(--gold), var(--gold-light));
+            color: #000;
+        }
+
+        .portal-dashboard.tier-gold .upload-dropzone {
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+
+        .portal-dashboard.tier-gold .upload-dropzone:hover {
+            border-color: var(--gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .portal-dashboard.tier-gold .upload-browse {
+            color: var(--gold);
+        }
+
+        .portal-dashboard.tier-gold .file-card:hover {
+            border-color: var(--gold);
+        }
+
+        .portal-dashboard.tier-gold .file-download {
+            color: var(--gold);
+        }
+
+        .portal-dashboard.tier-gold .btn-logout:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* Tier Theming - Diamond */
+        .portal-dashboard.tier-diamond {
+            border-color: #fff;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.95));
+        }
+
+        .portal-dashboard.tier-diamond .dashboard-header h3 {
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .portal-dashboard.tier-diamond .dashboard-tier-badge {
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            color: #000;
+        }
+
+        .portal-dashboard.tier-diamond .upload-dropzone {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .portal-dashboard.tier-diamond .upload-dropzone:hover {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .portal-dashboard.tier-diamond .upload-browse {
+            color: #fff;
+        }
+
+        .portal-dashboard.tier-diamond .file-card:hover {
+            border-color: #fff;
+        }
+
+        .portal-dashboard.tier-diamond .file-download {
+            color: #fff;
+        }
+
+        .portal-dashboard.tier-diamond .btn-logout:hover {
+            border-color: #fff;
+            color: #fff;
+        }
+
         /* ============================================
            ABOUT SECTION
         ============================================ */
@@ -1876,35 +2085,46 @@
         <!-- Logged In Dashboard (hidden by default) -->
         <div class="portal-dashboard" id="portal-dashboard" style="display: none;">
             <div class="dashboard-header">
-                <h3>Welcome, <span id="user-display-name">Client</span>!</h3>
+                <div class="dashboard-greeting">
+                    <img src="LightningLedgerzLogo.png" alt="Logo" class="dashboard-logo" id="dashboard-logo">
+                    <h3>Hi <span id="user-display-name">there</span>!</h3>
+                </div>
+                <div class="dashboard-tier-badge" id="tier-badge">Basic</div>
                 <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
             </div>
 
-            <!-- File Upload Section -->
-            <div class="upload-section">
-                <h4>📁 Upload Financial Documents</h4>
-                <p class="upload-description">Securely upload your financial files for analysis. Accepted formats: Excel (.xlsx, .xls), CSV, PDF</p>
+            <!-- Your Uploads Section -->
+            <div class="dashboard-section upload-section">
+                <div class="section-title">
+                    <h4>📁 Your Uploads</h4>
+                    <span class="section-subtitle">Securely upload your financial files for analysis</span>
+                </div>
 
                 <div class="upload-dropzone" id="upload-dropzone">
                     <div class="dropzone-content">
                         <span class="dropzone-icon">📤</span>
                         <p>Drag & drop files here or <label for="file-input" class="upload-browse">browse</label></p>
-                        <input type="file" id="file-input" accept=".xlsx,.xls,.csv,.pdf" multiple style="display: none;">
-                        <p class="upload-hint">Max file size: 25MB per file</p>
+                        <input type="file" id="file-input" accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" multiple style="display: none;">
+                        <p class="upload-hint">Accepted: Excel, CSV, PDF, Word | Max: 25MB per file</p>
                     </div>
                 </div>
 
-                <div class="uploaded-files" id="uploaded-files">
-                    <!-- Uploaded files will appear here -->
+                <div class="files-grid" id="user-uploads-grid">
+                    <!-- User uploaded files will appear here as cards -->
+                    <p class="empty-state" id="uploads-empty">No files uploaded yet. Upload your first file above.</p>
                 </div>
             </div>
 
-            <!-- Deliverables Section -->
-            <div class="deliverables-section">
-                <h4>📊 Your Deliverables</h4>
-                <p class="deliverables-empty" id="deliverables-empty">No deliverables yet. Once your analysis is complete, files will appear here.</p>
-                <div class="deliverables-list" id="deliverables-list">
-                    <!-- Deliverables will appear here -->
+            <!-- Your Lightning Ledgerz Reports Section -->
+            <div class="dashboard-section reports-section">
+                <div class="section-title">
+                    <h4>⚡ Your Lightning Ledgerz Reports</h4>
+                    <span class="section-subtitle">Deliverables prepared by your FP&A advisor</span>
+                </div>
+
+                <div class="files-grid" id="reports-grid">
+                    <!-- Admin-uploaded reports will appear here as cards -->
+                    <p class="empty-state" id="reports-empty">No reports yet. Once your analysis is complete, your custom reports will appear here.</p>
                 </div>
             </div>
 
@@ -1914,9 +2134,9 @@
                 <ul>
                     <li><strong>Confidentiality:</strong> All uploaded documents are treated as strictly confidential and are encrypted in transit and at rest.</li>
                     <li><strong>Data Handling:</strong> Your financial data is used solely for the purpose of providing FP&A services and is never shared with third parties.</li>
-                    <li><strong>No Financial Advice:</strong> Lightning Ledgerz provides financial planning & analysis services, not financial, tax, or legal advice. Consult appropriate professionals for such matters.</li>
+                    <li><strong>No Financial Advice:</strong> Lightning Ledgerz provides financial planning & analysis services, not financial, tax, or legal advice.</li>
                     <li><strong>Retention:</strong> Files are retained for 90 days after project completion unless otherwise requested.</li>
-                    <li><strong>Security:</strong> We employ industry-standard security measures, but you are responsible for ensuring uploaded data complies with your organization's policies.</li>
+                    <li><strong>Security:</strong> Industry-standard encryption protects your data. Only you and your Lightning Ledgerz advisor can access your files.</li>
                 </ul>
             </div>
         </div>
@@ -2215,17 +2435,24 @@
             document.getElementById('portal-dashboard').style.display = 'block';
             document.getElementById('user-display-name').textContent = name;
 
+            // Update tier badge
+            var badge = document.getElementById('tier-badge');
+            if (badge) {
+                badge.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+            }
+
             // Apply tier-based theming
             applyTierTheme(tier);
 
-            // Load user's previously uploaded files
+            // Load user's uploaded files and reports
             loadUserFiles();
+            loadUserReports();
         }
 
         function applyTierTheme(tier) {
-            const body = document.body;
-            const logos = document.querySelectorAll('.logo img, .hero-logo img, .footer-logo img');
-            const dashboard = document.getElementById('portal-dashboard');
+            var body = document.body;
+            var dashboard = document.getElementById('portal-dashboard');
+            var dashboardLogo = document.getElementById('dashboard-logo');
 
             // Remove any existing tier classes
             body.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
@@ -2235,16 +2462,24 @@
             body.classList.add('tier-' + tier);
             dashboard.classList.add('tier-' + tier);
 
-            // Update logos based on tier
-            const logoMap = {
+            // Update dashboard logo based on tier
+            var logoMap = {
                 basic: 'LightningLedgerzLogo.png',
                 gold: 'LightningLedgerzLogo-gold.png',
                 diamond: 'LightningLedgerzLogo-diamond.png'
             };
 
-            logos.forEach(logo => {
-                logo.src = logoMap[tier] || logoMap.basic;
-            });
+            if (dashboardLogo) {
+                dashboardLogo.src = logoMap[tier] || logoMap.basic;
+            }
+
+            // Also update main logo if user has premium tier
+            if (tier !== 'basic') {
+                var logos = document.querySelectorAll('.logo img, .hero-logo img, .footer-logo img');
+                logos.forEach(function(logo) {
+                    logo.src = logoMap[tier] || logoMap.basic;
+                });
+            }
         }
 
         function resetTheme() {
@@ -2365,54 +2600,53 @@
             }
         }
 
-        function displayUploadedFile(fileInfo) {
-            const container = document.getElementById('uploaded-files');
-            const ext = fileInfo.name.split('.').pop().toLowerCase();
-            const icons = { xlsx: '📊', xls: '📊', csv: '📄', pdf: '📕' };
-
-            const fileEl = document.createElement('div');
-            fileEl.className = 'uploaded-file';
-            fileEl.dataset.path = fileInfo.path || '';
-            fileEl.innerHTML = `
-                <div class="uploaded-file-info">
-                    <span class="uploaded-file-icon">${icons[ext] || '📁'}</span>
-                    <div>
-                        <div class="uploaded-file-name">${fileInfo.name}</div>
-                        <div class="uploaded-file-size">${formatFileSize(fileInfo.size)}</div>
-                    </div>
-                </div>
-                <button class="uploaded-file-remove" onclick="removeFile('${fileInfo.name}', '${fileInfo.path || ''}')">&times;</button>
-            `;
-            container.appendChild(fileEl);
+        function getFileIcon(ext) {
+            var icons = {
+                xlsx: '📊', xls: '📊', csv: '📄', pdf: '📕',
+                doc: '📝', docx: '📝', ppt: '📽️', pptx: '📽️',
+                png: '🖼️', jpg: '🖼️', jpeg: '🖼️'
+            };
+            return icons[ext] || '📁';
         }
 
-        async function removeFile(fileName, filePath) {
-            if (supabase && filePath && currentUserData?.id) {
-                try {
-                    // Delete from Supabase Storage
-                    await supabase.storage.from('user-documents').remove([filePath]);
-                    // Delete from database
-                    await supabase.from('user_documents')
-                        .delete()
-                        .eq('user_id', currentUserData.id)
-                        .eq('file_path', filePath);
-                } catch (error) {
-                    console.error('Delete error:', error);
-                }
-            }
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            var d = new Date(dateStr);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
 
-            uploadedFiles = uploadedFiles.filter(f => f.name !== fileName);
-            const container = document.getElementById('uploaded-files');
-            container.innerHTML = '';
-            uploadedFiles.forEach(file => displayUploadedFile(file));
-            showToast('File removed', 'success');
+        function displayFileCard(fileInfo, container, isReport) {
+            var ext = fileInfo.name.split('.').pop().toLowerCase();
+            var icon = getFileIcon(ext);
+
+            var card = document.createElement('div');
+            card.className = 'file-card';
+            card.innerHTML =
+                '<div class="file-thumbnail">' +
+                    '<span class="file-icon">' + icon + '</span>' +
+                '</div>' +
+                '<div class="file-name" title="' + fileInfo.name + '">' + fileInfo.name + '</div>' +
+                '<div class="file-date">' + formatDate(fileInfo.uploaded_at) + '</div>' +
+                (fileInfo.url ? '<a href="' + fileInfo.url + '" target="_blank" class="file-download">Download</a>' : '');
+
+            container.appendChild(card);
         }
 
         async function loadUserFiles() {
-            if (!supabase || !currentUserData?.id) return;
+            var grid = document.getElementById('user-uploads-grid');
+            var emptyState = document.getElementById('uploads-empty');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+
+            if (!supabase || !currentUserData?.id) {
+                // Demo mode - show empty state
+                grid.innerHTML = '<p class="empty-state">No files uploaded yet. Upload your first file above.</p>';
+                return;
+            }
 
             try {
-                const { data, error } = await supabase
+                var { data, error } = await supabase
                     .from('user_documents')
                     .select('*')
                     .eq('user_id', currentUserData.id)
@@ -2421,17 +2655,58 @@
                 if (error) throw error;
 
                 if (data && data.length > 0) {
-                    uploadedFiles = data.map(d => ({
-                        name: d.file_name,
-                        size: d.file_size,
-                        path: d.file_path
-                    }));
-                    const container = document.getElementById('uploaded-files');
-                    container.innerHTML = '';
-                    uploadedFiles.forEach(file => displayUploadedFile(file));
+                    data.forEach(function(doc) {
+                        displayFileCard({
+                            name: doc.file_name,
+                            uploaded_at: doc.uploaded_at,
+                            url: doc.file_url || null
+                        }, grid, false);
+                    });
+                } else {
+                    grid.innerHTML = '<p class="empty-state">No files uploaded yet. Upload your first file above.</p>';
                 }
             } catch (error) {
                 console.error('Error loading files:', error);
+                grid.innerHTML = '<p class="empty-state">Error loading files. Please refresh.</p>';
+            }
+        }
+
+        async function loadUserReports() {
+            var grid = document.getElementById('reports-grid');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+
+            if (!supabase || !currentUserData?.id) {
+                // Demo mode - show sample report
+                grid.innerHTML = '<p class="empty-state">No reports yet. Once your analysis is complete, your custom reports will appear here.</p>';
+                return;
+            }
+
+            try {
+                // Load reports that admin uploaded for this user
+                var { data, error } = await supabase
+                    .from('user_reports')
+                    .select('*')
+                    .eq('user_id', currentUserData.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    data.forEach(function(report) {
+                        displayFileCard({
+                            name: report.report_name,
+                            uploaded_at: report.created_at,
+                            url: report.file_url || null
+                        }, grid, true);
+                    });
+                } else {
+                    grid.innerHTML = '<p class="empty-state">No reports yet. Once your analysis is complete, your custom reports will appear here.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading reports:', error);
+                grid.innerHTML = '<p class="empty-state">No reports yet. Once your analysis is complete, your custom reports will appear here.</p>';
             }
         }
 
