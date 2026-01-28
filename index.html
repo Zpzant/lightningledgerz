@@ -19,8 +19,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase - loaded async to not block page -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" async></script>
 
     <style>
         :root {
@@ -1823,9 +1823,6 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // TEST - Remove after debugging
-        alert('JavaScript is loading!');
-
         // ===========================================
         // SUPABASE CONFIGURATION
         // ===========================================
@@ -1836,10 +1833,20 @@
         let currentUser = null;
 
         function initSupabase() {
-            if (typeof window.supabase !== 'undefined' && SUPABASE_ANON_KEY !== 'YOUR_ANON_KEY_HERE') {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            try {
+                if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                }
+            } catch (err) {
+                console.log('Supabase init failed, using demo mode');
+                supabase = null;
             }
         }
+
+        // Try to init Supabase when it loads (async)
+        window.addEventListener('load', function() {
+            if (!supabase) initSupabase();
+        });
 
         // ===========================================
         // NAVIGATION
