@@ -1824,27 +1824,12 @@
 </head>
 <body>
     <!-- Video Background -->
-    <div class="video-background">
-        <!-- Native video for local file (iOS compatible) -->
-        <video
-            id="bg-video"
-            autoplay
-            loop
-            muted
-            playsinline
-            webkit-playsinline
-            preload="auto"
-            style="display: none;">
-            <source src="background-video.mp4" type="video/mp4">
-        </video>
-        <!-- Streamable embed -->
+    <div class="video-background" id="videoBackground">
         <iframe
-            id="bg-video-fallback"
-            src="https://streamable.com/e/0ek0up?autoplay=1&muted=1&loop=1&nocontrols=1&hd=1"
+            src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1"
             frameborder="0"
-            allow="autoplay; encrypted-media; fullscreen"
             allowfullscreen
-            loading="eager">
+            allow="autoplay">
         </iframe>
     </div>
     <div class="video-overlay"></div>
@@ -3075,28 +3060,6 @@
             if (e.key === 'Escape') closeLightbox();
         });
 
-        // ============================================
-        // VIDEO BACKGROUND
-        // ============================================
-        (function() {
-            const video = document.getElementById('bg-video');
-            const fallbackIframe = document.getElementById('bg-video-fallback');
-
-            // Try to load local video file, if it exists use it instead of iframe
-            if (video) {
-                video.addEventListener('canplay', function() {
-                    // Local video loaded successfully - show it, hide iframe
-                    video.style.display = 'block';
-                    video.play().catch(() => {});
-                    if (fallbackIframe) fallbackIframe.style.display = 'none';
-                });
-
-                // If local video fails, iframe is already showing
-                video.addEventListener('error', function() {
-                    video.style.display = 'none';
-                });
-            }
-        })();
     </script>
 </body>
 </html>
