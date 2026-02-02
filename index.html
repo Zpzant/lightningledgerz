@@ -1825,7 +1825,7 @@
 <body>
     <!-- Video Background -->
     <div class="video-background">
-        <!-- Native video for iOS - only shows if background-video.mp4 exists -->
+        <!-- Native video for local file (iOS compatible) -->
         <video
             id="bg-video"
             autoplay
@@ -1837,13 +1837,14 @@
             style="display: none;">
             <source src="background-video.mp4" type="video/mp4">
         </video>
-        <!-- Streamable iframe - shows by default -->
+        <!-- Streamable embed -->
         <iframe
             id="bg-video-fallback"
-            src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1&loop=1&muted=1"
+            src="https://streamable.com/e/0ek0up?autoplay=1&muted=1&loop=1&nocontrols=1&hd=1"
             frameborder="0"
-            allow="autoplay; fullscreen"
-            allowfullscreen>
+            allow="autoplay; encrypted-media; fullscreen"
+            allowfullscreen
+            loading="eager">
         </iframe>
     </div>
     <div class="video-overlay"></div>
