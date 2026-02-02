@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- v2.2 - Video + Lightbox Fix -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,8 +19,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase - loaded async to not block page -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" async></script>
 
     <style>
         :root {
@@ -64,24 +63,35 @@
             height: 100vh;
             z-index: -2;
             overflow: hidden;
+            background: #000;
         }
 
         .video-background iframe {
             position: absolute;
             top: 50%;
             left: 50%;
-            min-width: 100vw;
-            min-height: 100vh;
-            width: auto;
-            height: auto;
             transform: translate(-50%, -50%);
+            width: 177.77vh; /* 16:9 aspect ratio */
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 56.25vw; /* 16:9 aspect ratio */
+            pointer-events: none;
             border: none;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
         }
 
-        .video-background iframe.active {
-            opacity: 1;
+        @media (max-width: 768px) {
+            .video-background iframe {
+                width: 300vw;
+                height: 100vh;
+                min-width: 300vw;
+            }
+        }
+
+        @media (max-aspect-ratio: 16/9) {
+            .video-background iframe {
+                width: 100vw;
+                height: 56.25vw;
+            }
         }
 
         .video-overlay {
@@ -122,57 +132,6 @@
 
         .logo img {
             height: 55px;
-        }
-
-        .nav-user-greeting {
-            color: var(--red);
-            font-weight: 600;
-            font-size: 1rem;
-            margin-left: 15px;
-            padding: 8px 16px;
-            background: rgba(255, 51, 51, 0.1);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 51, 51, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        /* Gold tier nav greeting */
-        body.tier-gold .nav-user-greeting {
-            color: var(--gold);
-            background: rgba(255, 215, 0, 0.1);
-            border-color: rgba(255, 215, 0, 0.3);
-        }
-
-        /* Diamond tier nav greeting */
-        body.tier-diamond .nav-user-greeting {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
-
-        /* Nav tier badge */
-        .nav-tier-badge {
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 10px;
-            margin-left: 8px;
-            background: var(--red);
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        body.tier-gold .nav-tier-badge {
-            background: linear-gradient(45deg, var(--gold), var(--gold-light));
-            color: #000;
-        }
-
-        body.tier-diamond .nav-tier-badge {
-            background: linear-gradient(45deg, #fff, #e0e0e0);
-            color: #000;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
         .nav-links {
@@ -472,12 +431,11 @@
         }
 
         .hero-subtitle {
-            font-size: clamp(0.9rem, 3.5vw, 1.4rem);
+            font-size: 1.4rem;
             color: rgba(255, 255, 255, 0.9);
             max-width: 700px;
             margin-bottom: 40px;
-            line-height: 1.5;
-            padding: 0 20px;
+            line-height: 1.6;
         }
 
         .hero-buttons {
@@ -1809,9 +1767,15 @@
     </style>
 </head>
 <body>
-    <!-- Video Background -->
-    <div class="video-background" id="videoBackground">
-        <iframe src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1" frameborder="0" allowfullscreen class="active"></iframe>
+    <!-- Video Background - Using iframe for universal compatibility including iOS -->
+    <div class="video-background">
+        <iframe
+            id="bg-video"
+            src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1&loop=1&muted=1"
+            frameborder="0"
+            allow="autoplay; fullscreen"
+            allowfullscreen>
+        </iframe>
     </div>
     <div class="video-overlay"></div>
 
@@ -1820,7 +1784,6 @@
         <a href="#top" class="logo" onclick="goHome()">
             <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo">
         </a>
-        <span class="nav-user-greeting" id="nav-user-greeting" style="display: none;">Hi <span id="nav-user-name"></span>! <span class="nav-tier-badge" id="nav-tier-badge">BASIC</span></span>
         <ul class="nav-links" id="nav-links">
             <li class="mobile-only"><a href="#portal" onclick="closeMobileMenu()" class="mobile-cta">Get Started</a></li>
             <li><a href="#pricing" onclick="closeMobileMenu()">Services</a></li>
@@ -2314,29 +2277,21 @@
         let supabase = null;
         let currentUser = null;
 
-        // Initialize Supabase
         function initSupabase() {
             try {
-                // Try different ways the library might be exposed
-                const sb = window.supabase || window.Supabase;
-                if (sb && sb.createClient) {
-                    supabase = sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                    console.log('Supabase initialized successfully');
-                    return true;
+                if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 }
             } catch (err) {
-                console.error('Supabase init error:', err);
+                console.log('Supabase init failed, using demo mode');
+                supabase = null;
             }
-            return false;
         }
 
-        // Initialize now
-        if (!initSupabase()) {
-            // Retry after short delay in case script is still loading
-            setTimeout(() => {
-                if (!supabase) initSupabase();
-            }, 100);
-        }
+        // Try to init Supabase when it loads (async)
+        window.addEventListener('load', function() {
+            if (!supabase) initSupabase();
+        });
 
         // ===========================================
         // NAVIGATION
@@ -2575,19 +2530,6 @@
             document.getElementById('portal-dashboard').style.display = 'block';
             document.getElementById('user-display-name').textContent = name;
 
-            // Show greeting in nav with tier badge
-            var navGreeting = document.getElementById('nav-user-greeting');
-            var navUserName = document.getElementById('nav-user-name');
-            var navTierBadge = document.getElementById('nav-tier-badge');
-            if (navGreeting && navUserName) {
-                navUserName.textContent = name;
-                navGreeting.style.display = 'inline-flex';
-                navGreeting.style.alignItems = 'center';
-            }
-            if (navTierBadge) {
-                navTierBadge.textContent = tier.toUpperCase();
-            }
-
             // Update tier badge
             var badge = document.getElementById('tier-badge');
             if (badge) {
@@ -2651,9 +2593,6 @@
         function showLoginForm() {
             document.querySelector('.portal-card').style.display = 'block';
             document.getElementById('portal-dashboard').style.display = 'none';
-            // Hide nav greeting
-            var navGreeting = document.getElementById('nav-user-greeting');
-            if (navGreeting) navGreeting.style.display = 'none';
             resetTheme();
         }
 
@@ -2702,7 +2641,7 @@
 
         async function handleFiles(files) {
             const maxSize = 25 * 1024 * 1024; // 25MB
-            const allowedTypes = ['.xlsx', '.xls', '.csv', '.pdf', '.doc', '.docx', '.txt', '.ppt', '.pptx'];
+            const allowedTypes = ['.xlsx', '.xls', '.csv', '.pdf'];
 
             for (const file of Array.from(files)) {
                 const ext = '.' + file.name.split('.').pop().toLowerCase();
@@ -2946,39 +2885,9 @@
         // ===========================================
         // INIT
         // ===========================================
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener('DOMContentLoaded', () => {
             initSupabase();
             initFileUpload();
-
-            // Check for existing session (auto-login on page refresh)
-            if (supabase) {
-                try {
-                    const { data: { session } } = await supabase.auth.getSession();
-                    if (session?.user) {
-                        // Get user profile with tier
-                        const { data: profile } = await supabase
-                            .from('profiles')
-                            .select('*')
-                            .eq('id', session.user.id)
-                            .single();
-
-                        const userName = profile?.first_name || session.user?.user_metadata?.full_name?.split(' ')[0] || session.user.email.split('@')[0];
-                        const userTier = profile?.package_tier || 'basic';
-
-                        currentUserData = {
-                            id: session.user.id,
-                            email: session.user.email,
-                            name: userName,
-                            tier: userTier,
-                            profile: profile
-                        };
-
-                        showLoggedInDashboard(userName, userTier);
-                    }
-                } catch (err) {
-                    console.log('No existing session');
-                }
-            }
 
             // Add click AND touch support for hamburger menu
             const mobileToggle = document.getElementById('hamburger-btn');
@@ -3040,7 +2949,6 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeLightbox();
         });
-
     </script>
 </body>
 </html>
