@@ -75,6 +75,12 @@
             height: auto;
             transform: translate(-50%, -50%);
             border: none;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .video-background iframe.active {
+            opacity: 1;
         }
 
         .video-overlay {
@@ -1804,12 +1810,7 @@
 <body>
     <!-- Video Background -->
     <div class="video-background" id="videoBackground">
-        <iframe
-            src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1"
-            frameborder="0"
-            allowfullscreen
-            allow="autoplay">
-        </iframe>
+        <iframe src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1" frameborder="0" allowfullscreen class="active"></iframe>
     </div>
     <div class="video-overlay"></div>
 
