@@ -19,8 +19,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Supabase - loaded async to not block page -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" async></script>
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
@@ -66,6 +66,7 @@
             background: #000;
         }
 
+        .video-background video,
         .video-background iframe {
             position: absolute;
             top: 50%;
@@ -77,9 +78,11 @@
             min-height: 56.25vw; /* 16:9 aspect ratio */
             pointer-events: none;
             border: none;
+            object-fit: cover;
         }
 
         @media (max-width: 768px) {
+            .video-background video,
             .video-background iframe {
                 width: 300vw;
                 height: 100vh;
@@ -88,6 +91,7 @@
         }
 
         @media (max-aspect-ratio: 16/9) {
+            .video-background video,
             .video-background iframe {
                 width: 100vw;
                 height: 56.25vw;
@@ -132,6 +136,57 @@
 
         .logo img {
             height: 55px;
+        }
+
+        .nav-user-greeting {
+            color: var(--red);
+            font-weight: 600;
+            font-size: 1rem;
+            margin-left: 15px;
+            padding: 8px 16px;
+            background: rgba(255, 51, 51, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 51, 51, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        /* Gold tier nav greeting */
+        body.tier-gold .nav-user-greeting {
+            color: var(--gold);
+            background: rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        /* Diamond tier nav greeting */
+        body.tier-diamond .nav-user-greeting {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Nav tier badge */
+        .nav-tier-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            background: var(--red);
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        body.tier-gold .nav-tier-badge {
+            background: linear-gradient(45deg, var(--gold), var(--gold-light));
+            color: #000;
+        }
+
+        body.tier-diamond .nav-tier-badge {
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            color: #000;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
         .nav-links {
@@ -431,11 +486,12 @@
         }
 
         .hero-subtitle {
-            font-size: 1.4rem;
+            font-size: clamp(0.9rem, 3.5vw, 1.4rem);
             color: rgba(255, 255, 255, 0.9);
             max-width: 700px;
             margin-bottom: 40px;
-            line-height: 1.6;
+            line-height: 1.5;
+            padding: 0 20px;
         }
 
         .hero-buttons {
@@ -1767,14 +1823,29 @@
     </style>
 </head>
 <body>
-    <!-- Video Background - Using iframe for universal compatibility including iOS -->
+    <!-- Video Background - Native HTML5 video for iOS compatibility -->
     <div class="video-background">
-        <iframe
+        <video
             id="bg-video"
+            autoplay
+            loop
+            muted
+            playsinline
+            webkit-playsinline
+            preload="auto"
+            poster="LightningLedgerzLogo.png">
+            <!-- Add your video file here - download from https://streamable.com/0ek0up -->
+            <source src="background-video.mp4" type="video/mp4">
+            <source src="background-video.webm" type="video/webm">
+        </video>
+        <!-- Fallback iframe for when video file is not available -->
+        <iframe
+            id="bg-video-fallback"
             src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1&loop=1&muted=1"
             frameborder="0"
             allow="autoplay; fullscreen"
-            allowfullscreen>
+            allowfullscreen
+            style="display: none;">
         </iframe>
     </div>
     <div class="video-overlay"></div>
@@ -1784,6 +1855,7 @@
         <a href="#top" class="logo" onclick="goHome()">
             <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo">
         </a>
+        <span class="nav-user-greeting" id="nav-user-greeting" style="display: none;">Hi <span id="nav-user-name"></span>! <span class="nav-tier-badge" id="nav-tier-badge">BASIC</span></span>
         <ul class="nav-links" id="nav-links">
             <li class="mobile-only"><a href="#portal" onclick="closeMobileMenu()" class="mobile-cta">Get Started</a></li>
             <li><a href="#pricing" onclick="closeMobileMenu()">Services</a></li>
@@ -2277,21 +2349,29 @@
         let supabase = null;
         let currentUser = null;
 
+        // Initialize Supabase
         function initSupabase() {
             try {
-                if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-                    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                // Try different ways the library might be exposed
+                const sb = window.supabase || window.Supabase;
+                if (sb && sb.createClient) {
+                    supabase = sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    console.log('Supabase initialized successfully');
+                    return true;
                 }
             } catch (err) {
-                console.log('Supabase init failed, using demo mode');
-                supabase = null;
+                console.error('Supabase init error:', err);
             }
+            return false;
         }
 
-        // Try to init Supabase when it loads (async)
-        window.addEventListener('load', function() {
-            if (!supabase) initSupabase();
-        });
+        // Initialize now
+        if (!initSupabase()) {
+            // Retry after short delay in case script is still loading
+            setTimeout(() => {
+                if (!supabase) initSupabase();
+            }, 100);
+        }
 
         // ===========================================
         // NAVIGATION
@@ -2530,6 +2610,19 @@
             document.getElementById('portal-dashboard').style.display = 'block';
             document.getElementById('user-display-name').textContent = name;
 
+            // Show greeting in nav with tier badge
+            var navGreeting = document.getElementById('nav-user-greeting');
+            var navUserName = document.getElementById('nav-user-name');
+            var navTierBadge = document.getElementById('nav-tier-badge');
+            if (navGreeting && navUserName) {
+                navUserName.textContent = name;
+                navGreeting.style.display = 'inline-flex';
+                navGreeting.style.alignItems = 'center';
+            }
+            if (navTierBadge) {
+                navTierBadge.textContent = tier.toUpperCase();
+            }
+
             // Update tier badge
             var badge = document.getElementById('tier-badge');
             if (badge) {
@@ -2593,6 +2686,9 @@
         function showLoginForm() {
             document.querySelector('.portal-card').style.display = 'block';
             document.getElementById('portal-dashboard').style.display = 'none';
+            // Hide nav greeting
+            var navGreeting = document.getElementById('nav-user-greeting');
+            if (navGreeting) navGreeting.style.display = 'none';
             resetTheme();
         }
 
@@ -2641,7 +2737,7 @@
 
         async function handleFiles(files) {
             const maxSize = 25 * 1024 * 1024; // 25MB
-            const allowedTypes = ['.xlsx', '.xls', '.csv', '.pdf'];
+            const allowedTypes = ['.xlsx', '.xls', '.csv', '.pdf', '.doc', '.docx', '.txt', '.ppt', '.pptx'];
 
             for (const file of Array.from(files)) {
                 const ext = '.' + file.name.split('.').pop().toLowerCase();
@@ -2885,9 +2981,39 @@
         // ===========================================
         // INIT
         // ===========================================
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             initSupabase();
             initFileUpload();
+
+            // Check for existing session (auto-login on page refresh)
+            if (supabase) {
+                try {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (session?.user) {
+                        // Get user profile with tier
+                        const { data: profile } = await supabase
+                            .from('profiles')
+                            .select('*')
+                            .eq('id', session.user.id)
+                            .single();
+
+                        const userName = profile?.first_name || session.user?.user_metadata?.full_name?.split(' ')[0] || session.user.email.split('@')[0];
+                        const userTier = profile?.package_tier || 'basic';
+
+                        currentUserData = {
+                            id: session.user.id,
+                            email: session.user.email,
+                            name: userName,
+                            tier: userTier,
+                            profile: profile
+                        };
+
+                        showLoggedInDashboard(userName, userTier);
+                    }
+                } catch (err) {
+                    console.log('No existing session');
+                }
+            }
 
             // Add click AND touch support for hamburger menu
             const mobileToggle = document.getElementById('hamburger-btn');
@@ -2949,6 +3075,72 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeLightbox();
         });
+
+        // ============================================
+        // VIDEO BACKGROUND - iOS COMPATIBILITY
+        // ============================================
+        (function() {
+            const video = document.getElementById('bg-video');
+            const fallbackIframe = document.getElementById('bg-video-fallback');
+            let videoPlayed = false;
+
+            // Function to try playing the video
+            function tryPlayVideo() {
+                if (video && !videoPlayed) {
+                    video.play().then(() => {
+                        videoPlayed = true;
+                        // Hide fallback iframe since video works
+                        if (fallbackIframe) fallbackIframe.style.display = 'none';
+                    }).catch((err) => {
+                        console.log('Video autoplay blocked, waiting for user interaction');
+                    });
+                }
+            }
+
+            // Check if video can load
+            if (video) {
+                video.addEventListener('canplay', function() {
+                    tryPlayVideo();
+                });
+
+                video.addEventListener('error', function() {
+                    console.log('Video source failed, showing iframe fallback');
+                    video.style.display = 'none';
+                    if (fallbackIframe) fallbackIframe.style.display = 'block';
+                });
+
+                // For iOS: play on first user interaction
+                function playOnInteraction() {
+                    if (!videoPlayed && video) {
+                        video.muted = true; // Ensure muted for autoplay
+                        video.play().then(() => {
+                            videoPlayed = true;
+                            if (fallbackIframe) fallbackIframe.style.display = 'none';
+                        }).catch(() => {});
+                    }
+                    // Remove listeners after first successful play
+                    if (videoPlayed) {
+                        document.removeEventListener('touchstart', playOnInteraction);
+                        document.removeEventListener('click', playOnInteraction);
+                    }
+                }
+
+                document.addEventListener('touchstart', playOnInteraction, { once: false, passive: true });
+                document.addEventListener('click', playOnInteraction, { once: false });
+
+                // Initial play attempt
+                tryPlayVideo();
+
+                // Fallback: if video hasn't loaded in 3 seconds, show iframe
+                setTimeout(() => {
+                    if (!videoPlayed && video.readyState < 3) {
+                        console.log('Video not loading, showing iframe fallback');
+                        video.style.display = 'none';
+                        if (fallbackIframe) fallbackIframe.style.display = 'block';
+                    }
+                }, 3000);
+            }
+        })();
     </script>
 </body>
 </html>
