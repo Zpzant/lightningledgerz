@@ -1823,48 +1823,15 @@
     </style>
 </head>
 <body>
-    <!-- Video Background -->
+    <!-- Video Background - Streamable -->
     <div class="video-background" id="videoBackground">
-        <!-- Streamable iframe - works on desktop/android -->
         <iframe
-            id="bg-video-iframe"
             src="https://streamable.com/e/0ek0up?autoplay=1&muted=1&loop=1&nocontrols=1"
             frameborder="0"
             allow="autoplay; fullscreen"
             allowfullscreen>
         </iframe>
-        <!-- Native video for iOS -->
-        <video
-            id="bg-video"
-            autoplay
-            muted
-            loop
-            playsinline
-            webkit-playsinline
-            preload="auto"
-            style="display: none;">
-            <source src="background-video.mp4" type="video/mp4">
-        </video>
     </div>
-    <script>
-        // Video handling - use native video on iOS, iframe elsewhere
-        (function() {
-            var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-            var video = document.getElementById('bg-video');
-            var iframe = document.getElementById('bg-video-iframe');
-
-            if (isIOS && video) {
-                // On iOS, use native video
-                iframe.style.display = 'none';
-                video.style.display = 'block';
-                video.play().catch(function() {});
-
-                document.addEventListener('touchstart', function() {
-                    video.play().catch(function() {});
-                }, { once: true });
-            }
-        })();
-    </script>
     <div class="video-overlay"></div>
 
     <!-- Navigation -->
