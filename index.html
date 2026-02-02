@@ -1836,7 +1836,43 @@
             preload="auto">
             <source src="background-video.mp4" type="video/mp4">
         </video>
+        <!-- Fallback iframe if video doesn't load -->
+        <iframe
+            id="bg-video-fallback"
+            src="https://streamable.com/e/0ek0up?autoplay=1&muted=1&loop=1&nocontrols=1"
+            frameborder="0"
+            allow="autoplay"
+            style="display: none;">
+        </iframe>
     </div>
+    <script>
+        // Force video to play and handle fallback
+        (function() {
+            var video = document.getElementById('bg-video');
+            var fallback = document.getElementById('bg-video-fallback');
+
+            if (video) {
+                video.play().catch(function() {
+                    console.log('Video autoplay failed, trying again...');
+                });
+
+                // If video fails to load, show iframe fallback
+                video.addEventListener('error', function() {
+                    video.style.display = 'none';
+                    if (fallback) fallback.style.display = 'block';
+                });
+
+                // Also try playing on any user interaction
+                document.addEventListener('click', function() {
+                    video.play().catch(function() {});
+                }, { once: true });
+
+                document.addEventListener('touchstart', function() {
+                    video.play().catch(function() {});
+                }, { once: true });
+            }
+        })();
+    </script>
     <div class="video-overlay"></div>
 
     <!-- Navigation -->
