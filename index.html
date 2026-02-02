@@ -1823,15 +1823,19 @@
     </style>
 </head>
 <body>
-    <!-- Video Background -->
+    <!-- Video Background - Native HTML5 for all devices -->
     <div class="video-background" id="videoBackground">
-        <iframe
-            src="https://streamable.com/e/0ek0up?autoplay=1&muted=1&loop=1&nocontrols=1"
-            frameborder="0"
-            allowfullscreen
-            allow="autoplay; fullscreen"
-            style="width: 100vw; height: 100vh; min-width: 177.77vh; min-height: 100vh;">
-        </iframe>
+        <video
+            id="bg-video"
+            autoplay
+            muted
+            loop
+            playsinline
+            webkit-playsinline
+            disablePictureInPicture
+            preload="auto">
+            <source src="background-video.mp4" type="video/mp4">
+        </video>
     </div>
     <div class="video-overlay"></div>
 
