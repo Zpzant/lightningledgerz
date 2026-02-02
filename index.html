@@ -1823,8 +1823,9 @@
     </style>
 </head>
 <body>
-    <!-- Video Background - Native HTML5 video for iOS compatibility -->
+    <!-- Video Background -->
     <div class="video-background">
+        <!-- Native video for iOS - only shows if background-video.mp4 exists -->
         <video
             id="bg-video"
             autoplay
@@ -1833,19 +1834,16 @@
             playsinline
             webkit-playsinline
             preload="auto"
-            poster="LightningLedgerzLogo.png">
-            <!-- Add your video file here - download from https://streamable.com/0ek0up -->
+            style="display: none;">
             <source src="background-video.mp4" type="video/mp4">
-            <source src="background-video.webm" type="video/webm">
         </video>
-        <!-- Fallback iframe for when video file is not available -->
+        <!-- Streamable iframe - shows by default -->
         <iframe
             id="bg-video-fallback"
             src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1&loop=1&muted=1"
             frameborder="0"
             allow="autoplay; fullscreen"
-            allowfullscreen
-            style="display: none;">
+            allowfullscreen>
         </iframe>
     </div>
     <div class="video-overlay"></div>
@@ -3077,68 +3075,25 @@
         });
 
         // ============================================
-        // VIDEO BACKGROUND - iOS COMPATIBILITY
+        // VIDEO BACKGROUND
         // ============================================
         (function() {
             const video = document.getElementById('bg-video');
             const fallbackIframe = document.getElementById('bg-video-fallback');
-            let videoPlayed = false;
 
-            // Function to try playing the video
-            function tryPlayVideo() {
-                if (video && !videoPlayed) {
-                    video.play().then(() => {
-                        videoPlayed = true;
-                        // Hide fallback iframe since video works
-                        if (fallbackIframe) fallbackIframe.style.display = 'none';
-                    }).catch((err) => {
-                        console.log('Video autoplay blocked, waiting for user interaction');
-                    });
-                }
-            }
-
-            // Check if video can load
+            // Try to load local video file, if it exists use it instead of iframe
             if (video) {
                 video.addEventListener('canplay', function() {
-                    tryPlayVideo();
+                    // Local video loaded successfully - show it, hide iframe
+                    video.style.display = 'block';
+                    video.play().catch(() => {});
+                    if (fallbackIframe) fallbackIframe.style.display = 'none';
                 });
 
+                // If local video fails, iframe is already showing
                 video.addEventListener('error', function() {
-                    console.log('Video source failed, showing iframe fallback');
                     video.style.display = 'none';
-                    if (fallbackIframe) fallbackIframe.style.display = 'block';
                 });
-
-                // For iOS: play on first user interaction
-                function playOnInteraction() {
-                    if (!videoPlayed && video) {
-                        video.muted = true; // Ensure muted for autoplay
-                        video.play().then(() => {
-                            videoPlayed = true;
-                            if (fallbackIframe) fallbackIframe.style.display = 'none';
-                        }).catch(() => {});
-                    }
-                    // Remove listeners after first successful play
-                    if (videoPlayed) {
-                        document.removeEventListener('touchstart', playOnInteraction);
-                        document.removeEventListener('click', playOnInteraction);
-                    }
-                }
-
-                document.addEventListener('touchstart', playOnInteraction, { once: false, passive: true });
-                document.addEventListener('click', playOnInteraction, { once: false });
-
-                // Initial play attempt
-                tryPlayVideo();
-
-                // Fallback: if video hasn't loaded in 3 seconds, show iframe
-                setTimeout(() => {
-                    if (!videoPlayed && video.readyState < 3) {
-                        console.log('Video not loading, showing iframe fallback');
-                        video.style.display = 'none';
-                        if (fallbackIframe) fallbackIframe.style.display = 'block';
-                    }
-                }, 3000);
             }
         })();
     </script>
