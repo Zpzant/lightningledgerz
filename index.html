@@ -3078,8 +3078,69 @@
 
         // Try to init Supabase when it loads (async)
         window.addEventListener('load', function() {
-            if (!supabase) waitForSupabase();
+            if (!supabase) waitForSupabase(checkExistingSession);
+            else checkExistingSession();
         });
+
+        // Check for existing session (handles Google OAuth return)
+        async function checkExistingSession() {
+            if (!supabase) return;
+
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+
+                if (session && session.user) {
+                    // User has an active session (e.g., returned from Google OAuth)
+                    const user = session.user;
+
+                    // Get or create profile
+                    let { data: profile } = await supabase
+                        .from('profiles')
+                        .select('first_name, tier')
+                        .eq('id', user.id)
+                        .single();
+
+                    // If no profile exists (new Google user), create one
+                    if (!profile) {
+                        const firstName = user.user_metadata?.full_name?.split(' ')[0] ||
+                                         user.user_metadata?.name?.split(' ')[0] ||
+                                         user.email.split('@')[0];
+                        const lastName = user.user_metadata?.full_name?.split(' ').slice(1).join(' ') || '';
+
+                        await supabase.from('profiles').upsert({
+                            id: user.id,
+                            email: user.email,
+                            first_name: firstName,
+                            last_name: lastName,
+                            tier: 'basic'
+                        });
+
+                        profile = { first_name: firstName, tier: 'basic' };
+                    }
+
+                    const userName = profile?.first_name || user.email.split('@')[0];
+                    const userTier = profile?.tier || 'basic';
+                    const isAdmin = user.email === ADMIN_EMAIL;
+
+                    currentUserData = {
+                        id: user.id,
+                        email: user.email,
+                        name: userName,
+                        tier: userTier,
+                        isDemo: false,
+                        isAdmin: isAdmin
+                    };
+
+                    showLoggedInDashboard(userName, userTier, false, isAdmin);
+                    showToast('Welcome, ' + userName + '!', 'success');
+
+                    // Scroll to portal section
+                    document.getElementById('portal').scrollIntoView({ behavior: 'smooth' });
+                }
+            } catch (err) {
+                console.log('Session check error:', err);
+            }
+        }
 
         // ===========================================
         // NAVIGATION
