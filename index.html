@@ -2372,6 +2372,13 @@
     </style>
 </head>
 <body>
+    <!-- Maintenance Banner -->
+    <div id="maintenance-banner" style="background: linear-gradient(90deg, #1a1a2e, #16213e); color: #fff; padding: 12px 20px; text-align: center; position: fixed; top: 0; left: 0; right: 0; z-index: 99999; font-size: 0.9rem; border-bottom: 2px solid var(--red); display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
+        <span style="color: #ffcc00;">&#9888;</span>
+        <span>Website is undergoing maintenance. If you are unable to login, please email <a href="mailto:zprizant@lightningledgerz.com" style="color: var(--red); font-weight: 600;">zprizant@lightningledgerz.com</a></span>
+        <button onclick="document.getElementById('maintenance-banner').style.display='none'" style="background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 4px 12px; border-radius: 4px; cursor: pointer; margin-left: 10px; font-size: 0.8rem;">Dismiss</button>
+    </div>
+
     <!-- Video Background - Using iframe for universal compatibility including iOS -->
     <div class="video-background">
         <iframe
@@ -3028,6 +3035,10 @@
             <a href="#work">Portfolio</a>
             <a href="#about">About</a>
             <a href="#portal">Portal</a>
+        </div>
+        <div class="footer-contact" style="margin: 15px 0; color: rgba(255,255,255,0.8);">
+            <a href="tel:+13303015742" style="color: #fff; text-decoration: none; margin-right: 20px;">&#9742; (330) 301-5742</a>
+            <a href="mailto:zprizant@lightningledgerz.com" style="color: #fff; text-decoration: none;">&#9993; zprizant@lightningledgerz.com</a>
         </div>
         <p class="footer-copy">© 2025 Lightning Ledgerz. All rights reserved.</p>
     </footer>
