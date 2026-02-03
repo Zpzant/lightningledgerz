@@ -232,6 +232,36 @@
                 padding: 15px 20px !important;
                 margin-bottom: 10px !important;
             }
+            /* Package links in mobile nav */
+            .nav-package-divider {
+                border-top: 1px solid rgba(255,255,255,0.2);
+                margin: 10px 0 !important;
+                padding: 0 !important;
+            }
+            .nav-package-link {
+                display: flex !important;
+                align-items: center;
+                gap: 8px;
+                padding: 12px 15px !important;
+                border-radius: 8px;
+                font-weight: 600 !important;
+                font-size: 1rem !important;
+            }
+            .nav-package-link.basic {
+                background: rgba(255, 51, 51, 0.15);
+                border: 1px solid var(--red);
+                color: var(--red) !important;
+            }
+            .nav-package-link.gold {
+                background: rgba(218, 165, 32, 0.15);
+                border: 1px solid var(--gold);
+                color: var(--gold) !important;
+            }
+            .nav-package-link.diamond {
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid #fff;
+                color: #fff !important;
+            }
         }
 
         /* Hide mobile-only items on desktop */
@@ -2369,6 +2399,11 @@
             <li><a href="#work" onclick="closeMobileMenu()">Portfolio</a></li>
             <li><a href="#about" onclick="closeMobileMenu()">About</a></li>
             <li><a href="#portal" onclick="closeMobileMenu()">Portal</a></li>
+            <!-- Package buttons for mobile only -->
+            <li class="mobile-only nav-package-divider"></li>
+            <li class="mobile-only"><a href="#basic-card" onclick="highlightPackageCard('basic-card'); closeMobileMenu(); return false;" class="nav-package-link basic">⚡ Basic</a></li>
+            <li class="mobile-only"><a href="#gold-card" onclick="highlightPackageCard('gold-card'); closeMobileMenu(); return false;" class="nav-package-link gold">✨ Gold</a></li>
+            <li class="mobile-only"><a href="#diamond-card" onclick="highlightPackageCard('diamond-card'); closeMobileMenu(); return false;" class="nav-package-link diamond">💎 Diamond</a></li>
         </ul>
         <a href="#portal" class="nav-cta">Get Started</a>
         <button class="nav-mobile-toggle" id="hamburger-btn" onclick="toggleMobileMenu()">☰</button>
