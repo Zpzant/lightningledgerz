@@ -3322,11 +3322,15 @@
                 return;
             }
 
-            // Try to init Supabase if not ready
-            if (!supabase) initSupabase();
+            // Wait for Supabase if not ready
+            if (!supabase) {
+                await new Promise((resolve) => {
+                    waitForSupabase(resolve, 30);
+                });
+            }
 
             if (!supabase) {
-                showToast('Connecting to server... Please try again.', 'error');
+                showToast('Could not connect to server. Please refresh and try again.', 'error');
                 submitBtn.textContent = 'Sign In';
                 submitBtn.disabled = false;
                 return;
@@ -3428,11 +3432,15 @@
             submitBtn.textContent = 'Creating account...';
             submitBtn.disabled = true;
 
-            // Try to init Supabase if not ready
-            if (!supabase) initSupabase();
+            // Wait for Supabase if not ready
+            if (!supabase) {
+                await new Promise((resolve) => {
+                    waitForSupabase(resolve, 30);
+                });
+            }
 
             if (!supabase) {
-                showToast('Connecting to server... Please try again.', 'error');
+                showToast('Could not connect to server. Please refresh and try again.', 'error');
                 submitBtn.textContent = 'Get Started';
                 submitBtn.disabled = false;
                 return;
