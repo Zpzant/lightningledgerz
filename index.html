@@ -1047,6 +1047,261 @@
         }
 
         /* ============================================
+           ADMIN DASHBOARD MODAL
+        ============================================ */
+        .admin-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 100000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .admin-modal.active {
+            display: flex;
+        }
+
+        .admin-modal-content {
+            background: #111;
+            border: 2px solid var(--red);
+            border-radius: 15px;
+            max-width: 1000px;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .admin-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-modal-header h2 {
+            color: var(--red);
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .admin-modal-close {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.8rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .admin-modal-close:hover {
+            background: rgba(255, 51, 51, 0.3);
+        }
+
+        .admin-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0 25px;
+        }
+
+        .admin-tab {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 15px 25px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .admin-tab:hover {
+            color: #fff;
+        }
+
+        .admin-tab.active {
+            color: var(--red);
+            border-bottom-color: var(--red);
+        }
+
+        .admin-tab-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+        }
+
+        .admin-tab-pane {
+            display: none;
+        }
+
+        .admin-tab-pane.active {
+            display: block;
+        }
+
+        .admin-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .admin-section-header h3 {
+            color: #fff;
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .btn-refresh {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .btn-refresh:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .admin-table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-table th {
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        .admin-table td {
+            color: #fff;
+        }
+
+        .admin-table tr:hover td {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .loading-row {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+        }
+
+        .tier-select {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .tier-badge-basic { color: var(--red); }
+        .tier-badge-gold { color: var(--gold); }
+        .tier-badge-diamond { color: #fff; }
+
+        .admin-form {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .admin-form-row {
+            margin-bottom: 15px;
+        }
+
+        .admin-form-row label {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .admin-form-row input,
+        .admin-form-row select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 10px 12px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .admin-form-row input:focus,
+        .admin-form-row select:focus {
+            outline: none;
+            border-color: var(--red);
+        }
+
+        .admin-form .btn-primary {
+            background: linear-gradient(45deg, var(--red), var(--red-light));
+            border: none;
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .admin-form .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
+        }
+
+        .btn-delete {
+            background: transparent;
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .btn-delete:hover {
+            background: rgba(255, 68, 68, 0.2);
+        }
+
+        /* ============================================
            CLIENT PORTAL
         ============================================ */
         .portal-card {
@@ -1276,6 +1531,47 @@
         .btn-logout:hover {
             border-color: var(--red);
             color: var(--red);
+        }
+
+        .demo-tier-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--gold);
+            padding: 6px 12px;
+            border-radius: 5px;
+        }
+
+        .demo-tier-selector label {
+            color: var(--gold);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .demo-tier-selector select {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--gold);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-admin {
+            background: linear-gradient(45deg, var(--red), var(--red-light));
+            border: none;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-admin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
         }
 
         .upload-section, .deliverables-section {
@@ -2267,6 +2563,138 @@
         </div>
     </div>
 
+    <!-- Admin Dashboard Modal -->
+    <div class="admin-modal" id="admin-modal">
+        <div class="admin-modal-content" onclick="event.stopPropagation()">
+            <div class="admin-modal-header">
+                <h2>Admin Dashboard</h2>
+                <button class="admin-modal-close" onclick="closeAdminDashboard()">&times;</button>
+            </div>
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="switchAdminTab('users')">Users</button>
+                <button class="admin-tab" onclick="switchAdminTab('reports')">Reports</button>
+                <button class="admin-tab" onclick="switchAdminTab('promo')">Promo Codes</button>
+            </div>
+            <div class="admin-tab-content">
+                <!-- Users Tab -->
+                <div id="admin-tab-users" class="admin-tab-pane active">
+                    <div class="admin-section-header">
+                        <h3>Manage Users</h3>
+                        <button class="btn-refresh" onclick="loadAdminUsers()">Refresh</button>
+                    </div>
+                    <div class="admin-table-container">
+                        <table class="admin-table" id="admin-users-table">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Name</th>
+                                    <th>Company</th>
+                                    <th>Tier</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-users-body">
+                                <tr><td colspan="6" class="loading-row">Loading users...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Reports Tab -->
+                <div id="admin-tab-reports" class="admin-tab-pane">
+                    <div class="admin-section-header">
+                        <h3>Upload Report for User</h3>
+                    </div>
+                    <div class="admin-form">
+                        <div class="admin-form-row">
+                            <label>Select User:</label>
+                            <select id="report-user-select">
+                                <option value="">-- Select a user --</option>
+                            </select>
+                        </div>
+                        <div class="admin-form-row">
+                            <label>Report Name:</label>
+                            <input type="text" id="report-name" placeholder="e.g., Q4 Budget Analysis">
+                        </div>
+                        <div class="admin-form-row">
+                            <label>Description (optional):</label>
+                            <input type="text" id="report-description" placeholder="Brief description">
+                        </div>
+                        <div class="admin-form-row">
+                            <label>Report File:</label>
+                            <input type="file" id="report-file" accept=".pdf,.xlsx,.xls,.csv,.docx,.pptx">
+                        </div>
+                        <button class="btn-primary" onclick="uploadUserReport()">Upload Report</button>
+                    </div>
+                    <div class="admin-section-header" style="margin-top: 30px;">
+                        <h3>Recent Reports</h3>
+                        <button class="btn-refresh" onclick="loadAdminReports()">Refresh</button>
+                    </div>
+                    <div class="admin-table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Report Name</th>
+                                    <th>User</th>
+                                    <th>Uploaded</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-reports-body">
+                                <tr><td colspan="4" class="loading-row">Loading reports...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Promo Codes Tab -->
+                <div id="admin-tab-promo" class="admin-tab-pane">
+                    <div class="admin-section-header">
+                        <h3>Create Promo Code</h3>
+                    </div>
+                    <div class="admin-form">
+                        <div class="admin-form-row">
+                            <label>Code:</label>
+                            <input type="text" id="promo-code" placeholder="e.g., LAUNCH50" style="text-transform: uppercase;">
+                        </div>
+                        <div class="admin-form-row">
+                            <label>Discount %:</label>
+                            <input type="number" id="promo-discount" placeholder="50" min="1" max="100">
+                        </div>
+                        <div class="admin-form-row">
+                            <label>Expiry Date (optional):</label>
+                            <input type="date" id="promo-expiry">
+                        </div>
+                        <div class="admin-form-row">
+                            <label>Max Uses (optional):</label>
+                            <input type="number" id="promo-max-uses" placeholder="Unlimited if empty" min="1">
+                        </div>
+                        <button class="btn-primary" onclick="createPromoCode()">Create Promo Code</button>
+                    </div>
+                    <div class="admin-section-header" style="margin-top: 30px;">
+                        <h3>Active Promo Codes</h3>
+                        <button class="btn-refresh" onclick="loadAdminPromoCodes()">Refresh</button>
+                    </div>
+                    <div class="admin-table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Discount</th>
+                                    <th>Expiry</th>
+                                    <th>Uses</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-promo-body">
+                                <tr><td colspan="5" class="loading-row">Loading promo codes...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- About Section -->
     <section class="section" id="about">
         <div class="section-header">
@@ -2412,6 +2840,17 @@
                     <h3>Hi <span id="user-display-name">there</span>!</h3>
                 </div>
                 <div class="dashboard-tier-badge" id="tier-badge">Basic</div>
+                <!-- Demo Tier Selector (only visible in demo mode) -->
+                <div id="demo-tier-selector" class="demo-tier-selector" style="display: none;">
+                    <label>Preview Tier:</label>
+                    <select id="demo-tier-select" onchange="changeDemoTier(this.value)">
+                        <option value="basic">Basic</option>
+                        <option value="gold">Gold</option>
+                        <option value="diamond">Diamond</option>
+                    </select>
+                </div>
+                <!-- Admin Button (only visible for admin) -->
+                <button id="admin-btn" class="btn-admin" onclick="openAdminDashboard()" style="display: none;">Admin</button>
                 <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
             </div>
 
@@ -2616,14 +3055,36 @@
         // ===========================================
         let currentUserData = null;
 
+        // Demo account credentials
+        const DEMO_EMAIL = 'demo@lightningledgerz.com';
+        const DEMO_PASSWORD = 'demo123';
+        const ADMIN_EMAIL = 'zprizant@lightningledgerz.com';
+
         async function handleLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('login-email').value;
+            const email = document.getElementById('login-email').value.toLowerCase().trim();
             const password = document.getElementById('login-password').value;
             const submitBtn = e.target.querySelector('button[type="submit"]');
 
             submitBtn.textContent = 'Signing in...';
             submitBtn.disabled = true;
+
+            // Check for demo account
+            if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
+                currentUserData = {
+                    id: 'demo-user',
+                    email: DEMO_EMAIL,
+                    name: 'Demo',
+                    tier: 'basic',
+                    isDemo: true,
+                    isAdmin: false
+                };
+                showLoggedInDashboard('Demo', 'basic', true, false);
+                showToast('Welcome to Demo Mode! Use the tier selector to preview different plans.', 'success');
+                submitBtn.textContent = 'Sign In';
+                submitBtn.disabled = false;
+                return;
+            }
 
             // Try to init Supabase if not ready
             if (!supabase) initSupabase();
@@ -2648,16 +3109,19 @@
 
                 const userName = profile?.first_name || data.user?.user_metadata?.full_name || email.split('@')[0];
                 const userTier = profile?.package_tier || 'basic';
+                const isAdmin = email.toLowerCase() === ADMIN_EMAIL || profile?.is_admin === true;
 
                 currentUserData = {
                     id: data.user.id,
                     email,
                     name: userName,
                     tier: userTier,
-                    profile: profile
+                    profile: profile,
+                    isDemo: false,
+                    isAdmin: isAdmin
                 };
 
-                showLoggedInDashboard(userName, userTier);
+                showLoggedInDashboard(userName, userTier, false, isAdmin);
                 showToast('Welcome back, ' + userName + '!', 'success');
             } catch (error) {
                 showToast(error.message, 'error');
@@ -2772,7 +3236,7 @@
             submitBtn.disabled = false;
         }
 
-        function showLoggedInDashboard(name, tier = 'basic') {
+        function showLoggedInDashboard(name, tier = 'basic', isDemo = false, isAdmin = false) {
             document.querySelector('.portal-card').style.display = 'none';
             document.getElementById('portal-dashboard').style.display = 'block';
             document.getElementById('user-display-name').textContent = name;
@@ -2781,6 +3245,21 @@
             var badge = document.getElementById('tier-badge');
             if (badge) {
                 badge.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+            }
+
+            // Show/hide demo tier selector
+            var demoSelector = document.getElementById('demo-tier-selector');
+            if (demoSelector) {
+                demoSelector.style.display = isDemo ? 'flex' : 'none';
+                if (isDemo) {
+                    document.getElementById('demo-tier-select').value = tier;
+                }
+            }
+
+            // Show/hide admin button
+            var adminBtn = document.getElementById('admin-btn');
+            if (adminBtn) {
+                adminBtn.style.display = isAdmin ? 'inline-block' : 'none';
             }
 
             // Show nav welcome section and update greeting
@@ -2806,9 +3285,36 @@
             // Apply tier-based theming
             applyTierTheme(tier);
 
-            // Load user's uploaded files and reports
-            loadUserFiles();
-            loadUserReports();
+            // Load user's uploaded files and reports (skip for demo)
+            if (!isDemo) {
+                loadUserFiles();
+                loadUserReports();
+            } else {
+                // Show demo placeholders
+                var uploadsGrid = document.getElementById('user-uploads-grid');
+                var reportsGrid = document.getElementById('reports-grid');
+                if (uploadsGrid) uploadsGrid.innerHTML = '<p class="empty-state">Demo mode - file uploads disabled</p>';
+                if (reportsGrid) reportsGrid.innerHTML = '<p class="empty-state">Demo mode - reports not available</p>';
+            }
+        }
+
+        // Demo tier change handler
+        function changeDemoTier(newTier) {
+            if (currentUserData?.isDemo) {
+                currentUserData.tier = newTier;
+                applyTierTheme(newTier);
+
+                // Update badges
+                var badge = document.getElementById('tier-badge');
+                var planBadge = document.getElementById('nav-plan-badge');
+                if (badge) badge.textContent = newTier.charAt(0).toUpperCase() + newTier.slice(1);
+                if (planBadge) {
+                    planBadge.className = 'plan-badge badge-' + newTier;
+                    planBadge.textContent = newTier.charAt(0).toUpperCase() + newTier.slice(1);
+                }
+
+                showToast('Previewing ' + newTier.charAt(0).toUpperCase() + newTier.slice(1) + ' tier', 'success');
+            }
         }
 
         function applyTierTheme(tier) {
@@ -3298,6 +3804,393 @@
                 modal.addEventListener('click', function(e) {
                     if (e.target === modal) {
                         closeLegalModal();
+                    }
+                });
+            }
+        });
+
+        // ===========================================
+        // ADMIN DASHBOARD
+        // ===========================================
+        function openAdminDashboard() {
+            if (!currentUserData?.isAdmin) {
+                showToast('Access denied', 'error');
+                return;
+            }
+            var modal = document.getElementById('admin-modal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            loadAdminUsers();
+        }
+
+        function closeAdminDashboard() {
+            var modal = document.getElementById('admin-modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function switchAdminTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update tab panes
+            document.querySelectorAll('.admin-tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            document.getElementById('admin-tab-' + tabName).classList.add('active');
+
+            // Load data for the tab
+            if (tabName === 'users') loadAdminUsers();
+            if (tabName === 'reports') loadAdminReports();
+            if (tabName === 'promo') loadAdminPromoCodes();
+        }
+
+        // Users Tab Functions
+        async function loadAdminUsers() {
+            var tbody = document.getElementById('admin-users-body');
+            tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Loading users...</td></tr>';
+
+            if (!supabase) {
+                tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Database not available</td></tr>';
+                return;
+            }
+
+            try {
+                var { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    tbody.innerHTML = data.map(user => `
+                        <tr>
+                            <td>${user.email || '-'}</td>
+                            <td>${user.first_name || ''} ${user.last_name || ''}</td>
+                            <td>${user.company || user.company_name || '-'}</td>
+                            <td>
+                                <select class="tier-select" onchange="updateUserTier('${user.id}', this.value)">
+                                    <option value="basic" ${user.package_tier === 'basic' ? 'selected' : ''}>Basic</option>
+                                    <option value="gold" ${user.package_tier === 'gold' ? 'selected' : ''}>Gold</option>
+                                    <option value="diamond" ${user.package_tier === 'diamond' ? 'selected' : ''}>Diamond</option>
+                                </select>
+                            </td>
+                            <td>${user.created_at ? new Date(user.created_at).toLocaleDateString() : '-'}</td>
+                            <td>
+                                <button class="btn-delete" onclick="toggleAdminStatus('${user.id}', ${!user.is_admin})">
+                                    ${user.is_admin ? 'Remove Admin' : 'Make Admin'}
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    // Also populate the reports user dropdown
+                    var userSelect = document.getElementById('report-user-select');
+                    userSelect.innerHTML = '<option value="">-- Select a user --</option>' +
+                        data.map(user => `<option value="${user.id}">${user.email} (${user.first_name || 'No name'})</option>`).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" class="loading-row">No users found</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Error loading users</td></tr>';
+            }
+        }
+
+        async function updateUserTier(userId, newTier) {
+            if (!supabase) return;
+
+            try {
+                var { error } = await supabase
+                    .from('profiles')
+                    .update({ package_tier: newTier, updated_at: new Date().toISOString() })
+                    .eq('id', userId);
+
+                if (error) throw error;
+                showToast('User tier updated to ' + newTier, 'success');
+            } catch (error) {
+                console.error('Error updating tier:', error);
+                showToast('Error updating tier', 'error');
+                loadAdminUsers(); // Refresh to show correct state
+            }
+        }
+
+        async function toggleAdminStatus(userId, makeAdmin) {
+            if (!supabase) return;
+
+            if (!confirm(makeAdmin ? 'Make this user an admin?' : 'Remove admin status from this user?')) {
+                return;
+            }
+
+            try {
+                var { error } = await supabase
+                    .from('profiles')
+                    .update({ is_admin: makeAdmin, updated_at: new Date().toISOString() })
+                    .eq('id', userId);
+
+                if (error) throw error;
+                showToast(makeAdmin ? 'User is now an admin' : 'Admin status removed', 'success');
+                loadAdminUsers();
+            } catch (error) {
+                console.error('Error updating admin status:', error);
+                showToast('Error updating admin status', 'error');
+            }
+        }
+
+        // Reports Tab Functions
+        async function loadAdminReports() {
+            var tbody = document.getElementById('admin-reports-body');
+            tbody.innerHTML = '<tr><td colspan="4" class="loading-row">Loading reports...</td></tr>';
+
+            if (!supabase) {
+                tbody.innerHTML = '<tr><td colspan="4" class="loading-row">Database not available</td></tr>';
+                return;
+            }
+
+            try {
+                var { data, error } = await supabase
+                    .from('user_reports')
+                    .select('*, profiles(email, first_name)')
+                    .order('created_at', { ascending: false })
+                    .limit(50);
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    tbody.innerHTML = data.map(report => `
+                        <tr>
+                            <td>${report.report_name || '-'}</td>
+                            <td>${report.profiles?.email || 'Unknown'}</td>
+                            <td>${report.created_at ? new Date(report.created_at).toLocaleDateString() : '-'}</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteReport('${report.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" class="loading-row">No reports found</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading reports:', error);
+                tbody.innerHTML = '<tr><td colspan="4" class="loading-row">Error loading reports</td></tr>';
+            }
+        }
+
+        async function uploadUserReport() {
+            var userId = document.getElementById('report-user-select').value;
+            var reportName = document.getElementById('report-name').value.trim();
+            var reportDesc = document.getElementById('report-description').value.trim();
+            var fileInput = document.getElementById('report-file');
+            var file = fileInput.files[0];
+
+            if (!userId) {
+                showToast('Please select a user', 'error');
+                return;
+            }
+            if (!reportName) {
+                showToast('Please enter a report name', 'error');
+                return;
+            }
+            if (!file) {
+                showToast('Please select a file', 'error');
+                return;
+            }
+            if (!supabase) {
+                showToast('Database not available', 'error');
+                return;
+            }
+
+            try {
+                showToast('Uploading report...', 'info');
+
+                // Upload file to storage
+                var filePath = `reports/${userId}/${Date.now()}_${file.name}`;
+                var { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('user-documents')
+                    .upload(filePath, file);
+
+                if (uploadError) throw uploadError;
+
+                // Get public URL
+                var { data: urlData } = supabase.storage
+                    .from('user-documents')
+                    .getPublicUrl(filePath);
+
+                // Insert report record
+                var { error: insertError } = await supabase
+                    .from('user_reports')
+                    .insert([{
+                        user_id: userId,
+                        report_name: reportName,
+                        report_description: reportDesc,
+                        file_path: filePath,
+                        file_url: urlData?.publicUrl || null,
+                        file_size: file.size
+                    }]);
+
+                if (insertError) throw insertError;
+
+                showToast('Report uploaded successfully!', 'success');
+
+                // Clear form
+                document.getElementById('report-user-select').value = '';
+                document.getElementById('report-name').value = '';
+                document.getElementById('report-description').value = '';
+                fileInput.value = '';
+
+                loadAdminReports();
+            } catch (error) {
+                console.error('Error uploading report:', error);
+                showToast('Error uploading report: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteReport(reportId) {
+            if (!confirm('Are you sure you want to delete this report?')) return;
+            if (!supabase) return;
+
+            try {
+                var { error } = await supabase
+                    .from('user_reports')
+                    .delete()
+                    .eq('id', reportId);
+
+                if (error) throw error;
+                showToast('Report deleted', 'success');
+                loadAdminReports();
+            } catch (error) {
+                console.error('Error deleting report:', error);
+                showToast('Error deleting report', 'error');
+            }
+        }
+
+        // Promo Codes Tab Functions
+        async function loadAdminPromoCodes() {
+            var tbody = document.getElementById('admin-promo-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="loading-row">Loading promo codes...</td></tr>';
+
+            if (!supabase) {
+                tbody.innerHTML = '<tr><td colspan="5" class="loading-row">Database not available</td></tr>';
+                return;
+            }
+
+            try {
+                var { data, error } = await supabase
+                    .from('promo_codes')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    // Table might not exist yet
+                    tbody.innerHTML = '<tr><td colspan="5" class="loading-row">Promo codes table not set up yet. Run the SQL migration.</td></tr>';
+                    return;
+                }
+
+                if (data && data.length > 0) {
+                    tbody.innerHTML = data.map(promo => `
+                        <tr>
+                            <td><strong>${promo.code}</strong></td>
+                            <td>${promo.discount_percent}%</td>
+                            <td>${promo.expiry_date ? new Date(promo.expiry_date).toLocaleDateString() : 'Never'}</td>
+                            <td>${promo.current_uses || 0}${promo.max_uses ? '/' + promo.max_uses : ''}</td>
+                            <td>
+                                <button class="btn-delete" onclick="deletePromoCode('${promo.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" class="loading-row">No promo codes found</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading promo codes:', error);
+                tbody.innerHTML = '<tr><td colspan="5" class="loading-row">Error loading promo codes</td></tr>';
+            }
+        }
+
+        async function createPromoCode() {
+            var code = document.getElementById('promo-code').value.trim().toUpperCase();
+            var discount = parseInt(document.getElementById('promo-discount').value);
+            var expiry = document.getElementById('promo-expiry').value;
+            var maxUses = document.getElementById('promo-max-uses').value;
+
+            if (!code) {
+                showToast('Please enter a promo code', 'error');
+                return;
+            }
+            if (!discount || discount < 1 || discount > 100) {
+                showToast('Please enter a valid discount (1-100%)', 'error');
+                return;
+            }
+            if (!supabase) {
+                showToast('Database not available', 'error');
+                return;
+            }
+
+            try {
+                var { error } = await supabase
+                    .from('promo_codes')
+                    .insert([{
+                        code: code,
+                        discount_percent: discount,
+                        expiry_date: expiry || null,
+                        max_uses: maxUses ? parseInt(maxUses) : null,
+                        is_active: true
+                    }]);
+
+                if (error) {
+                    if (error.code === '23505') {
+                        showToast('This promo code already exists', 'error');
+                    } else {
+                        throw error;
+                    }
+                    return;
+                }
+
+                showToast('Promo code created!', 'success');
+
+                // Clear form
+                document.getElementById('promo-code').value = '';
+                document.getElementById('promo-discount').value = '';
+                document.getElementById('promo-expiry').value = '';
+                document.getElementById('promo-max-uses').value = '';
+
+                loadAdminPromoCodes();
+            } catch (error) {
+                console.error('Error creating promo code:', error);
+                showToast('Error creating promo code: ' + error.message, 'error');
+            }
+        }
+
+        async function deletePromoCode(promoId) {
+            if (!confirm('Are you sure you want to delete this promo code?')) return;
+            if (!supabase) return;
+
+            try {
+                var { error } = await supabase
+                    .from('promo_codes')
+                    .delete()
+                    .eq('id', promoId);
+
+                if (error) throw error;
+                showToast('Promo code deleted', 'success');
+                loadAdminPromoCodes();
+            } catch (error) {
+                console.error('Error deleting promo code:', error);
+                showToast('Error deleting promo code', 'error');
+            }
+        }
+
+        // Close admin modal on backdrop click
+        document.addEventListener('DOMContentLoaded', function() {
+            var adminModal = document.getElementById('admin-modal');
+            if (adminModal) {
+                adminModal.addEventListener('click', function(e) {
+                    if (e.target === adminModal) {
+                        closeAdminDashboard();
                     }
                 });
             }
