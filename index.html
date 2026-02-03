@@ -2454,7 +2454,7 @@
                     <li>Variance commentary</li>
                     <li>Email support</li>
                 </ul>
-                <a href="https://buy.stripe.com/dRmfZheTUbkcgT7fuNbsc02" target="_blank" class="btn-primary">Start Free Trial</a>
+                <button onclick="selectPlan('basic')" class="btn-primary">Start Free Trial</button>
             </div>
 
             <div class="package-card gold" id="gold-card">
@@ -2470,7 +2470,7 @@
                     <li>KPI dashboard creation</li>
                     <li>Priority support</li>
                 </ul>
-                <a href="https://buy.stripe.com/28E28r1348805apeqJbsc01" target="_blank" class="btn-primary">Start Free Trial</a>
+                <button onclick="selectPlan('gold')" class="btn-primary">Start Free Trial</button>
             </div>
 
             <div class="package-card diamond" id="diamond-card">
@@ -2485,7 +2485,7 @@
                     <li>Board presentation support</li>
                     <li>Direct phone access</li>
                 </ul>
-                <a href="https://buy.stripe.com/dRm9ATbHIdsk5ap0zTbsc00" target="_blank" class="btn-primary">Start Free Trial</a>
+                <button onclick="selectPlan('diamond')" class="btn-primary">Start Free Trial</button>
             </div>
         </div>
 
@@ -3162,6 +3162,44 @@
         const DEMO_PASSWORD = 'demo123';
         const ADMIN_EMAIL = 'zprizant@lightningledgerz.com';
 
+        // Stripe checkout URLs for each plan
+        const STRIPE_URLS = {
+            basic: 'https://buy.stripe.com/dRmfZheTUbkcgT7fuNbsc02',
+            gold: 'https://buy.stripe.com/28E28r1348805apeqJbsc01',
+            diamond: 'https://buy.stripe.com/dRm9ATbHIdsk5ap0zTbsc00'
+        };
+
+        // Select a plan - if logged in go to Stripe, else prompt signup
+        function selectPlan(plan) {
+            if (currentUserData && !currentUserData.isDemo) {
+                // User is logged in, go directly to Stripe
+                window.open(STRIPE_URLS[plan], '_blank');
+            } else {
+                // Store selected plan and show signup
+                sessionStorage.setItem('pendingPlan', plan);
+                // Scroll to portal and show register form
+                document.getElementById('portal').scrollIntoView({ behavior: 'smooth' });
+                setTimeout(function() {
+                    switchTab('register');
+                    showToast('Create an account to start your ' + plan.charAt(0).toUpperCase() + plan.slice(1) + ' trial', 'info');
+                }, 500);
+            }
+        }
+
+        // Check for pending plan after login/signup
+        function checkPendingPlan() {
+            const pendingPlan = sessionStorage.getItem('pendingPlan');
+            if (pendingPlan && STRIPE_URLS[pendingPlan]) {
+                sessionStorage.removeItem('pendingPlan');
+                setTimeout(function() {
+                    showToast('Redirecting to checkout...', 'info');
+                    setTimeout(function() {
+                        window.open(STRIPE_URLS[pendingPlan], '_blank');
+                    }, 1000);
+                }, 500);
+            }
+        }
+
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value.toLowerCase().trim();
@@ -3397,6 +3435,8 @@
             if (!isDemo) {
                 loadUserFiles();
                 loadUserReports();
+                // Check if user selected a plan before signing up
+                checkPendingPlan();
             } else {
                 // Show demo placeholders
                 var uploadsGrid = document.getElementById('user-uploads-grid');
@@ -4432,8 +4472,8 @@
             document.querySelectorAll('.package-card .btn-primary').forEach(btn => {
                 btn.addEventListener('touchend', function(e) {
                     e.preventDefault();
-                    // Open the Stripe link
-                    window.open(this.href, '_blank');
+                    // Trigger click to call selectPlan
+                    this.click();
                 }, { passive: false });
             });
 
