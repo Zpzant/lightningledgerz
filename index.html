@@ -1574,6 +1574,24 @@
             box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
         }
 
+        .btn-upgrade {
+            background: linear-gradient(45deg, var(--gold), var(--gold-light));
+            border: none;
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            animation: goldShine 3s linear infinite;
+            background-size: 200% auto;
+        }
+
+        .btn-upgrade:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+        }
+
         .upload-section, .deliverables-section {
             margin-bottom: 30px;
         }
@@ -2200,17 +2218,36 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        /* Gold - Nav theming */
+        /* Gold - Nav theming with shiny effect */
         body.tier-gold .nav-links a:hover,
         body.tier-gold .nav-links a.active {
-            color: var(--gold);
+            background: linear-gradient(90deg, #b8860b, #ffd700, #ffed4e, #ffd700, #b8860b);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: goldShine 2s linear infinite;
+        }
+        @keyframes goldShine {
+            to { background-position: 200% center; }
         }
         body.tier-gold .nav-cta {
-            background: linear-gradient(45deg, var(--gold), var(--gold-light));
+            background: linear-gradient(45deg, #b8860b, var(--gold), var(--gold-light), var(--gold));
+            background-size: 200% auto;
             color: #000;
+            animation: goldShine 3s linear infinite;
         }
         body.tier-gold .user-welcome {
             border-color: var(--gold);
+        }
+        body.tier-gold .section-title h4,
+        body.tier-gold .dashboard-tier-badge {
+            background: linear-gradient(90deg, #b8860b, #ffd700, #ffed4e, #ffd700, #b8860b);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: goldShine 2s linear infinite;
         }
         @media (max-width: 900px) {
             body.tier-gold .nav-links {
@@ -2221,14 +2258,22 @@
             }
         }
 
-        /* Diamond Tier Theme */
+        /* Diamond Tier Theme with shiny/shimmer effect */
         body.tier-diamond .portal-dashboard {
             border-color: #fff;
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3), 0 0 60px rgba(200, 200, 255, 0.1);
         }
         body.tier-diamond .portal-dashboard h3,
         body.tier-diamond .portal-dashboard h4 {
-            color: #fff;
+            background: linear-gradient(90deg, #a0a0a0, #ffffff, #e0e0ff, #ffffff, #a0a0a0);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: diamondShine 2s linear infinite;
+        }
+        @keyframes diamondShine {
+            to { background-position: 200% center; }
         }
         body.tier-diamond .upload-dropzone {
             border-color: rgba(255, 255, 255, 0.5);
@@ -2236,35 +2281,61 @@
         body.tier-diamond .upload-dropzone:hover {
             border-color: #fff;
             background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
         body.tier-diamond .upload-browse {
-            color: #fff;
+            background: linear-gradient(90deg, #a0a0a0, #ffffff, #e0e0ff, #ffffff, #a0a0a0);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: diamondShine 2s linear infinite;
         }
         body.tier-diamond .btn-logout:hover {
             border-color: #fff;
             color: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
         }
         body.tier-diamond .portal-disclaimers li:before {
             color: #fff;
         }
         body.tier-diamond .dashboard-header h3 {
-            background: linear-gradient(45deg, #fff, #e0e0e0, #fff);
+            background: linear-gradient(90deg, #a0a0a0, #ffffff, #e0e0ff, #ffffff, #a0a0a0);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            animation: diamondShine 2s linear infinite;
         }
-        /* Diamond - Nav theming */
+        body.tier-diamond .section-title h4,
+        body.tier-diamond .dashboard-tier-badge {
+            background: linear-gradient(90deg, #a0a0a0, #ffffff, #e0e0ff, #ffffff, #a0a0a0);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: diamondShine 2s linear infinite;
+        }
+        /* Diamond - Nav theming with shimmer */
         body.tier-diamond .nav-links a:hover,
         body.tier-diamond .nav-links a.active {
-            color: #fff;
+            background: linear-gradient(90deg, #a0a0a0, #ffffff, #e0e0ff, #ffffff, #a0a0a0);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: diamondShine 2s linear infinite;
         }
         body.tier-diamond .nav-cta {
-            background: linear-gradient(45deg, #fff, #e0e0e0);
+            background: linear-gradient(45deg, #c0c0c0, #ffffff, #e0e0ff, #ffffff);
+            background-size: 200% auto;
             color: #000;
+            animation: diamondShine 3s linear infinite;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
         }
         body.tier-diamond .user-welcome {
             border-color: #fff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
         @media (max-width: 900px) {
             body.tier-diamond .nav-links {
@@ -2849,6 +2920,8 @@
                         <option value="diamond">Diamond</option>
                     </select>
                 </div>
+                <!-- Upgrade Button (visible for basic and gold tiers) -->
+                <button id="upgrade-btn" class="btn-upgrade" onclick="scrollToSection('#pricing')" style="display: none;">Upgrade</button>
                 <!-- Admin Button (only visible for admin) -->
                 <button id="admin-btn" class="btn-admin" onclick="openAdminDashboard()" style="display: none;">Admin</button>
                 <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
@@ -3262,6 +3335,12 @@
                 adminBtn.style.display = isAdmin ? 'inline-block' : 'none';
             }
 
+            // Show/hide upgrade button (visible for basic and gold, not diamond)
+            var upgradeBtn = document.getElementById('upgrade-btn');
+            if (upgradeBtn) {
+                upgradeBtn.style.display = (tier !== 'diamond' && !isDemo) ? 'inline-block' : 'none';
+            }
+
             // Show nav welcome section and update greeting
             var welcomeNav = document.getElementById('user-welcome-nav');
             var welcomeText = document.getElementById('nav-welcome-text');
@@ -3341,13 +3420,11 @@
                 dashboardLogo.src = logoMap[tier] || logoMap.basic;
             }
 
-            // Also update main logo if user has premium tier
-            if (tier !== 'basic') {
-                var logos = document.querySelectorAll('.logo img, .hero-logo img, .footer-logo img');
-                logos.forEach(function(logo) {
-                    logo.src = logoMap[tier] || logoMap.basic;
-                });
-            }
+            // Update all logos based on tier (including reset to basic)
+            var logos = document.querySelectorAll('.logo img, .hero-logo img, .footer-logo img');
+            logos.forEach(function(logo) {
+                logo.src = logoMap[tier] || logoMap.basic;
+            });
         }
 
         function resetTheme() {
