@@ -22,6 +22,10 @@
     <!-- Supabase - loaded async to not block page -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" async></script>
 
+    <!-- Calendly Widget -->
+    <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+    <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+
     <style>
         :root {
             --red: #ff3333;
@@ -2398,6 +2402,7 @@
             <li><a href="#pricing" onclick="closeMobileMenu()">Services</a></li>
             <li><a href="#work" onclick="closeMobileMenu()">Portfolio</a></li>
             <li><a href="#about" onclick="closeMobileMenu()">About</a></li>
+            <li><a href="#schedule" onclick="closeMobileMenu()">Schedule</a></li>
             <li><a href="#portal" onclick="closeMobileMenu()">Portal</a></li>
             <!-- Package buttons for mobile only -->
             <li class="mobile-only nav-package-divider"></li>
@@ -2856,6 +2861,26 @@
                     <p>Your financial data and business goals are sacred. I take responsibility for protecting your information, maximizing your resources, and delivering work that serves your long-term success—not just today's deadline.</p>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Schedule a Call Section -->
+    <section class="section" id="schedule" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+        <div class="section-header">
+            <h2>Schedule a Call</h2>
+            <p>Book a free 30-minute discovery call to discuss your financial needs.</p>
+        </div>
+        <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+            <p style="color: rgba(255,255,255,0.8); margin-bottom: 30px; font-size: 1.1rem;">
+                Get personalized FP&A guidance from an expert. Your first consultation is <strong style="color: var(--red);">free</strong>.
+            </p>
+            <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/zpzant/30min'});return false;"
+                    style="background: linear-gradient(45deg, var(--red), var(--red-light)); color: white; border: none; padding: 18px 40px; font-size: 1.2rem; font-weight: 700; border-radius: 50px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 20px rgba(255, 51, 51, 0.4);">
+                Book Your Free Call
+            </button>
+            <p style="color: rgba(255,255,255,0.5); margin-top: 20px; font-size: 0.9rem;">
+                30 minutes via Google Meet
+            </p>
         </div>
     </section>
 
