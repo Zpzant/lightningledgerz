@@ -19,8 +19,22 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Supabase - loaded async to not block page -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" async></script>
+    <!-- Supabase - with multiple CDN fallbacks -->
+    <script>
+        window.supabaseLoaded = false;
+        window.supabaseError = null;
+        function loadSupabaseFallback() {
+            console.log('Trying fallback CDN...');
+            var s = document.createElement('script');
+            s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js';
+            s.onload = function() { window.supabaseLoaded = true; console.log('Supabase loaded from fallback CDN!'); };
+            s.onerror = function() { window.supabaseError = true; console.error('All CDNs failed!'); };
+            document.head.appendChild(s);
+        }
+    </script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"
+            onload="window.supabaseLoaded=true;console.log('Supabase script loaded from unpkg!')"
+            onerror="loadSupabaseFallback()"></script>
 
     <!-- Calendly Widget -->
     <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
@@ -2416,13 +2430,13 @@
 
     <!-- Package Sidebar Buttons -->
     <div class="package-sidebar">
-        <a href="#basic-card" class="package-btn basic" id="btn-basic" onclick="highlightPackageCard('basic-card'); return false;">
+        <a href="javascript:void(0)" class="package-btn basic" id="btn-basic" onclick="event.preventDefault(); highlightPackageCard('basic-card');">
             ⚡ Basic Package
         </a>
-        <a href="#gold-card" class="package-btn gold" id="btn-gold" onclick="highlightPackageCard('gold-card'); return false;">
+        <a href="javascript:void(0)" class="package-btn gold" id="btn-gold" onclick="event.preventDefault(); highlightPackageCard('gold-card');">
             ✨ Gold Package
         </a>
-        <a href="#diamond-card" class="package-btn diamond" id="btn-diamond" onclick="highlightPackageCard('diamond-card'); return false;">
+        <a href="javascript:void(0)" class="package-btn diamond" id="btn-diamond" onclick="event.preventDefault(); highlightPackageCard('diamond-card');">
             💎 Diamond Package
         </a>
     </div>
@@ -2950,10 +2964,10 @@
                     <input type="tel" class="form-input" id="register-phone" placeholder="Phone" required>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-input" id="register-referral" placeholder="Referral Code (Optional)">
+                    <input type="password" class="form-input" id="register-password" placeholder="Create Password (min 8 characters)" required minlength="8">
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-input" id="register-password" placeholder="Create Password (min 8 characters)" required minlength="8">
+                    <input type="text" class="form-input" id="register-referral" placeholder="Referral Code (Optional)">
                 </div>
                 <div class="form-checkbox">
                     <input type="checkbox" id="register-terms" required>
@@ -3082,23 +3096,26 @@
 
         function initSupabase() {
             try {
+                console.log('Attempting Supabase init... window.supabase:', typeof window.supabase);
                 if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
                     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                     console.log('Supabase initialized successfully');
                     return true;
+                } else {
+                    console.log('Supabase library not yet loaded');
                 }
             } catch (err) {
-                console.log('Supabase init error:', err);
+                console.error('Supabase init error:', err);
             }
             return false;
         }
 
-        // Retry Supabase init until loaded (async script)
+        // Retry Supabase init until loaded
         function waitForSupabase(callback, maxAttempts = 50) {
             let attempts = 0;
             function tryInit() {
                 if (initSupabase()) {
-                    if (callback) callback();
+                    if (callback) callback(true);
                     return;
                 }
                 attempts++;
@@ -3106,15 +3123,24 @@
                     setTimeout(tryInit, 100);
                 } else {
                     console.log('Supabase failed to load after ' + maxAttempts + ' attempts');
+                    // IMPORTANT: Always call callback so Promise resolves
+                    if (callback) callback(false);
                 }
             }
             tryInit();
         }
 
-        // Try to init Supabase when it loads (async)
+        // Try to init Supabase and check session on page load
         window.addEventListener('load', function() {
-            if (!supabase) waitForSupabase(checkExistingSession);
-            else checkExistingSession();
+            console.log('Page load complete. Supabase status:', supabase ? 'ready' : 'not ready');
+            if (!supabase) {
+                initSupabase(); // Try once more
+            }
+            if (supabase) {
+                checkExistingSession();
+            } else {
+                console.log('Warning: Supabase not available at page load');
+            }
         });
 
         // Check for existing session (handles Google OAuth return)
@@ -3330,7 +3356,11 @@
             }
 
             if (!supabase) {
-                showToast('Could not connect to server. Please refresh and try again.', 'error');
+                if (window.supabaseError) {
+                    showToast('Server script blocked. Try disabling ad-blocker or check firewall.', 'error');
+                } else {
+                    showToast('Server loading... Please wait a moment and try again.', 'error');
+                }
                 submitBtn.textContent = 'Sign In';
                 submitBtn.disabled = false;
                 return;
@@ -3440,7 +3470,11 @@
             }
 
             if (!supabase) {
-                showToast('Could not connect to server. Please refresh and try again.', 'error');
+                if (window.supabaseError) {
+                    showToast('Server script blocked. Try disabling ad-blocker or check firewall.', 'error');
+                } else {
+                    showToast('Server loading... Please wait a moment and try again.', 'error');
+                }
                 submitBtn.textContent = 'Get Started';
                 submitBtn.disabled = false;
                 return;
@@ -4512,38 +4546,29 @@
         // PACKAGE CARD HIGHLIGHT
         // ===========================================
         function highlightPackageCard(cardId) {
+            console.log('highlightPackageCard called with:', cardId);
             var card = document.getElementById(cardId);
-            if (!card) return;
-
-            // Determine the glow color
-            var glowColor = '255, 51, 51'; // red for basic
-            if (cardId === 'gold-card') {
-                glowColor = '255, 215, 0';
-            } else if (cardId === 'diamond-card') {
-                glowColor = '255, 255, 255';
+            if (!card) {
+                console.log('Card not found:', cardId);
+                return;
             }
+            console.log('Found card, applying highlight class');
 
-            // Reset all cards first
+            // Remove highlight from all cards first
             var allCards = document.querySelectorAll('.package-card');
             for (var i = 0; i < allCards.length; i++) {
-                allCards[i].style.transform = '';
-                allCards[i].style.boxShadow = '';
-                allCards[i].style.zIndex = '';
+                allCards[i].classList.remove('highlight');
             }
 
             // Scroll to the card
             card.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-            // Apply highlight
-            card.style.transform = 'translateY(-20px) scale(1.08)';
-            card.style.boxShadow = '0 0 80px rgba(' + glowColor + ', 1), 0 0 120px rgba(' + glowColor + ', 0.8), 0 30px 60px rgba(' + glowColor + ', 0.6)';
-            card.style.zIndex = '100';
+            // Apply highlight class (uses CSS with !important)
+            card.classList.add('highlight');
 
             // Remove highlight after 8 seconds
             setTimeout(function() {
-                card.style.transform = '';
-                card.style.boxShadow = '';
-                card.style.zIndex = '';
+                card.classList.remove('highlight');
             }, 8000);
         }
 
@@ -4551,7 +4576,12 @@
         // INIT
         // ===========================================
         document.addEventListener('DOMContentLoaded', () => {
-            initSupabase();
+            // Initialize Supabase and show status
+            const sbReady = initSupabase();
+            console.log('DOMContentLoaded - Supabase ready:', sbReady);
+            if (!sbReady) {
+                console.error('SUPABASE NOT LOADED! Check if script is blocked by browser/firewall');
+            }
             initFileUpload();
 
             // Add click AND touch support for hamburger menu
