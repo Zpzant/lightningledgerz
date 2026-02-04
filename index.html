@@ -3411,40 +3411,30 @@
                 btn.disabled = false;
             }
 
-            // Google login temporarily disabled - show friendly message
-            showToast('Google login coming soon! Please use email/password for now.', 'info');
-            resetGoogleBtn();
-            return;
-
-            /* Uncomment this when Google OAuth is configured in Supabase:
-            async function doGoogleLogin() {
-                try {
-                    var { data, error } = await supabase.auth.signInWithOAuth({
-                        provider: 'google',
-                        options: {
-                            redirectTo: window.location.origin + window.location.pathname
-                        }
-                    });
-                    if (error) throw error;
-                } catch (error) {
-                    showToast(error.message || 'Google login failed', 'error');
-                    resetGoogleBtn();
-                }
+            // Wait for Supabase
+            if (!supabase) {
+                await new Promise((resolve) => waitForSupabase(resolve, 30));
             }
 
-            if (supabase) {
-                doGoogleLogin();
-            } else {
-                waitForSupabase(function() {
-                    if (supabase) {
-                        doGoogleLogin();
-                    } else {
-                        showToast('Could not connect. Please try again.', 'error');
-                        resetGoogleBtn();
+            if (!supabase) {
+                showToast('Could not connect to server. Please refresh and try again.', 'error');
+                resetGoogleBtn();
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + window.location.pathname
                     }
-                }, 15);
+                });
+                if (error) throw error;
+                // User will be redirected to Google
+            } catch (error) {
+                showToast(error.message || 'Google login failed. Make sure Google OAuth is configured in Supabase.', 'error');
+                resetGoogleBtn();
             }
-            */
         }
 
         async function handleRegister(e) {
