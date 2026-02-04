@@ -3729,13 +3729,27 @@
                 try {
                     // Upload to Supabase Storage if available and user is logged in
                     if (supabase && currentUserData?.id) {
+                        // Debug: Check auth state
+                        const { data: sessionData } = await supabase.auth.getSession();
+                        console.log('Upload - Session:', sessionData?.session ? 'Active' : 'None');
+                        console.log('Upload - User ID:', currentUserData.id);
+
+                        if (!sessionData?.session) {
+                            showToast('Session expired. Please sign in again.', 'error');
+                            return;
+                        }
+
                         const filePath = `${currentUserData.id}/${Date.now()}_${file.name}`;
+                        console.log('Upload - File path:', filePath);
 
                         const { data: uploadData, error: uploadError } = await supabase.storage
                             .from('user-documents')
                             .upload(filePath, file);
 
-                        if (uploadError) throw uploadError;
+                        if (uploadError) {
+                            console.error('Storage upload error:', uploadError);
+                            throw uploadError;
+                        }
 
                         // Save file record to database
                         await supabase.from('user_documents').insert([{
