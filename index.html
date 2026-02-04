@@ -19,22 +19,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Supabase - with multiple CDN fallbacks -->
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.10/dist/umd/supabase.min.js"></script>
     <script>
-        window.supabaseLoaded = false;
-        window.supabaseError = null;
-        function loadSupabaseFallback() {
-            console.log('Trying fallback CDN...');
-            var s = document.createElement('script');
-            s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js';
-            s.onload = function() { window.supabaseLoaded = true; console.log('Supabase loaded from fallback CDN!'); };
-            s.onerror = function() { window.supabaseError = true; console.error('All CDNs failed!'); };
-            document.head.appendChild(s);
+        if (typeof window.supabase !== 'undefined') {
+            console.log('Supabase library loaded successfully!');
+        } else {
+            console.error('ERROR: Supabase library failed to load!');
         }
     </script>
-    <script src="https://unpkg.com/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"
-            onload="window.supabaseLoaded=true;console.log('Supabase script loaded from unpkg!')"
-            onerror="loadSupabaseFallback()"></script>
 
     <!-- Calendly Widget -->
     <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
