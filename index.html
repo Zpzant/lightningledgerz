@@ -3708,7 +3708,7 @@
 
         async function handleFiles(files) {
             const maxSize = 25 * 1024 * 1024; // 25MB
-            const allowedTypes = ['.xlsx', '.xls', '.csv', '.pdf'];
+            const allowedTypes = ['.xlsx', '.xls', '.csv', '.pdf', '.doc', '.docx', '.ppt', '.pptx', '.txt', '.rtf', '.png', '.jpg', '.jpeg'];
 
             for (const file of Array.from(files)) {
                 const ext = '.' + file.name.split('.').pop().toLowerCase();
