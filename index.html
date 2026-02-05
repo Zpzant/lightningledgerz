@@ -3810,7 +3810,7 @@
                         }
 
                         // Save file record to database
-                        await supabase.from('user_documents').insert([{
+                        const { error: dbError } = await supabase.from('user_documents').insert([{
                             user_id: currentUserData.id,
                             file_name: file.name,
                             file_path: filePath,
@@ -3818,9 +3818,16 @@
                             file_type: file.type || ext
                         }]);
 
-                        showToast(`✓ Uploaded: ${file.name}`, 'success');
-                        // Refresh the files list to show new upload
-                        await loadUserFiles();
+                        if (dbError) {
+                            console.error('Database insert error:', dbError);
+                            showToast(`File uploaded but not saved to database: ${dbError.message}`, 'error');
+                        } else {
+                            showToast(`✓ Uploaded: ${file.name}`, 'success');
+                            // Refresh the files list to show new upload
+                            console.log('Refreshing file list...');
+                            await loadUserFiles();
+                            console.log('File list refreshed');
+                        }
                     } else {
                         // Local/demo mode
                         showToast(`Uploaded: ${file.name} (demo mode)`, 'info');
@@ -3904,24 +3911,31 @@
         }
 
         async function loadUserFiles() {
+            console.log('loadUserFiles called');
             var grid = document.getElementById('user-uploads-grid');
             var emptyState = document.getElementById('uploads-empty');
-            if (!grid) return;
+            if (!grid) {
+                console.log('Grid element not found');
+                return;
+            }
 
             grid.innerHTML = '<p class="empty-state">Loading files...</p>';
 
             if (!supabase || !currentUserData?.id) {
+                console.log('No supabase or user ID:', { supabase: !!supabase, userId: currentUserData?.id });
                 grid.innerHTML = '<p class="empty-state">No files uploaded yet. Upload your first file above.</p>';
                 return;
             }
 
             try {
+                console.log('Fetching files for user:', currentUserData.id);
                 var { data, error } = await supabase
                     .from('user_documents')
                     .select('*')
                     .eq('user_id', currentUserData.id)
                     .order('uploaded_at', { ascending: false });
 
+                console.log('Files query result:', { data, error });
                 if (error) throw error;
 
                 if (data && data.length > 0) {
