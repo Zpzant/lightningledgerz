@@ -3827,6 +3827,9 @@
                             console.log('Refreshing file list...');
                             await loadUserFiles();
                             console.log('File list refreshed');
+
+                            // Send email notification to admin
+                            sendUploadNotification(file.name, filePath, currentUserData);
                         }
                     } else {
                         // Local/demo mode
@@ -3836,6 +3839,55 @@
                     console.error('Upload error:', error);
                     showToast(`Failed to upload: ${file.name}`, 'error');
                 }
+            }
+        }
+
+        // Send email notification when user uploads a file
+        async function sendUploadNotification(fileName, filePath, userData) {
+            try {
+                // Get download URL for the file
+                let downloadUrl = '';
+                if (supabase && filePath) {
+                    const { data } = await supabase.storage
+                        .from('user-documents')
+                        .createSignedUrl(filePath, 86400); // 24 hour link
+                    if (data?.signedUrl) downloadUrl = data.signedUrl;
+                }
+
+                const emailData = {
+                    from: 'Lightning Ledgerz <notifications@lightningledgerz.com>',
+                    to: ['zprizant@lightningledgerz.com'],
+                    subject: `📁 New Upload: ${fileName}`,
+                    html: `
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                            <h2 style="color: #ff3333;">⚡ New Document Uploaded</h2>
+                            <p><strong>File:</strong> ${fileName}</p>
+                            <p><strong>User:</strong> ${userData?.name || 'Unknown'}</p>
+                            <p><strong>Email:</strong> ${userData?.email || 'Unknown'}</p>
+                            <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+                            ${downloadUrl ? `<p><a href="${downloadUrl}" style="background: #ff3333; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px;">Download File</a></p><p style="color: #666; font-size: 12px;">(Link expires in 24 hours)</p>` : ''}
+                        </div>
+                    `
+                };
+
+                const response = await fetch('https://api.resend.com/emails', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer re_UCWQV5bx_BrU63SdgrK1Tvzfdve93PFHM'
+                    },
+                    body: JSON.stringify(emailData)
+                });
+
+                const result = await response.json();
+                if (result.id) {
+                    console.log('Upload notification email sent:', result.id);
+                } else {
+                    console.error('Email send error:', result);
+                }
+            } catch (error) {
+                console.error('Failed to send upload notification:', error);
+                // Don't show error to user - email notification is not critical
             }
         }
 
