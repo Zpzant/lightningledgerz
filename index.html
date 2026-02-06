@@ -2849,12 +2849,112 @@
         }
 
         /* ============================================
+           TOP HEADLINE SECTION
+        ============================================ */
+        .saas-top-section {
+            background: linear-gradient(180deg, #F8FAFC 0%, #EEF2FF 100%);
+            padding: 100px 40px 60px;
+            text-align: center;
+        }
+
+        .saas-top-content {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .saas-top-content h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--saas-navy);
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .saas-top-content h1 {
+                font-size: 1.8rem;
+            }
+            .saas-top-section {
+                padding: 80px 20px 40px;
+            }
+        }
+
+        .saas-top-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 1000px) {
+            .saas-top-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .saas-top-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .saas-top-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(11, 18, 32, 0.06);
+            border: 1px solid rgba(11, 18, 32, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .saas-top-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(11, 18, 32, 0.1);
+        }
+
+        .saas-top-card-img {
+            background: linear-gradient(135deg, #e8eef5, #f5f7fa);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .saas-top-card-img img {
+            width: 100%;
+            height: 100px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .saas-top-card h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--saas-navy);
+            margin-bottom: 8px;
+        }
+
+        .saas-top-card p {
+            font-size: 0.8rem;
+            color: #6B7280;
+            line-height: 1.4;
+        }
+
+        .saas-top-cta {
+            margin-top: 40px;
+        }
+
+        .saas-top-cta h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--saas-navy);
+            margin-bottom: 20px;
+        }
+
+        /* ============================================
            SAAS HERO SECTION - Clean Professional Design
         ============================================ */
         .saas-hero {
-            background: linear-gradient(180deg, #F8FAFC 0%, #EEF2FF 50%, #E0E7FF 100%);
-            min-height: calc(100vh - 70px);
-            padding: 100px 40px 60px;
+            background: linear-gradient(180deg, #EEF2FF 0%, #E0E7FF 50%, #D4DCFF 100%);
+            padding: 80px 40px;
             position: relative;
             overflow: hidden;
         }
@@ -3124,6 +3224,86 @@
 
         .saas-cta-center {
             text-align: center;
+            margin-top: 40px;
+        }
+
+        .saas-cta-center h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--saas-navy);
+            margin-bottom: 20px;
+        }
+
+        /* ============================================
+           ABOUT LIGHTNING LEDGERZ SECTION
+        ============================================ */
+        .saas-about-section {
+            background: linear-gradient(180deg, var(--saas-navy) 0%, #0d1526 100%);
+            padding: 80px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .saas-about-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        @media (max-width: 900px) {
+            .saas-about-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        .saas-about-text h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .saas-about-text p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .saas-about-section .saas-hero-buttons .btn-saas-secondary {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .saas-about-section .saas-hero-buttons .btn-saas-secondary:hover {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .saas-about-section .saas-trust-indicators {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .saas-about-section .saas-trust-indicators span::before {
+            color: #10B981;
+        }
+
+        .saas-about-image {
+            position: relative;
+        }
+
+        .saas-about-image .saas-hero-image-container {
+            background: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&q=80') center/cover;
+        }
+
+        @media (max-width: 900px) {
+            .saas-about-image {
+                order: -1;
+            }
         }
 
         /* FP&A Deliverables Icon Cards */
@@ -3407,12 +3587,53 @@
         </a>
     </div>
 
+    <!-- Top Headline Section -->
+    <section class="saas-top-section" id="top">
+        <div class="saas-top-content">
+            <h1>Your Numbers Should Drive Decisions—Not Confusion</h1>
+            <div class="saas-top-cards">
+                <div class="saas-top-card">
+                    <div class="saas-top-card-img">
+                        <img src="slide-budget-vs-actual.png" alt="Monthly Board Pack">
+                    </div>
+                    <h4>Monthly Board Pack</h4>
+                    <p>P&L / Cash in a Consolidated Monthly Presentation</p>
+                </div>
+                <div class="saas-top-card">
+                    <div class="saas-top-card-img">
+                        <img src="slide-income-benchmarking.png" alt="Cash Flow Forecast">
+                    </div>
+                    <h4>Cash Flow Forecast</h4>
+                    <p>Rolling 12-Month Projections, Scenario Forecasts</p>
+                </div>
+                <div class="saas-top-card">
+                    <div class="saas-top-card-img">
+                        <img src="dynamicdashboards.png" alt="KPI Dashboard">
+                    </div>
+                    <h4>KPI Dashboard</h4>
+                    <p>Track Financial Process Strategy & KPIs</p>
+                </div>
+                <div class="saas-top-card">
+                    <div class="saas-top-card-img">
+                        <img src="slide-proforma.png" alt="Budget Model">
+                    </div>
+                    <h4>Budget Model</h4>
+                    <p>Get accurate forecasting for business changes</p>
+                </div>
+            </div>
+            <div class="saas-top-cta">
+                <h3>Get These Reports for Your Business</h3>
+                <a href="#portal" class="btn-saas-primary">Start My Free Trial →</a>
+            </div>
+        </div>
+    </section>
+
     <!-- SaaS Hero Section -->
-    <section class="saas-hero" id="top">
+    <section class="saas-hero">
         <div class="saas-hero-content">
             <div class="saas-hero-text">
                 <h1>Sample FP&A Deliverables</h1>
-                <p>See the professional reporting and forecasting packages your business will receive. Clear insights, boardroom-ready presentations, and actionable financial analysis.</p>
+                <p>See the professional reporting and forecasting packages your business will receive.</p>
                 <div class="saas-hero-buttons">
                     <a href="#portal" class="btn-saas-primary">Start Free Trial →</a>
                     <a href="#schedule" class="btn-saas-secondary">Book a Strategy Call</a>
@@ -3435,61 +3656,55 @@
     <section class="saas-deliverables">
         <div class="saas-deliverables-header">
             <h2>Sample FP&A Deliverables</h2>
-            <p>Professional reports and dashboards tailored to your business</p>
         </div>
         <div class="saas-deliverables-grid">
             <div class="saas-deliverable-card">
                 <img src="slide-budget-vs-actual.png" alt="Monthly Board Pack">
                 <h4>Monthly Board Pack</h4>
-                <p>P&L, Cash Flow & KPIs in a Consolidated Presentation</p>
+                <p>P&L / Cash in a Consolidated Monthly Presentation</p>
             </div>
             <div class="saas-deliverable-card">
                 <img src="slide-income-benchmarking.png" alt="Cash Flow Forecast">
                 <h4>Cash Flow Forecast</h4>
-                <p>Rolling 12-Month Cash Projections, Scenario Forecasts</p>
+                <p>Rolling 12-Month Projections, Scenario Forecasts</p>
             </div>
             <div class="saas-deliverable-card">
                 <img src="dynamicdashboards.png" alt="KPI Dashboard">
                 <h4>KPI Dashboard</h4>
-                <p>Track Financial/Process Metrics at 45% Percent</p>
+                <p>Track Financial Process Strategy & KPIs</p>
             </div>
             <div class="saas-deliverable-card">
                 <img src="slide-proforma.png" alt="Budget Model">
                 <h4>Budget Model</h4>
-                <p>Get an accurate roadmap to forecasted changes</p>
+                <p>Get accurate forecasting for business changes</p>
             </div>
         </div>
         <div class="saas-cta-center">
-            <a href="#portal" class="btn-saas-primary">Get These Reports for Your Business →</a>
+            <h3>Get These Reports for Your Business</h3>
+            <a href="#portal" class="btn-saas-primary">Start My Free Trial →</a>
         </div>
     </section>
 
-    <!-- FP&A Deliverables Icon Cards -->
-    <section class="saas-fpa-section">
-        <div class="saas-fpa-header">
-            <h2>FP&A Deliverables</h2>
-            <p>Comprehensive financial planning and analysis services</p>
-        </div>
-        <div class="saas-fpa-grid">
-            <div class="saas-fpa-card">
-                <div class="saas-fpa-icon">📊</div>
-                <h4>Financial Reporting</h4>
-                <p>Monthly P&L analysis, budget vs actual tracking, and variance commentary you can act on.</p>
+    <!-- About Lightning Ledgerz Section -->
+    <section class="saas-about-section">
+        <div class="saas-about-content">
+            <div class="saas-about-text">
+                <h2>About Lightning Ledgerz</h2>
+                <p>Precision financial reporting and forecasting without the overhead of an internal team.</p>
+                <div class="saas-hero-buttons">
+                    <a href="#portal" class="btn-saas-primary">Start Free Trial →</a>
+                    <a href="#schedule" class="btn-saas-secondary">Book a Strategy Call</a>
+                </div>
+                <div class="saas-trust-indicators">
+                    <span>No credit card required</span>
+                    <span>Cancel anytime</span>
+                    <span>Secure data handling</span>
+                </div>
             </div>
-            <div class="saas-fpa-card">
-                <div class="saas-fpa-icon">📈</div>
-                <h4>Financial Modeling</h4>
-                <p>Custom models for forecasting, scenarios, and strategic planning built for your business.</p>
-            </div>
-            <div class="saas-fpa-card">
-                <div class="saas-fpa-icon">🎯</div>
-                <h4>KPI Dashboards</h4>
-                <p>Real-time visualizations that transform data into insights leadership can understand.</p>
-            </div>
-            <div class="saas-fpa-card">
-                <div class="saas-fpa-icon">💼</div>
-                <h4>Strategic Advisory</h4>
-                <p>Board presentations, investor materials, and strategic guidance from an experienced advisor.</p>
+            <div class="saas-about-image">
+                <div class="saas-hero-image-container">
+                    <img src="Zacprofessionalaiheadshot.png" alt="Zac Prizant - FP&A Expert">
+                </div>
             </div>
         </div>
     </section>
