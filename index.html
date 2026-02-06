@@ -3006,23 +3006,33 @@
             position: relative;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 25px 80px rgba(11, 18, 32, 0.15);
+            background: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&q=80') center/cover;
+            min-height: 400px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
         }
 
         .saas-hero-image img {
             width: 100%;
-            max-width: 450px;
+            max-width: 350px;
             display: block;
-            border-radius: 20px;
+            position: relative;
+            z-index: 2;
+            /* Remove background from headshot image using mix-blend or object positioning */
+            object-fit: contain;
+            object-position: bottom center;
         }
 
         @media (max-width: 900px) {
             .saas-hero-image {
                 order: -1;
             }
+            .saas-hero-image-container {
+                min-height: 300px;
+            }
             .saas-hero-image img {
-                max-width: 300px;
-                margin: 0 auto;
+                max-width: 250px;
             }
         }
 
