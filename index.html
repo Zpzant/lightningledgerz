@@ -70,10 +70,40 @@
         }
 
         /* ============================================
-           VIDEO BACKGROUND (Now positioned for scroll)
+           VIDEO BACKGROUND
         ============================================ */
         .video-background {
-            display: none; /* Hidden initially, shown later */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-background iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 177.77vh;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 56.25vw;
+            pointer-events: none;
+            border: none;
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
         }
 
         .video-section {
@@ -2852,9 +2882,10 @@
            TOP HEADLINE SECTION
         ============================================ */
         .saas-top-section {
-            background: linear-gradient(180deg, #F8FAFC 0%, #EEF2FF 100%);
+            background: linear-gradient(180deg, rgba(248, 250, 252, 0.95) 0%, rgba(238, 242, 255, 0.95) 100%);
             padding: 100px 40px 60px;
             text-align: center;
+            position: relative;
         }
 
         .saas-top-content {
@@ -3628,22 +3659,21 @@
         </div>
     </section>
 
-    <!-- Lightning Ledgerz Hero with Headshot -->
-    <section class="saas-hero">
-        <div class="saas-hero-content">
+    <!-- Lightning Ledgerz Hero with Full City Background -->
+    <section class="saas-hero" style="background: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1600&q=80') center/cover; position: relative;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(248, 250, 252, 0.85), rgba(224, 231, 255, 0.8));"></div>
+        <div class="saas-hero-content" style="position: relative; z-index: 1;">
             <div class="saas-hero-text">
                 <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz" style="max-width: 240px; margin-bottom: 20px;">
                 <p class="hero-tagline" style="color: var(--saas-blue); font-weight: 700; font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 15px;">BUDGET. SAVE. BUILD.</p>
-                <p style="font-size: 1.1rem; color: #4B5563; line-height: 1.7; margin-bottom: 25px;">Who says lightning never strikes twice? Get consistent: Budget vs. Actual Reporting, Financial Modeling, Boardroom-Ready Decks & Dashboards crafted by an expert — not an algorithm. Lightning fast so you can focus on what makes your business shine.</p>
+                <p style="font-size: 1.1rem; color: #333; line-height: 1.7; margin-bottom: 25px;">Who says lightning never strikes twice? Get consistent: Budget vs. Actual Reporting, Financial Modeling, Boardroom-Ready Decks & Dashboards crafted by an expert — not an algorithm. Lightning fast so you can focus on what makes your business shine.</p>
                 <div class="saas-hero-buttons">
                     <a href="#work" class="btn-saas-primary">View Work</a>
                     <a href="#portal" class="btn-saas-secondary">Get Started</a>
                 </div>
             </div>
             <div class="saas-hero-image">
-                <div class="saas-hero-image-container">
-                    <img src="Zacprofessionalaiheadshot.png" alt="Zac Prizant - FP&A Expert">
-                </div>
+                <img src="Zacprofessionalaiheadshot.png" alt="Zac Prizant - FP&A Expert" style="max-width: 380px; border-radius: 20px; box-shadow: 0 25px 80px rgba(0,0,0,0.25);">
             </div>
         </div>
     </section>
