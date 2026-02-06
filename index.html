@@ -44,6 +44,12 @@
             --black: #000000;
             --gray-dark: #1a1a1a;
             --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            /* SaaS Colors */
+            --saas-blue: #3B82F6;
+            --saas-blue-dark: #2563EB;
+            --saas-navy: #0B1220;
+            --saas-bg: #F8FAFC;
+            --saas-card: #FFFFFF;
         }
 
         * {
@@ -58,91 +64,107 @@
 
         body {
             font-family: var(--font-primary);
-            background: var(--black);
-            color: #fff;
+            background: var(--saas-bg);
+            color: #1a1a2e;
             overflow-x: hidden;
         }
 
         /* ============================================
-           VIDEO BACKGROUND
+           VIDEO BACKGROUND (Now positioned for scroll)
         ============================================ */
         .video-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
+            display: none; /* Hidden initially, shown later */
+        }
+
+        .video-section {
+            position: relative;
+            width: 100%;
             height: 100vh;
-            z-index: -2;
             overflow: hidden;
             background: #000;
         }
 
-        .video-background iframe {
+        .video-section iframe {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 177.77vh; /* 16:9 aspect ratio */
+            width: 177.77vh;
             height: 100vh;
             min-width: 100vw;
-            min-height: 56.25vw; /* 16:9 aspect ratio */
+            min-height: 56.25vw;
             pointer-events: none;
             border: none;
         }
 
-        @media (max-width: 768px) {
-            .video-background iframe {
-                width: 300vw;
-                height: 100vh;
-                min-width: 300vw;
-            }
+        .video-section .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
         }
 
-        @media (max-aspect-ratio: 16/9) {
-            .video-background iframe {
-                width: 100vw;
-                height: 56.25vw;
-            }
+        .video-section .video-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            padding: 20px;
+            color: #fff;
         }
 
         .video-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: -1;
+            display: none;
+        }
+
+        /* Hide package sidebar for clean SaaS design */
+        .package-sidebar {
+            display: none;
+        }
+
+        /* Hide old hero section */
+        .hero {
+            display: none;
         }
 
         /* ============================================
-           NAVIGATION
+           NAVIGATION - Clean SaaS Navy Style
         ============================================ */
         nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
+            background: var(--saas-navy);
+            padding: 0.8rem 2rem;
             z-index: 1000;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
         }
 
         .logo {
             cursor: pointer;
             transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .logo:hover {
-            transform: scale(1.05);
+            transform: scale(1.02);
         }
 
         .logo img {
-            height: 55px;
+            height: 45px;
         }
 
         .nav-links {
@@ -153,32 +175,44 @@
         }
 
         .nav-links a {
-            color: #fff;
+            color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
             font-weight: 500;
+            font-size: 0.95rem;
             transition: color 0.3s ease;
             cursor: pointer;
         }
 
         .nav-links a:hover,
         .nav-links a.active {
-            color: var(--red);
+            color: #fff;
         }
 
         .nav-cta {
-            background: linear-gradient(45deg, var(--red), var(--red-light));
+            background: var(--red);
             color: white;
             border: none;
-            padding: 0.7rem 1.5rem;
+            padding: 0.6rem 1.3rem;
             border-radius: 25px;
             font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .nav-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 51, 51, 0.4);
+            background: var(--red-dark);
+            transform: translateY(-1px);
+        }
+
+        .nav-phone {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            margin-left: 15px;
+            cursor: pointer;
         }
 
         /* Mobile menu toggle */
@@ -579,6 +613,8 @@
         .section {
             padding: 100px 60px;
             position: relative;
+            background: var(--saas-navy);
+            color: #fff;
         }
 
         @media (max-width: 768px) {
@@ -586,7 +622,11 @@
         }
 
         .section-dark {
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(11, 18, 32, 0.95);
+        }
+
+        #pricing {
+            background: linear-gradient(180deg, var(--saas-navy) 0%, #0d1526 100%);
         }
 
         .section-header {
@@ -2809,166 +2849,363 @@
         }
 
         /* ============================================
-           MODERN CLEAN DESIGN SECTION
-           Clean white/navy theme inspired by mockups
+           SAAS HERO SECTION - Clean Professional Design
         ============================================ */
-        .modern-section {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            color: #1a1a2e;
+        .saas-hero {
+            background: linear-gradient(180deg, #F8FAFC 0%, #EEF2FF 50%, #E0E7FF 100%);
+            min-height: calc(100vh - 70px);
+            padding: 100px 40px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Soft wave overlay effect */
+        .saas-hero::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='0.3' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") no-repeat bottom;
+            background-size: cover;
+            pointer-events: none;
+        }
+
+        .saas-hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 900px) {
+            .saas-hero {
+                padding: 100px 20px 40px;
+            }
+            .saas-hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        .saas-hero-text h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--saas-navy);
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .saas-hero-text h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .saas-hero-text p {
+            font-size: 1.1rem;
+            color: #4B5563;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .saas-hero-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 900px) {
+            .saas-hero-buttons {
+                justify-content: center;
+            }
+        }
+
+        .btn-saas-primary {
+            background: var(--saas-blue);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-saas-primary:hover {
+            background: var(--saas-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-saas-secondary {
+            background: transparent;
+            color: var(--saas-navy);
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid #D1D5DB;
+            cursor: pointer;
+        }
+
+        .btn-saas-secondary:hover {
+            border-color: var(--saas-navy);
+            background: rgba(11, 18, 32, 0.05);
+        }
+
+        .saas-trust-indicators {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: #6B7280;
+        }
+
+        @media (max-width: 900px) {
+            .saas-trust-indicators {
+                justify-content: center;
+            }
+        }
+
+        .saas-trust-indicators span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .saas-trust-indicators span::before {
+            content: '✓';
+            color: #10B981;
+            font-weight: 700;
+        }
+
+        /* Hero Image with City Background */
+        .saas-hero-image {
+            position: relative;
+        }
+
+        .saas-hero-image-container {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(11, 18, 32, 0.15);
+        }
+
+        .saas-hero-image img {
+            width: 100%;
+            max-width: 450px;
+            display: block;
+            border-radius: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .saas-hero-image {
+                order: -1;
+            }
+            .saas-hero-image img {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+        }
+
+        /* ============================================
+           SAMPLE DELIVERABLES SECTION
+        ============================================ */
+        .saas-deliverables {
+            background: linear-gradient(180deg, #E0E7FF 0%, #F8FAFC 100%);
             padding: 80px 40px;
             position: relative;
         }
 
-        .modern-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--red), #ff6b6b, var(--red));
-        }
-
-        /* Modern Intro - Headshot + Text */
-        .modern-intro {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 60px;
-            align-items: center;
-            margin-bottom: 80px;
-        }
-
-        @media (max-width: 900px) {
-            .modern-intro {
-                grid-template-columns: 1fr;
-                text-align: center;
-                gap: 40px;
-            }
-        }
-
-        .modern-headshot {
-            text-align: center;
-        }
-
-        .modern-headshot img {
-            max-width: 320px;
-            width: 100%;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(26, 26, 46, 0.2);
-            border: 4px solid #fff;
-        }
-
-        .modern-headshot-caption {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: #666;
-            font-style: italic;
-        }
-
-        .modern-intro-text h2 {
-            font-size: 2.4rem;
-            color: #1a1a2e;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .modern-intro-text .subtitle {
-            font-size: 1.1rem;
-            color: var(--red);
-            font-weight: 600;
-            margin-bottom: 25px;
-            letter-spacing: 1px;
-        }
-
-        .modern-intro-text p {
-            color: #444;
-            line-height: 1.8;
-            font-size: 1.05rem;
-            margin-bottom: 20px;
-        }
-
-        .modern-cta-btn {
-            display: inline-block;
-            background: linear-gradient(45deg, var(--red), #ff6b6b);
-            color: #fff;
-            padding: 15px 35px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1rem;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(255, 51, 51, 0.3);
-        }
-
-        .modern-cta-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(255, 51, 51, 0.4);
-        }
-
-        /* FP&A Deliverables Cards */
-        .modern-cards-header {
+        .saas-deliverables-header {
             text-align: center;
             margin-bottom: 50px;
         }
 
-        .modern-cards-header h3 {
-            font-size: 2rem;
-            color: #1a1a2e;
+        .saas-deliverables-header h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--saas-navy);
             margin-bottom: 10px;
         }
 
-        .modern-cards-header p {
-            color: #666;
+        .saas-deliverables-header p {
+            color: #6B7280;
             font-size: 1.1rem;
         }
 
-        .modern-cards-grid {
+        .saas-deliverables-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 25px;
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 1100px;
+            margin: 0 auto 50px;
         }
 
         @media (max-width: 1000px) {
-            .modern-cards-grid {
+            .saas-deliverables-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 600px) {
-            .modern-cards-grid {
+            .saas-deliverables-grid {
+                grid-template-columns: 1fr;
+            }
+            .saas-deliverables {
+                padding: 60px 20px;
+            }
+        }
+
+        .saas-deliverable-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(11, 18, 32, 0.06);
+            border: 1px solid rgba(11, 18, 32, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .saas-deliverable-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(11, 18, 32, 0.1);
+        }
+
+        .saas-deliverable-card img {
+            width: 100%;
+            max-width: 180px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+        .saas-deliverable-card h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--saas-navy);
+            margin-bottom: 8px;
+        }
+
+        .saas-deliverable-card p {
+            font-size: 0.8rem;
+            color: #6B7280;
+            line-height: 1.5;
+        }
+
+        .saas-cta-center {
+            text-align: center;
+        }
+
+        /* FP&A Deliverables Icon Cards */
+        .saas-fpa-section {
+            background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+            padding: 80px 40px;
+        }
+
+        .saas-fpa-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .saas-fpa-header h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--saas-navy);
+            margin-bottom: 10px;
+        }
+
+        .saas-fpa-header p {
+            color: #6B7280;
+            font-size: 1.1rem;
+        }
+
+        .saas-fpa-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1000px) {
+            .saas-fpa-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .saas-fpa-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        .modern-card {
+        .saas-fpa-card {
             background: #fff;
             border-radius: 16px;
             padding: 30px 25px;
             text-align: center;
-            box-shadow: 0 8px 30px rgba(26, 26, 46, 0.08);
+            box-shadow: 0 4px 20px rgba(11, 18, 32, 0.06);
+            border: 1px solid rgba(11, 18, 32, 0.04);
             transition: all 0.3s ease;
-            border: 1px solid rgba(26, 26, 46, 0.05);
         }
 
-        .modern-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(26, 26, 46, 0.12);
+        .saas-fpa-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(11, 18, 32, 0.1);
         }
 
-        .modern-card-icon {
+        .saas-fpa-icon {
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, #1a1a2e, #2d2d44);
+            background: var(--saas-navy);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 20px;
             font-size: 1.5rem;
+        }
+
+        .saas-fpa-card h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--saas-navy);
+            margin-bottom: 10px;
+        }
+
+        .saas-fpa-card p {
+            font-size: 0.9rem;
+            color: #6B7280;
+            line-height: 1.6;
+        }
+
+        /* Legacy modern section support */
+        .modern-section {
+            display: none;
+        }
+
+        .modern-steps-section {
+            display: none;
         }
 
         .modern-card h4 {
@@ -3160,105 +3397,108 @@
         </a>
     </div>
 
-    <!-- Hero Section -->
-    <section class="hero" id="top">
-        <div class="hero-logo">
-            <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz">
-        </div>
-        <p class="hero-subtitle">Who says lightning never strikes twice? Get consistent: Budget vs. Actual Reporting, Financial Modeling, Boardroom-Ready Decks & Dashboards crafted by an expert — not an algorithm. Lightning fast so you can focus on what makes your business shine.</p>
-        <div class="hero-buttons">
-            <a href="#work" class="btn-primary">View Work</a>
-            <a href="#portal" class="btn-secondary">Get Started</a>
+    <!-- SaaS Hero Section -->
+    <section class="saas-hero" id="top">
+        <div class="saas-hero-content">
+            <div class="saas-hero-text">
+                <h1>Sample FP&A Deliverables</h1>
+                <p>See the professional reporting and forecasting packages your business will receive. Clear insights, boardroom-ready presentations, and actionable financial analysis.</p>
+                <div class="saas-hero-buttons">
+                    <a href="#portal" class="btn-saas-primary">Start Free Trial →</a>
+                    <a href="#schedule" class="btn-saas-secondary">Book a Strategy Call</a>
+                </div>
+                <div class="saas-trust-indicators">
+                    <span>No credit card required</span>
+                    <span>Cancel anytime</span>
+                    <span>Secure data handling</span>
+                </div>
+            </div>
+            <div class="saas-hero-image">
+                <div class="saas-hero-image-container">
+                    <img src="Zacprofessionalaiheadshot.png" alt="Zac Prizant - FP&A Expert">
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Modern Clean Design Section -->
-    <section class="modern-section" id="modern-intro">
-        <!-- Intro: Headshot + Text -->
-        <div class="modern-intro">
-            <div class="modern-headshot">
-                <img src="Zacprofessionalaiheadshot.png" alt="Zac Prizant - Financial Expert">
-                <p class="modern-headshot-caption">Zac Prizant | Cornell Master's in Management</p>
+    <!-- Sample FP&A Deliverables Cards -->
+    <section class="saas-deliverables">
+        <div class="saas-deliverables-header">
+            <h2>Sample FP&A Deliverables</h2>
+            <p>Professional reports and dashboards tailored to your business</p>
+        </div>
+        <div class="saas-deliverables-grid">
+            <div class="saas-deliverable-card">
+                <img src="slide-budget-vs-actual.png" alt="Monthly Board Pack">
+                <h4>Monthly Board Pack</h4>
+                <p>P&L, Cash Flow & KPIs in a Consolidated Presentation</p>
             </div>
-            <div class="modern-intro-text">
-                <p class="subtitle">FOUNDER & FP&A ADVISOR</p>
-                <h2>Financial Clarity, Delivered Fast</h2>
-                <p>I transform complex financial data into clear, actionable insights. With experience spanning private equity, hospitality, and corporate FP&A, I deliver boardroom-ready analysis that drives real decisions.</p>
-                <p>From automating 15,000+ hours of manual work to managing $1B+ portfolios, I bring enterprise-level expertise to businesses of every size.</p>
-                <a href="#schedule" class="modern-cta-btn">Book a Free Consultation</a>
+            <div class="saas-deliverable-card">
+                <img src="slide-income-benchmarking.png" alt="Cash Flow Forecast">
+                <h4>Cash Flow Forecast</h4>
+                <p>Rolling 12-Month Cash Projections, Scenario Forecasts</p>
+            </div>
+            <div class="saas-deliverable-card">
+                <img src="dynamicdashboards.png" alt="KPI Dashboard">
+                <h4>KPI Dashboard</h4>
+                <p>Track Financial/Process Metrics at 45% Percent</p>
+            </div>
+            <div class="saas-deliverable-card">
+                <img src="slide-proforma.png" alt="Budget Model">
+                <h4>Budget Model</h4>
+                <p>Get an accurate roadmap to forecasted changes</p>
             </div>
         </div>
+        <div class="saas-cta-center">
+            <a href="#portal" class="btn-saas-primary">Get These Reports for Your Business →</a>
+        </div>
+    </section>
 
-        <!-- FP&A Deliverables Cards -->
-        <div class="modern-cards-header">
-            <h3>FP&A Deliverables</h3>
+    <!-- FP&A Deliverables Icon Cards -->
+    <section class="saas-fpa-section">
+        <div class="saas-fpa-header">
+            <h2>FP&A Deliverables</h2>
             <p>Comprehensive financial planning and analysis services</p>
         </div>
-        <div class="modern-cards-grid">
-            <div class="modern-card">
-                <div class="modern-card-icon">📊</div>
+        <div class="saas-fpa-grid">
+            <div class="saas-fpa-card">
+                <div class="saas-fpa-icon">📊</div>
                 <h4>Financial Reporting</h4>
                 <p>Monthly P&L analysis, budget vs actual tracking, and variance commentary you can act on.</p>
             </div>
-            <div class="modern-card">
-                <div class="modern-card-icon">📈</div>
+            <div class="saas-fpa-card">
+                <div class="saas-fpa-icon">📈</div>
                 <h4>Financial Modeling</h4>
                 <p>Custom models for forecasting, scenarios, and strategic planning built for your business.</p>
             </div>
-            <div class="modern-card">
-                <div class="modern-card-icon">🎯</div>
+            <div class="saas-fpa-card">
+                <div class="saas-fpa-icon">🎯</div>
                 <h4>KPI Dashboards</h4>
                 <p>Real-time visualizations that transform data into insights leadership can understand.</p>
             </div>
-            <div class="modern-card">
-                <div class="modern-card-icon">💼</div>
+            <div class="saas-fpa-card">
+                <div class="saas-fpa-icon">💼</div>
                 <h4>Strategic Advisory</h4>
                 <p>Board presentations, investor materials, and strategic guidance from an experienced advisor.</p>
             </div>
         </div>
     </section>
 
-    <!-- 3 Steps Section with City Background -->
-    <section class="modern-steps-section">
-        <div class="modern-steps-content">
-            <div class="modern-steps-header">
-                <h3>Get Started in 3 Simple Steps</h3>
-                <p>From first call to first deliverable in days, not weeks</p>
-            </div>
-            <div class="modern-steps-grid">
-                <div class="modern-step">
-                    <div class="modern-step-number">1</div>
-                    <h4>Schedule a Call</h4>
-                    <p>Book a free 30-minute discovery call to discuss your financial needs and goals.</p>
-                </div>
-                <div class="modern-step">
-                    <div class="modern-step-number">2</div>
-                    <h4>Share Your Data</h4>
-                    <p>Securely upload your financial data through the client portal. Everything stays confidential.</p>
-                </div>
-                <div class="modern-step">
-                    <div class="modern-step-number">3</div>
-                    <h4>Get Results</h4>
-                    <p>Receive polished, boardroom-ready deliverables with clear insights and recommendations.</p>
-                </div>
-            </div>
-            <div class="modern-stats">
-                <div class="modern-stat">
-                    <span class="modern-stat-number">50+</span>
-                    <span class="modern-stat-label">Projects Delivered</span>
-                </div>
-                <div class="modern-stat">
-                    <span class="modern-stat-number">$1B+</span>
-                    <span class="modern-stat-label">Portfolio Managed</span>
-                </div>
-                <div class="modern-stat">
-                    <span class="modern-stat-number">15,000+</span>
-                    <span class="modern-stat-label">Hours Automated</span>
-                </div>
-                <div class="modern-stat">
-                    <span class="modern-stat-number">8hrs→7min</span>
-                    <span class="modern-stat-label">Budget Time Reduced</span>
-                </div>
+    <!-- Video Section (appears on scroll) -->
+    <section class="video-section" id="video-hero">
+        <iframe
+            src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1&loop=1&muted=1"
+            frameborder="0"
+            allow="autoplay; fullscreen"
+            allowfullscreen>
+        </iframe>
+        <div class="video-overlay"></div>
+        <div class="video-content">
+            <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz" style="max-width: 280px; margin-bottom: 30px;">
+            <p style="font-size: 1.3rem; max-width: 700px; line-height: 1.6; margin-bottom: 30px;">Who says lightning never strikes twice? Get consistent: Budget vs. Actual Reporting, Financial Modeling, Boardroom-Ready Decks & Dashboards crafted by an expert — not an algorithm.</p>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <a href="#work" class="btn-saas-primary">View Portfolio</a>
+                <a href="#portal" class="btn-saas-secondary" style="color: #fff; border-color: rgba(255,255,255,0.5);">Get Started</a>
             </div>
         </div>
     </section>
