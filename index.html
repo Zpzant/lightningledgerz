@@ -3109,15 +3109,12 @@
         }
 
         .saas-hero-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
+            max-width: 600px;
+            margin: 0;
+            margin-left: 5%;
+            display: block;
             position: relative;
-            z-index: 1;
-            width: 100%;
+            z-index: 2;
         }
 
         @media (max-width: 900px) {
@@ -3132,7 +3129,8 @@
                     transparent 100%);
             }
             .saas-hero-content {
-                grid-template-columns: 1fr;
+                max-width: 100%;
+                margin-left: 0;
                 text-align: center;
             }
         }
@@ -3254,35 +3252,47 @@
             font-weight: 700;
         }
 
-        /* Hero Image - Extends into next section */
+        /* Hero Image - Pinned to right edge */
         .saas-hero-image {
-            position: relative;
+            position: absolute;
+            right: 0;
+            bottom: 0;
             z-index: 10;
             display: flex;
             align-items: flex-end;
-            justify-content: center;
+            justify-content: flex-end;
         }
 
         .saas-hero-image img {
-            max-width: 400px;
-            width: 100%;
+            max-height: 85vh;
+            width: auto;
             display: block;
             position: relative;
             z-index: 10;
             object-fit: contain;
-            margin-bottom: -120px;
-            filter: drop-shadow(0 15px 50px rgba(0,0,0,0.25));
+            object-position: bottom right;
+            margin-bottom: -100px;
+            filter: drop-shadow(0 15px 50px rgba(0,0,0,0.2));
+        }
+
+        @media (max-width: 1200px) {
+            .saas-hero-image img {
+                max-height: 70vh;
+            }
         }
 
         @media (max-width: 900px) {
             .saas-hero-image {
-                order: 1;
+                position: relative;
+                right: auto;
+                bottom: auto;
                 justify-content: center;
                 margin-top: 20px;
             }
             .saas-hero-image img {
-                max-width: 280px;
-                margin-bottom: -80px;
+                max-height: 50vh;
+                max-width: 300px;
+                margin-bottom: -60px;
             }
         }
 
@@ -3940,7 +3950,7 @@
                 </div>
             </div>
             <div class="saas-hero-image">
-                <img src="zachead.png" alt="Zac Prizant - FP&A Expert">
+                <img src="zacsuit.png" alt="Zac Prizant - FP&A Expert">
             </div>
         </div>
     </section>
