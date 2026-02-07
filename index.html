@@ -3168,7 +3168,8 @@
             background: transparent;
             padding: 100px 40px 0;
             position: relative;
-            overflow: visible;
+            overflow-x: clip;
+            overflow-y: visible;
             min-height: 80vh;
             display: flex;
             align-items: center;
@@ -3352,6 +3353,7 @@
             object-fit: contain;
             object-position: bottom right;
             margin-bottom: -100px;
+            margin-right: -150px;
             filter: drop-shadow(0 15px 50px rgba(0,0,0,0.2));
         }
 
