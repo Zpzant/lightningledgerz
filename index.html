@@ -3417,6 +3417,59 @@
             z-index: 5;
         }
 
+        .carousel-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .carousel-title h2 {
+            color: #1e3a5f;
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .carousel-features {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            padding: 30px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .carousel-feature-item {
+            color: #4B5563;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .carousel-cta {
+            text-align: center;
+            padding: 20px 40px 40px;
+        }
+
+        .carousel-cta h3 {
+            color: #1e3a5f;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .carousel-features {
+                gap: 15px;
+                padding: 20px;
+            }
+            .carousel-feature-item {
+                font-size: 0.9rem;
+                padding: 10px 18px;
+            }
+        }
+
         .work-carousel-container {
             overflow-x: auto;
             overflow-y: hidden;
@@ -4049,6 +4102,9 @@
 
     <!-- Work Products Carousel (McKinsey/Bain Style) -->
     <section class="work-carousel-section">
+        <div class="carousel-title">
+            <h2>Sample FP&A Deliverables</h2>
+        </div>
         <div class="work-carousel-container" id="work-carousel-container">
             <div class="work-carousel" id="work-carousel">
                 <div class="work-carousel-card" onclick="openWorkModal('slide-budget-vs-actual.png')">
@@ -4085,36 +4141,13 @@
             <span>Drag to explore</span>
             <span class="scroll-arrow">→</span>
         </div>
-    </section>
-
-    <!-- CLEAN SAAS SECTION: Sample FP&A Deliverables Cards -->
-    <section class="saas-deliverables">
-        <div class="saas-deliverables-header">
-            <h2>Sample FP&A Deliverables</h2>
+        <div class="carousel-features">
+            <div class="carousel-feature-item">Clear, executive-ready financials</div>
+            <div class="carousel-feature-item">Predict cash needs and runway</div>
+            <div class="carousel-feature-item">Track performance metrics</div>
+            <div class="carousel-feature-item">Strategic planning & scenarios</div>
         </div>
-        <div class="saas-deliverables-grid">
-            <div class="saas-deliverable-card">
-                <img src="slide-budget-vs-actual.png" alt="Monthly Board Pack">
-                <h4>Monthly Board Pack</h4>
-                <p>Clear, executive-ready financials</p>
-            </div>
-            <div class="saas-deliverable-card">
-                <img src="slide-income-benchmarking.png" alt="Cash Flow Forecast">
-                <h4>Cash Flow Forecast</h4>
-                <p>Predict cash needs and runway</p>
-            </div>
-            <div class="saas-deliverable-card">
-                <img src="dynamicdashboards.png" alt="KPI Dashboard">
-                <h4>KPI Dashboard</h4>
-                <p>Track performance metrics</p>
-            </div>
-            <div class="saas-deliverable-card">
-                <img src="slide-operational-goals.png" alt="Budget Model">
-                <h4>Budget Model</h4>
-                <p>Strategic planning & scenarios</p>
-            </div>
-        </div>
-        <div class="saas-cta-center">
+        <div class="carousel-cta">
             <h3>Get These Reports for Your Business</h3>
             <a href="#portal" class="btn-saas-primary">Start My Free Trial →</a>
         </div>
