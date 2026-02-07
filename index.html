@@ -200,6 +200,13 @@
 
         .logo img {
             height: 45px;
+            padding: 5px 8px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        nav.nav-scrolled .logo img {
+            background: rgba(30, 58, 95, 0.9);
         }
 
         .nav-links {
@@ -4038,7 +4045,7 @@
 
     <!-- Navigation -->
     <nav>
-        <a href="#top" class="logo" onclick="goHome()">
+        <a href="#top" class="logo" onclick="goHome()" title="Back to home">
             <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz Logo">
         </a>
         <div id="user-welcome-nav" class="user-welcome" style="display: none;">
