@@ -3241,13 +3241,20 @@
 
         /* Hero Logo */
         .hero-logo-img {
-            max-width: 220px;
-            margin-bottom: 20px;
+            max-width: 320px;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        @media (max-width: 900px) {
+            .hero-logo-img {
+                margin: 0 auto 25px;
+            }
         }
 
         @media (max-width: 768px) {
             .hero-logo-img {
-                max-width: 180px;
+                max-width: 260px;
             }
         }
 
@@ -3268,6 +3275,12 @@
             scrollbar-width: none;
             -ms-overflow-style: none;
             padding: 20px 40px;
+            cursor: grab;
+            user-select: none;
+        }
+
+        .work-carousel-container:active {
+            cursor: grabbing;
         }
 
         .work-carousel-container::-webkit-scrollbar {
@@ -3858,8 +3871,8 @@
 
     <!-- Work Products Carousel (McKinsey/Bain Style) -->
     <section class="work-carousel-section">
-        <div class="work-carousel-container">
-            <div class="work-carousel">
+        <div class="work-carousel-container" id="work-carousel-container">
+            <div class="work-carousel" id="work-carousel">
                 <div class="work-carousel-card" onclick="openWorkModal('slide-budget-vs-actual.png')">
                     <img src="slide-budget-vs-actual.png" alt="Budget vs Actual">
                     <div class="work-carousel-label">Budget vs Actual</div>
@@ -3876,18 +3889,22 @@
                     <img src="slide-operational-goals.png" alt="Operational Goals">
                     <div class="work-carousel-label">Operational Goals</div>
                 </div>
-                <div class="work-carousel-card" onclick="openWorkModal('slide-proforma-cash.png')">
-                    <img src="slide-proforma-cash.png" alt="Cash Flow Forecast">
-                    <div class="work-carousel-label">Cash Flow Forecast</div>
+                <div class="work-carousel-card" onclick="openWorkModal('slide-services.png')">
+                    <img src="slide-services.png" alt="Services Overview">
+                    <div class="work-carousel-label">Services Overview</div>
                 </div>
-                <div class="work-carousel-card" onclick="openWorkModal('slide-yoy-comparison.png')">
-                    <img src="slide-yoy-comparison.png" alt="YoY Comparison">
-                    <div class="work-carousel-label">YoY Comparison</div>
+                <div class="work-carousel-card" onclick="openWorkModal('slide-expense-waterfall.png')">
+                    <img src="slide-expense-waterfall.png" alt="Expense Waterfall">
+                    <div class="work-carousel-label">Expense Waterfall</div>
+                </div>
+                <div class="work-carousel-card" onclick="openWorkModal('slide-revenue-trend.png')">
+                    <img src="slide-revenue-trend.png" alt="Revenue Trend">
+                    <div class="work-carousel-label">Revenue Trend</div>
                 </div>
             </div>
         </div>
         <div class="carousel-scroll-hint">
-            <span>Scroll to explore</span>
+            <span>Drag to explore</span>
             <span class="scroll-arrow">→</span>
         </div>
     </section>
@@ -6270,6 +6287,46 @@
         // Close modal on Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeWorkModal();
+        });
+
+        // ===========================================
+        // DRAG TO SCROLL CAROUSEL
+        // ===========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const carousel = document.getElementById('work-carousel-container');
+            if (!carousel) return;
+
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            carousel.addEventListener('mousedown', (e) => {
+                isDown = true;
+                carousel.style.cursor = 'grabbing';
+                startX = e.pageX - carousel.offsetLeft;
+                scrollLeft = carousel.scrollLeft;
+            });
+
+            carousel.addEventListener('mouseleave', () => {
+                isDown = false;
+                carousel.style.cursor = 'grab';
+            });
+
+            carousel.addEventListener('mouseup', () => {
+                isDown = false;
+                carousel.style.cursor = 'grab';
+            });
+
+            carousel.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - carousel.offsetLeft;
+                const walk = (x - startX) * 2;
+                carousel.scrollLeft = scrollLeft - walk;
+            });
+
+            // Set initial cursor
+            carousel.style.cursor = 'grab';
         });
     </script>
 
