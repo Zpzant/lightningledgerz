@@ -210,21 +210,33 @@
         }
 
         .nav-links a {
-            color: #1e3a5f;
+            color: #fff;
             text-decoration: none;
             font-weight: 500;
             font-size: 0.95rem;
             transition: color 0.3s ease;
             cursor: pointer;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
         .nav-links a:hover,
         .nav-links a.active {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* When nav is scrolled (white background), use dark text */
+        nav.nav-scrolled .nav-links a {
+            color: #1e3a5f;
+            text-shadow: none;
+        }
+
+        nav.nav-scrolled .nav-links a:hover,
+        nav.nav-scrolled .nav-links a.active {
             color: var(--saas-blue);
         }
 
         .nav-cta {
-            background: var(--saas-blue);
+            background: var(--red);
             color: white;
             border: none;
             padding: 0.6rem 1.3rem;
@@ -240,7 +252,7 @@
         }
 
         .nav-cta:hover {
-            background: var(--saas-blue-dark);
+            background: var(--red-dark);
             transform: translateY(-1px);
         }
 
@@ -260,7 +272,7 @@
         }
 
         .nav-contact-info a {
-            color: #4B5563;
+            color: #fff;
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 500;
@@ -268,9 +280,20 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
         .nav-contact-info a:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* When nav is scrolled (white background), use dark text */
+        nav.nav-scrolled .nav-contact-info a {
+            color: #4B5563;
+            text-shadow: none;
+        }
+
+        nav.nav-scrolled .nav-contact-info a:hover {
             color: var(--saas-blue);
         }
 
@@ -291,7 +314,7 @@
             display: none;
             background: none;
             border: none;
-            color: #1e3a5f;
+            color: #fff;
             font-size: 2rem;
             cursor: pointer;
             padding: 10px;
@@ -299,6 +322,12 @@
             -webkit-tap-highlight-color: transparent;
             user-select: none;
             z-index: 1001;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        nav.nav-scrolled .nav-mobile-toggle {
+            color: #1e3a5f;
+            text-shadow: none;
         }
 
         @media (max-width: 900px) {
@@ -3965,9 +3994,9 @@
                     <img src="slide-operational-goals.png" alt="Operational Goals">
                     <div class="work-carousel-label">Operational Goals</div>
                 </div>
-                <div class="work-carousel-card" onclick="openWorkModal('slide-services.png')">
-                    <img src="slide-services.png" alt="Services Overview">
-                    <div class="work-carousel-label">Services Overview</div>
+                <div class="work-carousel-card" onclick="openWorkModal('slide-client-analysis.png')">
+                    <img src="slide-client-analysis.png" alt="Client Analysis">
+                    <div class="work-carousel-label">Client Analysis</div>
                 </div>
                 <div class="work-carousel-card" onclick="openWorkModal('slide-expense-waterfall.png')">
                     <img src="slide-expense-waterfall.png" alt="Expense Waterfall">
