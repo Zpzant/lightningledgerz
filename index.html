@@ -3376,7 +3376,7 @@
             object-fit: contain;
             object-position: bottom right;
             margin-bottom: -100px;
-            margin-right: calc(-15vw - 100px);
+            margin-right: calc(-25vw - 50px);
             filter: drop-shadow(0 15px 50px rgba(0,0,0,0.2));
         }
 
@@ -3436,24 +3436,49 @@
             font-weight: 700;
         }
 
-        .carousel-features {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
-            padding: 30px 40px;
+        .deliverables-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            padding: 40px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .carousel-feature-item {
-            color: #4B5563;
-            font-size: 1rem;
-            font-weight: 500;
-            padding: 12px 24px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 30px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        .deliverable-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .deliverable-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .deliverable-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .deliverable-card h4 {
+            font-weight: 600;
+            color: #1e3a5f;
+            font-size: 0.95rem;
+            margin: 15px 15px 5px;
+        }
+
+        .deliverable-card p {
+            color: #6B7280;
+            font-size: 0.8rem;
+            margin: 0 15px 15px;
         }
 
         .carousel-cta {
@@ -3467,14 +3492,16 @@
             margin-bottom: 20px;
         }
 
-        @media (max-width: 768px) {
-            .carousel-features {
-                gap: 15px;
+        @media (max-width: 900px) {
+            .deliverables-grid {
+                grid-template-columns: repeat(2, 1fr);
                 padding: 20px;
             }
-            .carousel-feature-item {
-                font-size: 0.9rem;
-                padding: 10px 18px;
+        }
+
+        @media (max-width: 500px) {
+            .deliverables-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -3558,10 +3585,20 @@
 
         .work-carousel-label {
             padding: 15px;
+            text-align: center;
+        }
+
+        .work-carousel-label h4 {
             font-weight: 600;
             color: #1e3a5f;
             font-size: 0.95rem;
-            text-align: center;
+            margin: 0 0 5px 0;
+        }
+
+        .work-carousel-label p {
+            color: #6B7280;
+            font-size: 0.8rem;
+            margin: 0;
         }
 
         .carousel-scroll-hint {
@@ -4109,7 +4146,7 @@
     </section>
 
     <!-- Work Products Carousel (McKinsey/Bain Style) -->
-    <section class="work-carousel-section">
+    <section class="work-carousel-section" id="work">
         <div class="carousel-title">
             <h2>Sample FP&A Deliverables</h2>
         </div>
@@ -4117,31 +4154,59 @@
             <div class="work-carousel" id="work-carousel">
                 <div class="work-carousel-card" onclick="openWorkModal('slide-budget-vs-actual.png')">
                     <img src="slide-budget-vs-actual.png" alt="Budget vs Actual">
-                    <div class="work-carousel-label">Budget vs Actual</div>
+                    <div class="work-carousel-label">
+                        <h4>Budget vs Actual</h4>
+                        <p>Monthly variance tracking</p>
+                    </div>
                 </div>
                 <div class="work-carousel-card" onclick="openWorkModal('slide-income-benchmarking.png')">
                     <img src="slide-income-benchmarking.png" alt="Income Benchmarking">
-                    <div class="work-carousel-label">Income Benchmarking</div>
+                    <div class="work-carousel-label">
+                        <h4>Income Benchmarking</h4>
+                        <p>Industry comparison analysis</p>
+                    </div>
                 </div>
                 <div class="work-carousel-card" onclick="openWorkModal('dynamicdashboards.png')">
                     <img src="dynamicdashboards.png" alt="KPI Dashboard">
-                    <div class="work-carousel-label">KPI Dashboard</div>
+                    <div class="work-carousel-label">
+                        <h4>KPI Dashboard</h4>
+                        <p>Track performance metrics</p>
+                    </div>
                 </div>
                 <div class="work-carousel-card" onclick="openWorkModal('slide-operational-goals.png')">
                     <img src="slide-operational-goals.png" alt="Operational Goals">
-                    <div class="work-carousel-label">Operational Goals</div>
+                    <div class="work-carousel-label">
+                        <h4>Operational Goals</h4>
+                        <p>Strategic planning & scenarios</p>
+                    </div>
                 </div>
                 <div class="work-carousel-card" onclick="openWorkModal('slide-client-analysis.png')">
                     <img src="slide-client-analysis.png" alt="Client Analysis">
-                    <div class="work-carousel-label">Client Analysis</div>
+                    <div class="work-carousel-label">
+                        <h4>Client Analysis</h4>
+                        <p>Geographic insights</p>
+                    </div>
                 </div>
                 <div class="work-carousel-card" onclick="openWorkModal('slide-expense-waterfall.png')">
                     <img src="slide-expense-waterfall.png" alt="Expense Waterfall">
-                    <div class="work-carousel-label">Expense Waterfall</div>
+                    <div class="work-carousel-label">
+                        <h4>Expense Waterfall</h4>
+                        <p>Cost flow visualization</p>
+                    </div>
                 </div>
                 <div class="work-carousel-card" onclick="openWorkModal('slide-revenue-trend.png')">
                     <img src="slide-revenue-trend.png" alt="Revenue Trend">
-                    <div class="work-carousel-label">Revenue Trend</div>
+                    <div class="work-carousel-label">
+                        <h4>Revenue Trend</h4>
+                        <p>Growth trajectory analysis</p>
+                    </div>
+                </div>
+                <div class="work-carousel-card" onclick="openWorkModal('slide-services.png')">
+                    <img src="slide-services.png" alt="Services Overview">
+                    <div class="work-carousel-label">
+                        <h4>Services Overview</h4>
+                        <p>Full capability summary</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -4149,12 +4214,31 @@
             <span>Drag to explore</span>
             <span class="scroll-arrow">→</span>
         </div>
-        <div class="carousel-features">
-            <div class="carousel-feature-item">Clear, executive-ready financials</div>
-            <div class="carousel-feature-item">Predict cash needs and runway</div>
-            <div class="carousel-feature-item">Track performance metrics</div>
-            <div class="carousel-feature-item">Strategic planning & scenarios</div>
+
+        <!-- 4 Additional Deliverables Cards -->
+        <div class="deliverables-grid">
+            <div class="deliverable-card" onclick="openWorkModal('slide-cost-comparison.png')">
+                <img src="slide-cost-comparison.png" alt="Cost Comparison">
+                <h4>Cost Comparison</h4>
+                <p>Side-by-side expense analysis</p>
+            </div>
+            <div class="deliverable-card" onclick="openWorkModal('slide-revenue-by-customer.png')">
+                <img src="slide-revenue-by-customer.png" alt="Revenue by Customer">
+                <h4>Revenue by Customer</h4>
+                <p>Client concentration insights</p>
+            </div>
+            <div class="deliverable-card" onclick="openWorkModal('slide-profit-margin.png')">
+                <img src="slide-profit-margin.png" alt="Profit Margin">
+                <h4>Profit Margin</h4>
+                <p>Margin trend analysis</p>
+            </div>
+            <div class="deliverable-card" onclick="openWorkModal('slide-market-analysis.png')">
+                <img src="slide-market-analysis.png" alt="Market Analysis">
+                <h4>Market Analysis</h4>
+                <p>Competitive positioning</p>
+            </div>
         </div>
+
         <div class="carousel-cta">
             <h3>Get These Reports for Your Business</h3>
             <a href="#portal" class="btn-saas-primary">Start My Free Trial →</a>
