@@ -3319,19 +3319,48 @@
             overflow-x: auto;
             overflow-y: hidden;
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            padding: 20px 40px;
+            padding: 20px 40px 30px;
             cursor: grab;
             user-select: none;
+            /* Firefox scrollbar */
+            scrollbar-width: thin;
+            scrollbar-color: var(--saas-blue) #e5e7eb;
         }
 
         .work-carousel-container:active {
             cursor: grabbing;
         }
 
+        /* Custom scrollbar for desktop */
         .work-carousel-container::-webkit-scrollbar {
-            display: none;
+            height: 8px;
+        }
+
+        .work-carousel-container::-webkit-scrollbar-track {
+            background: #e5e7eb;
+            border-radius: 10px;
+            margin: 0 40px;
+        }
+
+        .work-carousel-container::-webkit-scrollbar-thumb {
+            background: var(--saas-blue);
+            border-radius: 10px;
+        }
+
+        .work-carousel-container::-webkit-scrollbar-thumb:hover {
+            background: var(--saas-blue-dark);
+        }
+
+        /* Hide scrollbar on mobile - drag works better */
+        @media (max-width: 768px) {
+            .work-carousel-container {
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                padding: 20px 20px 20px;
+            }
+            .work-carousel-container::-webkit-scrollbar {
+                display: none;
+            }
         }
 
         .work-carousel {
