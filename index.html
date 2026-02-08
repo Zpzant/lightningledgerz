@@ -858,6 +858,13 @@
             box-shadow: 0 0 40px rgba(255, 215, 0, 0.6), 0 0 80px rgba(255, 215, 0, 0.4) !important;
         }
 
+        section#pricing .package-card.gold h3 {
+            background: linear-gradient(45deg, #b8860b, #daa520, #b8860b) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+        }
+
         section#pricing .package-card.diamond {
             background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(240, 255, 255, 0.98)) !important;
             border-color: #00d4ff !important;
@@ -1046,10 +1053,23 @@
         }
 
         .package-card.gold h3 {
-            background: linear-gradient(45deg, var(--gold), var(--gold-light));
+            background: linear-gradient(45deg, #b8860b, #ffd700, #daa520);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            transition: filter 0.3s ease;
+        }
+
+        .package-card.gold:hover h3 {
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+        }
+
+        .package-card.basic:hover h3 {
+            filter: drop-shadow(0 0 10px rgba(255, 51, 51, 0.8));
+        }
+
+        .package-card.diamond:hover h3 {
+            filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.8));
         }
 
         .package-card.diamond {
