@@ -2020,11 +2020,10 @@
         .portal-dashboard {
             max-width: 1200px;
             margin: 0 auto;
-            background: #fff;
-            border: 2px solid var(--red);
+            background: var(--mckinsey-blue);
             border-radius: 20px;
             padding: 40px;
-            color: #1e3a5f;
+            color: #fff;
         }
 
         .dashboard-header {
@@ -2033,20 +2032,20 @@
             align-items: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 1px solid rgba(30, 58, 95, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             flex-wrap: wrap;
             gap: 15px;
         }
 
         .dashboard-header h3 {
-            color: var(--red);
+            color: #fff;
             margin: 0;
         }
 
         /* Trial Banner */
         .trial-banner {
-            background: linear-gradient(90deg, #fff3cd, #ffeeba);
-            border: 1px solid #ffc107;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 10px;
             padding: 12px 20px;
             margin-bottom: 25px;
@@ -2058,29 +2057,29 @@
         }
 
         .trial-banner-text {
-            color: #856404;
+            color: #fff;
             font-weight: 500;
         }
 
         .trial-banner-days {
             font-weight: 700;
-            color: #d63384;
+            color: var(--gold);
         }
 
         .trial-banner-cta {
-            background: var(--red);
-            color: #fff;
+            background: var(--gold);
+            color: var(--mckinsey-blue);
             border: none;
             padding: 8px 20px;
             border-radius: 20px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .trial-banner-cta:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.3);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
         }
 
         /* 3 Column Layout */
@@ -2110,29 +2109,36 @@
         }
 
         .dashboard-column {
-            background: #f8f9fa;
+            background: #fff;
             border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(30, 58, 95, 0.1);
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dashboard-column:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
         }
 
         .column-header {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--red);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--mckinsey-blue);
         }
 
         .column-header h4 {
-            color: #1e3a5f;
+            color: var(--mckinsey-blue);
             margin: 0;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
         }
 
         .column-header .icon {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
         }
 
         /* Logo Upload Column */
@@ -5386,12 +5392,12 @@
             </div>
 
             <!-- Disclaimers -->
-            <div class="portal-disclaimers" style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 20px;">
-                <h5 style="color: #1e3a5f; margin-bottom: 10px;">Important Notices</h5>
-                <ul style="color: #666; font-size: 0.85rem; margin: 0; padding-left: 20px;">
-                    <li><strong>Confidentiality:</strong> All documents are encrypted and strictly confidential.</li>
-                    <li><strong>Data Handling:</strong> Your data is used solely for FP&A services, never shared.</li>
-                    <li><strong>Security:</strong> Industry-standard encryption. Only you and your advisor can access files.</li>
+            <div class="portal-disclaimers" style="background: #fff; padding: 25px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
+                <h5 style="color: var(--mckinsey-blue); margin-bottom: 15px; font-size: 1rem;">Important Notices</h5>
+                <ul style="color: #555; font-size: 0.9rem; margin: 0; padding-left: 20px; line-height: 1.8;">
+                    <li><strong style="color: var(--mckinsey-blue);">Confidentiality:</strong> All documents are encrypted and strictly confidential.</li>
+                    <li><strong style="color: var(--mckinsey-blue);">Data Handling:</strong> Your data is used solely for FP&A services, never shared.</li>
+                    <li><strong style="color: var(--mckinsey-blue);">Security:</strong> Industry-standard encryption. Only you and your advisor can access files.</li>
                 </ul>
             </div>
         </div>
