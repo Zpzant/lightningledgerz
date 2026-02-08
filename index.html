@@ -2020,7 +2020,7 @@
         .portal-dashboard {
             max-width: 1200px;
             margin: 0 auto;
-            background: var(--mckinsey-blue);
+            background: var(--mckinsey-blue) !important;
             border-radius: 20px;
             padding: 40px;
             color: #fff;
@@ -2122,18 +2122,19 @@
         }
 
         .column-header {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid var(--mckinsey-blue);
+            background: var(--mckinsey-blue);
+            margin: -25px -25px 20px -25px;
+            padding: 15px 25px;
+            border-radius: 12px 12px 0 0;
         }
 
         .column-header h4 {
-            color: var(--mckinsey-blue);
+            color: #fff !important;
             margin: 0;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         /* Logo Upload Column */
@@ -3571,7 +3572,7 @@
 
         /* White Theme - Portal Dashboard */
         body.white-theme .portal-dashboard {
-            background: rgba(255, 255, 255, 0.98);
+            background: var(--mckinsey-blue) !important;
             box-shadow: 0 4px 40px rgba(0, 0, 0, 0.12);
         }
 
