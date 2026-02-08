@@ -102,8 +102,13 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: -1;
+            background: radial-gradient(ellipse 80% 70% at 50% 45%,
+                rgba(0, 0, 0, 0.8) 0%,
+                rgba(0, 0, 0, 0.6) 35%,
+                rgba(0, 0, 0, 0.3) 60%,
+                transparent 100%);
+            z-index: 0;
+            pointer-events: none;
         }
 
         .video-section {
@@ -148,21 +153,6 @@
             text-align: center;
             padding: 20px;
             color: #fff;
-        }
-
-        .video-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(ellipse 80% 70% at 50% 45%,
-                rgba(0, 0, 0, 0.8) 0%,
-                rgba(0, 0, 0, 0.6) 35%,
-                rgba(0, 0, 0, 0.3) 60%,
-                transparent 100%);
-            z-index: 0;
-            pointer-events: none;
         }
 
         /* Hide package sidebar for clean SaaS design */
@@ -3372,7 +3362,7 @@
             align-items: center;
         }
 
-        /* Fisheye gradient overlay - darker in center, fades to clear on all sides */
+        /* Dark gradient overlay - opaque on left, transparent on right */
         .saas-hero::before {
             content: '';
             position: absolute;
@@ -3380,11 +3370,11 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(ellipse 90% 80% at 50% 50%,
+            background: linear-gradient(90deg,
                 rgba(0, 0, 0, 0.85) 0%,
-                rgba(0, 0, 0, 0.7) 30%,
-                rgba(0, 0, 0, 0.4) 60%,
-                rgba(0, 0, 0, 0.1) 85%,
+                rgba(0, 0, 0, 0.75) 30%,
+                rgba(0, 0, 0, 0.5) 50%,
+                rgba(0, 0, 0, 0.2) 70%,
                 transparent 100%);
             pointer-events: none;
             z-index: 1;
