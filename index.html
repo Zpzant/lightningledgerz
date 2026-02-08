@@ -5200,51 +5200,81 @@
                 <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
             </div>
 
-            <!-- Your Uploads Section -->
-            <div class="dashboard-section upload-section">
-                <div class="section-title">
-                    <h4>📁 Your Uploads</h4>
-                    <span class="section-subtitle">Securely upload your financial files for analysis</span>
+            <!-- Trial Banner (shown during free trial period) -->
+            <div class="trial-banner" id="trial-banner" style="display: none;">
+                <div class="trial-banner-text">
+                    🎉 You're on your <strong>FREE trial</strong>! <span class="trial-banner-days" id="trial-days-left">30 days</span> remaining.
+                </div>
+                <button class="trial-banner-cta" onclick="scrollToSection('#pricing')">Save 20% - Go Annual</button>
+            </div>
+
+            <!-- 3-Column Layout -->
+            <div class="dashboard-columns">
+                <!-- Column 1: Company Logo -->
+                <div class="dashboard-column logo-upload-column">
+                    <div class="column-header">
+                        <span class="icon">🏢</span>
+                        <h4>Company Logo</h4>
+                    </div>
+                    <div class="company-logo-preview" id="company-logo-preview" onclick="document.getElementById('logo-input').click()">
+                        <span class="placeholder" id="logo-placeholder">Click to upload<br>your logo</span>
+                        <img id="company-logo-img" src="" alt="Company Logo" style="display: none;">
+                    </div>
+                    <input type="file" id="logo-input" accept=".png,.jpg,.jpeg,.svg,.webp" style="display: none;" onchange="handleLogoUpload(event)">
+                    <button class="logo-upload-btn" onclick="document.getElementById('logo-input').click()">Upload Logo</button>
                 </div>
 
-                <div class="upload-dropzone" id="upload-dropzone">
-                    <div class="dropzone-content">
-                        <span class="dropzone-icon">📤</span>
-                        <p>Drag & drop files here or <label for="file-input" class="upload-browse">browse</label></p>
-                        <input type="file" id="file-input" accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.ppt,.pptx,.txt,.rtf,.png,.jpg,.jpeg" multiple style="display: none;">
-                        <p class="upload-hint">Accepted: Excel, CSV, PDF, Word, PowerPoint, Images | Max: 25MB per file</p>
+                <!-- Column 2: My Uploads -->
+                <div class="dashboard-column">
+                    <div class="column-header">
+                        <span class="icon">📁</span>
+                        <h4>My Uploads</h4>
+                    </div>
+
+                    <div class="upload-dropzone" id="upload-dropzone" style="margin-bottom: 15px; padding: 20px;">
+                        <div class="dropzone-content">
+                            <span class="dropzone-icon" style="font-size: 2rem;">📤</span>
+                            <p style="margin: 10px 0 0; font-size: 0.9rem;">Drag & drop or <label for="file-input" class="upload-browse">browse</label></p>
+                            <input type="file" id="file-input" accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.ppt,.pptx,.txt,.rtf,.png,.jpg,.jpeg" multiple style="display: none;">
+                        </div>
+                    </div>
+
+                    <div class="column-carousel" id="user-uploads-carousel">
+                        <p class="carousel-empty" id="uploads-empty">No files yet. Upload above.</p>
                     </div>
                 </div>
 
-                <div class="files-grid" id="user-uploads-grid">
-                    <!-- User uploaded files will appear here as cards -->
-                    <p class="empty-state" id="uploads-empty">No files uploaded yet. Upload your first file above.</p>
-                </div>
-            </div>
+                <!-- Column 3: My Reports (Admin-uploaded) -->
+                <div class="dashboard-column">
+                    <div class="column-header">
+                        <span class="icon">⚡</span>
+                        <h4>My Reports</h4>
+                    </div>
 
-            <!-- Your Lightning Ledgerz Reports Section -->
-            <div class="dashboard-section reports-section">
-                <div class="section-title">
-                    <h4>⚡ Your Lightning Ledgerz Reports</h4>
-                    <span class="section-subtitle">Deliverables prepared by your FP&A advisor</span>
-                </div>
-
-                <div class="files-grid" id="reports-grid">
-                    <!-- Admin-uploaded reports will appear here as cards -->
-                    <p class="empty-state" id="reports-empty">No reports yet. Once your analysis is complete, your custom reports will appear here.</p>
+                    <div class="column-carousel" id="reports-carousel">
+                        <p class="carousel-empty" id="reports-empty">Your FP&A reports will appear here.</p>
+                    </div>
                 </div>
             </div>
 
             <!-- Disclaimers -->
-            <div class="portal-disclaimers">
-                <h5>Important Notices</h5>
-                <ul>
-                    <li><strong>Confidentiality:</strong> All uploaded documents are treated as strictly confidential and are encrypted in transit and at rest.</li>
-                    <li><strong>Data Handling:</strong> Your financial data is used solely for the purpose of providing FP&A services and is never shared with third parties.</li>
-                    <li><strong>No Financial Advice:</strong> Lightning Ledgerz provides financial planning & analysis services, not financial, tax, or legal advice.</li>
-                    <li><strong>Retention:</strong> Your files are securely retained indefinitely for your convenience and ongoing reference.</li>
-                    <li><strong>Security:</strong> Industry-standard encryption protects your data. Only you and your Lightning Ledgerz advisor can access your files.</li>
+            <div class="portal-disclaimers" style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                <h5 style="color: #1e3a5f; margin-bottom: 10px;">Important Notices</h5>
+                <ul style="color: #666; font-size: 0.85rem; margin: 0; padding-left: 20px;">
+                    <li><strong>Confidentiality:</strong> All documents are encrypted and strictly confidential.</li>
+                    <li><strong>Data Handling:</strong> Your data is used solely for FP&A services, never shared.</li>
+                    <li><strong>Security:</strong> Industry-standard encryption. Only you and your advisor can access files.</li>
                 </ul>
+            </div>
+        </div>
+
+        <!-- Upload Success Overlay -->
+        <div class="upload-success-overlay" id="upload-success-overlay">
+            <div class="upload-success-modal">
+                <div class="upload-success-icon">✅</div>
+                <div class="upload-success-title">Upload Successful!</div>
+                <div class="upload-success-text" id="upload-success-text">Your file has been securely uploaded.</div>
+                <button class="upload-success-btn" onclick="closeUploadSuccess()">Continue</button>
             </div>
         </div>
     </section>
