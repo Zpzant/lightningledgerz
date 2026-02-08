@@ -2599,6 +2599,24 @@
             font-size: 0.85rem;
         }
 
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .payment-methods img {
+            height: 30px;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .payment-methods img:hover {
+            opacity: 1;
+        }
+
         /* ============================================
            TOAST NOTIFICATIONS
         ============================================ */
@@ -4834,6 +4852,15 @@
             <a href="mailto:zprizant@lightningledgerz.com" style="color: #fff; text-decoration: none;">&#9993; zprizant@lightningledgerz.com</a>
         </div>
         <p class="footer-copy">© 2025 Lightning Ledgerz. All rights reserved.</p>
+        <div class="payment-methods">
+            <img src="https://cdn.jsdelivr.net/gh/nicholasshirley/payment-icons@1.0/img/visa.svg" alt="Visa">
+            <img src="https://cdn.jsdelivr.net/gh/nicholasshirley/payment-icons@1.0/img/mastercard.svg" alt="Mastercard">
+            <img src="https://cdn.jsdelivr.net/gh/nicholasshirley/payment-icons@1.0/img/amex.svg" alt="American Express">
+            <img src="https://cdn.jsdelivr.net/gh/nicholasshirley/payment-icons@1.0/img/discover.svg" alt="Discover">
+            <img src="https://cdn.jsdelivr.net/gh/nicholasshirley/payment-icons@1.0/img/paypal.svg" alt="PayPal">
+            <img src="https://cdn.jsdelivr.net/gh/nicholasshirley/payment-icons@1.0/img/applepay.svg" alt="Apple Pay">
+            <img src="https://cdn.jsdelivr.net/gh/nicholasshirley/payment-icons@1.0/img/googlepay.svg" alt="Google Pay">
+        </div>
     </footer>
 
     <!-- Toast -->
