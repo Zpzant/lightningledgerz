@@ -2467,7 +2467,7 @@
         .values-title {
             text-align: center;
             color: var(--red);
-            font-size: 1.8rem;
+            font-size: 2.8rem;
             margin-bottom: 30px;
         }
 
@@ -2508,12 +2508,12 @@
         }
         .value-efficiency h4 { color: var(--red); }
 
-        /* Adventure - McKinsey Blue */
+        /* Adventure - Dark Slate */
         .value-adventure {
             background: rgba(255, 255, 255, 0.95);
-            border-left: 4px solid #0073CF;
+            border-left: 4px solid #374151;
         }
-        .value-adventure h4 { color: #0073CF; }
+        .value-adventure h4 { color: #374151; }
 
         /* Honesty - Navy Blue */
         .value-honesty {
@@ -2522,12 +2522,12 @@
         }
         .value-honesty h4 { color: #1e3a5f; }
 
-        /* Quality - Dark Slate */
+        /* Quality - McKinsey Blue */
         .value-quality {
             background: rgba(255, 255, 255, 0.95);
-            border-left: 4px solid #374151;
+            border-left: 4px solid #0073CF;
         }
-        .value-quality h4 { color: #374151; }
+        .value-quality h4 { color: #0073CF; }
 
         /* ============================================
            FOOTER
@@ -4118,6 +4118,20 @@
             color: rgba(255, 255, 255, 0.7);
             font-size: 0.85rem;
             margin-top: 5px;
+        }
+
+        .modern-stat {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .modern-stat:hover {
+            transform: scale(1.1);
+        }
+
+        .modern-stat:hover .modern-stat-number,
+        .modern-stat:hover .modern-stat-label {
+            color: var(--red) !important;
         }
 
     </style>
