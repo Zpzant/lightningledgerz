@@ -910,7 +910,23 @@
             color: #4B5563 !important;
         }
 
-        /* Schedule section - white text for readability */
+        /* Schedule section - fisheye gradient and white text */
+        .schedule-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse 70% 60% at 50% 50%,
+                rgba(0, 0, 0, 0.75) 0%,
+                rgba(0, 0, 0, 0.5) 40%,
+                rgba(0, 0, 0, 0.2) 70%,
+                transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
         section#schedule .section-header p {
             color: #fff !important;
         }
@@ -4745,9 +4761,10 @@
     </section>
 
     <!-- Schedule a Call Section -->
-    <section class="section" id="schedule" style="background: rgba(26, 26, 46, 0.7); position: relative;">
-        <div style="position: relative; z-index: 1;">
-            <div class="section-header">
+    <section class="section schedule-hero" id="schedule" style="background: transparent; position: relative; min-height: 80vh; display: flex; align-items: center; justify-content: center;">
+        <div style="position: relative; z-index: 1; text-align: center; padding: 60px 20px;">
+            <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz" style="max-width: 280px; margin-bottom: 30px;">
+            <div class="section-header" style="margin-bottom: 20px;">
                 <h2>Schedule a Call</h2>
                 <p>Book a free 30-minute discovery call to discuss your financial needs.</p>
             </div>
