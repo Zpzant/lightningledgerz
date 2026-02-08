@@ -1909,14 +1909,15 @@
             box-shadow: 0 8px 25px rgba(45, 212, 191, 0.5);
         }
 
-        /* Portal Dashboard (Logged In) */
+        /* Portal Dashboard (Logged In) - WHITE THEME */
         .portal-dashboard {
-            max-width: 700px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: rgba(0, 0, 0, 0.9);
+            background: #fff;
             border: 2px solid var(--red);
             border-radius: 20px;
             padding: 40px;
+            color: #1e3a5f;
         }
 
         .dashboard-header {
@@ -1925,7 +1926,9 @@
             align-items: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(30, 58, 95, 0.15);
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .dashboard-header h3 {
@@ -1933,10 +1936,307 @@
             margin: 0;
         }
 
+        /* Trial Banner */
+        .trial-banner {
+            background: linear-gradient(90deg, #fff3cd, #ffeeba);
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 12px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .trial-banner-text {
+            color: #856404;
+            font-weight: 500;
+        }
+
+        .trial-banner-days {
+            font-weight: 700;
+            color: #d63384;
+        }
+
+        .trial-banner-cta {
+            background: var(--red);
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .trial-banner-cta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.3);
+        }
+
+        /* 3 Column Layout */
+        .dashboard-columns {
+            display: grid;
+            grid-template-columns: 250px 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1000px) {
+            .dashboard-columns {
+                grid-template-columns: 1fr 1fr;
+            }
+            .logo-upload-column {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .dashboard-columns {
+                grid-template-columns: 1fr;
+            }
+            .logo-upload-column {
+                grid-column: span 1;
+            }
+        }
+
+        .dashboard-column {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(30, 58, 95, 0.1);
+        }
+
+        .column-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--red);
+        }
+
+        .column-header h4 {
+            color: #1e3a5f;
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .column-header .icon {
+            font-size: 1.3rem;
+        }
+
+        /* Logo Upload Column */
+        .logo-upload-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .company-logo-preview {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed rgba(30, 58, 95, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            background: #fff;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .company-logo-preview:hover {
+            border-color: var(--red);
+            background: rgba(255, 51, 51, 0.05);
+        }
+
+        .company-logo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .company-logo-preview .placeholder {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .logo-upload-btn {
+            background: var(--saas-blue);
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logo-upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Column Carousel */
+        .column-carousel {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 5px;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--red) #f0f0f0;
+        }
+
+        .column-carousel::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .column-carousel::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .column-carousel::-webkit-scrollbar-thumb {
+            background: var(--red);
+            border-radius: 4px;
+        }
+
+        .carousel-card {
+            flex: 0 0 180px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 1px solid rgba(30, 58, 95, 0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .carousel-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            border-color: var(--red);
+        }
+
+        .carousel-card-thumbnail {
+            width: 100%;
+            height: 100px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-card-thumbnail img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-card-thumbnail .file-icon {
+            font-size: 2.5rem;
+        }
+
+        .carousel-card-title {
+            font-weight: 600;
+            color: #1e3a5f;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .carousel-card-date {
+            color: #888;
+            font-size: 0.75rem;
+        }
+
+        .carousel-empty {
+            color: #888;
+            font-style: italic;
+            text-align: center;
+            padding: 30px 15px;
+            font-size: 0.9rem;
+        }
+
+        /* Upload Success Overlay */
+        .upload-success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .upload-success-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .upload-success-modal {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px 50px;
+            text-align: center;
+            max-width: 400px;
+            transform: scale(0.8);
+            transition: transform 0.3s;
+        }
+
+        .upload-success-overlay.show .upload-success-modal {
+            transform: scale(1);
+        }
+
+        .upload-success-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .upload-success-title {
+            color: #10B981;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .upload-success-text {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .upload-success-btn {
+            background: var(--red);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
         .btn-logout {
             background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(30, 58, 95, 0.3);
+            color: #1e3a5f;
             padding: 8px 16px;
             border-radius: 5px;
             cursor: pointer;
