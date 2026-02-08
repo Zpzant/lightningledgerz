@@ -2575,6 +2575,14 @@
 
         .footer-logo img {
             height: 50px;
+            padding: 5px 8px;
+            border-radius: 8px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .footer-logo img:hover {
+            background: rgba(30, 58, 95, 0.9);
+            transform: scale(1.05);
         }
 
         .footer-links {
@@ -4837,7 +4845,7 @@
     <!-- Footer -->
     <footer>
         <div class="footer-logo">
-            <a href="#top" onclick="goHome()">
+            <a href="#top" onclick="goHome()" title="Back to home">
                 <img src="LightningLedgerzLogo.png" alt="Lightning Ledgerz">
             </a>
         </div>
