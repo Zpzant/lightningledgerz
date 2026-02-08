@@ -2279,6 +2279,31 @@
             font-size: 0.75rem;
         }
 
+        .carousel-search {
+            margin-bottom: 15px;
+        }
+
+        .carousel-search input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        .carousel-search input:focus {
+            outline: none;
+            border-color: var(--mckinsey-blue);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+        }
+
+        .carousel-search input::placeholder {
+            color: #aaa;
+        }
+
         .carousel-empty {
             color: #999;
             font-style: italic;
@@ -5378,6 +5403,10 @@
                         </div>
                     </div>
 
+                    <div class="carousel-search">
+                        <input type="text" id="uploads-search" placeholder="Search by name or date..." oninput="filterCarousel('uploads')">
+                    </div>
+
                     <div class="column-carousel" id="user-uploads-carousel">
                         <p class="carousel-empty" id="uploads-empty">No files yet. Upload above.</p>
                     </div>
@@ -5387,6 +5416,10 @@
                 <div class="dashboard-column">
                     <div class="column-header">
                         <h4>My Reports</h4>
+                    </div>
+
+                    <div class="carousel-search">
+                        <input type="text" id="reports-search" placeholder="Search by name or date..." oninput="filterCarousel('reports')">
                     </div>
 
                     <div class="column-carousel" id="reports-carousel">
@@ -6428,6 +6461,7 @@
             var ext = fileInfo.name.split('.').pop().toLowerCase();
             var icon = getFileIcon(ext);
             var dateStr = formatDate(fileInfo.uploaded_at);
+            var isImage = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(ext);
 
             var card = document.createElement('div');
             card.className = 'carousel-card';
@@ -6435,15 +6469,62 @@
                 if (fileInfo.url) window.open(fileInfo.url, '_blank');
             };
 
+            // Show actual image thumbnail for image files, icon for others
+            var thumbnailContent;
+            if (isImage && fileInfo.url) {
+                thumbnailContent = `<img src="${fileInfo.url}" alt="${fileInfo.name}" style="width:100%;height:100%;object-fit:cover;">`;
+            } else {
+                thumbnailContent = `<span class="file-icon">${icon}</span>`;
+            }
+
             card.innerHTML = `
                 <div class="carousel-card-thumbnail">
-                    <span class="file-icon">${icon}</span>
+                    ${thumbnailContent}
                 </div>
                 <div class="carousel-card-title" title="${fileInfo.name}">${fileInfo.name}</div>
                 <div class="carousel-card-date">${dateStr}</div>
             `;
 
             container.appendChild(card);
+        }
+
+        // Filter carousel cards by search term
+        function filterCarousel(type) {
+            var searchInput = document.getElementById(type + '-search');
+            var carousel = document.getElementById(type === 'uploads' ? 'user-uploads-carousel' : 'reports-carousel');
+
+            if (!searchInput || !carousel) return;
+
+            var searchTerm = searchInput.value.toLowerCase().trim();
+            var cards = carousel.querySelectorAll('.carousel-card');
+            var visibleCount = 0;
+
+            cards.forEach(function(card) {
+                var title = card.querySelector('.carousel-card-title')?.textContent.toLowerCase() || '';
+                var date = card.querySelector('.carousel-card-date')?.textContent.toLowerCase() || '';
+
+                if (searchTerm === '' || title.includes(searchTerm) || date.includes(searchTerm)) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show "no results" message if nothing matches
+            var emptyMsg = carousel.querySelector('.carousel-empty');
+            if (visibleCount === 0 && cards.length > 0) {
+                if (!emptyMsg) {
+                    emptyMsg = document.createElement('p');
+                    emptyMsg.className = 'carousel-empty search-no-results';
+                    emptyMsg.textContent = 'No matches found.';
+                    carousel.appendChild(emptyMsg);
+                } else {
+                    emptyMsg.style.display = '';
+                }
+            } else if (emptyMsg && emptyMsg.classList.contains('search-no-results')) {
+                emptyMsg.remove();
+            }
         }
 
         // Upload success modal functions
