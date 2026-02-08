@@ -5840,14 +5840,15 @@
             if (!isDemo) {
                 loadUserFiles();
                 loadUserReports();
+                updateTrialBanner();
                 // Check if user selected a plan before signing up
                 checkPendingPlan();
             } else {
                 // Show demo placeholders
-                var uploadsGrid = document.getElementById('user-uploads-grid');
-                var reportsGrid = document.getElementById('reports-grid');
-                if (uploadsGrid) uploadsGrid.innerHTML = '<p class="empty-state">Demo mode - file uploads disabled</p>';
-                if (reportsGrid) reportsGrid.innerHTML = '<p class="empty-state">Demo mode - reports not available</p>';
+                var uploadsCarousel = document.getElementById('user-uploads-carousel');
+                var reportsCarousel = document.getElementById('reports-carousel');
+                if (uploadsCarousel) uploadsCarousel.innerHTML = '<p class="carousel-empty">Demo mode - uploads disabled</p>';
+                if (reportsCarousel) reportsCarousel.innerHTML = '<p class="carousel-empty">Demo mode - reports N/A</p>';
             }
         }
 
@@ -6033,7 +6034,8 @@
                             console.error('Database insert error:', dbError);
                             showToast(`File uploaded but not saved to database: ${dbError.message}`, 'error');
                         } else {
-                            showToast(`✓ Uploaded: ${file.name}`, 'success');
+                            // Show success modal
+                            showUploadSuccess(file.name);
                             // Refresh the files list to show new upload
                             console.log('Refreshing file list...');
                             await loadUserFiles();
@@ -6044,7 +6046,7 @@
                         }
                     } else {
                         // Local/demo mode
-                        showToast(`Uploaded: ${file.name} (demo mode)`, 'info');
+                        showUploadSuccess(file.name + ' (demo)');
                     }
                 } catch (error) {
                     console.error('Upload error:', error);
@@ -6175,18 +6177,17 @@
 
         async function loadUserFiles() {
             console.log('loadUserFiles called');
-            var grid = document.getElementById('user-uploads-grid');
-            var emptyState = document.getElementById('uploads-empty');
-            if (!grid) {
-                console.log('Grid element not found');
+            var carousel = document.getElementById('user-uploads-carousel');
+            if (!carousel) {
+                console.log('Carousel element not found');
                 return;
             }
 
-            grid.innerHTML = '<p class="empty-state">Loading files...</p>';
+            carousel.innerHTML = '<p class="carousel-empty">Loading files...</p>';
 
             if (!supabase || !currentUserData?.id) {
                 console.log('No supabase or user ID:', { supabase: !!supabase, userId: currentUserData?.id });
-                grid.innerHTML = '<p class="empty-state">No files uploaded yet. Upload your first file above.</p>';
+                carousel.innerHTML = '<p class="carousel-empty">No files yet. Upload above.</p>';
                 return;
             }
 
@@ -6202,7 +6203,7 @@
                 if (error) throw error;
 
                 if (data && data.length > 0) {
-                    grid.innerHTML = '';
+                    carousel.innerHTML = '';
                     for (const doc of data) {
                         // Generate signed URL for download (1 hour expiry)
                         let downloadUrl = doc.file_url;
@@ -6215,32 +6216,129 @@
                             }
                         }
 
-                        displayFileCard({
+                        createCarouselCard({
                             id: doc.id,
                             name: doc.file_name,
                             uploaded_at: doc.uploaded_at,
                             url: downloadUrl,
                             path: doc.file_path
-                        }, grid, false);
+                        }, carousel, false);
                     }
                 } else {
-                    grid.innerHTML = '<p class="empty-state">No files uploaded yet. Upload your first file above.</p>';
+                    carousel.innerHTML = '<p class="carousel-empty">No files yet. Upload above.</p>';
                 }
             } catch (error) {
                 console.error('Error loading files:', error);
-                grid.innerHTML = '<p class="empty-state">Error loading files. Please refresh.</p>';
+                carousel.innerHTML = '<p class="carousel-empty">Error loading files.</p>';
+            }
+        }
+
+        // Create carousel card for files
+        function createCarouselCard(fileInfo, container, isReport) {
+            var ext = fileInfo.name.split('.').pop().toLowerCase();
+            var icon = getFileIcon(ext);
+            var dateStr = formatDate(fileInfo.uploaded_at);
+
+            var card = document.createElement('div');
+            card.className = 'carousel-card';
+            card.onclick = function() {
+                if (fileInfo.url) window.open(fileInfo.url, '_blank');
+            };
+
+            card.innerHTML = `
+                <div class="carousel-card-thumbnail">
+                    <span class="file-icon">${icon}</span>
+                </div>
+                <div class="carousel-card-title" title="${fileInfo.name}">${fileInfo.name}</div>
+                <div class="carousel-card-date">${dateStr}</div>
+            `;
+
+            container.appendChild(card);
+        }
+
+        // Upload success modal functions
+        function showUploadSuccess(fileName) {
+            var overlay = document.getElementById('upload-success-overlay');
+            var text = document.getElementById('upload-success-text');
+            if (overlay) {
+                text.textContent = `"${fileName}" has been securely uploaded.`;
+                overlay.classList.add('show');
+            }
+        }
+
+        function closeUploadSuccess() {
+            var overlay = document.getElementById('upload-success-overlay');
+            if (overlay) overlay.classList.remove('show');
+        }
+
+        // Logo upload handler
+        async function handleLogoUpload(event) {
+            var file = event.target.files[0];
+            if (!file) return;
+
+            // Preview the logo
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var img = document.getElementById('company-logo-img');
+                var placeholder = document.getElementById('logo-placeholder');
+                if (img && placeholder) {
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    placeholder.style.display = 'none';
+                }
+            };
+            reader.readAsDataURL(file);
+
+            // Upload to Supabase if available
+            if (supabase && currentUserData?.id) {
+                try {
+                    var filePath = `${currentUserData.id}/company-logo.${file.name.split('.').pop()}`;
+                    var { error } = await supabase.storage
+                        .from('user-documents')
+                        .upload(filePath, file, { upsert: true });
+                    if (!error) {
+                        showToast('Logo uploaded successfully!', 'success');
+                        // Save logo path to user profile
+                        await supabase.from('users').update({ company_logo: filePath }).eq('id', currentUserData.id);
+                    }
+                } catch (err) {
+                    console.error('Logo upload error:', err);
+                }
+            }
+        }
+
+        // Trial tracking
+        function updateTrialBanner() {
+            var banner = document.getElementById('trial-banner');
+            var daysSpan = document.getElementById('trial-days-left');
+            if (!banner || !currentUserData) return;
+
+            var createdAt = new Date(currentUserData.created_at || currentUserData.createdAt);
+            var trialEndDate = new Date(createdAt.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 days
+            var now = new Date();
+            var daysLeft = Math.max(0, Math.ceil((trialEndDate - now) / (24 * 60 * 60 * 1000)));
+
+            if (daysLeft > 0 && currentUserData.tier === 'basic') {
+                banner.style.display = 'flex';
+                daysSpan.textContent = daysLeft + ' day' + (daysLeft !== 1 ? 's' : '');
+                if (daysLeft <= 7) {
+                    banner.style.background = 'linear-gradient(90deg, #f8d7da, #f5c6cb)';
+                    banner.querySelector('.trial-banner-text').style.color = '#721c24';
+                }
+            } else {
+                banner.style.display = 'none';
             }
         }
 
         async function loadUserReports() {
-            var grid = document.getElementById('reports-grid');
-            if (!grid) return;
+            var carousel = document.getElementById('reports-carousel');
+            if (!carousel) return;
 
-            grid.innerHTML = '';
+            carousel.innerHTML = '';
 
             if (!supabase || !currentUserData?.id) {
-                // Demo mode - show sample report
-                grid.innerHTML = '<p class="empty-state">No reports yet. Once your analysis is complete, your custom reports will appear here.</p>';
+                // Demo mode
+                carousel.innerHTML = '<p class="carousel-empty">Your FP&A reports will appear here.</p>';
                 return;
             }
 
@@ -6256,18 +6354,18 @@
 
                 if (data && data.length > 0) {
                     data.forEach(function(report) {
-                        displayFileCard({
+                        createCarouselCard({
                             name: report.report_name,
                             uploaded_at: report.created_at,
                             url: report.file_url || null
-                        }, grid, true);
+                        }, carousel, true);
                     });
                 } else {
-                    grid.innerHTML = '<p class="empty-state">No reports yet. Once your analysis is complete, your custom reports will appear here.</p>';
+                    carousel.innerHTML = '<p class="carousel-empty">Your FP&A reports will appear here.</p>';
                 }
             } catch (error) {
                 console.error('Error loading reports:', error);
-                grid.innerHTML = '<p class="empty-state">No reports yet. Once your analysis is complete, your custom reports will appear here.</p>';
+                carousel.innerHTML = '<p class="carousel-empty">Your FP&A reports will appear here.</p>';
             }
         }
 
