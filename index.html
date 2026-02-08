@@ -4908,11 +4908,11 @@
         </div>
 
         <div class="pricing-toggle-container">
-            <span class="pricing-toggle-label active" id="monthly-label">Monthly</span>
+            <span class="pricing-toggle-label active" id="monthly-label">Month-to-Month</span>
             <div class="pricing-toggle" id="pricing-toggle" onclick="togglePricingPeriod()">
                 <div class="pricing-toggle-knob"></div>
             </div>
-            <span class="pricing-toggle-label" id="yearly-label">Yearly</span>
+            <span class="pricing-toggle-label" id="yearly-label">12-Month Commitment</span>
             <span class="pricing-save-badge">Save 20%</span>
         </div>
 
@@ -4921,7 +4921,7 @@
                 <h3>⚡ Basic Package</h3>
                 <div class="package-price" id="basic-price">
                     <span class="monthly-price">$799/month</span>
-                    <span class="yearly-price">$639/month<div class="yearly-savings">$7,668/year • Save $1,920</div></span>
+                    <span class="yearly-price">$639/month<div class="yearly-savings">12-month commitment • Save $1,920/year</div></span>
                 </div>
                 <div class="package-trial">First month FREE</div>
                 <ul class="package-features">
@@ -4939,7 +4939,7 @@
                 <h3>✨ Gold Package</h3>
                 <div class="package-price" id="gold-price">
                     <span class="monthly-price">$1,299/month</span>
-                    <span class="yearly-price">$1,039/month<div class="yearly-savings">$12,468/year • Save $3,120</div></span>
+                    <span class="yearly-price">$1,039/month<div class="yearly-savings">12-month commitment • Save $3,120/year</div></span>
                 </div>
                 <div class="package-trial">First month FREE</div>
                 <ul class="package-features">
@@ -4957,7 +4957,7 @@
                 <h3>💎 Diamond Package</h3>
                 <div class="package-price" id="diamond-price">
                     <span class="monthly-price">$3,999/month</span>
-                    <span class="yearly-price">$3,199/month<div class="yearly-savings">$38,388/year • Save $9,600</div></span>
+                    <span class="yearly-price">$3,199/month<div class="yearly-savings">12-month commitment • Save $9,600/year</div></span>
                 </div>
                 <div class="package-trial">First month FREE</div>
                 <ul class="package-features">
@@ -5671,26 +5671,55 @@
         const DEMO_PASSWORD = 'demo123';
         const ADMIN_EMAIL = 'zprizant@lightningledgerz.com';
 
-        // Stripe checkout URLs for each plan
+        // Stripe checkout URLs for each plan (monthly and yearly)
         const STRIPE_URLS = {
-            basic: 'https://buy.stripe.com/dRmfZheTUbkcgT7fuNbsc02',
-            gold: 'https://buy.stripe.com/28E28r1348805apeqJbsc01',
-            diamond: 'https://buy.stripe.com/dRm9ATbHIdsk5ap0zTbsc00'
+            monthly: {
+                basic: 'https://buy.stripe.com/dRmfZheTUbkcgT7fuNbsc02',
+                gold: 'https://buy.stripe.com/28E28r1348805apeqJbsc01',
+                diamond: 'https://buy.stripe.com/dRm9ATbHIdsk5ap0zTbsc00'
+            },
+            yearly: {
+                basic: 'YEARLY_BASIC_URL',      // Create in Stripe: $7,668/year
+                gold: 'YEARLY_GOLD_URL',        // Create in Stripe: $12,468/year
+                diamond: 'YEARLY_DIAMOND_URL'   // Create in Stripe: $38,388/year
+            }
         };
 
         // Select a plan - if logged in go to Stripe, else prompt signup
         function selectPlan(plan) {
+            const billingPeriod = isYearlyPricing ? 'yearly' : 'monthly';
+            const stripeUrl = STRIPE_URLS[billingPeriod][plan];
+
+            // Check if yearly URL is configured
+            if (isYearlyPricing && stripeUrl.startsWith('YEARLY_')) {
+                showToast('Yearly billing coming soon! Using monthly for now.', 'info');
+                const monthlyUrl = STRIPE_URLS.monthly[plan];
+                if (currentUserData && !currentUserData.isDemo) {
+                    window.open(monthlyUrl, '_blank');
+                } else {
+                    sessionStorage.setItem('pendingPlan', plan);
+                    document.getElementById('portal').scrollIntoView({ behavior: 'smooth' });
+                    setTimeout(function() {
+                        switchTab('register');
+                        showToast('Create an account to start your ' + plan.charAt(0).toUpperCase() + plan.slice(1) + ' trial', 'info');
+                    }, 500);
+                }
+                return;
+            }
+
             if (currentUserData && !currentUserData.isDemo) {
                 // User is logged in, go directly to Stripe
-                window.open(STRIPE_URLS[plan], '_blank');
+                window.open(stripeUrl, '_blank');
             } else {
-                // Store selected plan and show signup
+                // Store selected plan and billing period for after signup
                 sessionStorage.setItem('pendingPlan', plan);
+                sessionStorage.setItem('pendingBillingPeriod', billingPeriod);
                 // Scroll to portal and show register form
                 document.getElementById('portal').scrollIntoView({ behavior: 'smooth' });
                 setTimeout(function() {
                     switchTab('register');
-                    showToast('Create an account to start your ' + plan.charAt(0).toUpperCase() + plan.slice(1) + ' trial', 'info');
+                    const periodText = isYearlyPricing ? ' (yearly)' : '';
+                    showToast('Create an account to start your ' + plan.charAt(0).toUpperCase() + plan.slice(1) + periodText + ' trial', 'info');
                 }, 500);
             }
         }
