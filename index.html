@@ -2481,6 +2481,20 @@
             color: rgba(255, 255, 255, 0.6);
         }
 
+        .credential-item {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .credential-item:hover {
+            transform: scale(1.1);
+        }
+
+        .credential-item:hover .credential-number,
+        .credential-item:hover .credential-label {
+            color: var(--red) !important;
+        }
+
         /* Core Values */
         .core-values {
             max-width: 1000px;
@@ -3355,13 +3369,14 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(ellipse 70% 60% at 50% 50%,
-                rgba(0, 0, 0, 0.7) 0%,
-                rgba(0, 0, 0, 0.5) 40%,
-                rgba(0, 0, 0, 0.2) 70%,
+            background: radial-gradient(ellipse 90% 80% at 50% 50%,
+                rgba(0, 0, 0, 0.85) 0%,
+                rgba(0, 0, 0, 0.7) 30%,
+                rgba(0, 0, 0, 0.4) 60%,
+                rgba(0, 0, 0, 0.1) 85%,
                 transparent 100%);
             pointer-events: none;
-            z-index: 0;
+            z-index: 1;
         }
 
         .saas-hero-content {
@@ -3379,10 +3394,11 @@
                 min-height: auto;
             }
             .saas-hero::before {
-                background: radial-gradient(ellipse 80% 70% at 50% 40%,
-                    rgba(0, 0, 0, 0.7) 0%,
-                    rgba(0, 0, 0, 0.5) 40%,
-                    rgba(0, 0, 0, 0.2) 70%,
+                background: radial-gradient(ellipse 100% 90% at 50% 40%,
+                    rgba(0, 0, 0, 0.85) 0%,
+                    rgba(0, 0, 0, 0.7) 30%,
+                    rgba(0, 0, 0, 0.4) 60%,
+                    rgba(0, 0, 0, 0.1) 85%,
                     transparent 100%);
             }
             .saas-hero-content {
