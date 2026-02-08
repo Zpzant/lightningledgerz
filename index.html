@@ -778,10 +778,12 @@
 
         section#about .credential-number {
             color: #1e3a5f !important;
+            transition: color 0.3s ease;
         }
 
         section#about .credential-label {
             color: #4a6a8a !important;
+            transition: color 0.3s ease;
         }
 
         section#about .credentials {
@@ -790,6 +792,17 @@
 
         section#about .credential-item {
             border-right-color: rgba(30, 58, 95, 0.15) !important;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        section#about .credential-item:hover {
+            transform: scale(1.1);
+        }
+
+        section#about .credential-item:hover .credential-number,
+        section#about .credential-item:hover .credential-label {
+            color: var(--red) !important;
         }
 
         section#about .core-values {
