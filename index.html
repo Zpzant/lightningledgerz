@@ -2122,23 +2122,18 @@
         }
 
         .column-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
             margin-bottom: 20px;
-            padding-bottom: 12px;
+            padding-bottom: 15px;
             border-bottom: 3px solid var(--mckinsey-blue);
         }
 
         .column-header h4 {
             color: var(--mckinsey-blue);
             margin: 0;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 700;
-        }
-
-        .column-header .icon {
-            font-size: 1.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         /* Logo Upload Column */
@@ -5359,7 +5354,6 @@
                 <!-- Column 1: Company Logo -->
                 <div class="dashboard-column logo-upload-column">
                     <div class="column-header">
-                        <span class="icon">🏢</span>
                         <h4>Company Logo</h4>
                     </div>
                     <div class="company-logo-preview" id="company-logo-preview" onclick="document.getElementById('logo-input').click()">
@@ -5373,7 +5367,6 @@
                 <!-- Column 2: My Uploads -->
                 <div class="dashboard-column">
                     <div class="column-header">
-                        <span class="icon">📁</span>
                         <h4>My Uploads</h4>
                     </div>
 
@@ -5393,7 +5386,6 @@
                 <!-- Column 3: My Reports (Admin-uploaded) -->
                 <div class="dashboard-column">
                     <div class="column-header">
-                        <span class="icon">⚡</span>
                         <h4>My Reports</h4>
                     </div>
 
