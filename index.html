@@ -5299,7 +5299,7 @@
             <div class="admin-tabs">
                 <button class="admin-tab active" onclick="switchAdminTab('users')">Users</button>
                 <button class="admin-tab" onclick="switchAdminTab('reports')">Reports</button>
-                <button class="admin-tab" onclick="switchAdminTab('quickbooks')">QuickBooks</button>
+                <button class="admin-tab" onclick="switchAdminTab('quickbooks')">Platforms</button>
                 <button class="admin-tab" onclick="switchAdminTab('promo')">Promo Codes</button>
             </div>
             <div class="admin-tab-content">
@@ -5373,28 +5373,47 @@
                         </table>
                     </div>
                 </div>
-                <!-- QuickBooks Tab -->
+                <!-- Platforms Tab -->
                 <div id="admin-tab-quickbooks" class="admin-tab-pane">
                     <div class="admin-section-header">
-                        <h3>QuickBooks Credentials</h3>
-                        <button class="btn-refresh" onclick="loadAdminQBCredentials()">Refresh</button>
+                        <h3>Client Platform Credentials</h3>
+                        <button class="btn-refresh" onclick="loadAdminPlatformCredentials()">Refresh</button>
                     </div>
                     <div class="admin-table-container">
                         <table class="admin-table" id="admin-qb-table">
                             <thead>
                                 <tr>
                                     <th>User</th>
-                                    <th>QB URL</th>
+                                    <th>Platform</th>
+                                    <th>Type</th>
+                                    <th>URL</th>
                                     <th>Username</th>
                                     <th>Password</th>
                                     <th>Notes</th>
-                                    <th>Updated</th>
                                 </tr>
                             </thead>
                             <tbody id="admin-qb-body">
-                                <tr><td colspan="6" class="loading-row">Click Refresh to load...</td></tr>
+                                <tr><td colspan="7" class="loading-row">Click Refresh to load...</td></tr>
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- Dashboard Link Manager -->
+                    <div class="admin-section-header" style="margin-top: 30px;">
+                        <h3>Set Live Dashboard Link for User</h3>
+                    </div>
+                    <div class="admin-form">
+                        <div class="admin-form-row">
+                            <label>Select User:</label>
+                            <select id="fathom-user-select">
+                                <option value="">-- Select a user --</option>
+                            </select>
+                        </div>
+                        <div class="admin-form-row">
+                            <label>Dashboard URL (Fathom, etc.):</label>
+                            <input type="url" id="fathom-url" placeholder="Paste the live dashboard link here...">
+                        </div>
+                        <button class="btn-primary" onclick="saveDashboardLink()">Save Dashboard Link</button>
                     </div>
                 </div>
                 <!-- Promo Codes Tab -->
@@ -6499,6 +6518,7 @@
                 loadUserFiles();
                 loadUserReports();
                 loadQBCredentials();
+                loadDashboardLink();
                 updateTrialBanner();
                 // Check if user selected a plan before signing up
                 checkPendingPlan();
@@ -7753,45 +7773,61 @@
             }
         }
 
-        // Admin QuickBooks Credentials View
-        async function loadAdminQBCredentials() {
+        // Admin Platform Credentials View
+        async function loadAdminPlatformCredentials() {
             if (!supabase) return;
             var tbody = document.getElementById('admin-qb-body');
-            tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Loading...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="loading-row">Loading...</td></tr>';
+
+            // Also populate the Fathom user select
+            var fathomSelect = document.getElementById('fathom-user-select');
 
             try {
                 var { data, error } = await supabase
-                    .from('quickbooks_credentials')
+                    .from('platform_credentials')
                     .select('*, profiles:user_id(email, full_name)')
                     .order('updated_at', { ascending: false });
 
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="loading-row">No credentials shared yet.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" class="loading-row">No credentials shared yet.</td></tr>';
                     return;
                 }
 
                 tbody.innerHTML = '';
+                var seenUsers = {};
                 data.forEach(function(cred) {
                     var userName = cred.profiles?.full_name || cred.profiles?.email || 'Unknown';
+                    var userEmail = cred.profiles?.email || '';
+
+                    // Build user dropdown for dashboard links
+                    if (!seenUsers[cred.user_id] && fathomSelect) {
+                        seenUsers[cred.user_id] = true;
+                        var opt = document.createElement('option');
+                        opt.value = cred.user_id;
+                        opt.textContent = userName + (userEmail ? ' (' + userEmail + ')' : '');
+                        fathomSelect.appendChild(opt);
+                    }
+
                     var tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${userName}</td>
-                        <td><a href="${cred.qb_url || '#'}" target="_blank" style="color: var(--mckinsey-blue); word-break: break-all;">${cred.qb_url ? 'Open Link' : 'N/A'}</a></td>
-                        <td>${cred.qb_username || 'N/A'}</td>
+                        <td><strong>${cred.platform_name || cred.platform}</strong></td>
+                        <td style="font-size:0.85rem;">${cred.access_type === 'separate' ? 'Advisor Login' : 'Shared Login'}</td>
+                        <td><a href="${cred.login_url || '#'}" target="_blank" style="color: var(--mckinsey-blue);">${cred.login_url ? 'Open' : 'N/A'}</a></td>
+                        <td>${cred.username || 'N/A'}</td>
                         <td>
                             <span class="admin-pw-hidden" id="pw-${cred.id}">••••••••</span>
-                            <button onclick="toggleAdminPW('${cred.id}', '${btoa(cred.qb_password || '')}')" style="background:var(--mckinsey-blue);color:#fff;border:none;padding:3px 10px;border-radius:4px;cursor:pointer;font-size:0.8rem;margin-left:5px;">Show</button>
+                            <button onclick="toggleAdminPW('${cred.id}', '${btoa(cred.password || '')}')" style="background:var(--mckinsey-blue);color:#fff;border:none;padding:3px 10px;border-radius:4px;cursor:pointer;font-size:0.8rem;margin-left:5px;">Show</button>
                         </td>
-                        <td style="font-size:0.85rem;">${cred.qb_notes || '-'}</td>
-                        <td style="font-size:0.85rem;">${formatDate(cred.updated_at)}</td>
+                        <td style="font-size:0.85rem;">${cred.notes || '-'}</td>
                     `;
                     tbody.appendChild(tr);
                 });
             } catch (err) {
-                console.error('Error loading QB credentials:', err);
-                tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Error loading credentials.</td></tr>';
+                console.error('Error loading platform credentials:', err);
+                tbody.innerHTML = '<tr><td colspan="7" class="loading-row">Error loading credentials.</td></tr>';
             }
         }
 
@@ -7801,6 +7837,69 @@
                 el.textContent = atob(encoded);
             } else {
                 el.textContent = '••••••••';
+            }
+        }
+
+        // Dashboard Link Management (Fathom etc.)
+        async function saveDashboardLink() {
+            if (!supabase) return;
+            var userId = document.getElementById('fathom-user-select').value;
+            var url = document.getElementById('fathom-url').value.trim();
+
+            if (!userId || !url) {
+                showToast('Select a user and enter a dashboard URL.', 'error');
+                return;
+            }
+
+            try {
+                var { data: existing } = await supabase
+                    .from('dashboard_links')
+                    .select('id')
+                    .eq('user_id', userId)
+                    .single();
+
+                if (existing?.id) {
+                    var { error } = await supabase
+                        .from('dashboard_links')
+                        .update({ dashboard_url: url, updated_at: new Date().toISOString() })
+                        .eq('id', existing.id);
+                    if (error) throw error;
+                } else {
+                    var { error } = await supabase
+                        .from('dashboard_links')
+                        .insert([{ user_id: userId, dashboard_url: url, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }]);
+                    if (error) throw error;
+                }
+
+                showToast('Dashboard link saved for user.', 'success');
+                document.getElementById('fathom-url').value = '';
+            } catch (err) {
+                console.error('Error saving dashboard link:', err);
+                showToast('Error saving link.', 'error');
+            }
+        }
+
+        // Load dashboard link for current user (called on login)
+        async function loadDashboardLink() {
+            if (!supabase || !currentUserData?.id) return;
+
+            try {
+                var { data } = await supabase
+                    .from('dashboard_links')
+                    .select('dashboard_url')
+                    .eq('user_id', currentUserData.id)
+                    .single();
+
+                if (data?.dashboard_url) {
+                    var card = document.getElementById('fathom-link-card');
+                    var link = document.getElementById('fathom-link-url');
+                    if (card && link) {
+                        link.href = data.dashboard_url;
+                        card.style.display = 'block';
+                    }
+                }
+            } catch (err) {
+                // No dashboard link set for this user
             }
         }
 
