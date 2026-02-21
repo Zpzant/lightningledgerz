@@ -2042,16 +2042,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin: -40px -40px 30px -40px;
+            padding: 20px 40px;
+            background: var(--mckinsey-blue);
+            border-radius: 20px 20px 0 0;
             flex-wrap: wrap;
             gap: 15px;
         }
 
         .dashboard-header h3 {
-            color: #fff;
+            color: #fff !important;
+            -webkit-text-fill-color: #fff !important;
             margin: 0;
+            font-size: 1.3rem;
         }
 
         /* Trial Banner */
@@ -2643,8 +2646,8 @@
 
         .btn-logout {
             background: transparent;
-            border: 1px solid rgba(30, 58, 95, 0.3);
-            color: #1e3a5f;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: #fff;
             padding: 8px 16px;
             border-radius: 5px;
             cursor: pointer;
@@ -2652,8 +2655,9 @@
         }
 
         .btn-logout:hover {
-            border-color: var(--red);
-            color: var(--red);
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
         }
 
         .demo-tier-selector {
