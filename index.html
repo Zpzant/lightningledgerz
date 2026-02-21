@@ -1024,22 +1024,32 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
             margin-bottom: 40px;
             background: rgba(30, 58, 95, 0.9);
-            padding: 15px 30px;
+            padding: 15px 25px;
             border-radius: 50px;
             max-width: 500px;
             margin-left: auto;
             margin-right: auto;
         }
 
+        @media (max-width: 480px) {
+            .pricing-toggle-container {
+                border-radius: 20px;
+                padding: 12px 20px;
+                gap: 10px;
+            }
+        }
+
         .pricing-toggle-label {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             color: rgba(255, 255, 255, 0.5);
             transition: color 0.3s ease;
             cursor: pointer;
+            white-space: nowrap;
         }
 
         .pricing-toggle-label.active {
@@ -1048,13 +1058,15 @@
 
         .pricing-toggle {
             position: relative;
-            width: 70px;
-            height: 36px;
+            flex-shrink: 0;
+            width: 60px;
+            height: 32px;
             background: rgba(255, 51, 51, 0.3);
             border: 2px solid var(--red);
-            border-radius: 18px;
+            border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
+            overflow: hidden;
         }
 
         .pricing-toggle:hover {
@@ -1065,15 +1077,15 @@
             position: absolute;
             top: 3px;
             left: 3px;
-            width: 26px;
-            height: 26px;
+            width: 22px;
+            height: 22px;
             background: var(--red);
             border-radius: 50%;
             transition: all 0.3s ease;
         }
 
         .pricing-toggle.yearly .pricing-toggle-knob {
-            left: 37px;
+            left: 31px;
             background: var(--gold);
         }
 
@@ -2303,6 +2315,98 @@
 
         .carousel-search input::placeholder {
             color: #aaa;
+        }
+
+        /* QuickBooks Credentials Section */
+        .qb-field {
+            margin-bottom: 18px;
+        }
+
+        .qb-field label {
+            display: block;
+            color: var(--mckinsey-blue);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        .qb-field input,
+        .qb-field textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            background: #f8f9fa;
+            color: #333;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .qb-field input:focus,
+        .qb-field textarea:focus {
+            outline: none;
+            border-color: var(--mckinsey-blue);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+        }
+
+        .qb-password-wrap {
+            position: relative;
+            display: flex;
+            gap: 10px;
+        }
+
+        .qb-password-wrap input {
+            flex: 1;
+        }
+
+        .qb-toggle-pw {
+            background: var(--mckinsey-blue);
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .qb-toggle-pw:hover {
+            background: #153050;
+        }
+
+        .qb-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .qb-save-btn {
+            background: var(--mckinsey-blue);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .qb-save-btn:hover {
+            background: #153050;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(30, 58, 95, 0.3);
+        }
+
+        .qb-saved-status {
+            color: #2e7d32;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .carousel-empty {
@@ -5044,6 +5148,7 @@
             <div class="admin-tabs">
                 <button class="admin-tab active" onclick="switchAdminTab('users')">Users</button>
                 <button class="admin-tab" onclick="switchAdminTab('reports')">Reports</button>
+                <button class="admin-tab" onclick="switchAdminTab('quickbooks')">QuickBooks</button>
                 <button class="admin-tab" onclick="switchAdminTab('promo')">Promo Codes</button>
             </div>
             <div class="admin-tab-content">
@@ -5113,6 +5218,30 @@
                             </thead>
                             <tbody id="admin-reports-body">
                                 <tr><td colspan="4" class="loading-row">Loading reports...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- QuickBooks Tab -->
+                <div id="admin-tab-quickbooks" class="admin-tab-pane">
+                    <div class="admin-section-header">
+                        <h3>QuickBooks Credentials</h3>
+                        <button class="btn-refresh" onclick="loadAdminQBCredentials()">Refresh</button>
+                    </div>
+                    <div class="admin-table-container">
+                        <table class="admin-table" id="admin-qb-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>QB URL</th>
+                                    <th>Username</th>
+                                    <th>Password</th>
+                                    <th>Notes</th>
+                                    <th>Updated</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-qb-body">
+                                <tr><td colspan="6" class="loading-row">Click Refresh to load...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -5425,6 +5554,41 @@
 
                     <div class="column-carousel" id="reports-carousel">
                         <p class="carousel-empty" id="reports-empty">Your FP&A reports will appear here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QuickBooks Integration Section -->
+            <div class="qb-credentials-section" id="qb-credentials-section" style="background: #fff; border-radius: 12px; margin-top: 25px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); overflow: hidden;">
+                <div style="background: var(--mckinsey-blue); padding: 15px 25px;">
+                    <h4 style="color: #fff; margin: 0; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">QuickBooks Access</h4>
+                </div>
+                <div style="padding: 25px;">
+                    <p style="color: #555; font-size: 0.9rem; margin-bottom: 20px;">Share your QuickBooks credentials securely so your advisor can access your financial data. Only you and your assigned advisor can view this information.</p>
+                    <div class="qb-form" id="qb-form">
+                        <div class="qb-field">
+                            <label for="qb-url">QuickBooks URL / Company Link</label>
+                            <input type="url" id="qb-url" placeholder="https://app.qbo.intuit.com/app/..." autocomplete="off">
+                        </div>
+                        <div class="qb-field">
+                            <label for="qb-username">Username / Email</label>
+                            <input type="text" id="qb-username" placeholder="your@email.com" autocomplete="off">
+                        </div>
+                        <div class="qb-field">
+                            <label for="qb-password">Password</label>
+                            <div class="qb-password-wrap">
+                                <input type="password" id="qb-password" placeholder="Enter your QuickBooks password" autocomplete="new-password">
+                                <button type="button" class="qb-toggle-pw" onclick="toggleQBPassword()">Show</button>
+                            </div>
+                        </div>
+                        <div class="qb-field">
+                            <label for="qb-notes">Additional Notes (optional)</label>
+                            <textarea id="qb-notes" placeholder="e.g., MFA backup codes, specific company to access, etc." rows="2"></textarea>
+                        </div>
+                        <div class="qb-actions">
+                            <button class="qb-save-btn" onclick="saveQBCredentials()">Save Credentials</button>
+                            <span class="qb-saved-status" id="qb-saved-status"></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -6064,6 +6228,7 @@
             if (!isDemo) {
                 loadUserFiles();
                 loadUserReports();
+                loadQBCredentials();
                 updateTrialBanner();
                 // Check if user selected a plan before signing up
                 checkPendingPlan();
@@ -6541,6 +6706,99 @@
         function closeUploadSuccess() {
             var overlay = document.getElementById('upload-success-overlay');
             if (overlay) overlay.classList.remove('show');
+        }
+
+        // QuickBooks credentials functions
+        function toggleQBPassword() {
+            var pw = document.getElementById('qb-password');
+            var btn = pw.parentElement.querySelector('.qb-toggle-pw');
+            if (pw.type === 'password') {
+                pw.type = 'text';
+                btn.textContent = 'Hide';
+            } else {
+                pw.type = 'password';
+                btn.textContent = 'Show';
+            }
+        }
+
+        async function saveQBCredentials() {
+            if (!supabase || !currentUserData?.id) {
+                showToast('Please log in to save credentials.', 'error');
+                return;
+            }
+
+            var url = document.getElementById('qb-url').value.trim();
+            var username = document.getElementById('qb-username').value.trim();
+            var password = document.getElementById('qb-password').value;
+            var notes = document.getElementById('qb-notes').value.trim();
+
+            if (!url && !username && !password) {
+                showToast('Please fill in at least one field.', 'error');
+                return;
+            }
+
+            try {
+                // Check if credentials already exist for this user
+                var { data: existing } = await supabase
+                    .from('quickbooks_credentials')
+                    .select('id')
+                    .eq('user_id', currentUserData.id)
+                    .single();
+
+                var credData = {
+                    user_id: currentUserData.id,
+                    qb_url: url,
+                    qb_username: username,
+                    qb_password: password,
+                    qb_notes: notes,
+                    updated_at: new Date().toISOString()
+                };
+
+                if (existing?.id) {
+                    // Update existing
+                    var { error } = await supabase
+                        .from('quickbooks_credentials')
+                        .update(credData)
+                        .eq('id', existing.id);
+                    if (error) throw error;
+                } else {
+                    // Insert new
+                    credData.created_at = new Date().toISOString();
+                    var { error } = await supabase
+                        .from('quickbooks_credentials')
+                        .insert([credData]);
+                    if (error) throw error;
+                }
+
+                var status = document.getElementById('qb-saved-status');
+                status.textContent = 'Saved securely!';
+                showToast('QuickBooks credentials saved securely.', 'success');
+                setTimeout(function() { status.textContent = ''; }, 3000);
+            } catch (err) {
+                console.error('Error saving QB credentials:', err);
+                showToast('Error saving credentials. Please try again.', 'error');
+            }
+        }
+
+        async function loadQBCredentials() {
+            if (!supabase || !currentUserData?.id) return;
+
+            try {
+                var { data, error } = await supabase
+                    .from('quickbooks_credentials')
+                    .select('*')
+                    .eq('user_id', currentUserData.id)
+                    .single();
+
+                if (data) {
+                    document.getElementById('qb-url').value = data.qb_url || '';
+                    document.getElementById('qb-username').value = data.qb_username || '';
+                    document.getElementById('qb-password').value = data.qb_password || '';
+                    document.getElementById('qb-notes').value = data.qb_notes || '';
+                }
+            } catch (err) {
+                console.log('No existing QB credentials found');
+            }
         }
 
         // Logo upload handler
@@ -7109,6 +7367,57 @@
             } catch (error) {
                 console.error('Error deleting report:', error);
                 showToast('Error deleting report', 'error');
+            }
+        }
+
+        // Admin QuickBooks Credentials View
+        async function loadAdminQBCredentials() {
+            if (!supabase) return;
+            var tbody = document.getElementById('admin-qb-body');
+            tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Loading...</td></tr>';
+
+            try {
+                var { data, error } = await supabase
+                    .from('quickbooks_credentials')
+                    .select('*, profiles:user_id(email, full_name)')
+                    .order('updated_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="loading-row">No credentials shared yet.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                data.forEach(function(cred) {
+                    var userName = cred.profiles?.full_name || cred.profiles?.email || 'Unknown';
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${userName}</td>
+                        <td><a href="${cred.qb_url || '#'}" target="_blank" style="color: var(--mckinsey-blue); word-break: break-all;">${cred.qb_url ? 'Open Link' : 'N/A'}</a></td>
+                        <td>${cred.qb_username || 'N/A'}</td>
+                        <td>
+                            <span class="admin-pw-hidden" id="pw-${cred.id}">••••••••</span>
+                            <button onclick="toggleAdminPW('${cred.id}', '${btoa(cred.qb_password || '')}')" style="background:var(--mckinsey-blue);color:#fff;border:none;padding:3px 10px;border-radius:4px;cursor:pointer;font-size:0.8rem;margin-left:5px;">Show</button>
+                        </td>
+                        <td style="font-size:0.85rem;">${cred.qb_notes || '-'}</td>
+                        <td style="font-size:0.85rem;">${formatDate(cred.updated_at)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error('Error loading QB credentials:', err);
+                tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Error loading credentials.</td></tr>';
+            }
+        }
+
+        function toggleAdminPW(id, encoded) {
+            var el = document.getElementById('pw-' + id);
+            if (el.textContent === '••••••••') {
+                el.textContent = atob(encoded);
+            } else {
+                el.textContent = '••••••••';
             }
         }
 
