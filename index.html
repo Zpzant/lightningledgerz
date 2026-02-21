@@ -2331,39 +2331,41 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            padding: 15px 10px;
-            border: 2px solid #e0e0e0;
+            padding: 12px 8px;
+            border: none;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s;
-            background: #fff;
+            background: transparent;
             position: relative;
         }
 
         .platform-tile:hover {
-            border-color: var(--mckinsey-blue);
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(30, 58, 95, 0.15);
         }
 
-        .platform-tile.connected {
-            border-color: #2CA01C;
-            background: #f0faf0;
+        .platform-tile:hover .platform-logo {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            transform: scale(1.08);
         }
 
-        .platform-tile.selected {
-            border-color: var(--mckinsey-blue);
-            background: #f0f4ff;
-            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.15);
+        .platform-tile.connected .platform-logo {
+            box-shadow: 0 0 0 3px #2CA01C;
+        }
+
+        .platform-tile.selected .platform-logo {
+            box-shadow: 0 0 0 3px var(--mckinsey-blue), 0 6px 20px rgba(30, 58, 95, 0.25);
         }
 
         .platform-logo {
-            width: 55px;
-            height: 55px;
-            border-radius: 12px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .platform-name {
@@ -2380,11 +2382,18 @@
         }
 
         .platform-cred-form {
-            background: #f8f9fa;
+            background: #fff;
             border: 2px solid var(--mckinsey-blue);
             border-radius: 12px;
             padding: 25px;
             margin-top: 10px;
+            color: #333;
+        }
+
+        .platform-cred-form label,
+        .platform-cred-form p,
+        .platform-cred-form span {
+            color: #333;
         }
 
         .platform-cred-header {
@@ -2395,7 +2404,7 @@
         }
 
         .platform-cred-header h5 {
-            color: var(--mckinsey-blue);
+            color: var(--mckinsey-blue) !important;
             margin: 0;
             font-size: 1.1rem;
         }
@@ -5740,7 +5749,7 @@
             </div>
 
             <!-- Platform Integrations Section -->
-            <div class="platform-integrations" id="platform-integrations" style="background: #fff; border-radius: 12px; margin-top: 25px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); overflow: hidden;">
+            <div class="platform-integrations" id="platform-integrations" style="background: #fff; border-radius: 12px; margin-top: 25px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); overflow: hidden; color: #333;">
                 <div style="background: var(--mckinsey-blue); padding: 20px 25px;">
                     <h4 style="color: #fff; margin: 0; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Platform Integrations</h4>
                     <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0; font-size: 0.85rem;">Select the platforms you use. Grant Lightning Ledgerz LLC secure access to deliver your FP&A services.</p>
