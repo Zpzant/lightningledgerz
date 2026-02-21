@@ -2318,6 +2318,157 @@
         }
 
         /* QuickBooks Credentials Section */
+        /* Platform Integration Grid */
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .platform-tile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 15px 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fff;
+            position: relative;
+        }
+
+        .platform-tile:hover {
+            border-color: var(--mckinsey-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(30, 58, 95, 0.15);
+        }
+
+        .platform-tile.connected {
+            border-color: #2CA01C;
+            background: #f0faf0;
+        }
+
+        .platform-tile.selected {
+            border-color: var(--mckinsey-blue);
+            background: #f0f4ff;
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.15);
+        }
+
+        .platform-logo {
+            width: 55px;
+            height: 55px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .platform-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+        }
+
+        .platform-status {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #2CA01C;
+        }
+
+        .platform-cred-form {
+            background: #f8f9fa;
+            border: 2px solid var(--mckinsey-blue);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 10px;
+        }
+
+        .platform-cred-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .platform-cred-header h5 {
+            color: var(--mckinsey-blue);
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .access-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            color: #444;
+        }
+
+        .access-option:has(input:checked) {
+            border-color: var(--mckinsey-blue);
+            background: #f0f4ff;
+            color: var(--mckinsey-blue);
+            font-weight: 600;
+        }
+
+        .access-option input {
+            accent-color: var(--mckinsey-blue);
+        }
+
+        /* Fathom Live Dashboard Link */
+        .fathom-link-card {
+            background: linear-gradient(135deg, #f0f4ff, #e8f0fe);
+            border: 2px solid var(--mckinsey-blue);
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .fathom-link-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--mckinsey-blue);
+            font-size: 0.95rem;
+        }
+
+        .fathom-link-desc {
+            color: #555;
+            font-size: 0.85rem;
+            margin: 0 0 12px;
+        }
+
+        .fathom-link-btn {
+            display: inline-block;
+            background: var(--mckinsey-blue);
+            color: #fff;
+            padding: 10px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .fathom-link-btn:hover {
+            background: #153050;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(30, 58, 95, 0.3);
+        }
+
         .qb-field {
             margin-bottom: 18px;
         }
@@ -5548,6 +5699,16 @@
                         <h4>My Reports</h4>
                     </div>
 
+                    <!-- Fathom Live Dashboard Link (shown when admin sets it) -->
+                    <div class="fathom-link-card" id="fathom-link-card" style="display: none;">
+                        <div class="fathom-link-header">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 6-10"/></svg>
+                            <span>Live Financial Dashboard</span>
+                        </div>
+                        <p class="fathom-link-desc">Your advisor has linked a live reporting dashboard for your business.</p>
+                        <a href="#" id="fathom-link-url" target="_blank" class="fathom-link-btn">Open Dashboard</a>
+                    </div>
+
                     <div class="carousel-search">
                         <input type="text" id="reports-search" placeholder="Search by name or date..." oninput="filterCarousel('reports')">
                     </div>
@@ -5558,69 +5719,144 @@
                 </div>
             </div>
 
-            <!-- QuickBooks Integration Section -->
-            <div class="qb-credentials-section" id="qb-credentials-section" style="background: #fff; border-radius: 12px; margin-top: 25px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); overflow: hidden;">
-                <div style="background: #2CA01C; padding: 20px 25px; display: flex; align-items: center; gap: 15px;">
-                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="#fff"/><path d="M20 4C11.16 4 4 11.16 4 20s7.16 16 16 16 16-7.16 16-16S28.84 4 20 4zm-4.5 24.5c-4.14 0-7.5-3.36-7.5-7.5s3.36-7.5 7.5-7.5c1.5 0 2.9.44 4.07 1.2v3.05c-1.05-1.1-2.47-1.75-4.07-1.75-3.04 0-5 2.46-5 5s1.96 5 5 5c1.6 0 3.02-.65 4.07-1.75v3.05c-1.17.76-2.57 1.2-4.07 1.2zm12 0v-3.05c1.05-1.1 2.47-1.75 4.07-1.75v-7.4c-1.6 0-3.02.65-4.07 1.75V14.5c-1.17.76-2.57 1.2-4.07 1.2v8.6c0 4.14 3.36 7.5 7.5 7.5-.63 0-1.24-.08-1.83-.22-.6-.14-1.17-.36-1.7-.63z" fill="#2CA01C"/></svg>
-                    <div>
-                        <h4 style="color: #fff; margin: 0; font-size: 1.2rem; font-weight: 700;">QuickBooks Online Access</h4>
-                        <p style="color: rgba(255,255,255,0.85); margin: 3px 0 0; font-size: 0.85rem;">Powered by Intuit QuickBooks</p>
-                    </div>
+            <!-- Platform Integrations Section -->
+            <div class="platform-integrations" id="platform-integrations" style="background: #fff; border-radius: 12px; margin-top: 25px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); overflow: hidden;">
+                <div style="background: var(--mckinsey-blue); padding: 20px 25px;">
+                    <h4 style="color: #fff; margin: 0; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Platform Integrations</h4>
+                    <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0; font-size: 0.85rem;">Select the platforms you use. Grant Lightning Ledgerz LLC secure access to deliver your FP&A services.</p>
                 </div>
 
                 <!-- Trust Signals Bar -->
-                <div style="background: #f0faf0; padding: 12px 25px; display: flex; gap: 25px; flex-wrap: wrap; border-bottom: 1px solid #e0e0e0;">
-                    <span style="color: #2CA01C; font-size: 0.85rem; font-weight: 600;">&#128274; 256-bit Encryption</span>
-                    <span style="color: #2CA01C; font-size: 0.85rem; font-weight: 600;">&#128737; SOC 2 Compliant</span>
-                    <span style="color: #2CA01C; font-size: 0.85rem; font-weight: 600;">&#9989; Read-Only Access Only</span>
+                <div style="background: #f0f4ff; padding: 12px 25px; display: flex; gap: 25px; flex-wrap: wrap; border-bottom: 1px solid #e0e0e0;">
+                    <span style="color: var(--mckinsey-blue); font-size: 0.85rem; font-weight: 600;">&#128274; 256-bit Encrypted</span>
+                    <span style="color: var(--mckinsey-blue); font-size: 0.85rem; font-weight: 600;">&#128737; SOC 2 Compliant</span>
+                    <span style="color: var(--mckinsey-blue); font-size: 0.85rem; font-weight: 600;">&#9989; Revoke Anytime</span>
                 </div>
 
                 <div style="padding: 25px;">
-                    <p style="color: #555; font-size: 0.9rem; margin-bottom: 20px;">Share your QuickBooks credentials securely. Your data is encrypted at rest and in transit. Only your assigned advisor (Zac Prizant) can view this information.</p>
-                    <div class="qb-form" id="qb-form">
-                        <div class="qb-field">
-                            <label for="qb-url">QuickBooks URL / Company Link</label>
-                            <input type="url" id="qb-url" placeholder="https://app.qbo.intuit.com/app/..." autocomplete="off">
-                        </div>
-                        <div class="qb-field">
-                            <label for="qb-username">Username / Email</label>
-                            <input type="text" id="qb-username" placeholder="your@email.com" autocomplete="off">
-                        </div>
-                        <div class="qb-field">
-                            <label for="qb-password">Password</label>
-                            <div class="qb-password-wrap">
-                                <input type="password" id="qb-password" placeholder="Enter your QuickBooks password" autocomplete="new-password">
-                                <button type="button" class="qb-toggle-pw" onclick="toggleQBPassword()">Show</button>
+                    <!-- Platform Selection Grid -->
+                    <p style="color: #555; font-size: 0.9rem; margin-bottom: 20px;">Click a platform to connect it. You can share your existing login or create a separate login for your advisor.</p>
+
+                    <div class="platform-grid">
+                        <div class="platform-tile" id="tile-quickbooks" onclick="selectPlatform('quickbooks')">
+                            <div class="platform-logo" style="background: #2CA01C;">
+                                <span style="color: #fff; font-size: 1.5rem; font-weight: 900;">QB</span>
                             </div>
+                            <span class="platform-name">QuickBooks</span>
+                            <span class="platform-status" id="status-quickbooks"></span>
                         </div>
-                        <div class="qb-field">
-                            <label for="qb-notes">Additional Notes (optional)</label>
-                            <textarea id="qb-notes" placeholder="e.g., MFA backup codes, specific company to access, etc." rows="2"></textarea>
+                        <div class="platform-tile" id="tile-sage" onclick="selectPlatform('sage')">
+                            <div class="platform-logo" style="background: #00D639;">
+                                <span style="color: #fff; font-size: 1.2rem; font-weight: 900;">SAGE</span>
+                            </div>
+                            <span class="platform-name">Sage</span>
+                            <span class="platform-status" id="status-sage"></span>
+                        </div>
+                        <div class="platform-tile" id="tile-netsuite" onclick="selectPlatform('netsuite')">
+                            <div class="platform-logo" style="background: #1A1A2E;">
+                                <span style="color: #fff; font-size: 1rem; font-weight: 700;">NetSuite</span>
+                            </div>
+                            <span class="platform-name">Oracle NetSuite</span>
+                            <span class="platform-status" id="status-netsuite"></span>
+                        </div>
+                        <div class="platform-tile" id="tile-xero" onclick="selectPlatform('xero')">
+                            <div class="platform-logo" style="background: #13B5EA;">
+                                <span style="color: #fff; font-size: 1.3rem; font-weight: 900;">xero</span>
+                            </div>
+                            <span class="platform-name">Xero</span>
+                            <span class="platform-status" id="status-xero"></span>
+                        </div>
+                        <div class="platform-tile" id="tile-alteryx" onclick="selectPlatform('alteryx')">
+                            <div class="platform-logo" style="background: #0078C0;">
+                                <span style="color: #fff; font-size: 1.1rem; font-weight: 700;">Ax</span>
+                            </div>
+                            <span class="platform-name">Alteryx</span>
+                            <span class="platform-status" id="status-alteryx"></span>
+                        </div>
+                        <div class="platform-tile" id="tile-airtable" onclick="selectPlatform('airtable')">
+                            <div class="platform-logo" style="background: #FCBF49;">
+                                <span style="color: #333; font-size: 1.3rem; font-weight: 900;">AT</span>
+                            </div>
+                            <span class="platform-name">Airtable</span>
+                            <span class="platform-status" id="status-airtable"></span>
+                        </div>
+                        <div class="platform-tile" id="tile-powerbi" onclick="selectPlatform('powerbi')">
+                            <div class="platform-logo" style="background: #F2C811;">
+                                <span style="color: #333; font-size: 1rem; font-weight: 900;">PBI</span>
+                            </div>
+                            <span class="platform-name">Power BI</span>
+                            <span class="platform-status" id="status-powerbi"></span>
+                        </div>
+                        <div class="platform-tile" id="tile-excel" onclick="selectPlatform('excel')">
+                            <div class="platform-logo" style="background: #217346;">
+                                <span style="color: #fff; font-size: 1.2rem; font-weight: 900;">Ex</span>
+                            </div>
+                            <span class="platform-name">Excel Online</span>
+                            <span class="platform-status" id="status-excel"></span>
+                        </div>
+                        <div class="platform-tile" id="tile-other" onclick="selectPlatform('other')">
+                            <div class="platform-logo" style="background: #666;">
+                                <span style="color: #fff; font-size: 1.5rem;">+</span>
+                            </div>
+                            <span class="platform-name">Other</span>
+                            <span class="platform-status" id="status-other"></span>
+                        </div>
+                    </div>
+
+                    <!-- Platform Credential Form (shown when a platform is selected) -->
+                    <div class="platform-cred-form" id="platform-cred-form" style="display: none;">
+                        <div class="platform-cred-header" id="platform-cred-header">
+                            <h5 id="platform-cred-title">Connect QuickBooks</h5>
+                            <button onclick="closePlatformForm()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#999;">&times;</button>
                         </div>
 
-                        <!-- Confidentiality Agreement -->
-                        <div class="qb-agreement" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
-                            <h5 style="color: var(--mckinsey-blue); margin: 0 0 12px; font-size: 0.95rem;">Mutual Confidentiality Agreement</h5>
-                            <div style="color: #444; font-size: 0.85rem; line-height: 1.7; max-height: 180px; overflow-y: auto; padding-right: 10px; margin-bottom: 15px;">
-                                <p style="margin: 0 0 10px;"><strong>By sharing your credentials, both parties agree to the following terms:</strong></p>
-                                <p style="margin: 0 0 8px;"><strong>1. Strict Confidentiality.</strong> Lightning Ledgerz and its principal advisor, Zac Prizant, will treat all login credentials, financial data, and business information as strictly confidential. I will never share, sell, distribute, or disclose your credentials or data to any third party under any circumstances.</p>
-                                <p style="margin: 0 0 8px;"><strong>2. Purpose-Limited Use.</strong> I will access your QuickBooks account solely for the purpose of delivering the FP&A services you have engaged me for — including budgeting, forecasting, financial reporting, and variance analysis. I will not use your data for any other purpose.</p>
-                                <p style="margin: 0 0 8px;"><strong>3. No Unauthorized Transactions.</strong> I will not initiate, approve, or modify any financial transactions, payments, invoices, or bank connections within your QuickBooks account unless you provide explicit written authorization.</p>
-                                <p style="margin: 0 0 8px;"><strong>4. Secure Storage.</strong> Your credentials are encrypted using industry-standard 256-bit encryption and stored in a SOC 2 compliant database. Only your assigned advisor can access them. Credentials are never stored in plain text, logs, or backups.</p>
-                                <p style="margin: 0 0 8px;"><strong>5. Immediate Deletion.</strong> Upon termination of our engagement or at your request, I will immediately and permanently delete all stored credentials and confirm the deletion in writing.</p>
-                                <p style="margin: 0 0 8px;"><strong>6. Breach Notification.</strong> In the unlikely event of any data breach, I will notify you within 24 hours and take immediate steps to secure your accounts.</p>
-                                <p style="margin: 0 0 8px;"><strong>7. Liability.</strong> Lightning Ledgerz accepts full liability for any unauthorized access resulting from negligence on our part in handling your credentials.</p>
-                                <p style="margin: 0;"><strong>8. Revocable Access.</strong> You can revoke access at any time by updating or removing your credentials from this portal, or by contacting me directly.</p>
+                        <div class="qb-field">
+                            <label>How would you like to grant access?</label>
+                            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                                <label class="access-option" id="access-share">
+                                    <input type="radio" name="access-type" value="share" checked onchange="toggleAccessType()">
+                                    <span>Share my existing login</span>
+                                </label>
+                                <label class="access-option" id="access-separate">
+                                    <input type="radio" name="access-type" value="separate" onchange="toggleAccessType()">
+                                    <span>I created a separate login for my advisor</span>
+                                </label>
                             </div>
+                        </div>
+
+                        <div id="platform-fields">
+                            <div class="qb-field">
+                                <label for="platform-url">Login URL / Company Link</label>
+                                <input type="url" id="platform-url" placeholder="https://..." autocomplete="off">
+                            </div>
+                            <div class="qb-field">
+                                <label for="platform-username">Username / Email</label>
+                                <input type="text" id="platform-username" placeholder="your@email.com" autocomplete="off">
+                            </div>
+                            <div class="qb-field">
+                                <label for="platform-password">Password</label>
+                                <div class="qb-password-wrap">
+                                    <input type="password" id="platform-password" placeholder="Enter password" autocomplete="new-password">
+                                    <button type="button" class="qb-toggle-pw" onclick="togglePlatformPassword()">Show</button>
+                                </div>
+                            </div>
+                            <div class="qb-field">
+                                <label for="platform-notes">Additional Notes (optional)</label>
+                                <textarea id="platform-notes" placeholder="e.g., MFA codes, company name, specific access needed..." rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Permission Checkbox -->
+                        <div style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 10px; padding: 18px; margin-bottom: 20px;">
                             <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; color: #333; font-size: 0.9rem;">
-                                <input type="checkbox" id="qb-agree-checkbox" style="margin-top: 3px; width: 18px; height: 18px; accent-color: #2CA01C; flex-shrink: 0;">
-                                <span>I have read and agree to the Mutual Confidentiality Agreement. I understand that my credentials will be encrypted and used solely for FP&A advisory services.</span>
+                                <input type="checkbox" id="platform-agree-checkbox" style="margin-top: 3px; width: 18px; height: 18px; accent-color: var(--mckinsey-blue); flex-shrink: 0;">
+                                <span>I grant <strong>Lightning Ledgerz LLC</strong> permission to access my <strong id="platform-agree-name">QuickBooks</strong> account using the credentials provided above, solely for the purpose of delivering FP&A advisory services. I understand my credentials are encrypted with 256-bit encryption, accessible only to my assigned advisor (Zac Prizant), and that I can revoke access at any time.</span>
                             </label>
                         </div>
 
                         <div class="qb-actions">
-                            <button class="qb-save-btn" onclick="saveQBCredentials()" id="qb-save-btn">Save Credentials Securely</button>
-                            <span class="qb-saved-status" id="qb-saved-status"></span>
+                            <button class="qb-save-btn" onclick="savePlatformCredentials()">Grant Access Securely</button>
+                            <span class="qb-saved-status" id="platform-saved-status"></span>
                         </div>
                     </div>
                 </div>
@@ -5633,7 +5869,7 @@
                     <li><strong style="color: var(--mckinsey-blue);">Confidentiality:</strong> All documents, credentials, and financial data are encrypted and strictly confidential.</li>
                     <li><strong style="color: var(--mckinsey-blue);">Data Handling:</strong> Your data is used solely for FP&A services. Lightning Ledgerz will never share, sell, or distribute client data to any third party.</li>
                     <li><strong style="color: var(--mckinsey-blue);">Security:</strong> Industry-standard 256-bit encryption. Only you and your assigned advisor can access your files and credentials.</li>
-                    <li><strong style="color: var(--mckinsey-blue);">Credential Storage:</strong> QuickBooks credentials are encrypted at rest in a SOC 2 compliant database. You can revoke access at any time.</li>
+                    <li><strong style="color: var(--mckinsey-blue);">Platform Access:</strong> All platform credentials are encrypted at rest. You can revoke access at any time by removing credentials from this portal.</li>
                 </ul>
             </div>
         </div>
@@ -6742,9 +6978,56 @@
             if (overlay) overlay.classList.remove('show');
         }
 
-        // QuickBooks credentials functions
-        function toggleQBPassword() {
-            var pw = document.getElementById('qb-password');
+        // Platform Integration Functions
+        var selectedPlatform = null;
+        var platformNames = {
+            quickbooks: 'QuickBooks',
+            sage: 'Sage',
+            netsuite: 'Oracle NetSuite',
+            xero: 'Xero',
+            alteryx: 'Alteryx',
+            airtable: 'Airtable',
+            powerbi: 'Power BI',
+            excel: 'Excel Online',
+            other: 'Other Platform'
+        };
+
+        function selectPlatform(platform) {
+            // Deselect previous
+            document.querySelectorAll('.platform-tile').forEach(function(t) { t.classList.remove('selected'); });
+            // Select new
+            var tile = document.getElementById('tile-' + platform);
+            if (tile) tile.classList.add('selected');
+
+            selectedPlatform = platform;
+            var form = document.getElementById('platform-cred-form');
+            form.style.display = 'block';
+            document.getElementById('platform-cred-title').textContent = 'Connect ' + platformNames[platform];
+            document.getElementById('platform-agree-name').textContent = platformNames[platform];
+
+            // Clear form
+            document.getElementById('platform-url').value = '';
+            document.getElementById('platform-username').value = '';
+            document.getElementById('platform-password').value = '';
+            document.getElementById('platform-notes').value = '';
+            document.getElementById('platform-agree-checkbox').checked = false;
+            document.getElementById('platform-saved-status').textContent = '';
+
+            // Load existing credentials for this platform
+            loadPlatformCredentials(platform);
+
+            // Scroll to form
+            form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function closePlatformForm() {
+            document.getElementById('platform-cred-form').style.display = 'none';
+            document.querySelectorAll('.platform-tile').forEach(function(t) { t.classList.remove('selected'); });
+            selectedPlatform = null;
+        }
+
+        function togglePlatformPassword() {
+            var pw = document.getElementById('platform-password');
             var btn = pw.parentElement.querySelector('.qb-toggle-pw');
             if (pw.type === 'password') {
                 pw.type = 'text';
@@ -6755,94 +7038,138 @@
             }
         }
 
-        async function saveQBCredentials() {
-            if (!supabase || !currentUserData?.id) {
-                showToast('Please log in to save credentials.', 'error');
+        function toggleAccessType() {
+            // Could customize placeholder text based on access type
+        }
+
+        async function savePlatformCredentials() {
+            if (!supabase || !currentUserData?.id || !selectedPlatform) {
+                showToast('Please log in and select a platform.', 'error');
                 return;
             }
 
-            var checkbox = document.getElementById('qb-agree-checkbox');
+            var checkbox = document.getElementById('platform-agree-checkbox');
             if (!checkbox.checked) {
-                showToast('Please read and accept the Confidentiality Agreement before saving.', 'error');
-                checkbox.parentElement.style.outline = '2px solid #ff3333';
-                checkbox.parentElement.style.outlineOffset = '5px';
-                setTimeout(function() { checkbox.parentElement.style.outline = 'none'; }, 3000);
+                showToast('Please grant permission before saving.', 'error');
+                checkbox.parentElement.parentElement.style.outline = '2px solid #ff3333';
+                checkbox.parentElement.parentElement.style.outlineOffset = '3px';
+                setTimeout(function() { checkbox.parentElement.parentElement.style.outline = 'none'; }, 3000);
                 return;
             }
 
-            var url = document.getElementById('qb-url').value.trim();
-            var username = document.getElementById('qb-username').value.trim();
-            var password = document.getElementById('qb-password').value;
-            var notes = document.getElementById('qb-notes').value.trim();
+            var url = document.getElementById('platform-url').value.trim();
+            var username = document.getElementById('platform-username').value.trim();
+            var password = document.getElementById('platform-password').value;
+            var notes = document.getElementById('platform-notes').value.trim();
+            var accessType = document.querySelector('input[name="access-type"]:checked')?.value || 'share';
 
-            if (!url && !username && !password) {
-                showToast('Please fill in at least one field.', 'error');
+            if (!username && !password) {
+                showToast('Please provide at least a username and password.', 'error');
                 return;
             }
 
             try {
-                // Check if credentials already exist for this user
+                // Check if credentials already exist for this user + platform
                 var { data: existing } = await supabase
-                    .from('quickbooks_credentials')
+                    .from('platform_credentials')
                     .select('id')
                     .eq('user_id', currentUserData.id)
+                    .eq('platform', selectedPlatform)
                     .single();
 
                 var credData = {
                     user_id: currentUserData.id,
-                    qb_url: url,
-                    qb_username: username,
-                    qb_password: password,
-                    qb_notes: notes,
+                    platform: selectedPlatform,
+                    platform_name: platformNames[selectedPlatform],
+                    access_type: accessType,
+                    login_url: url,
+                    username: username,
+                    password: password,
+                    notes: notes,
+                    permission_granted: true,
                     updated_at: new Date().toISOString()
                 };
 
                 if (existing?.id) {
-                    // Update existing
                     var { error } = await supabase
-                        .from('quickbooks_credentials')
+                        .from('platform_credentials')
                         .update(credData)
                         .eq('id', existing.id);
                     if (error) throw error;
                 } else {
-                    // Insert new
                     credData.created_at = new Date().toISOString();
                     var { error } = await supabase
-                        .from('quickbooks_credentials')
+                        .from('platform_credentials')
                         .insert([credData]);
                     if (error) throw error;
                 }
 
-                var status = document.getElementById('qb-saved-status');
-                status.textContent = 'Saved securely!';
-                showToast('QuickBooks credentials saved securely.', 'success');
+                // Mark tile as connected
+                var tile = document.getElementById('tile-' + selectedPlatform);
+                tile.classList.add('connected');
+                document.getElementById('status-' + selectedPlatform).textContent = 'Connected';
+
+                var status = document.getElementById('platform-saved-status');
+                status.textContent = 'Access granted securely!';
+                showToast(platformNames[selectedPlatform] + ' connected successfully.', 'success');
                 setTimeout(function() { status.textContent = ''; }, 3000);
             } catch (err) {
-                console.error('Error saving QB credentials:', err);
+                console.error('Error saving platform credentials:', err);
                 showToast('Error saving credentials. Please try again.', 'error');
             }
         }
 
-        async function loadQBCredentials() {
+        async function loadPlatformCredentials(platform) {
             if (!supabase || !currentUserData?.id) return;
 
             try {
-                var { data, error } = await supabase
-                    .from('quickbooks_credentials')
+                var { data } = await supabase
+                    .from('platform_credentials')
                     .select('*')
                     .eq('user_id', currentUserData.id)
+                    .eq('platform', platform)
                     .single();
 
                 if (data) {
-                    document.getElementById('qb-url').value = data.qb_url || '';
-                    document.getElementById('qb-username').value = data.qb_username || '';
-                    document.getElementById('qb-password').value = data.qb_password || '';
-                    document.getElementById('qb-notes').value = data.qb_notes || '';
+                    document.getElementById('platform-url').value = data.login_url || '';
+                    document.getElementById('platform-username').value = data.username || '';
+                    document.getElementById('platform-password').value = data.password || '';
+                    document.getElementById('platform-notes').value = data.notes || '';
+                    document.getElementById('platform-agree-checkbox').checked = data.permission_granted;
+                    if (data.access_type === 'separate') {
+                        document.querySelector('input[name="access-type"][value="separate"]').checked = true;
+                    }
                 }
             } catch (err) {
-                console.log('No existing QB credentials found');
+                // No existing credentials for this platform
             }
         }
+
+        async function loadAllPlatformStatuses() {
+            if (!supabase || !currentUserData?.id) return;
+
+            try {
+                var { data } = await supabase
+                    .from('platform_credentials')
+                    .select('platform')
+                    .eq('user_id', currentUserData.id);
+
+                if (data) {
+                    data.forEach(function(cred) {
+                        var tile = document.getElementById('tile-' + cred.platform);
+                        if (tile) {
+                            tile.classList.add('connected');
+                            document.getElementById('status-' + cred.platform).textContent = 'Connected';
+                        }
+                    });
+                }
+            } catch (err) {
+                console.log('Error loading platform statuses');
+            }
+        }
+
+        // Legacy alias for backward compatibility
+        function loadQBCredentials() { loadAllPlatformStatuses(); }
 
         // Logo upload handler
         async function handleLogoUpload(event) {
