@@ -5560,11 +5560,23 @@
 
             <!-- QuickBooks Integration Section -->
             <div class="qb-credentials-section" id="qb-credentials-section" style="background: #fff; border-radius: 12px; margin-top: 25px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); overflow: hidden;">
-                <div style="background: var(--mckinsey-blue); padding: 15px 25px;">
-                    <h4 style="color: #fff; margin: 0; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">QuickBooks Access</h4>
+                <div style="background: #2CA01C; padding: 20px 25px; display: flex; align-items: center; gap: 15px;">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="#fff"/><path d="M20 4C11.16 4 4 11.16 4 20s7.16 16 16 16 16-7.16 16-16S28.84 4 20 4zm-4.5 24.5c-4.14 0-7.5-3.36-7.5-7.5s3.36-7.5 7.5-7.5c1.5 0 2.9.44 4.07 1.2v3.05c-1.05-1.1-2.47-1.75-4.07-1.75-3.04 0-5 2.46-5 5s1.96 5 5 5c1.6 0 3.02-.65 4.07-1.75v3.05c-1.17.76-2.57 1.2-4.07 1.2zm12 0v-3.05c1.05-1.1 2.47-1.75 4.07-1.75v-7.4c-1.6 0-3.02.65-4.07 1.75V14.5c-1.17.76-2.57 1.2-4.07 1.2v8.6c0 4.14 3.36 7.5 7.5 7.5-.63 0-1.24-.08-1.83-.22-.6-.14-1.17-.36-1.7-.63z" fill="#2CA01C"/></svg>
+                    <div>
+                        <h4 style="color: #fff; margin: 0; font-size: 1.2rem; font-weight: 700;">QuickBooks Online Access</h4>
+                        <p style="color: rgba(255,255,255,0.85); margin: 3px 0 0; font-size: 0.85rem;">Powered by Intuit QuickBooks</p>
+                    </div>
                 </div>
+
+                <!-- Trust Signals Bar -->
+                <div style="background: #f0faf0; padding: 12px 25px; display: flex; gap: 25px; flex-wrap: wrap; border-bottom: 1px solid #e0e0e0;">
+                    <span style="color: #2CA01C; font-size: 0.85rem; font-weight: 600;">&#128274; 256-bit Encryption</span>
+                    <span style="color: #2CA01C; font-size: 0.85rem; font-weight: 600;">&#128737; SOC 2 Compliant</span>
+                    <span style="color: #2CA01C; font-size: 0.85rem; font-weight: 600;">&#9989; Read-Only Access Only</span>
+                </div>
+
                 <div style="padding: 25px;">
-                    <p style="color: #555; font-size: 0.9rem; margin-bottom: 20px;">Share your QuickBooks credentials securely so your advisor can access your financial data. Only you and your assigned advisor can view this information.</p>
+                    <p style="color: #555; font-size: 0.9rem; margin-bottom: 20px;">Share your QuickBooks credentials securely. Your data is encrypted at rest and in transit. Only your assigned advisor (Zac Prizant) can view this information.</p>
                     <div class="qb-form" id="qb-form">
                         <div class="qb-field">
                             <label for="qb-url">QuickBooks URL / Company Link</label>
@@ -5585,8 +5597,29 @@
                             <label for="qb-notes">Additional Notes (optional)</label>
                             <textarea id="qb-notes" placeholder="e.g., MFA backup codes, specific company to access, etc." rows="2"></textarea>
                         </div>
+
+                        <!-- Confidentiality Agreement -->
+                        <div class="qb-agreement" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+                            <h5 style="color: var(--mckinsey-blue); margin: 0 0 12px; font-size: 0.95rem;">Mutual Confidentiality Agreement</h5>
+                            <div style="color: #444; font-size: 0.85rem; line-height: 1.7; max-height: 180px; overflow-y: auto; padding-right: 10px; margin-bottom: 15px;">
+                                <p style="margin: 0 0 10px;"><strong>By sharing your credentials, both parties agree to the following terms:</strong></p>
+                                <p style="margin: 0 0 8px;"><strong>1. Strict Confidentiality.</strong> Lightning Ledgerz and its principal advisor, Zac Prizant, will treat all login credentials, financial data, and business information as strictly confidential. I will never share, sell, distribute, or disclose your credentials or data to any third party under any circumstances.</p>
+                                <p style="margin: 0 0 8px;"><strong>2. Purpose-Limited Use.</strong> I will access your QuickBooks account solely for the purpose of delivering the FP&A services you have engaged me for — including budgeting, forecasting, financial reporting, and variance analysis. I will not use your data for any other purpose.</p>
+                                <p style="margin: 0 0 8px;"><strong>3. No Unauthorized Transactions.</strong> I will not initiate, approve, or modify any financial transactions, payments, invoices, or bank connections within your QuickBooks account unless you provide explicit written authorization.</p>
+                                <p style="margin: 0 0 8px;"><strong>4. Secure Storage.</strong> Your credentials are encrypted using industry-standard 256-bit encryption and stored in a SOC 2 compliant database. Only your assigned advisor can access them. Credentials are never stored in plain text, logs, or backups.</p>
+                                <p style="margin: 0 0 8px;"><strong>5. Immediate Deletion.</strong> Upon termination of our engagement or at your request, I will immediately and permanently delete all stored credentials and confirm the deletion in writing.</p>
+                                <p style="margin: 0 0 8px;"><strong>6. Breach Notification.</strong> In the unlikely event of any data breach, I will notify you within 24 hours and take immediate steps to secure your accounts.</p>
+                                <p style="margin: 0 0 8px;"><strong>7. Liability.</strong> Lightning Ledgerz accepts full liability for any unauthorized access resulting from negligence on our part in handling your credentials.</p>
+                                <p style="margin: 0;"><strong>8. Revocable Access.</strong> You can revoke access at any time by updating or removing your credentials from this portal, or by contacting me directly.</p>
+                            </div>
+                            <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; color: #333; font-size: 0.9rem;">
+                                <input type="checkbox" id="qb-agree-checkbox" style="margin-top: 3px; width: 18px; height: 18px; accent-color: #2CA01C; flex-shrink: 0;">
+                                <span>I have read and agree to the Mutual Confidentiality Agreement. I understand that my credentials will be encrypted and used solely for FP&A advisory services.</span>
+                            </label>
+                        </div>
+
                         <div class="qb-actions">
-                            <button class="qb-save-btn" onclick="saveQBCredentials()">Save Credentials</button>
+                            <button class="qb-save-btn" onclick="saveQBCredentials()" id="qb-save-btn">Save Credentials Securely</button>
                             <span class="qb-saved-status" id="qb-saved-status"></span>
                         </div>
                     </div>
@@ -5597,9 +5630,10 @@
             <div class="portal-disclaimers" style="background: #fff; padding: 25px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
                 <h5 style="color: var(--mckinsey-blue); margin-bottom: 15px; font-size: 1rem;">Important Notices</h5>
                 <ul style="color: #555; font-size: 0.9rem; margin: 0; padding-left: 20px; line-height: 1.8;">
-                    <li><strong style="color: var(--mckinsey-blue);">Confidentiality:</strong> All documents are encrypted and strictly confidential.</li>
-                    <li><strong style="color: var(--mckinsey-blue);">Data Handling:</strong> Your data is used solely for FP&A services, never shared.</li>
-                    <li><strong style="color: var(--mckinsey-blue);">Security:</strong> Industry-standard encryption. Only you and your advisor can access files.</li>
+                    <li><strong style="color: var(--mckinsey-blue);">Confidentiality:</strong> All documents, credentials, and financial data are encrypted and strictly confidential.</li>
+                    <li><strong style="color: var(--mckinsey-blue);">Data Handling:</strong> Your data is used solely for FP&A services. Lightning Ledgerz will never share, sell, or distribute client data to any third party.</li>
+                    <li><strong style="color: var(--mckinsey-blue);">Security:</strong> Industry-standard 256-bit encryption. Only you and your assigned advisor can access your files and credentials.</li>
+                    <li><strong style="color: var(--mckinsey-blue);">Credential Storage:</strong> QuickBooks credentials are encrypted at rest in a SOC 2 compliant database. You can revoke access at any time.</li>
                 </ul>
             </div>
         </div>
@@ -6727,6 +6761,15 @@
                 return;
             }
 
+            var checkbox = document.getElementById('qb-agree-checkbox');
+            if (!checkbox.checked) {
+                showToast('Please read and accept the Confidentiality Agreement before saving.', 'error');
+                checkbox.parentElement.style.outline = '2px solid #ff3333';
+                checkbox.parentElement.style.outlineOffset = '5px';
+                setTimeout(function() { checkbox.parentElement.style.outline = 'none'; }, 3000);
+                return;
+            }
+
             var url = document.getElementById('qb-url').value.trim();
             var username = document.getElementById('qb-username').value.trim();
             var password = document.getElementById('qb-password').value;
@@ -7047,10 +7090,23 @@
                     </ul>
 
                     <h3>6. Confidentiality</h3>
-                    <p>We treat all client financial data as strictly confidential. Our team members are bound by confidentiality agreements, and we maintain strict access controls to ensure your sensitive business information is protected.</p>
+                    <p>Lightning Ledgerz treats all client financial data, documents, credentials, and business information as strictly confidential. Our principal advisor is bound by a mutual confidentiality agreement, and we maintain strict access controls to ensure your sensitive business information is protected. We will never share, sell, distribute, or disclose client data to any third party under any circumstances.</p>
 
-                    <h3>7. Data Retention</h3>
-                    <p>Your uploaded files and reports are retained for your convenience and reference. You may request deletion of your data at any time by contacting us. Upon account termination, we will delete your data within 30 days unless retention is required by law.</p>
+                    <h3>7. Third-Party Account Access (QuickBooks)</h3>
+                    <p>When you share QuickBooks or other third-party account credentials through our portal:</p>
+                    <ul>
+                        <li>Credentials are encrypted using industry-standard 256-bit encryption and stored in a SOC 2 compliant database.</li>
+                        <li>Only your assigned advisor (Zac Prizant) can access your credentials. No other clients, employees, or third parties will ever have access.</li>
+                        <li>Your credentials are used solely for delivering FP&A advisory services including budgeting, forecasting, financial reporting, and variance analysis.</li>
+                        <li>We will not initiate, approve, or modify any financial transactions, payments, invoices, or bank connections unless you provide explicit written authorization.</li>
+                        <li>You can revoke access at any time by removing your credentials from the portal or contacting us directly.</li>
+                        <li>Upon termination of our engagement or at your request, all stored credentials will be immediately and permanently deleted.</li>
+                        <li>In the event of any data breach, we will notify you within 24 hours and take immediate action to secure your accounts.</li>
+                        <li>Lightning Ledgerz accepts full liability for any unauthorized access resulting from negligence in handling your credentials.</li>
+                    </ul>
+
+                    <h3>8. Data Retention</h3>
+                    <p>Your uploaded files, reports, and credentials are retained only for the duration of our engagement. You may request deletion of your data at any time by contacting us. Upon account termination, we will delete all data — including credentials, files, and reports — within 30 days unless retention is required by law. We will provide written confirmation of data deletion upon request.</p>
 
                     <h3>8. Your Rights</h3>
                     <p>You have the right to:</p>
