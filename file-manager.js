@@ -11,7 +11,7 @@ class FileManager {
                 name: 'Customer List',
                 icon: '👥',
                 description: 'Upload your customer database (CSV, Excel)',
-                accepts: '.csv,.xlsx,.xls',
+                accepts: '.csv,.xlsx,.xls,.docx,.doc,.pdf,.png,.jpg,.jpeg,.gif,.svg,.webp',
                 required: true
             },
             {
@@ -19,7 +19,7 @@ class FileManager {
                 name: 'Product List',
                 icon: '📦',
                 description: 'Your products/services catalog',
-                accepts: '.csv,.xlsx,.xls',
+                accepts: '.csv,.xlsx,.xls,.docx,.doc,.pdf,.png,.jpg,.jpeg,.gif,.svg,.webp',
                 required: true
             },
             {
@@ -27,7 +27,7 @@ class FileManager {
                 name: "Last Year's Budget",
                 icon: '📅',
                 description: 'Previous year budget for comparison',
-                accepts: '.csv,.xlsx,.xls,.pdf',
+                accepts: '.csv,.xlsx,.xls,.docx,.doc,.pdf,.png,.jpg,.jpeg,.gif,.svg,.webp',
                 required: true
             },
             {
@@ -35,7 +35,7 @@ class FileManager {
                 name: 'Trailing Proforma',
                 icon: '📈',
                 description: 'Trailing 12-month proforma statement',
-                accepts: '.csv,.xlsx,.xls,.pdf',
+                accepts: '.csv,.xlsx,.xls,.docx,.doc,.pdf,.png,.jpg,.jpeg,.gif,.svg,.webp',
                 required: true
             },
             {
@@ -43,7 +43,7 @@ class FileManager {
                 name: 'Trailing Balance Sheet',
                 icon: '⚖️',
                 description: 'Recent balance sheet data',
-                accepts: '.csv,.xlsx,.xls,.pdf',
+                accepts: '.csv,.xlsx,.xls,.docx,.doc,.pdf,.png,.jpg,.jpeg,.gif,.svg,.webp',
                 required: true
             },
             {
@@ -51,7 +51,7 @@ class FileManager {
                 name: 'Trailing Cash Flow',
                 icon: '💰',
                 description: 'Cash flow statement for analysis',
-                accepts: '.csv,.xlsx,.xls,.pdf',
+                accepts: '.csv,.xlsx,.xls,.docx,.doc,.pdf,.png,.jpg,.jpeg,.gif,.svg,.webp',
                 required: true,
                 analyzable: true
             }
