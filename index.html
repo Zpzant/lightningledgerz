@@ -2564,24 +2564,95 @@
             align-items: center;
             margin: -40px -40px 30px -40px;
             padding: 20px 40px;
+            background-color: #0d2240 !important;
             background: #0d2240 !important;
             border-radius: 20px 20px 0 0;
             flex-wrap: wrap;
             gap: 15px;
+            position: relative;
+            z-index: 2;
         }
 
-        .dashboard-header h3 {
-            color: #fff !important;
-            -webkit-text-fill-color: #fff !important;
+        .dashboard-header h3,
+        .dashboard-header h3 span,
+        .dashboard-header h3 * {
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
             margin: 0;
             font-size: 1.3rem;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
         }
 
-        .dashboard-header h3 span {
-            color: #fff !important;
-            -webkit-text-fill-color: #fff !important;
+        .dashboard-greeting {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
+
+        .dashboard-logo {
+            height: 44px;
+            width: 44px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 10px;
+            padding: 4px;
+            flex-shrink: 0;
+        }
+
+        /* Header tier group + countdown */
+        .header-tier-group { display: flex; align-items: center; gap: 8px; }
+        .header-countdown {
+            display: flex; align-items: center; gap: 4px;
+            background: rgba(255,42,42,0.2);
+            border: 1px solid rgba(255,100,100,0.4);
+            border-radius: 20px;
+            padding: 4px 12px;
+        }
+        #countdown-display {
+            font-weight: 800; font-size: 0.88rem; color: #ff6b6b;
+            font-variant-numeric: tabular-nums; letter-spacing: 0.5px;
+        }
+        .countdown-label { font-size: 0.72rem; color: rgba(255,255,255,0.5); }
+
+        /* Early-bird discount banner */
+        .earlybird-banner {
+            background: linear-gradient(135deg, #1a1a2e, #0d2240);
+            border: 1px solid rgba(255,180,50,0.35);
+            border-radius: 14px;
+            padding: 16px 22px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+        .earlybird-left { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .earlybird-badge {
+            background: linear-gradient(135deg, #f5a623, #e08c00);
+            color: #1a1a2e;
+            font-weight: 900;
+            font-size: 0.78rem;
+            letter-spacing: 1px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        .earlybird-text { color: rgba(255,255,255,0.85); font-size: 0.88rem; max-width: 420px; }
+        .earlybird-cta {
+            background: linear-gradient(135deg, #f5a623, #e08c00);
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 26px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(245,166,35,0.4);
+        }
+        .earlybird-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,166,35,0.5); }
 
         /* Trial Banner */
         .trial-banner {
@@ -2886,6 +2957,21 @@
         }
         .fin-upload-btn:hover { background: #0d2240; }
         .fin-slot-status { font-size: 0.75rem; color: #22c55e; margin-top: 8px; min-height: 18px; font-weight: 600; }
+
+        /* Book a Call button */
+        .book-call-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #1e3a5f, #2d5a9e);
+            color: #fff !important;
+            padding: 13px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.98rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(30,58,95,0.3);
+        }
+        .book-call-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30,58,95,0.4); }
 
         /* Skip buttons */
         .step-skip-row { text-align: right; margin-top: 14px; padding-top: 12px; border-top: 1px solid #f0f0f0; }
@@ -6815,7 +6901,14 @@
                     <img src="LightningLedgerzLogo.png" alt="Logo" class="dashboard-logo" id="dashboard-logo">
                     <h3>Hi <span id="user-display-name">there</span>!</h3>
                 </div>
-                <div class="dashboard-tier-badge" id="tier-badge">Basic</div>
+                <!-- Tier badge + countdown clock -->
+                <div class="header-tier-group" id="header-tier-group">
+                    <div class="dashboard-tier-badge" id="tier-badge">Basic</div>
+                    <div class="header-countdown" id="header-countdown" style="display:none;">
+                        <span id="countdown-display">30d 00h 00m</span>
+                        <span class="countdown-label">left</span>
+                    </div>
+                </div>
                 <!-- Demo Tier Selector (only visible in demo mode) -->
                 <div id="demo-tier-selector" class="demo-tier-selector" style="display: none;">
                     <label>Preview Tier:</label>
@@ -6830,6 +6923,15 @@
                 <!-- Admin Button (only visible for admin) -->
                 <button id="admin-btn" class="btn-admin" onclick="openAdminDashboard()" style="display: none;">Admin</button>
                 <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+            </div>
+
+            <!-- Early-Bird Discount Banner -->
+            <div class="earlybird-banner" id="earlybird-banner" style="display:none;">
+                <div class="earlybird-left">
+                    <div class="earlybird-badge" id="earlybird-badge">25% OFF FOR LIFE</div>
+                    <div class="earlybird-text" id="earlybird-text">Sign up today and lock in <strong>25% off every month</strong> — the longer you wait, the less you save.</div>
+                </div>
+                <button class="earlybird-cta" onclick="openUpgradeModal()" id="earlybird-cta">Lock In My Discount →</button>
             </div>
 
             <!-- Trial Banner (shown during free trial period) -->
@@ -6889,10 +6991,32 @@
             <!-- 4-Step Portal Layout -->
             <div class="portal-steps-container">
 
-                <!-- STEP 1: Client Services Agreement -->
-                <div class="portal-step-card" id="step-nda">
+                <!-- STEP 1: Book a Discovery Call -->
+                <div class="portal-step-card" id="step-call">
                     <div class="portal-step-header">
                         <div class="portal-step-number">1</div>
+                        <h4>Book a Discovery Call</h4>
+                    </div>
+                    <div class="portal-step-body">
+                        <p style="margin-bottom:14px;">Schedule a free 30-minute call with Zac. On the call: walk through your business needs, see live sample deliverables, get a walkthrough of the portal, and apply a discount code if you're ready to sign up.</p>
+                        <a href="mailto:zprizant@lightningledgerz.com?subject=Discovery%20Call%20Request" class="book-call-btn" id="book-call-btn" onclick="markCallBooked()">Schedule My Free Call &rarr;</a>
+                        <div id="call-booked-badge" style="display:none; margin-top:12px;">
+                            <div class="nda-signed-badge">
+                                <span class="nda-signed-check">&#128222;</span>
+                                <div>
+                                    <div class="nda-signed-title">Call Scheduled</div>
+                                    <div class="nda-signed-meta">Check your email for confirmation</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('call')">Skip — I'll book later</button></div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Client Services Agreement -->
+                <div class="portal-step-card" id="step-nda">
+                    <div class="portal-step-header">
+                        <div class="portal-step-number">2</div>
                         <h4>Client Services Agreement</h4>
                     </div>
                     <div class="portal-step-body">
@@ -6914,10 +7038,10 @@
                     </div>
                 </div>
 
-                <!-- STEP 2: Database Access -->
+                <!-- STEP 3: Database Access -->
                 <div class="portal-step-card" id="platform-integrations">
                     <div class="portal-step-header">
-                        <div class="portal-step-number">2</div>
+                        <div class="portal-step-number">3</div>
                         <h4>Database Access</h4>
                     </div>
                     <div class="portal-step-body">
@@ -7067,10 +7191,10 @@
                     </div>
                 </div>
 
-                <!-- STEP 3: Upload Financial Statements -->
+                <!-- STEP 4: Upload Financial Statements -->
                 <div class="portal-step-card">
                     <div class="portal-step-header">
-                        <div class="portal-step-number">3</div>
+                        <div class="portal-step-number">4</div>
                         <h4>Upload Financial Statements</h4>
                     </div>
                     <div class="portal-step-body">
@@ -7121,10 +7245,30 @@
                     </div>
                 </div>
 
-                <!-- STEP 4: My Reports -->
+                <!-- STEP 5: Company Logo -->
+                <div class="portal-step-card" id="step-logo">
+                    <div class="portal-step-header">
+                        <div class="portal-step-number">5</div>
+                        <h4>Company Logo</h4>
+                    </div>
+                    <div class="portal-step-body">
+                        <p style="margin-bottom:16px;">Upload your logo to personalize your portal and reports.</p>
+                        <div class="logo-upload-column">
+                            <div class="company-logo-preview" id="company-logo-preview" onclick="document.getElementById('logo-input').click()">
+                                <span class="placeholder" id="logo-placeholder">Click to upload<br>your logo</span>
+                                <img id="company-logo-img" src="" alt="Company Logo" style="display: none;">
+                            </div>
+                            <input type="file" id="logo-input" accept=".png,.jpg,.jpeg,.svg,.webp" style="display: none;" onchange="handleLogoUpload(event)">
+                            <button class="logo-upload-btn" onclick="document.getElementById('logo-input').click()">Upload Logo</button>
+                        </div>
+                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('logo')">Skip — I'll add a logo later</button></div>
+                    </div>
+                </div>
+
+                <!-- STEP 6: My Reports -->
                 <div class="portal-step-card">
                     <div class="portal-step-header">
-                        <div class="portal-step-number">4</div>
+                        <div class="portal-step-number">6</div>
                         <h4>My Reports</h4>
                     </div>
                     <div class="portal-step-body">
@@ -8697,6 +8841,7 @@
                     img.style.display = 'block';
                     placeholder.style.display = 'none';
                 }
+                setTimeout(updateLightningMeter, 300);
             };
             reader.readAsDataURL(file);
 
@@ -8719,6 +8864,8 @@
         }
 
         // Trial tracking
+        var trialTickInterval = null;
+
         function updateTrialBanner() {
             var banner = document.getElementById('trial-banner');
             var daysSpan = document.getElementById('trial-days-left');
@@ -8726,50 +8873,101 @@
             var progressFill = document.getElementById('trial-progress-fill');
             var ctaBtn = document.getElementById('trial-banner-cta');
             var lockout = document.getElementById('trial-lockout');
+            var countdown = document.getElementById('header-countdown');
+            var countdownDisplay = document.getElementById('countdown-display');
+            var earlybirdBanner = document.getElementById('earlybird-banner');
+            var earlybirdBadge = document.getElementById('earlybird-badge');
+            var earlybirdText = document.getElementById('earlybird-text');
             if (!banner || !currentUserData) return;
 
             // Only show for basic tier non-demo users
             if (currentUserData.tier !== 'basic' || currentUserData.isDemo) {
-                banner.style.display = 'none';
+                if (banner) banner.style.display = 'none';
+                if (countdown) countdown.style.display = 'none';
+                if (earlybirdBanner) earlybirdBanner.style.display = 'none';
                 return;
             }
 
-            var createdAt = new Date(currentUserData.created_at || currentUserData.createdAt || currentUserData.profile?.created_at);
+            // Use created_at or fall back to localStorage (for existing users)
+            var rawDate = currentUserData.created_at || currentUserData.createdAt || currentUserData.profile?.created_at;
+            var createdAt;
+            if (rawDate) {
+                createdAt = new Date(rawDate);
+            } else {
+                // Existing user: start timer now, store in localStorage
+                var stored = localStorage.getItem('trial_start_' + currentUserData.id);
+                if (!stored) { stored = new Date().toISOString(); localStorage.setItem('trial_start_' + currentUserData.id, stored); }
+                createdAt = new Date(stored);
+            }
             if (isNaN(createdAt.getTime())) { banner.style.display = 'none'; return; }
 
             var trialEndDate = new Date(createdAt.getTime() + (30 * 24 * 60 * 60 * 1000));
             var now = new Date();
-            var daysLeft = Math.max(0, Math.ceil((trialEndDate - now) / (24 * 60 * 60 * 1000)));
-            var pctUsed = Math.min(100, Math.round(((30 - daysLeft) / 30) * 100));
+            var msLeft = Math.max(0, trialEndDate - now);
+            var totalMinLeft = Math.floor(msLeft / 60000);
+            var daysLeft = Math.floor(msLeft / (24 * 60 * 60 * 1000));
+            var hoursLeft = Math.floor((msLeft % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+            var minsLeft = Math.floor((msLeft % (60 * 60 * 1000)) / 60000);
+            var pctUsed = Math.min(100, Math.round(((30 * 24 * 60 - totalMinLeft) / (30 * 24 * 60)) * 100));
 
-            // EXPIRED: show lockout screen
-            if (daysLeft === 0) {
+            // EXPIRED
+            if (msLeft === 0) {
                 banner.style.display = 'none';
+                if (countdown) countdown.style.display = 'none';
+                if (earlybirdBanner) earlybirdBanner.style.display = 'none';
                 if (lockout) lockout.classList.add('active');
                 return;
             }
 
+            // Header countdown clock
+            if (countdown && countdownDisplay) {
+                countdown.style.display = 'flex';
+                var dd = String(daysLeft);
+                var hh = String(hoursLeft).padStart(2, '0');
+                var mm = String(minsLeft).padStart(2, '0');
+                countdownDisplay.textContent = dd + 'd ' + hh + 'h ' + mm + 'm';
+                // Color urgency
+                countdown.style.background = daysLeft <= 6 ? 'rgba(255,42,42,0.35)' : daysLeft <= 14 ? 'rgba(255,140,0,0.25)' : 'rgba(255,42,42,0.15)';
+                countdown.style.borderColor = daysLeft <= 6 ? 'rgba(255,60,60,0.7)' : daysLeft <= 14 ? 'rgba(255,160,0,0.5)' : 'rgba(255,100,100,0.3)';
+                document.getElementById('countdown-display').style.color = daysLeft <= 6 ? '#ff4444' : daysLeft <= 14 ? '#ffaa44' : '#ff8888';
+            }
+
+            // Early-bird discount (tiered by days remaining)
+            if (earlybirdBanner) {
+                var discountPct, discountMsg;
+                if (daysLeft >= 22) { discountPct = 25; discountMsg = 'You\'re early — lock in <strong>25% off every month, forever</strong>. This discount drops as your trial runs out.'; }
+                else if (daysLeft >= 15) { discountPct = 20; discountMsg = 'Lock in <strong>20% off every month</strong>. Discount was 25% — act before it drops again.'; }
+                else if (daysLeft >= 8) { discountPct = 15; discountMsg = 'Lock in <strong>15% off every month</strong>. You\'ve got ' + daysLeft + ' days to claim this rate.'; }
+                else if (daysLeft >= 1) { discountPct = 10; discountMsg = '⏰ <strong>Last chance</strong> — lock in 10% off before your trial expires.'; }
+                earlybirdBanner.style.display = 'flex';
+                if (earlybirdBadge) earlybirdBadge.textContent = discountPct + '% OFF FOR LIFE';
+                if (earlybirdText) earlybirdText.innerHTML = discountMsg;
+            }
+
+            // Trial banner (below header)
             banner.style.display = 'block';
-            daysSpan.textContent = daysLeft + ' day' + (daysLeft !== 1 ? 's' : '');
+            if (daysSpan) daysSpan.textContent = daysLeft + 'd ' + hoursLeft + 'h';
 
             if (daysLeft <= 6) {
-                // RED - urgent
                 banner.style.background = 'linear-gradient(135deg, #c0392b, #e74c3c)';
-                if (bannerText) bannerText.innerHTML = '⚠️ <strong>Only ' + daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' left</strong> on your free trial — Don\'t lose access!';
+                if (bannerText) bannerText.innerHTML = '⚠️ <strong>Only ' + daysLeft + 'd ' + hoursLeft + 'h ' + minsLeft + 'm left</strong> — Don\'t lose access!';
                 if (progressFill) { progressFill.style.width = pctUsed + '%'; progressFill.style.background = '#fff'; }
                 if (ctaBtn) ctaBtn.textContent = 'Choose a Plan Now';
             } else if (daysLeft <= 14) {
-                // AMBER - warning
                 banner.style.background = 'linear-gradient(135deg, #e67e22, #f39c12)';
-                if (bannerText) bannerText.innerHTML = '⏳ Trial ending in <span class="trial-banner-days">' + daysLeft + ' days</span> — Upgrade to keep your access.';
+                if (bannerText) bannerText.innerHTML = '⏳ <span class="trial-banner-days">' + daysLeft + ' days</span> left — Upgrade to keep your access.';
                 if (progressFill) { progressFill.style.width = pctUsed + '%'; progressFill.style.background = 'rgba(255,255,255,0.8)'; }
                 if (ctaBtn) ctaBtn.textContent = 'Upgrade Before It Expires';
             } else {
-                // BLUE - calm
-                banner.style.background = 'rgba(255, 255, 255, 0.15)';
-                if (bannerText) bannerText.innerHTML = '🎉 You\'re on your <strong>FREE trial</strong> — <span class="trial-banner-days">' + daysLeft + ' days</span> remaining.';
+                banner.style.background = 'rgba(255,255,255,0.12)';
+                if (bannerText) bannerText.innerHTML = '🎉 <strong>FREE trial</strong> — <span class="trial-banner-days">' + daysLeft + ' days</span> remaining.';
                 if (progressFill) { progressFill.style.width = pctUsed + '%'; progressFill.style.background = 'var(--gold)'; }
-                if (ctaBtn) ctaBtn.textContent = 'Save 20% — Go Annual';
+                if (ctaBtn) ctaBtn.textContent = 'Lock In My Discount';
+            }
+
+            // Start minute tick if not already running
+            if (!trialTickInterval) {
+                trialTickInterval = setInterval(updateTrialBanner, 60000);
             }
         }
 
@@ -9360,34 +9558,59 @@
         // LIGHTNING BOLT PROFILE METER
         // ===========================================
         function updateLightningMeter() {
-            var pct = 0;
-            var tip = '';
-            var ndaDone = !!(currentUserData?.profile?.nda_accepted_at);
-            var dbDone = document.getElementById('connected-badges-list')?.children.length > 0;
-            var filesDone = document.querySelectorAll('#user-uploads-carousel .carousel-card').length > 0
-                         || document.getElementById('fin-pl-status')?.textContent.includes('✓')
-                         || document.getElementById('fin-bs-status')?.textContent.includes('✓')
-                         || document.getElementById('fin-cf-status')?.textContent.includes('✓');
+            // 6 steps × ~17% = 100%
+            var callDone   = !!(localStorage.getItem('call_booked_' + (currentUserData?.id || 'demo')));
+            var ndaDone    = !!(currentUserData?.profile?.nda_accepted_at);
+            var dbDone     = document.getElementById('connected-badges-list')?.children.length > 0;
+            var filesDone  = document.getElementById('fin-pl-status')?.textContent.includes('✓')
+                          || document.getElementById('fin-bs-status')?.textContent.includes('✓')
+                          || document.getElementById('fin-cf-status')?.textContent.includes('✓')
+                          || document.querySelectorAll('#user-uploads-carousel .carousel-card').length > 0;
+            var logoDone   = !!(document.getElementById('company-logo-img')?.src && !document.getElementById('company-logo-img')?.src.endsWith('/'));
+            var steps      = [callDone, ndaDone, dbDone, filesDone, logoDone];
+            var doneCount  = steps.filter(Boolean).length;
+            var pct        = Math.round((doneCount / 5) * 100);
 
-            if (ndaDone) pct += 33;
-            if (dbDone) pct += 34;
-            if (filesDone) pct += 33;
+            var tips = ['Book your discovery call to get started', 'Sign your Client Services Agreement', 'Connect at least one accounting platform', 'Upload your financial statements', 'Upload your company logo'];
+            var tipIdx = steps.indexOf(false);
+            var tip = tipIdx >= 0 ? tips[tipIdx] : 'Profile complete — your trial is live!';
 
-            if (!ndaDone) tip = 'Sign your agreement to get started';
-            else if (!dbDone) tip = 'Connect your accounting platform to boost your meter';
-            else if (!filesDone) tip = 'Upload your financial statements to complete your profile';
-            else tip = 'Profile complete — reach out to redeem your free month!';
-
-            var fill = document.getElementById('lightning-bolt-fill');
-            var pctEl = document.getElementById('lightning-meter-pct');
-            var tipEl = document.getElementById('lightning-meter-tip');
-            var spark = document.getElementById('lightning-spark');
+            var fill   = document.getElementById('lightning-bolt-fill');
+            var pctEl  = document.getElementById('lightning-meter-pct');
+            var tipEl  = document.getElementById('lightning-meter-tip');
+            var spark  = document.getElementById('lightning-spark');
             var reward = document.getElementById('lightning-meter-reward');
-            if (fill) fill.style.height = pct + '%';
+            if (fill)  fill.style.height = pct + '%';
             if (pctEl) pctEl.textContent = pct + '% Complete';
             if (tipEl) tipEl.textContent = tip;
-            if (spark) { spark.style.display = pct >= 100 ? 'block' : 'none'; spark.textContent = '⚡'; }
-            if (reward) reward.style.display = pct >= 100 ? 'flex' : 'none';
+
+            // 50% milestone toast (show once)
+            if (pct >= 50 && pct < 100 && !localStorage.getItem('milestone50_' + (currentUserData?.id||'demo'))) {
+                localStorage.setItem('milestone50_' + (currentUserData?.id||'demo'), '1');
+                showToast('⚡ Halfway there! You\'ve unlocked a free financial health check — Zac will reach out.', 'success');
+            }
+
+            // 100% milestone
+            if (pct >= 100) {
+                if (spark) { spark.style.display = 'block'; spark.textContent = '⚡'; }
+                if (reward) reward.style.display = 'flex';
+                if (!localStorage.getItem('milestone100_' + (currentUserData?.id||'demo'))) {
+                    localStorage.setItem('milestone100_' + (currentUserData?.id||'demo'), '1');
+                    showToast('🎉 Profile 100% complete! Your 30-day trial is now live. You\'ve earned a free month — contact Zac to redeem.', 'success');
+                }
+            } else {
+                if (spark) spark.style.display = 'none';
+                if (reward) reward.style.display = 'none';
+            }
+        }
+
+        function markCallBooked() {
+            localStorage.setItem('call_booked_' + (currentUserData?.id || 'demo'), '1');
+            var badge = document.getElementById('call-booked-badge');
+            var btn = document.getElementById('book-call-btn');
+            if (badge) badge.style.display = 'block';
+            if (btn) btn.style.display = 'none';
+            setTimeout(updateLightningMeter, 300);
         }
 
         function skipStep(step) {
