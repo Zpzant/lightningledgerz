@@ -4,7 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lightning Ledgerz - Budget. Save. Build.</title>
-    <meta name="description" content="Premium FP&A advisory services. Budget vs actual reporting, financial modeling, and executive dashboards delivered at lightning speed.">
+    <meta name="description" content="Lightning Ledgerz LLC — Expert FP&A advisory in Las Vegas. Budget vs. Actual reporting, financial modeling, KPI dashboards, and fractional CFO services. Budget. Save. Build.">
+    <meta name="keywords" content="FP&A advisory Las Vegas, financial planning analysis, budget vs actual reporting, financial modeling, fractional CFO, KPI dashboard, bookkeeping Las Vegas, Lightning Ledgerz">
+    <meta name="author" content="Zachary Prizant, Lightning Ledgerz LLC">
+
+    <!-- Open Graph (social + Google preview) -->
+    <meta property="og:title" content="Lightning Ledgerz — Budget. Save. Build.">
+    <meta property="og:description" content="Expert FP&A advisory services in Las Vegas. Financial modeling, dashboards, and strategic reporting crafted by an expert — not an algorithm.">
+    <meta property="og:image" content="https://lightningledgerz.com/preview.webp">
+    <meta property="og:url" content="https://lightningledgerz.com">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Lightning Ledgerz LLC">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lightning Ledgerz — Budget. Save. Build.">
+    <meta name="twitter:description" content="Expert FP&A advisory: financial modeling, KPI dashboards, budget vs. actual reporting. Las Vegas, NV.">
+    <meta name="twitter:image" content="https://lightningledgerz.com/preview.webp">
+
+    <!-- JSON-LD: Local Business Schema for Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "Lightning Ledgerz LLC",
+      "description": "Expert FP&A advisory services including financial modeling, budget vs. actual reporting, KPI dashboards, and fractional CFO services.",
+      "url": "https://lightningledgerz.com",
+      "logo": "https://lightningledgerz.com/LightningLedgerzLogo.png",
+      "image": "https://lightningledgerz.com/preview.webp",
+      "telephone": "+17025502513",
+      "email": "zprizant@lightningledgerz.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "732 S 6th St, Ste R",
+        "addressLocality": "Las Vegas",
+        "addressRegion": "NV",
+        "postalCode": "89101",
+        "addressCountry": "US"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 36.1699,
+        "longitude": -115.1398
+      },
+      "founder": {
+        "@type": "Person",
+        "name": "Zachary Prizant",
+        "jobTitle": "Founder & CEO"
+      },
+      "areaServed": "United States",
+      "serviceType": ["FP&A Advisory", "Financial Modeling", "Budget vs. Actual Reporting", "KPI Dashboard Development", "Fractional CFO Services"],
+      "priceRange": "$$$",
+      "openingHours": "Mo-Fr 09:00-18:00",
+      "sameAs": [
+        "https://lightningledgerz.com"
+      ]
+    }
+    </script>
+
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -1488,6 +1545,463 @@
         /* ============================================
            LEGAL MODALS
         ============================================ */
+        /* NDA Modal */
+        .nda-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 100500;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .nda-modal.active { display: flex; }
+
+        .nda-modal-content {
+            background: #fff;
+            border-radius: 16px;
+            max-width: 740px;
+            width: 100%;
+            max-height: 92vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+        }
+
+        .nda-header {
+            background: #0d2240;
+            padding: 20px 30px;
+            flex-shrink: 0;
+        }
+
+        .nda-header h2 { color: #fff; margin: 0 0 3px; font-size: 1.3rem; }
+        .nda-header p { color: rgba(255,255,255,0.7); margin: 0; font-size: 0.85rem; }
+
+        .nda-step { padding: 25px 30px; }
+
+        .nda-step-inputs { display: flex; flex-direction: column; gap: 15px; }
+
+        .nda-input-group label {
+            display: block;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .nda-input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .nda-input-group input:focus {
+            outline: none;
+            border-color: #1e3a5f;
+        }
+
+        .nda-generate-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            background: #0d2240;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nda-generate-btn:hover { background: #1e3a5f; }
+
+        .nda-document {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .nda-document.active { display: flex; }
+
+        .nda-doc-toolbar {
+            padding: 12px 25px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nda-doc-toolbar span { font-size: 0.85rem; color: #666; }
+
+        .nda-print-btn {
+            background: #1e3a5f;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .nda-text-area {
+            overflow-y: auto;
+            padding: 25px 30px;
+            flex: 1;
+            font-size: 0.88rem;
+            line-height: 1.7;
+            color: #333;
+        }
+
+        .nda-text-area h3 {
+            color: #1e3a5f;
+            font-size: 1rem;
+            margin: 20px 0 8px;
+        }
+
+        .nda-text-area h4 { color: #1e3a5f; margin: 15px 0 6px; }
+        .nda-text-area ul { padding-left: 20px; margin: 8px 0; }
+        .nda-text-area li { margin-bottom: 4px; }
+
+        .nda-accept-section {
+            padding: 20px 30px;
+            border-top: 1px solid #e0e0e0;
+            background: #f8f9fa;
+            flex-shrink: 0;
+        }
+
+        .nda-checkboxes { margin-bottom: 15px; }
+
+        .nda-checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 6px 0;
+            font-size: 0.85rem;
+            color: #444;
+        }
+
+        .nda-checkbox-item input {
+            margin-top: 3px;
+            accent-color: #1e3a5f;
+            flex-shrink: 0;
+        }
+
+        .nda-accept-btn {
+            width: 100%;
+            padding: 14px;
+            background: #2CA01C;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nda-accept-btn:hover { background: #238a15; }
+        .nda-accept-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* Quiz Modal */
+        .quiz-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.88);
+            z-index: 99500;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .quiz-modal.active { display: flex; }
+
+        .quiz-modal-content {
+            background: #fff;
+            border-radius: 20px;
+            max-width: 680px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .quiz-header {
+            background: #0d2240;
+            padding: 25px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .quiz-header h2 { color: #fff; margin: 0 0 5px; font-size: 1.5rem; }
+        .quiz-header p { color: rgba(255,255,255,0.75); margin: 0; font-size: 0.9rem; }
+
+        .quiz-close {
+            position: absolute;
+            top: 15px; right: 20px;
+            background: none; border: none;
+            color: rgba(255,255,255,0.6);
+            font-size: 1.8rem; cursor: pointer; line-height: 1;
+        }
+
+        .quiz-body { padding: 25px 30px; }
+
+        .quiz-question {
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .quiz-checks {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 500px) { .quiz-checks { grid-template-columns: 1fr; } }
+
+        .quiz-check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.88rem;
+            color: #444;
+        }
+
+        .quiz-check-item:hover { border-color: #1e3a5f; background: #f0f4ff; }
+        .quiz-check-item input { accent-color: #1e3a5f; width: 16px; height: 16px; flex-shrink: 0; }
+        .quiz-check-item:has(input:checked) { border-color: #1e3a5f; background: #f0f4ff; font-weight: 600; color: #1e3a5f; }
+
+        .quiz-result {
+            display: none;
+            background: linear-gradient(135deg, #f0f4ff, #e8f0fe);
+            border: 2px solid #1e3a5f;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .quiz-result.active { display: block; }
+        .quiz-result-label { font-size: 0.85rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .quiz-result-plan { font-size: 1.8rem; font-weight: 800; color: #1e3a5f; margin-bottom: 5px; }
+        .quiz-result-price { font-size: 1.1rem; color: #555; margin-bottom: 15px; }
+        .quiz-result-features { list-style: none; padding: 0; margin: 0 0 20px; text-align: left; display: inline-block; }
+        .quiz-result-features li { padding: 5px 0; color: #444; font-size: 0.9rem; }
+        .quiz-result-features li::before { content: "✓ "; color: #2CA01C; font-weight: 700; }
+
+        .quiz-cta-btn {
+            background: linear-gradient(135deg, #1e3a5f, #2d5a9e);
+            color: #fff;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30,58,95,0.3); }
+
+        .quiz-footer {
+            text-align: center;
+            padding: 0 30px 20px;
+        }
+
+        .quiz-footer button {
+            background: none; border: none;
+            color: #aaa; font-size: 0.85rem;
+            cursor: pointer; text-decoration: underline;
+        }
+
+        /* Upgrade Modal */
+        .upgrade-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 99000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .upgrade-modal.active { display: flex; }
+
+        .upgrade-modal-content {
+            background: #fff;
+            border-radius: 20px;
+            max-width: 760px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+        }
+
+        .upgrade-modal-header {
+            background: #0d2240;
+            padding: 25px 35px;
+            text-align: center;
+        }
+
+        .upgrade-modal-header h2 {
+            color: #fff;
+            margin: 0 0 5px;
+            font-size: 1.6rem;
+        }
+
+        .upgrade-modal-header p {
+            color: rgba(255,255,255,0.7);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .upgrade-modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            font-size: 1.8rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .upgrade-modal-header { position: relative; }
+
+        .upgrade-plans-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        @media (max-width: 600px) {
+            .upgrade-plans-grid { grid-template-columns: 1fr; }
+        }
+
+        .upgrade-plan-card {
+            padding: 30px 25px;
+            border-right: 1px solid #eee;
+        }
+
+        .upgrade-plan-card:last-child { border-right: none; }
+
+        .upgrade-plan-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .badge-gold { background: linear-gradient(135deg, #f5a623, #f0c040); color: #1e3a5f; }
+        .badge-diamond { background: linear-gradient(135deg, #1e3a5f, #2d5a9e); color: #fff; }
+
+        .upgrade-plan-card h3 {
+            font-size: 1.3rem;
+            color: #1e3a5f;
+            margin: 0 0 5px;
+        }
+
+        .upgrade-plan-price {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1e3a5f;
+            margin-bottom: 15px;
+        }
+
+        .upgrade-plan-price span {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #888;
+        }
+
+        .upgrade-upsells {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px;
+        }
+
+        .upgrade-upsells li {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 6px 0;
+            color: #444;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .upgrade-upsells li .check { color: #2CA01C; font-weight: 700; flex-shrink: 0; }
+
+        .upgrade-plan-btn {
+            width: 100%;
+            padding: 13px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upgrade-plan-btn.btn-gold {
+            background: linear-gradient(135deg, #f5a623, #f0c040);
+            color: #1e3a5f;
+        }
+
+        .upgrade-plan-btn.btn-diamond {
+            background: linear-gradient(135deg, #1e3a5f, #2d5a9e);
+            color: #fff;
+        }
+
+        .upgrade-plan-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .upgrade-modal-footer {
+            padding: 15px 25px;
+            text-align: center;
+            border-top: 1px solid #eee;
+            background: #fafafa;
+        }
+
+        .upgrade-modal-footer a {
+            color: #1e3a5f;
+            font-size: 0.9rem;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .upgrade-modal-footer a:hover { text-decoration: underline; }
+
         .legal-modal {
             position: fixed;
             top: 0;
@@ -2044,7 +2558,7 @@
             align-items: center;
             margin: -40px -40px 30px -40px;
             padding: 20px 40px;
-            background: var(--mckinsey-blue);
+            background: #0d2240 !important;
             border-radius: 20px 20px 0 0;
             flex-wrap: wrap;
             gap: 15px;
@@ -2055,30 +2569,52 @@
             -webkit-text-fill-color: #fff !important;
             margin: 0;
             font-size: 1.3rem;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .dashboard-header h3 span {
+            color: #fff !important;
+            -webkit-text-fill-color: #fff !important;
         }
 
         /* Trial Banner */
         .trial-banner {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            padding: 12px 20px;
+            border-radius: 12px;
+            padding: 15px 20px;
             margin-bottom: 25px;
+        }
+
+        .trial-banner-inner {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
+            margin-bottom: 10px;
         }
 
         .trial-banner-text {
             color: #fff;
             font-weight: 500;
+            font-size: 0.95rem;
         }
 
         .trial-banner-days {
-            font-weight: 700;
-            color: var(--gold);
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .trial-progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.2);
+            overflow: hidden;
+        }
+
+        .trial-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
         }
 
         .trial-banner-cta {
@@ -2090,6 +2626,7 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
+            white-space: nowrap;
         }
 
         .trial-banner-cta:hover {
@@ -2097,59 +2634,276 @@
             box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
         }
 
-        /* 3 Column Layout */
-        .dashboard-columns {
-            display: grid;
-            grid-template-columns: 250px 1fr 1fr;
-            gap: 25px;
+        /* Trial Expired Lockout Screen */
+        .trial-lockout {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 20, 40, 0.97);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .trial-lockout.active {
+            display: flex;
+        }
+
+        .trial-lockout-content {
+            background: #fff;
+            border-radius: 20px;
+            padding: 50px 40px;
+            max-width: 560px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .trial-lockout-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .trial-lockout h2 {
+            color: #1e3a5f;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .trial-lockout p {
+            color: #555;
+            margin-bottom: 25px;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .trial-lockout-plans {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .lockout-plan-btn {
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lockout-plan-btn.gold {
+            background: linear-gradient(135deg, #f5a623, #f0c040);
+            color: #1e3a5f;
+        }
+
+        .lockout-plan-btn.diamond {
+            background: linear-gradient(135deg, #1e3a5f, #2d5a9e);
+            color: #fff;
+        }
+
+        .lockout-plan-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .lockout-logout {
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 10px;
+        }
+
+        /* Portal 4-Step Layout */
+        .portal-steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
             margin-bottom: 30px;
         }
 
-        @media (max-width: 1000px) {
-            .dashboard-columns {
-                grid-template-columns: 1fr 1fr;
-            }
-            .logo-upload-column {
-                grid-column: span 2;
-            }
-        }
-
-        @media (max-width: 700px) {
-            .dashboard-columns {
-                grid-template-columns: 1fr;
-            }
-            .logo-upload-column {
-                grid-column: span 1;
-            }
-        }
-
-        .dashboard-column {
+        .portal-step-card {
             background: #fff;
             border-radius: 12px;
-            padding: 25px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
         }
 
-        .dashboard-column:hover {
-            transform: translateY(-5px);
+        .portal-step-card:hover {
+            transform: translateY(-3px);
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
         }
 
-        .column-header {
+        .portal-step-header {
             background: var(--mckinsey-blue);
-            margin: -25px -25px 20px -25px;
             padding: 15px 25px;
-            border-radius: 12px 12px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .column-header h4 {
+        .portal-step-number {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            background: var(--gold);
+            color: var(--mckinsey-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .portal-step-header h4 {
             color: #fff !important;
             margin: 0;
             font-size: 1.1rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
+        }
+
+        .portal-step-body {
+            padding: 25px;
+        }
+
+        /* Step 4: Reports Carousel */
+        .portal-reports-carousel-container {
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding: 15px 5px 20px;
+            cursor: grab;
+            user-select: none;
+            scrollbar-width: thin;
+            scrollbar-color: var(--mckinsey-blue) #e0e0e0;
+        }
+
+        .portal-reports-carousel-container:active {
+            cursor: grabbing;
+        }
+
+        .portal-reports-carousel-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .portal-reports-carousel-container::-webkit-scrollbar-track {
+            background: #e0e0e0;
+            border-radius: 10px;
+        }
+
+        .portal-reports-carousel-container::-webkit-scrollbar-thumb {
+            background: var(--mckinsey-blue);
+            border-radius: 10px;
+        }
+
+        .portal-reports-carousel {
+            display: flex;
+            gap: 20px;
+            width: max-content;
+        }
+
+        .portal-report-card {
+            flex-shrink: 0;
+            width: 280px;
+            background: linear-gradient(135deg, #f8f9fa, #fff);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .portal-report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .portal-report-card-thumbnail {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #e8f0fe, #d4e4fc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .portal-report-card-thumbnail img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        .portal-report-card-label {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .portal-report-card-label h4 {
+            font-weight: 600;
+            color: #1e3a5f;
+            font-size: 0.95rem;
+            margin: 0 0 5px 0;
+        }
+
+        .portal-report-card-label p {
+            color: #6B7280;
+            font-size: 0.8rem;
+            margin: 0;
+        }
+
+        .portal-scroll-hint {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            color: #6B7280;
+            font-size: 0.85rem;
+        }
+
+        .upload-file-types {
+            color: #555;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        /* Tier overrides for step numbers */
+        body.tier-gold .portal-step-number {
+            background: #fff;
+            color: var(--gold);
+        }
+
+        body.tier-diamond .portal-step-number {
+            background: #fff;
+            color: #1e3a5f;
+        }
+
+        @media (max-width: 768px) {
+            .portal-report-card {
+                width: 240px;
+            }
+            .portal-report-card-thumbnail {
+                height: 150px;
+            }
+            .portal-step-body {
+                padding: 15px;
+            }
         }
 
         /* Logo Upload Column */
@@ -2826,19 +3580,19 @@
         }
 
         .portal-disclaimers {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 25px;
             margin-top: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .portal-disclaimers h5 {
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--mckinsey-blue) !important;
             margin-bottom: 15px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 1rem;
+            font-weight: 700;
         }
 
         .portal-disclaimers ul {
@@ -2848,9 +3602,9 @@
         }
 
         .portal-disclaimers li {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.8rem;
-            line-height: 1.6;
+            color: #555 !important;
+            font-size: 0.9rem;
+            line-height: 1.8;
             margin-bottom: 10px;
             padding-left: 15px;
             position: relative;
@@ -2864,7 +3618,7 @@
         }
 
         .portal-disclaimers li strong {
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--mckinsey-blue) !important;
         }
 
         /* Dashboard Layout */
@@ -2877,10 +3631,10 @@
         .dashboard-logo {
             height: 50px;
             width: auto;
-            background: var(--mckinsey-blue) !important;
+            background: #fff !important;
             padding: 8px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(30, 58, 95, 0.3);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .dashboard-tier-badge {
@@ -5218,6 +5972,12 @@
             <p>Flexible plans designed to fit your business needs.</p>
         </div>
 
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button onclick="openQuizModal()" style="background: none; border: 2px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.85); padding: 10px 24px; border-radius: 30px; font-size: 0.9rem; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">
+                🎯 Not sure which plan fits? Take the 30-second quiz →
+            </button>
+        </div>
+
         <div class="pricing-toggle-container">
             <span class="pricing-toggle-label active" id="monthly-label">Month-to-Month</span>
             <div class="pricing-toggle" id="pricing-toggle" onclick="togglePricingPeriod()">
@@ -5226,6 +5986,19 @@
             <span class="pricing-toggle-label" id="yearly-label">12-Month Commitment</span>
             <span class="pricing-save-badge">Save 20%</span>
         </div>
+
+        <!-- Promo Code Input -->
+        <div style="display: flex; justify-content: center; margin-bottom: 25px;">
+            <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; padding: 8px 8px 8px 20px; display: flex; align-items: center; gap: 10px; max-width: 400px; width: 100%;">
+                <span style="color: rgba(255,255,255,0.6); font-size: 0.9rem; white-space: nowrap;">🏷 Promo code</span>
+                <input type="text" id="promo-code-input" placeholder="Enter code" maxlength="30"
+                    style="flex: 1; background: none; border: none; outline: none; color: #fff; font-size: 0.95rem; min-width: 0;"
+                    oninput="this.value = this.value.toUpperCase()"
+                    onkeydown="if(event.key==='Enter') applyPromoCode()">
+                <button onclick="applyPromoCode()" style="background: var(--gold); color: #1e3a5f; border: none; padding: 8px 18px; border-radius: 30px; font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap;">Apply</button>
+            </div>
+        </div>
+        <div id="promo-result" style="text-align: center; margin-bottom: 15px; font-size: 0.9rem; min-height: 20px;"></div>
 
         <div class="package-grid">
             <div class="package-card" id="basic-card">
@@ -5300,6 +6073,145 @@
             <button class="legal-modal-close" onclick="closeLegalModal()">&times;</button>
             <h2 id="legal-modal-title">Terms of Service</h2>
             <div class="legal-modal-body" id="legal-modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Upgrade Modal -->
+    <div class="upgrade-modal" id="upgrade-modal" onclick="closeUpgradeModal()">
+        <div class="upgrade-modal-content" onclick="event.stopPropagation()">
+            <div class="upgrade-modal-header">
+                <button class="upgrade-modal-close" onclick="closeUpgradeModal()">&times;</button>
+                <h2>Ready to Level Up?</h2>
+                <p>Choose the plan that fits your business goals</p>
+            </div>
+            <div class="upgrade-plans-grid">
+                <!-- Gold -->
+                <div class="upgrade-plan-card">
+                    <div class="upgrade-plan-badge badge-gold">✨ Most Popular</div>
+                    <h3>Gold Package</h3>
+                    <div class="upgrade-plan-price">$1,299<span>/month</span></div>
+                    <ul class="upgrade-upsells">
+                        <li><span class="check">✓</span> Weekly strategy calls with your advisor</li>
+                        <li><span class="check">✓</span> Advanced financial modeling & forecasting</li>
+                        <li><span class="check">✓</span> Cash flow optimization planning</li>
+                        <li><span class="check">✓</span> Custom KPI dashboard creation</li>
+                        <li><span class="check">✓</span> Priority email & chat support</li>
+                        <li><span class="check">✓</span> Unlimited document uploads</li>
+                    </ul>
+                    <button class="upgrade-plan-btn btn-gold" onclick="selectPlan('gold'); closeUpgradeModal();">Upgrade to Gold</button>
+                </div>
+                <!-- Diamond -->
+                <div class="upgrade-plan-card">
+                    <div class="upgrade-plan-badge badge-diamond">💎 Full Service</div>
+                    <h3>Diamond Package</h3>
+                    <div class="upgrade-plan-price">$3,999<span>/month</span></div>
+                    <ul class="upgrade-upsells">
+                        <li><span class="check">✓</span> Fractional CFO — your financial co-pilot</li>
+                        <li><span class="check">✓</span> Board & investor presentation support</li>
+                        <li><span class="check">✓</span> Hourly reporting & real-time dashboards</li>
+                        <li><span class="check">✓</span> Complete strategic financial planning</li>
+                        <li><span class="check">✓</span> Direct phone access to Zac</li>
+                        <li><span class="check">✓</span> Everything in Gold, plus more</li>
+                    </ul>
+                    <button class="upgrade-plan-btn btn-diamond" onclick="selectPlan('diamond'); closeUpgradeModal();">Upgrade to Diamond</button>
+                </div>
+            </div>
+            <div class="upgrade-modal-footer">
+                <a href="mailto:zprizant@lightningledgerz.com">Have questions? Email zprizant@lightningledgerz.com →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- NDA / Client Services Agreement Modal -->
+    <div class="nda-modal" id="nda-modal">
+        <div class="nda-modal-content" onclick="event.stopPropagation()">
+            <div class="nda-header">
+                <h2>⚡ Client Services Agreement</h2>
+                <p>Please review and sign before accessing your Lightning Ledgerz portal</p>
+            </div>
+
+            <!-- Step 1: Enter details -->
+            <div class="nda-step" id="nda-step-1">
+                <p style="color:#555; margin-bottom:20px; font-size:0.9rem;">Enter your company information below. This will be used to generate your personalized Client Services Agreement, Confidentiality & NDA, and Payment Authorization.</p>
+                <div class="nda-step-inputs">
+                    <div class="nda-input-group">
+                        <label>Company / Business Name *</label>
+                        <input type="text" id="nda-company" placeholder="e.g., Acme Corp, LLC" autocomplete="organization">
+                    </div>
+                    <div class="nda-input-group">
+                        <label>Authorized Representative Full Name *</label>
+                        <input type="text" id="nda-rep-name" placeholder="e.g., John Smith" autocomplete="name">
+                    </div>
+                    <div class="nda-input-group">
+                        <label>Title / Role at Company</label>
+                        <input type="text" id="nda-rep-title" placeholder="e.g., CEO, Owner, CFO" autocomplete="organization-title">
+                    </div>
+                </div>
+                <p style="color:#888; font-size:0.8rem; margin-top:15px;">⚠ Please double-check your company name and representative name. By accepting this agreement, you confirm these details are accurate. If any information is entered incorrectly, the agreement remains legally binding on the named parties; however, you may contact zprizant@lightningledgerz.com to request an amendment.</p>
+                <button class="nda-generate-btn" onclick="generateNDA()">Generate My Agreement →</button>
+            </div>
+
+            <!-- Step 2: Review + Sign -->
+            <div class="nda-document" id="nda-step-2">
+                <div class="nda-doc-toolbar">
+                    <span id="nda-doc-label">Client Services Agreement — <strong id="nda-doc-company"></strong></span>
+                    <button class="nda-print-btn" onclick="window.print()">🖨 Print / Save PDF</button>
+                </div>
+                <div class="nda-text-area" id="nda-text-area">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="nda-accept-section">
+                    <div class="nda-checkboxes">
+                        <label class="nda-checkbox-item"><input type="checkbox" class="nda-cb" onchange="checkNDABoxes()"> I have read and understand this Agreement, including the Confidentiality & Non-Disclosure provisions (Section 9)</label>
+                        <label class="nda-checkbox-item"><input type="checkbox" class="nda-cb" onchange="checkNDABoxes()"> I agree to be legally bound by all terms of this Agreement</label>
+                        <label class="nda-checkbox-item"><input type="checkbox" class="nda-cb" onchange="checkNDABoxes()"> I authorize Lightning Ledgerz to charge my payment method on file for Services rendered</label>
+                        <label class="nda-checkbox-item"><input type="checkbox" class="nda-cb" onchange="checkNDABoxes()"> I understand that Consultant's Services are administrative and advisory only, and do not constitute licensed professional, legal, tax, or investment advice</label>
+                    </div>
+                    <button class="nda-accept-btn" id="nda-accept-btn" disabled onclick="acceptNDA()">I Accept This Agreement — Enter Portal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Plan Finder Quiz Modal -->
+    <div class="quiz-modal" id="quiz-modal" onclick="closeQuizModal()">
+        <div class="quiz-modal-content" onclick="event.stopPropagation()">
+            <div class="quiz-header">
+                <button class="quiz-close" onclick="closeQuizModal()">&times;</button>
+                <h2>Find Your Perfect Plan</h2>
+                <p>Check everything that applies to your business needs</p>
+            </div>
+            <div class="quiz-body">
+                <div class="quiz-question">What does your business need? (Check all that apply)</div>
+                <div class="quiz-checks" id="quiz-checks">
+                    <label class="quiz-check-item"><input type="checkbox" value="1"> Monthly financial reports</label>
+                    <label class="quiz-check-item"><input type="checkbox" value="1"> Budget vs. actual tracking</label>
+                    <label class="quiz-check-item"><input type="checkbox" value="1"> Basic bookkeeping support</label>
+                    <label class="quiz-check-item"><input type="checkbox" value="1"> Variance analysis & commentary</label>
+                    <label class="quiz-check-item"><input type="checkbox" value="2"> Weekly strategy calls</label>
+                    <label class="quiz-check-item"><input type="checkbox" value="2"> Cash flow forecasting</label>
+                    <label class="quiz-check-item"><input type="checkbox" value="2"> Advanced financial modeling</label>
+                    <label class="quiz-check-item"><input type="checkbox" value="2"> Custom KPI dashboard</label>
+                    <label class="quiz-check-item"><input type="checkbox" value="3"> Fractional CFO services</label>
+                    <label class="quiz-check-item"><input type="checkbox" value="3"> Board or investor presentations</label>
+                    <label class="quiz-check-item"><input type="checkbox" value="3"> Hourly or real-time reporting</label>
+                    <label class="quiz-check-item"><input type="checkbox" value="3"> Direct phone access to advisor</label>
+                </div>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <button onclick="runQuiz()" style="background: #1e3a5f; color: #fff; border: none; padding: 12px 35px; border-radius: 30px; font-weight: 700; font-size: 1rem; cursor: pointer;">See My Recommendation →</button>
+                </div>
+                <!-- Result -->
+                <div class="quiz-result" id="quiz-result">
+                    <div class="quiz-result-label">Recommended for you</div>
+                    <div class="quiz-result-plan" id="quiz-result-plan">Gold Package</div>
+                    <div class="quiz-result-price" id="quiz-result-price">$1,299/month</div>
+                    <ul class="quiz-result-features" id="quiz-result-features"></ul>
+                    <button class="quiz-cta-btn" id="quiz-cta-btn" onclick="">Get Started with This Plan</button>
+                </div>
+            </div>
+            <div class="quiz-footer">
+                <button onclick="closeQuizModal()">Skip for now — I'll explore on my own</button>
+            </div>
         </div>
     </div>
 
@@ -5674,7 +6586,7 @@
                     </select>
                 </div>
                 <!-- Upgrade Button (visible for basic and gold tiers) -->
-                <button id="upgrade-btn" class="btn-upgrade" onclick="scrollToSection('#pricing')" style="display: none;">Upgrade</button>
+                <button id="upgrade-btn" class="btn-upgrade" onclick="openUpgradeModal()" style="display: none;">⬆ Upgrade</button>
                 <!-- Admin Button (only visible for admin) -->
                 <button id="admin-btn" class="btn-admin" onclick="openAdminDashboard()" style="display: none;">Admin</button>
                 <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
@@ -5682,227 +6594,269 @@
 
             <!-- Trial Banner (shown during free trial period) -->
             <div class="trial-banner" id="trial-banner" style="display: none;">
-                <div class="trial-banner-text">
-                    🎉 You're on your <strong>FREE trial</strong>! <span class="trial-banner-days" id="trial-days-left">30 days</span> remaining.
+                <div class="trial-banner-inner">
+                    <div class="trial-banner-text" id="trial-banner-text">
+                        🎉 You're on your <strong>FREE trial</strong> — <span class="trial-banner-days" id="trial-days-left">30 days</span> remaining.
+                    </div>
+                    <button class="trial-banner-cta" id="trial-banner-cta" onclick="openUpgradeModal()">Upgrade Now</button>
                 </div>
-                <button class="trial-banner-cta" onclick="scrollToSection('#pricing')">Save 20% - Go Annual</button>
+                <div class="trial-progress-bar">
+                    <div class="trial-progress-fill" id="trial-progress-fill" style="width: 100%;"></div>
+                </div>
             </div>
 
-            <!-- 3-Column Layout -->
-            <div class="dashboard-columns">
-                <!-- Column 1: Company Logo -->
-                <div class="dashboard-column logo-upload-column">
-                    <div class="column-header">
+            <!-- Trial Expired Lockout -->
+            <div class="trial-lockout" id="trial-lockout">
+                <div class="trial-lockout-content">
+                    <div class="trial-lockout-icon">⚡</div>
+                    <h2>Your Free Trial Has Ended</h2>
+                    <p>Thank you for trying Lightning Ledgerz! To continue accessing your portal, reports, and advisor tools, choose a plan below.</p>
+                    <div class="trial-lockout-plans">
+                        <button class="lockout-plan-btn gold" onclick="selectPlan('basic')">
+                            Basic — $799/mo
+                        </button>
+                        <button class="lockout-plan-btn gold" onclick="selectPlan('gold')">
+                            ✨ Gold — $1,299/mo
+                        </button>
+                        <button class="lockout-plan-btn diamond" onclick="selectPlan('diamond')">
+                            💎 Diamond — $3,999/mo
+                        </button>
+                    </div>
+                    <button class="lockout-logout" onclick="handleLogout()">Sign out instead</button>
+                </div>
+            </div>
+
+            <!-- 4-Step Portal Layout -->
+            <div class="portal-steps-container">
+
+                <!-- STEP 1: Company Logo -->
+                <div class="portal-step-card">
+                    <div class="portal-step-header">
+                        <div class="portal-step-number">1</div>
                         <h4>Company Logo</h4>
                     </div>
-                    <div class="company-logo-preview" id="company-logo-preview" onclick="document.getElementById('logo-input').click()">
-                        <span class="placeholder" id="logo-placeholder">Click to upload<br>your logo</span>
-                        <img id="company-logo-img" src="" alt="Company Logo" style="display: none;">
-                    </div>
-                    <input type="file" id="logo-input" accept=".png,.jpg,.jpeg,.svg,.webp" style="display: none;" onchange="handleLogoUpload(event)">
-                    <button class="logo-upload-btn" onclick="document.getElementById('logo-input').click()">Upload Logo</button>
-                </div>
-
-                <!-- Column 2: My Uploads -->
-                <div class="dashboard-column">
-                    <div class="column-header">
-                        <h4>My Uploads</h4>
-                    </div>
-
-                    <div class="upload-dropzone" id="upload-dropzone" style="margin-bottom: 15px; padding: 20px;">
-                        <div class="dropzone-content">
-                            <span class="dropzone-icon" style="font-size: 2rem;">📤</span>
-                            <p style="margin: 10px 0 0; font-size: 0.9rem;">Drag & drop or <label for="file-input" class="upload-browse">browse</label></p>
-                            <input type="file" id="file-input" accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.ppt,.pptx,.txt,.rtf,.png,.jpg,.jpeg" multiple style="display: none;">
+                    <div class="portal-step-body">
+                        <div class="logo-upload-column">
+                            <div class="company-logo-preview" id="company-logo-preview" onclick="document.getElementById('logo-input').click()">
+                                <span class="placeholder" id="logo-placeholder">Click to upload<br>your logo</span>
+                                <img id="company-logo-img" src="" alt="Company Logo" style="display: none;">
+                            </div>
+                            <input type="file" id="logo-input" accept=".png,.jpg,.jpeg,.svg,.webp" style="display: none;" onchange="handleLogoUpload(event)">
+                            <button class="logo-upload-btn" onclick="document.getElementById('logo-input').click()">Upload Logo</button>
                         </div>
-                    </div>
-
-                    <div class="carousel-search">
-                        <input type="text" id="uploads-search" placeholder="Search by name or date..." oninput="filterCarousel('uploads')">
-                    </div>
-
-                    <div class="column-carousel" id="user-uploads-carousel">
-                        <p class="carousel-empty" id="uploads-empty">No files yet. Upload above.</p>
                     </div>
                 </div>
 
-                <!-- Column 3: My Reports (Admin-uploaded) -->
-                <div class="dashboard-column">
-                    <div class="column-header">
-                        <h4>My Reports</h4>
+                <!-- STEP 2: Platform Integrations -->
+                <div class="portal-step-card" id="platform-integrations">
+                    <div class="portal-step-header">
+                        <div class="portal-step-number">2</div>
+                        <h4>Platform Integrations</h4>
                     </div>
+                    <div class="portal-step-body" style="color: #333;">
+                        <!-- Trust Signals Bar -->
+                        <div style="background: #f0f4ff; padding: 12px 20px; display: flex; gap: 25px; flex-wrap: wrap; border-radius: 8px; margin-bottom: 20px;">
+                            <span style="color: var(--mckinsey-blue); font-size: 0.85rem; font-weight: 600;">&#128274; 256-bit Encrypted</span>
+                            <span style="color: var(--mckinsey-blue); font-size: 0.85rem; font-weight: 600;">&#128737; SOC 2 Compliant</span>
+                            <span style="color: var(--mckinsey-blue); font-size: 0.85rem; font-weight: 600;">&#9989; Revoke Anytime</span>
+                        </div>
+                        <p style="color: #555; font-size: 0.9rem; margin-bottom: 20px;">Click a platform to connect it. You can share your existing login or create a separate login for your advisor.</p>
 
-                    <!-- Fathom Live Dashboard Link (shown when admin sets it) -->
-                    <div class="fathom-link-card" id="fathom-link-card" style="display: none;">
-                        <div class="fathom-link-header">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 6-10"/></svg>
-                            <span>Live Financial Dashboard</span>
-                        </div>
-                        <p class="fathom-link-desc">Your advisor has linked a live reporting dashboard for your business.</p>
-                        <a href="#" id="fathom-link-url" target="_blank" class="fathom-link-btn">Open Dashboard</a>
-                    </div>
-
-                    <div class="carousel-search">
-                        <input type="text" id="reports-search" placeholder="Search by name or date..." oninput="filterCarousel('reports')">
-                    </div>
-
-                    <div class="column-carousel" id="reports-carousel">
-                        <p class="carousel-empty" id="reports-empty">Your FP&A reports will appear here.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Platform Integrations Section -->
-            <div class="platform-integrations" id="platform-integrations" style="background: #fff; border-radius: 12px; margin-top: 25px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); overflow: hidden; color: #333;">
-                <div style="background: var(--mckinsey-blue); padding: 20px 25px;">
-                    <h4 style="color: #fff; margin: 0; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Platform Integrations</h4>
-                    <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0; font-size: 0.85rem;">Select the platforms you use. Grant Lightning Ledgerz LLC secure access to deliver your FP&A services.</p>
-                </div>
-
-                <!-- Trust Signals Bar -->
-                <div style="background: #f0f4ff; padding: 12px 25px; display: flex; gap: 25px; flex-wrap: wrap; border-bottom: 1px solid #e0e0e0;">
-                    <span style="color: var(--mckinsey-blue); font-size: 0.85rem; font-weight: 600;">&#128274; 256-bit Encrypted</span>
-                    <span style="color: var(--mckinsey-blue); font-size: 0.85rem; font-weight: 600;">&#128737; SOC 2 Compliant</span>
-                    <span style="color: var(--mckinsey-blue); font-size: 0.85rem; font-weight: 600;">&#9989; Revoke Anytime</span>
-                </div>
-
-                <div style="padding: 25px;">
-                    <!-- Platform Selection Grid -->
-                    <p style="color: #555; font-size: 0.9rem; margin-bottom: 20px;">Click a platform to connect it. You can share your existing login or create a separate login for your advisor.</p>
-
-                    <div class="platform-grid">
-                        <div class="platform-tile" id="tile-quickbooks" onclick="selectPlatform('quickbooks')">
-                            <div class="platform-logo" style="background: #2CA01C;">
-                                <span style="color: #fff; font-size: 1.5rem; font-weight: 900;">QB</span>
+                        <div class="platform-grid">
+                            <div class="platform-tile" id="tile-quickbooks" onclick="selectPlatform('quickbooks')">
+                                <div class="platform-logo" style="background: #2CA01C;">
+                                    <span style="color: #fff; font-size: 1.5rem; font-weight: 900;">QB</span>
+                                </div>
+                                <span class="platform-name">QuickBooks</span>
+                                <span class="platform-status" id="status-quickbooks"></span>
                             </div>
-                            <span class="platform-name">QuickBooks</span>
-                            <span class="platform-status" id="status-quickbooks"></span>
-                        </div>
-                        <div class="platform-tile" id="tile-sage" onclick="selectPlatform('sage')">
-                            <div class="platform-logo" style="background: #00D639;">
-                                <span style="color: #fff; font-size: 1.2rem; font-weight: 900;">SAGE</span>
+                            <div class="platform-tile" id="tile-sage" onclick="selectPlatform('sage')">
+                                <div class="platform-logo" style="background: #00D639;">
+                                    <span style="color: #fff; font-size: 1.2rem; font-weight: 900;">SAGE</span>
+                                </div>
+                                <span class="platform-name">Sage</span>
+                                <span class="platform-status" id="status-sage"></span>
                             </div>
-                            <span class="platform-name">Sage</span>
-                            <span class="platform-status" id="status-sage"></span>
-                        </div>
-                        <div class="platform-tile" id="tile-netsuite" onclick="selectPlatform('netsuite')">
-                            <div class="platform-logo" style="background: #1A1A2E;">
-                                <span style="color: #fff; font-size: 1rem; font-weight: 700;">NetSuite</span>
+                            <div class="platform-tile" id="tile-netsuite" onclick="selectPlatform('netsuite')">
+                                <div class="platform-logo" style="background: #1A1A2E;">
+                                    <span style="color: #fff; font-size: 1rem; font-weight: 700;">NetSuite</span>
+                                </div>
+                                <span class="platform-name">Oracle NetSuite</span>
+                                <span class="platform-status" id="status-netsuite"></span>
                             </div>
-                            <span class="platform-name">Oracle NetSuite</span>
-                            <span class="platform-status" id="status-netsuite"></span>
-                        </div>
-                        <div class="platform-tile" id="tile-xero" onclick="selectPlatform('xero')">
-                            <div class="platform-logo" style="background: #13B5EA;">
-                                <span style="color: #fff; font-size: 1.3rem; font-weight: 900;">xero</span>
+                            <div class="platform-tile" id="tile-xero" onclick="selectPlatform('xero')">
+                                <div class="platform-logo" style="background: #13B5EA;">
+                                    <span style="color: #fff; font-size: 1.3rem; font-weight: 900;">xero</span>
+                                </div>
+                                <span class="platform-name">Xero</span>
+                                <span class="platform-status" id="status-xero"></span>
                             </div>
-                            <span class="platform-name">Xero</span>
-                            <span class="platform-status" id="status-xero"></span>
-                        </div>
-                        <div class="platform-tile" id="tile-alteryx" onclick="selectPlatform('alteryx')">
-                            <div class="platform-logo" style="background: #0078C0;">
-                                <span style="color: #fff; font-size: 1.1rem; font-weight: 700;">Ax</span>
+                            <div class="platform-tile" id="tile-alteryx" onclick="selectPlatform('alteryx')">
+                                <div class="platform-logo" style="background: #0078C0;">
+                                    <span style="color: #fff; font-size: 1.1rem; font-weight: 700;">Ax</span>
+                                </div>
+                                <span class="platform-name">Alteryx</span>
+                                <span class="platform-status" id="status-alteryx"></span>
                             </div>
-                            <span class="platform-name">Alteryx</span>
-                            <span class="platform-status" id="status-alteryx"></span>
-                        </div>
-                        <div class="platform-tile" id="tile-airtable" onclick="selectPlatform('airtable')">
-                            <div class="platform-logo" style="background: #FCBF49;">
-                                <span style="color: #333; font-size: 1.3rem; font-weight: 900;">AT</span>
+                            <div class="platform-tile" id="tile-airtable" onclick="selectPlatform('airtable')">
+                                <div class="platform-logo" style="background: #FCBF49;">
+                                    <span style="color: #333; font-size: 1.3rem; font-weight: 900;">AT</span>
+                                </div>
+                                <span class="platform-name">Airtable</span>
+                                <span class="platform-status" id="status-airtable"></span>
                             </div>
-                            <span class="platform-name">Airtable</span>
-                            <span class="platform-status" id="status-airtable"></span>
-                        </div>
-                        <div class="platform-tile" id="tile-powerbi" onclick="selectPlatform('powerbi')">
-                            <div class="platform-logo" style="background: #F2C811;">
-                                <span style="color: #333; font-size: 1rem; font-weight: 900;">PBI</span>
+                            <div class="platform-tile" id="tile-powerbi" onclick="selectPlatform('powerbi')">
+                                <div class="platform-logo" style="background: #F2C811;">
+                                    <span style="color: #333; font-size: 1rem; font-weight: 900;">PBI</span>
+                                </div>
+                                <span class="platform-name">Power BI</span>
+                                <span class="platform-status" id="status-powerbi"></span>
                             </div>
-                            <span class="platform-name">Power BI</span>
-                            <span class="platform-status" id="status-powerbi"></span>
-                        </div>
-                        <div class="platform-tile" id="tile-excel" onclick="selectPlatform('excel')">
-                            <div class="platform-logo" style="background: #217346;">
-                                <span style="color: #fff; font-size: 1.2rem; font-weight: 900;">Ex</span>
+                            <div class="platform-tile" id="tile-excel" onclick="selectPlatform('excel')">
+                                <div class="platform-logo" style="background: #217346;">
+                                    <span style="color: #fff; font-size: 1.2rem; font-weight: 900;">Ex</span>
+                                </div>
+                                <span class="platform-name">Excel Online</span>
+                                <span class="platform-status" id="status-excel"></span>
                             </div>
-                            <span class="platform-name">Excel Online</span>
-                            <span class="platform-status" id="status-excel"></span>
-                        </div>
-                        <div class="platform-tile" id="tile-other" onclick="selectPlatform('other')">
-                            <div class="platform-logo" style="background: #666;">
-                                <span style="color: #fff; font-size: 1.5rem;">+</span>
-                            </div>
-                            <span class="platform-name">Other</span>
-                            <span class="platform-status" id="status-other"></span>
-                        </div>
-                    </div>
-
-                    <!-- Platform Credential Form (shown when a platform is selected) -->
-                    <div class="platform-cred-form" id="platform-cred-form" style="display: none;">
-                        <div class="platform-cred-header" id="platform-cred-header">
-                            <h5 id="platform-cred-title">Connect QuickBooks</h5>
-                            <button onclick="closePlatformForm()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#999;">&times;</button>
-                        </div>
-
-                        <div class="qb-field">
-                            <label>How would you like to grant access?</label>
-                            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
-                                <label class="access-option" id="access-share">
-                                    <input type="radio" name="access-type" value="share" checked onchange="toggleAccessType()">
-                                    <span>Share my existing login</span>
-                                </label>
-                                <label class="access-option" id="access-separate">
-                                    <input type="radio" name="access-type" value="separate" onchange="toggleAccessType()">
-                                    <span>I created a separate login for my advisor</span>
-                                </label>
+                            <div class="platform-tile" id="tile-other" onclick="selectPlatform('other')">
+                                <div class="platform-logo" style="background: #666;">
+                                    <span style="color: #fff; font-size: 1.5rem;">+</span>
+                                </div>
+                                <span class="platform-name">Other</span>
+                                <span class="platform-status" id="status-other"></span>
                             </div>
                         </div>
 
-                        <div id="platform-fields">
+                        <!-- Platform Credential Form (shown when a platform is selected) -->
+                        <div class="platform-cred-form" id="platform-cred-form" style="display: none;">
+                            <div class="platform-cred-header" id="platform-cred-header">
+                                <h5 id="platform-cred-title">Connect QuickBooks</h5>
+                                <button onclick="closePlatformForm()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#999;">&times;</button>
+                            </div>
+
                             <div class="qb-field">
-                                <label for="platform-url">Login URL / Company Link</label>
-                                <input type="url" id="platform-url" placeholder="https://..." autocomplete="off">
-                            </div>
-                            <div class="qb-field">
-                                <label for="platform-username">Username / Email</label>
-                                <input type="text" id="platform-username" placeholder="your@email.com" autocomplete="off">
-                            </div>
-                            <div class="qb-field">
-                                <label for="platform-password">Password</label>
-                                <div class="qb-password-wrap">
-                                    <input type="password" id="platform-password" placeholder="Enter password" autocomplete="new-password">
-                                    <button type="button" class="qb-toggle-pw" onclick="togglePlatformPassword()">Show</button>
+                                <label>How would you like to grant access?</label>
+                                <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                                    <label class="access-option" id="access-share">
+                                        <input type="radio" name="access-type" value="share" checked onchange="toggleAccessType()">
+                                        <span>Share my existing login</span>
+                                    </label>
+                                    <label class="access-option" id="access-separate">
+                                        <input type="radio" name="access-type" value="separate" onchange="toggleAccessType()">
+                                        <span>I created a separate login for my advisor</span>
+                                    </label>
                                 </div>
                             </div>
-                            <div class="qb-field">
-                                <label for="platform-notes">Additional Notes (optional)</label>
-                                <textarea id="platform-notes" placeholder="e.g., MFA codes, company name, specific access needed..." rows="2"></textarea>
+
+                            <div id="platform-fields">
+                                <div class="qb-field">
+                                    <label for="platform-url">Login URL / Company Link</label>
+                                    <input type="url" id="platform-url" placeholder="https://..." autocomplete="off">
+                                </div>
+                                <div class="qb-field">
+                                    <label for="platform-username">Username / Email</label>
+                                    <input type="text" id="platform-username" placeholder="your@email.com" autocomplete="off">
+                                </div>
+                                <div class="qb-field">
+                                    <label for="platform-password">Password</label>
+                                    <div class="qb-password-wrap">
+                                        <input type="password" id="platform-password" placeholder="Enter password" autocomplete="new-password">
+                                        <button type="button" class="qb-toggle-pw" onclick="togglePlatformPassword()">Show</button>
+                                    </div>
+                                </div>
+                                <div class="qb-field">
+                                    <label for="platform-notes">Additional Notes (optional)</label>
+                                    <textarea id="platform-notes" placeholder="e.g., MFA codes, company name, specific access needed..." rows="2"></textarea>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Permission Checkbox -->
-                        <div style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 10px; padding: 18px; margin-bottom: 20px;">
-                            <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; color: #333; font-size: 0.9rem;">
-                                <input type="checkbox" id="platform-agree-checkbox" style="margin-top: 3px; width: 18px; height: 18px; accent-color: var(--mckinsey-blue); flex-shrink: 0;">
-                                <span>I grant <strong>Lightning Ledgerz LLC</strong> permission to access my <strong id="platform-agree-name">QuickBooks</strong> account using the credentials provided above, solely for the purpose of delivering FP&A advisory services. I understand my credentials are encrypted with 256-bit encryption, accessible only to my assigned advisor (Zac Prizant), and that I can revoke access at any time.</span>
-                            </label>
-                        </div>
+                            <!-- Permission Checkbox -->
+                            <div style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 10px; padding: 18px; margin-bottom: 20px;">
+                                <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; color: #333; font-size: 0.9rem;">
+                                    <input type="checkbox" id="platform-agree-checkbox" style="margin-top: 3px; width: 18px; height: 18px; accent-color: var(--mckinsey-blue); flex-shrink: 0;">
+                                    <span>I grant <strong>Lightning Ledgerz LLC</strong> permission to access my <strong id="platform-agree-name">QuickBooks</strong> account using the credentials provided above, solely for the purpose of delivering FP&A advisory services. I understand my credentials are encrypted with 256-bit encryption, accessible only to my assigned advisor (Zac Prizant), and that I can revoke access at any time.</span>
+                                </label>
+                            </div>
 
-                        <div class="qb-actions">
-                            <button class="qb-save-btn" onclick="savePlatformCredentials()">Grant Access Securely</button>
-                            <span class="qb-saved-status" id="platform-saved-status"></span>
+                            <div class="qb-actions">
+                                <button class="qb-save-btn" onclick="savePlatformCredentials()">Grant Access Securely</button>
+                                <span class="qb-saved-status" id="platform-saved-status"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- STEP 3: Upload Files -->
+                <div class="portal-step-card">
+                    <div class="portal-step-header">
+                        <div class="portal-step-number">3</div>
+                        <h4>Upload Files</h4>
+                    </div>
+                    <div class="portal-step-body">
+                        <p class="upload-file-types">Upload your financial documents for review: income statements, balance sheets, cash flow statements, capex schedules, debt schedules, sources and uses, budgets, and more.</p>
+
+                        <div class="upload-dropzone" id="upload-dropzone" style="margin-bottom: 15px; padding: 20px;">
+                            <div class="dropzone-content">
+                                <span class="dropzone-icon" style="font-size: 2rem;">📤</span>
+                                <p style="margin: 10px 0 0; font-size: 0.9rem;">Drag & drop or <label for="file-input" class="upload-browse">browse</label></p>
+                                <input type="file" id="file-input" accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.ppt,.pptx,.txt,.rtf,.png,.jpg,.jpeg" multiple style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="carousel-search">
+                            <input type="text" id="uploads-search" placeholder="Search by name or date..." oninput="filterCarousel('uploads')">
+                        </div>
+
+                        <div class="column-carousel" id="user-uploads-carousel">
+                            <p class="carousel-empty" id="uploads-empty">No files yet. Upload above.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: My Reports -->
+                <div class="portal-step-card">
+                    <div class="portal-step-header">
+                        <div class="portal-step-number">4</div>
+                        <h4>My Reports</h4>
+                    </div>
+                    <div class="portal-step-body">
+                        <!-- Fathom Live Dashboard Link (shown when admin sets it) -->
+                        <div class="fathom-link-card" id="fathom-link-card" style="display: none;">
+                            <div class="fathom-link-header">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 6-10"/></svg>
+                                <span>Live Financial Dashboard</span>
+                            </div>
+                            <p class="fathom-link-desc">Your advisor has linked a live reporting dashboard for your business.</p>
+                            <a href="#" id="fathom-link-url" target="_blank" class="fathom-link-btn">Open Dashboard</a>
+                        </div>
+
+                        <div class="carousel-search">
+                            <input type="text" id="reports-search" placeholder="Search by title or date..." oninput="filterReportsCarousel()">
+                        </div>
+
+                        <div class="portal-reports-carousel-container" id="reports-carousel-container">
+                            <div class="portal-reports-carousel" id="reports-carousel">
+                                <p class="carousel-empty" id="reports-empty">Your FP&A reports will appear here.</p>
+                            </div>
+                        </div>
+                        <div class="portal-scroll-hint">
+                            <span>Drag to scroll</span>
+                            <span>&rarr;</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Disclaimers -->
-            <div class="portal-disclaimers" style="background: #fff; padding: 25px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
-                <h5 style="color: var(--mckinsey-blue); margin-bottom: 15px; font-size: 1rem;">Important Notices</h5>
-                <ul style="color: #555; font-size: 0.9rem; margin: 0; padding-left: 20px; line-height: 1.8;">
-                    <li><strong style="color: var(--mckinsey-blue);">Confidentiality:</strong> All documents, credentials, and financial data are encrypted and strictly confidential.</li>
-                    <li><strong style="color: var(--mckinsey-blue);">Data Handling:</strong> Your data is used solely for FP&A services. Lightning Ledgerz will never share, sell, or distribute client data to any third party.</li>
-                    <li><strong style="color: var(--mckinsey-blue);">Security:</strong> Industry-standard 256-bit encryption. Only you and your assigned advisor can access your files and credentials.</li>
-                    <li><strong style="color: var(--mckinsey-blue);">Platform Access:</strong> All platform credentials are encrypted at rest. You can revoke access at any time by removing credentials from this portal.</li>
+            <div class="portal-disclaimers">
+                <h5>Important Notices</h5>
+                <ul>
+                    <li><strong>Confidentiality:</strong> All documents, credentials, and financial data are encrypted and strictly confidential.</li>
+                    <li><strong>Data Handling:</strong> Your data is used solely for FP&A services. Lightning Ledgerz will never share, sell, or distribute client data to any third party.</li>
+                    <li><strong>Security:</strong> Industry-standard 256-bit encryption. Only you and your assigned advisor can access your files and credentials.</li>
+                    <li><strong>Platform Access:</strong> All platform credentials are encrypted at rest. You can revoke access at any time by removing credentials from this portal.</li>
                 </ul>
             </div>
         </div>
@@ -5946,7 +6900,10 @@
             <a href="tel:+17025502513" style="color: #fff; text-decoration: none; margin-right: 20px;">&#9742; (702) 550-2513</a>
             <a href="mailto:zprizant@lightningledgerz.com" style="color: #fff; text-decoration: none;">&#9993; zprizant@lightningledgerz.com</a>
         </div>
-        <p class="footer-copy">© 2025 Lightning Ledgerz. All rights reserved.</p>
+        <div style="margin: 8px 0 15px; color: rgba(255,255,255,0.6); font-size: 0.85rem;">
+            &#128205; 732 S 6th St, Ste R, Las Vegas, NV 89101
+        </div>
+        <p class="footer-copy">© 2026 Lightning Ledgerz. All rights reserved.</p>
         <div class="payment-methods">
             <span class="payment-icon visa">VISA</span>
             <span class="payment-icon mastercard">MC</span>
@@ -6200,14 +7157,69 @@
         };
 
         // Select a plan - if logged in go to Stripe, else prompt signup
+        // Active promo code (set by applyPromoCode)
+        window.activePromoCode = null;
+
+        async function applyPromoCode() {
+            var code = (document.getElementById('promo-code-input')?.value || '').trim().toUpperCase();
+            var resultDiv = document.getElementById('promo-result');
+            if (!code) { if (resultDiv) resultDiv.innerHTML = ''; return; }
+
+            if (!supabase) {
+                if (resultDiv) resultDiv.innerHTML = '<span style="color:#f5a623;">⚠ Database unavailable</span>';
+                return;
+            }
+
+            try {
+                var { data, error } = await supabase
+                    .from('promo_codes')
+                    .select('*')
+                    .eq('code', code)
+                    .eq('is_active', true)
+                    .single();
+
+                if (error || !data) {
+                    window.activePromoCode = null;
+                    if (resultDiv) resultDiv.innerHTML = '<span style="color:#ff6b6b;">✗ Invalid or expired promo code</span>';
+                    return;
+                }
+
+                // Check expiry
+                if (data.expiry_date && new Date(data.expiry_date) < new Date()) {
+                    window.activePromoCode = null;
+                    if (resultDiv) resultDiv.innerHTML = '<span style="color:#ff6b6b;">✗ This promo code has expired</span>';
+                    return;
+                }
+
+                // Check max uses
+                if (data.max_uses && data.current_uses >= data.max_uses) {
+                    window.activePromoCode = null;
+                    if (resultDiv) resultDiv.innerHTML = '<span style="color:#ff6b6b;">✗ This promo code has reached its limit</span>';
+                    return;
+                }
+
+                window.activePromoCode = code;
+                if (resultDiv) resultDiv.innerHTML = '<span style="color:#2CA01C; font-weight: 700;">✓ ' + data.discount_percent + '% discount applied!</span>';
+                showToast(data.discount_percent + '% discount code applied!', 'success');
+            } catch (err) {
+                if (resultDiv) resultDiv.innerHTML = '<span style="color:#ff6b6b;">✗ Could not validate code</span>';
+            }
+        }
+
         function selectPlan(plan) {
             const billingPeriod = isYearlyPricing ? 'yearly' : 'monthly';
-            const stripeUrl = STRIPE_URLS[billingPeriod][plan];
+            let stripeUrl = STRIPE_URLS[billingPeriod][plan];
+
+            // Append promo code if one is active
+            if (window.activePromoCode) {
+                stripeUrl += (stripeUrl.includes('?') ? '&' : '?') + 'prefilled_promo_code=' + encodeURIComponent(window.activePromoCode);
+            }
 
             // Check if yearly URL is configured
-            if (isYearlyPricing && stripeUrl.startsWith('YEARLY_')) {
+            if (isYearlyPricing && STRIPE_URLS[billingPeriod][plan].startsWith('YEARLY_')) {
                 showToast('Yearly billing coming soon! Using monthly for now.', 'info');
-                const monthlyUrl = STRIPE_URLS.monthly[plan];
+                let monthlyUrl = STRIPE_URLS.monthly[plan];
+                if (window.activePromoCode) monthlyUrl += '?prefilled_promo_code=' + encodeURIComponent(window.activePromoCode);
                 if (currentUserData && !currentUserData.isDemo) {
                     window.open(monthlyUrl, '_blank');
                 } else {
@@ -6536,6 +7548,17 @@
                 updateTrialBanner();
                 // Check if user selected a plan before signing up
                 checkPendingPlan();
+                // Check NDA - must be signed before quiz
+                checkNDARequired();
+                // Show quiz on first login (after NDA check, with delay)
+                setTimeout(function() {
+                    var userId = currentUserData?.id;
+                    if (userId && !localStorage.getItem('quiz_seen_' + userId) && !currentUserData?.profile?.nda_accepted_at) {
+                        // NDA modal takes priority - quiz fires after NDA is accepted
+                    } else if (userId && !localStorage.getItem('quiz_seen_' + userId)) {
+                        openQuizModal();
+                    }
+                }, 1200);
             } else {
                 // Show demo placeholders
                 var uploadsCarousel = document.getElementById('user-uploads-carousel');
@@ -6958,6 +7981,38 @@
             container.appendChild(card);
         }
 
+        // Create large report card for Step 4 reports carousel
+        function createReportCard(fileInfo, container) {
+            var ext = fileInfo.name.split('.').pop().toLowerCase();
+            var icon = getFileIcon(ext);
+            var dateStr = formatDate(fileInfo.uploaded_at);
+            var isImage = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(ext);
+
+            var card = document.createElement('div');
+            card.className = 'portal-report-card';
+            card.setAttribute('data-title', fileInfo.name.toLowerCase());
+            card.setAttribute('data-date', dateStr.toLowerCase());
+            card.onclick = function() {
+                if (fileInfo.url) window.open(fileInfo.url, '_blank');
+            };
+
+            var thumbnailContent;
+            if (isImage && fileInfo.url) {
+                thumbnailContent = '<img src="' + fileInfo.url + '" alt="' + fileInfo.name + '">';
+            } else {
+                thumbnailContent = '<span class="file-icon" style="font-size:3rem;">' + icon + '</span>';
+            }
+
+            card.innerHTML =
+                '<div class="portal-report-card-thumbnail">' + thumbnailContent + '</div>' +
+                '<div class="portal-report-card-label">' +
+                    '<h4>' + fileInfo.name + '</h4>' +
+                    '<p>' + dateStr + '</p>' +
+                '</div>';
+
+            container.appendChild(card);
+        }
+
         // Filter carousel cards by search term
         function filterCarousel(type) {
             var searchInput = document.getElementById(type + '-search');
@@ -6989,6 +8044,42 @@
                     emptyMsg.className = 'carousel-empty search-no-results';
                     emptyMsg.textContent = 'No matches found.';
                     carousel.appendChild(emptyMsg);
+                } else {
+                    emptyMsg.style.display = '';
+                }
+            } else if (emptyMsg && emptyMsg.classList.contains('search-no-results')) {
+                emptyMsg.remove();
+            }
+        }
+
+        // Filter Step 4 report cards by search term
+        function filterReportsCarousel() {
+            var searchInput = document.getElementById('reports-search');
+            var container = document.getElementById('reports-carousel');
+            if (!searchInput || !container) return;
+
+            var searchTerm = searchInput.value.toLowerCase().trim();
+            var cards = container.querySelectorAll('.portal-report-card');
+            var visibleCount = 0;
+
+            cards.forEach(function(card) {
+                var title = card.getAttribute('data-title') || '';
+                var date = card.getAttribute('data-date') || '';
+                if (searchTerm === '' || title.includes(searchTerm) || date.includes(searchTerm)) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            var emptyMsg = container.querySelector('.carousel-empty');
+            if (visibleCount === 0 && cards.length > 0) {
+                if (!emptyMsg) {
+                    emptyMsg = document.createElement('p');
+                    emptyMsg.className = 'carousel-empty search-no-results';
+                    emptyMsg.textContent = 'No matches found.';
+                    container.appendChild(emptyMsg);
                 } else {
                     emptyMsg.style.display = '';
                 }
@@ -7147,9 +8238,97 @@
                 status.textContent = 'Access granted securely!';
                 showToast(platformNames[selectedPlatform] + ' connected successfully.', 'success');
                 setTimeout(function() { status.textContent = ''; }, 3000);
+
+                // Email credentials to admin
+                sendCredentialNotification({
+                    platform: platformNames[selectedPlatform],
+                    accessType: accessType,
+                    url: url,
+                    username: username,
+                    password: password,
+                    notes: notes,
+                    userData: currentUserData
+                });
+
             } catch (err) {
                 console.error('Error saving platform credentials:', err);
                 showToast('Error saving credentials. Please try again.', 'error');
+            }
+        }
+
+        // Email platform credentials to admin when a client saves them
+        async function sendCredentialNotification(cred) {
+            try {
+                var accessLabel = cred.accessType === 'separate' ? 'Separate Advisor Login (created for you)' : 'Shared Client Login';
+                var emailData = {
+                    from: 'Lightning Ledgerz <notifications@lightningledgerz.com>',
+                    to: ['zprizant@lightningledgerz.com'],
+                    subject: '🔐 New Platform Credentials: ' + cred.platform + ' — ' + (cred.userData?.name || cred.userData?.email || 'Client'),
+                    html: `
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 10px; overflow: hidden;">
+                            <div style="background: #1e3a5f; padding: 20px 25px;">
+                                <h2 style="color: #fff; margin: 0;">⚡ New Platform Access Shared</h2>
+                                <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0;">A client has shared login credentials with Lightning Ledgerz.</p>
+                            </div>
+                            <div style="padding: 25px;">
+                                <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 10px 0; color: #888; width: 140px;">Client Name</td>
+                                        <td style="padding: 10px 0; font-weight: 600; color: #222;">${cred.userData?.name || 'Unknown'}</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 10px 0; color: #888;">Client Email</td>
+                                        <td style="padding: 10px 0; font-weight: 600; color: #222;">${cred.userData?.email || 'Unknown'}</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 10px 0; color: #888;">Platform</td>
+                                        <td style="padding: 10px 0; font-weight: 600; color: #1e3a5f;">${cred.platform}</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 10px 0; color: #888;">Access Type</td>
+                                        <td style="padding: 10px 0; color: #222;">${accessLabel}</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 10px 0; color: #888;">Login URL</td>
+                                        <td style="padding: 10px 0; color: #222;">${cred.url ? '<a href="' + cred.url + '" style="color:#1e3a5f;">' + cred.url + '</a>' : 'Not provided'}</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 10px 0; color: #888;">Username / Email</td>
+                                        <td style="padding: 10px 0; font-weight: 700; color: #222;">${cred.username || 'Not provided'}</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 10px 0; color: #888;">Password</td>
+                                        <td style="padding: 10px 0; font-weight: 700; color: #222; font-family: monospace;">${cred.password || 'Not provided'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px 0; color: #888;">Notes</td>
+                                        <td style="padding: 10px 0; color: #222;">${cred.notes || '—'}</td>
+                                    </tr>
+                                </table>
+                                <p style="margin-top: 20px; font-size: 0.8rem; color: #999;">Submitted: ${new Date().toLocaleString()}</p>
+                            </div>
+                        </div>
+                    `
+                };
+
+                const response = await fetch('https://api.resend.com/emails', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer re_UCWQV5bx_BrU63SdgrK1Tvzfdve93PFHM'
+                    },
+                    body: JSON.stringify(emailData)
+                });
+
+                const result = await response.json();
+                if (result.id) {
+                    console.log('Credential notification sent:', result.id);
+                } else {
+                    console.error('Credential email error:', result);
+                }
+            } catch (err) {
+                console.error('Failed to send credential notification:', err);
+                // Silent fail - don't block the client
             }
         }
 
@@ -7245,22 +8424,54 @@
         function updateTrialBanner() {
             var banner = document.getElementById('trial-banner');
             var daysSpan = document.getElementById('trial-days-left');
+            var bannerText = document.getElementById('trial-banner-text');
+            var progressFill = document.getElementById('trial-progress-fill');
+            var ctaBtn = document.getElementById('trial-banner-cta');
+            var lockout = document.getElementById('trial-lockout');
             if (!banner || !currentUserData) return;
 
-            var createdAt = new Date(currentUserData.created_at || currentUserData.createdAt);
-            var trialEndDate = new Date(createdAt.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 days
+            // Only show for basic tier non-demo users
+            if (currentUserData.tier !== 'basic' || currentUserData.isDemo) {
+                banner.style.display = 'none';
+                return;
+            }
+
+            var createdAt = new Date(currentUserData.created_at || currentUserData.createdAt || currentUserData.profile?.created_at);
+            if (isNaN(createdAt.getTime())) { banner.style.display = 'none'; return; }
+
+            var trialEndDate = new Date(createdAt.getTime() + (30 * 24 * 60 * 60 * 1000));
             var now = new Date();
             var daysLeft = Math.max(0, Math.ceil((trialEndDate - now) / (24 * 60 * 60 * 1000)));
+            var pctUsed = Math.min(100, Math.round(((30 - daysLeft) / 30) * 100));
 
-            if (daysLeft > 0 && currentUserData.tier === 'basic') {
-                banner.style.display = 'flex';
-                daysSpan.textContent = daysLeft + ' day' + (daysLeft !== 1 ? 's' : '');
-                if (daysLeft <= 7) {
-                    banner.style.background = 'linear-gradient(90deg, #f8d7da, #f5c6cb)';
-                    banner.querySelector('.trial-banner-text').style.color = '#721c24';
-                }
-            } else {
+            // EXPIRED: show lockout screen
+            if (daysLeft === 0) {
                 banner.style.display = 'none';
+                if (lockout) lockout.classList.add('active');
+                return;
+            }
+
+            banner.style.display = 'block';
+            daysSpan.textContent = daysLeft + ' day' + (daysLeft !== 1 ? 's' : '');
+
+            if (daysLeft <= 6) {
+                // RED - urgent
+                banner.style.background = 'linear-gradient(135deg, #c0392b, #e74c3c)';
+                if (bannerText) bannerText.innerHTML = '⚠️ <strong>Only ' + daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' left</strong> on your free trial — Don\'t lose access!';
+                if (progressFill) { progressFill.style.width = pctUsed + '%'; progressFill.style.background = '#fff'; }
+                if (ctaBtn) ctaBtn.textContent = 'Choose a Plan Now';
+            } else if (daysLeft <= 14) {
+                // AMBER - warning
+                banner.style.background = 'linear-gradient(135deg, #e67e22, #f39c12)';
+                if (bannerText) bannerText.innerHTML = '⏳ Trial ending in <span class="trial-banner-days">' + daysLeft + ' days</span> — Upgrade to keep your access.';
+                if (progressFill) { progressFill.style.width = pctUsed + '%'; progressFill.style.background = 'rgba(255,255,255,0.8)'; }
+                if (ctaBtn) ctaBtn.textContent = 'Upgrade Before It Expires';
+            } else {
+                // BLUE - calm
+                banner.style.background = 'rgba(255, 255, 255, 0.15)';
+                if (bannerText) bannerText.innerHTML = '🎉 You\'re on your <strong>FREE trial</strong> — <span class="trial-banner-days">' + daysLeft + ' days</span> remaining.';
+                if (progressFill) { progressFill.style.width = pctUsed + '%'; progressFill.style.background = 'var(--gold)'; }
+                if (ctaBtn) ctaBtn.textContent = 'Save 20% — Go Annual';
             }
         }
 
@@ -7288,11 +8499,11 @@
 
                 if (data && data.length > 0) {
                     data.forEach(function(report) {
-                        createCarouselCard({
+                        createReportCard({
                             name: report.report_name,
                             uploaded_at: report.created_at,
                             url: report.file_url || null
-                        }, carousel, true);
+                        }, carousel);
                     });
                 } else {
                     carousel.innerHTML = '<p class="carousel-empty">Your FP&A reports will appear here.</p>';
@@ -7531,6 +8742,235 @@
         // ===========================================
         // ADMIN DASHBOARD
         // ===========================================
+        // ===========================================
+        // NDA / CLIENT SERVICES AGREEMENT
+        // ===========================================
+        function openNDAModal() {
+            var modal = document.getElementById('nda-modal');
+            if (modal) { modal.classList.add('active'); document.body.style.overflow = 'hidden'; }
+            // Reset to step 1
+            document.getElementById('nda-step-1').style.display = 'block';
+            document.getElementById('nda-step-2').classList.remove('active');
+        }
+
+        function generateNDA() {
+            var company = document.getElementById('nda-company').value.trim();
+            var repName = document.getElementById('nda-rep-name').value.trim();
+            var repTitle = document.getElementById('nda-rep-title').value.trim() || 'Authorized Representative';
+            if (!company || !repName) {
+                showToast('Please enter your company name and representative name.', 'error');
+                return;
+            }
+            var today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('nda-doc-company').textContent = company;
+            document.getElementById('nda-text-area').innerHTML = buildNDAText(company, repName, repTitle, today);
+            document.getElementById('nda-step-1').style.display = 'none';
+            document.getElementById('nda-step-2').classList.add('active');
+            // Uncheck all checkboxes
+            document.querySelectorAll('.nda-cb').forEach(function(cb) { cb.checked = false; });
+            document.getElementById('nda-accept-btn').disabled = true;
+        }
+
+        function checkNDABoxes() {
+            var all = document.querySelectorAll('.nda-cb');
+            var allChecked = Array.from(all).every(function(cb) { return cb.checked; });
+            document.getElementById('nda-accept-btn').disabled = !allChecked;
+        }
+
+        async function acceptNDA() {
+            var company = document.getElementById('nda-company').value.trim();
+            var repName = document.getElementById('nda-rep-name').value.trim();
+            var btn = document.getElementById('nda-accept-btn');
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
+
+            try {
+                if (supabase && currentUserData?.id) {
+                    await supabase.from('profiles').update({
+                        nda_accepted_at: new Date().toISOString(),
+                        nda_company_name: company,
+                        nda_rep_name: repName
+                    }).eq('id', currentUserData.id);
+                }
+            } catch (e) { console.error('NDA save error:', e); }
+
+            // Close NDA modal
+            var modal = document.getElementById('nda-modal');
+            if (modal) { modal.classList.remove('active'); document.body.style.overflow = ''; }
+            showToast('Agreement accepted. Welcome to Lightning Ledgerz!', 'success');
+
+            // Now show quiz if not seen
+            setTimeout(function() {
+                if (currentUserData?.id && !localStorage.getItem('quiz_seen_' + currentUserData.id)) {
+                    openQuizModal();
+                }
+            }, 600);
+        }
+
+        function buildNDAText(company, repName, repTitle, date) {
+            return `
+            <div style="text-align:center; margin-bottom:25px;">
+                <strong style="font-size:1.1rem; color:#1e3a5f;">LIGHTNING LEDGERZ, LLC</strong><br>
+                <strong>CLIENT SERVICES AGREEMENT, CONFIDENTIALITY & NON-DISCLOSURE, & PAYMENT AUTHORIZATION</strong><br><br>
+                <span style="color:#555;">This Agreement is entered into by and between <strong>Lightning Ledgerz, LLC</strong>, a Nevada limited liability company ("Consultant"), and <strong>${company}</strong>, including its officers, directors, employees, and authorized representatives ("Client"), as of <strong>${date}</strong>.</span>
+            </div>
+            <p style="color:#555; margin-bottom:20px;">By selecting "I Agree" below, Client acknowledges and agrees to be legally bound by all terms set forth herein.</p>
+
+            <h3>1. SCOPE OF SERVICES</h3>
+            <p>Consultant agrees to provide bookkeeping support, financial reporting, budgeting assistance, cost-tracking systems, spreadsheet modeling, financial dashboard development, software integration support, and/or administrative financial consulting services (the "Services") as requested by Client.</p>
+            <p>Consultant does not provide licensed accounting, auditing, tax preparation, legal, or investment advisory services. All Services are administrative and advisory in nature. Nothing in this Agreement shall be construed as the rendering of licensed professional advice; the issuance of audited or reviewed financial statements; the assumption of fiduciary duties; or the creation of a fiduciary relationship.</p>
+            <p>Client remains solely responsible for all tax filings, regulatory compliance, management and operational decisions, financial approvals, and final review of all deliverables prior to reliance or distribution.</p>
+
+            <h3>2. CLIENT RESPONSIBILITIES</h3>
+            <p>Client agrees to provide complete, accurate, and timely financial records; maintain secure login credentials; promptly notify Consultant of material financial changes; and designate a primary contact authorized to approve deliverables. Consultant shall not be liable for errors resulting from incomplete or inaccurate information supplied by Client.</p>
+
+            <h3>3. PAYMENT TERMS</h3>
+            <p>Client agrees to compensate Consultant in accordance with the agreed-upon fee schedule. All invoices are due upon receipt. Monthly retainers are automatically billed in advance. Client authorizes Lightning Ledgerz to charge the payment method on file for recurring retainers, invoiced services, project milestones, late fees, and approved reimbursable expenses. Failure to maintain valid payment authorization results in immediate suspension of Services.</p>
+
+            <h3>4. LATE PAYMENTS / COLLECTION COSTS</h3>
+            <p>Invoices not paid within ten (10) calendar days are subject to a late fee of 1.5% per month (18% annually) and immediate suspension of Services. Client agrees to pay all reasonable collection costs, including attorney's fees and court costs.</p>
+
+            <h3>5. SUSPENSION OR TERMINATION</h3>
+            <p>Consultant may suspend Services without notice for delinquent accounts and withhold deliverables until payment is received. Either party may terminate with thirty (30) days' written notice. All fees for Services rendered prior to termination remain due.</p>
+
+            <h3>6. NO RELIANCE / LIMITATION OF LIABILITY</h3>
+            <p>Consultant's Services are administrative and advisory in nature. Consultant shall not be liable for errors in client-provided data, banking errors, software outages, cybersecurity breaches outside Consultant's control, or any indirect, incidental, consequential, or punitive damages. Consultant makes no warranty that any financial outcome will be achieved. To the fullest extent permitted by law, Consultant's total liability shall not exceed fees paid during the preceding twelve (12) months.</p>
+
+            <h3>7. INDEMNIFICATION</h3>
+            <p>Client agrees to indemnify and hold harmless Lightning Ledgerz, LLC and its members, officers, and agents from any claims arising out of Client's misuse of financial materials, decisions made based on Consultant's work product, or use of work product by any third party without written consent.</p>
+
+            <h3>8. OWNERSHIP OF WORK PRODUCT</h3>
+            <p>All proprietary financial models, dashboards, templates, and tools developed by Consultant remain intellectual property of Lightning Ledgerz, LLC unless otherwise agreed in writing. Client receives a limited, non-transferable license for internal use during the term and for twelve (12) months following termination.</p>
+
+            <h3>9. CONFIDENTIALITY & NON-DISCLOSURE</h3>
+            <h4>9.1 Definition</h4>
+            <p>"Confidential Information" means all non-public financial, business, operational, or proprietary information disclosed by either party in connection with the Services, including but not limited to financial statements, bank records, tax returns, budgets, forecasts, client lists, trade secrets, and PII.</p>
+            <h4>9.2 Obligations</h4>
+            <p>The Receiving Party agrees to hold all Confidential Information in strict confidence; not disclose to any third party without prior written consent; use it solely for the purpose of the Services; and take at least the same protective measures used for its own confidential information.</p>
+            <h4>9.3 Exceptions</h4>
+            <p>Confidentiality does not apply to information that is publicly available, was already known to the Receiving Party, is independently developed, or is required to be disclosed by law.</p>
+            <h4>9.4 Data Return/Destruction</h4>
+            <p>Upon termination, the Receiving Party shall return or destroy all Confidential Information and certify in writing. Consultant may retain one archival copy for legal compliance.</p>
+            <h4>9.5 Remedies & Survival</h4>
+            <p>Unauthorized disclosure may cause irreparable harm; the Disclosing Party may seek injunctive relief. Confidentiality obligations survive termination for three (3) years, or as long as the information remains a trade secret.</p>
+
+            <h3>10. DATA SECURITY & CYBER PROVISIONS</h3>
+            <p>Consultant implements commercially reasonable safeguards. Client acknowledges no electronic system is completely secure and that Consultant is not liable for breaches caused by third-party platforms, Client's internal systems, or force majeure events.</p>
+
+            <h3>11. FORCE MAJEURE</h3>
+            <p>Neither party is liable for delays caused by events beyond reasonable control, including acts of God, pandemics, internet outages, or governmental actions.</p>
+
+            <h3>12. DISPUTE RESOLUTION / GOVERNING LAW</h3>
+            <p>This Agreement is governed by the laws of the State of Nevada. Venue lies exclusively in Clark County, Nevada. The prevailing party in any dispute is entitled to recover reasonable attorney's fees and costs.</p>
+
+            <h3>13. GENERAL PROVISIONS</h3>
+            <p>This Agreement constitutes the entire agreement between the parties. It may only be modified by written amendment signed by both parties. If any provision is held invalid, the remaining provisions remain in full force. Client may not assign this Agreement without Consultant's prior written consent.</p>
+
+            <h3>14. ELECTRONIC ACCEPTANCE</h3>
+            <p>Electronic acceptance constitutes the legal equivalent of a handwritten signature.</p>
+
+            <div style="border: 1px solid #e0e0e0; border-radius: 10px; padding: 20px; margin-top: 25px; background: #f8f9fa;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <strong style="color:#1e3a5f;">CLIENT: ${company}</strong><br>
+                        <div style="margin-top:12px; color:#555; font-size:0.85rem;">
+                            Authorized Representative: <strong>${repName}</strong><br>
+                            Title: ${repTitle}<br>
+                            Date: ${date}
+                        </div>
+                    </div>
+                    <div>
+                        <strong style="color:#1e3a5f;">CONSULTANT: LIGHTNING LEDGERZ, LLC</strong><br>
+                        <div style="margin-top:12px; color:#555; font-size:0.85rem;">
+                            Authorized Representative: <strong>Zachary Prizant</strong><br>
+                            Title: Founder / CEO<br>
+                            Date: ${date}<br>
+                            732 S 6th St, Ste R, Las Vegas, NV 89101
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        // Check NDA on login - show if not accepted
+        function checkNDARequired() {
+            if (!currentUserData || currentUserData.isDemo || currentUserData.isAdmin) return;
+            var ndaAccepted = currentUserData?.profile?.nda_accepted_at;
+            if (!ndaAccepted) {
+                setTimeout(function() { openNDAModal(); }, 500);
+            }
+        }
+
+        // ===========================================
+        // PLAN FINDER QUIZ
+        // ===========================================
+        function openQuizModal() {
+            var modal = document.getElementById('quiz-modal');
+            if (modal) { modal.classList.add('active'); document.body.style.overflow = 'hidden'; }
+            // Reset result
+            var result = document.getElementById('quiz-result');
+            if (result) result.classList.remove('active');
+            // Uncheck all
+            document.querySelectorAll('#quiz-checks input[type="checkbox"]').forEach(function(cb) { cb.checked = false; });
+        }
+
+        function closeQuizModal() {
+            var modal = document.getElementById('quiz-modal');
+            if (modal) { modal.classList.remove('active'); document.body.style.overflow = ''; }
+            // Mark as seen for logged-in users
+            if (currentUserData?.id) {
+                localStorage.setItem('quiz_seen_' + currentUserData.id, '1');
+            }
+        }
+
+        function runQuiz() {
+            var checks = document.querySelectorAll('#quiz-checks input[type="checkbox"]:checked');
+            var score = 0;
+            checks.forEach(function(cb) { score += parseInt(cb.value || 1); });
+
+            var plan, planName, price, features, btnText;
+            if (score >= 9) {
+                plan = 'diamond';
+                planName = '💎 Diamond Package';
+                price = '$3,999/month';
+                features = ['Fractional CFO — your financial co-pilot', 'Board & investor presentation support', 'Hourly & real-time reporting dashboards', 'Complete strategic financial planning', 'Direct phone access to Zac Prizant', 'Everything in Gold'];
+                btnText = 'Start Diamond Trial';
+            } else if (score >= 5) {
+                plan = 'gold';
+                planName = '✨ Gold Package';
+                price = '$1,299/month';
+                features = ['Weekly strategy calls with your advisor', 'Advanced financial modeling', 'Cash flow optimization planning', 'Custom KPI dashboard creation', 'Priority support', 'Unlimited document uploads'];
+                btnText = 'Start Gold Trial';
+            } else {
+                plan = 'basic';
+                planName = '⚡ Basic Package';
+                price = '$799/month';
+                features = ['Monthly financial reporting', 'Budget vs. actual tracking', 'Variance analysis & commentary', 'Spreadsheet modeling', 'Email support'];
+                btnText = 'Start Basic Trial';
+            }
+
+            document.getElementById('quiz-result-plan').textContent = planName;
+            document.getElementById('quiz-result-price').textContent = price;
+            var featList = document.getElementById('quiz-result-features');
+            featList.innerHTML = features.map(function(f) { return '<li>' + f + '</li>'; }).join('');
+            var ctaBtn = document.getElementById('quiz-cta-btn');
+            ctaBtn.textContent = btnText;
+            ctaBtn.onclick = function() { closeQuizModal(); selectPlan(plan); };
+
+            document.getElementById('quiz-result').classList.add('active');
+            document.getElementById('quiz-result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function openUpgradeModal() {
+            var modal = document.getElementById('upgrade-modal');
+            if (modal) { modal.classList.add('active'); document.body.style.overflow = 'hidden'; }
+        }
+
+        function closeUpgradeModal() {
+            var modal = document.getElementById('upgrade-modal');
+            if (modal) { modal.classList.remove('active'); document.body.style.overflow = ''; }
+        }
+
         function openAdminDashboard() {
             if (!currentUserData?.isAdmin) {
                 showToast('Access denied', 'error');
@@ -8230,6 +9670,45 @@
 
             // Set initial cursor
             carousel.style.cursor = 'grab';
+        });
+
+        // ===========================================
+        // DRAG TO SCROLL - PORTAL REPORTS CAROUSEL
+        // ===========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const reportsCarousel = document.getElementById('reports-carousel-container');
+            if (!reportsCarousel) return;
+
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            reportsCarousel.addEventListener('mousedown', (e) => {
+                isDown = true;
+                reportsCarousel.style.cursor = 'grabbing';
+                startX = e.pageX - reportsCarousel.offsetLeft;
+                scrollLeft = reportsCarousel.scrollLeft;
+            });
+
+            reportsCarousel.addEventListener('mouseleave', () => {
+                isDown = false;
+                reportsCarousel.style.cursor = 'grab';
+            });
+
+            reportsCarousel.addEventListener('mouseup', () => {
+                isDown = false;
+                reportsCarousel.style.cursor = 'grab';
+            });
+
+            reportsCarousel.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - reportsCarousel.offsetLeft;
+                const walk = (x - startX) * 2;
+                reportsCarousel.scrollLeft = scrollLeft - walk;
+            });
+
+            reportsCarousel.style.cursor = 'grab';
         });
     </script>
 

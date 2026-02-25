@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lightning Ledgerz — Client Onboarding Guide</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fb; color: #333; }
+
+        .header {
+            background: #0d2240;
+            padding: 30px 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header h1 { color: #fff; font-size: 1.8rem; }
+        .header p { color: rgba(255,255,255,0.7); font-size: 0.95rem; margin-top: 4px; }
+
+        .container { max-width: 860px; margin: 40px auto; padding: 0 20px 60px; }
+
+        .intro-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 35px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.07);
+            border-left: 5px solid #0d2240;
+        }
+
+        .intro-card h2 { color: #0d2240; margin-bottom: 10px; font-size: 1.3rem; }
+        .intro-card p { color: #555; line-height: 1.7; font-size: 0.95rem; }
+
+        .step-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 0;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.07);
+            overflow: hidden;
+        }
+
+        .step-header {
+            background: #0d2240;
+            padding: 16px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .step-num {
+            width: 38px; height: 38px;
+            background: #f5a623;
+            color: #0d2240;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .step-header h3 { color: #fff; font-size: 1.1rem; margin: 0; }
+        .step-header .step-tag { color: rgba(255,255,255,0.6); font-size: 0.8rem; margin-left: auto; white-space: nowrap; }
+
+        .step-body { padding: 22px 25px; }
+
+        .step-body p { color: #555; line-height: 1.7; margin-bottom: 12px; font-size: 0.93rem; }
+
+        .step-body ul { padding-left: 18px; margin-bottom: 12px; }
+        .step-body li { color: #555; line-height: 1.7; margin-bottom: 5px; font-size: 0.93rem; }
+
+        .tip-box {
+            background: #f0f4ff;
+            border: 1px solid #c7d9f5;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-top: 15px;
+            font-size: 0.88rem;
+            color: #1e3a5f;
+        }
+
+        .tip-box strong { font-weight: 700; }
+
+        .action-badge {
+            display: inline-block;
+            background: #2CA01C;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .action-badge.zac { background: #0d2240; }
+        .action-badge.client { background: #e67e22; }
+        .action-badge.both { background: #8e44ad; }
+
+        .checklist { list-style: none; padding: 0; }
+        .checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 8px 0; border-bottom: 1px solid #f5f5f5;
+            color: #444; font-size: 0.92rem;
+        }
+        .checklist li:last-child { border-bottom: none; }
+        .checklist .icon { color: #2CA01C; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+            font-size: 0.85rem;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 20px;
+        }
+
+        @media print {
+            body { background: #fff; }
+            .step-card, .intro-card { box-shadow: none; border: 1px solid #e0e0e0; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div>
+        <h1>⚡ Lightning Ledgerz</h1>
+        <p>Client Onboarding Guide — Share this with your client before or during your onboarding call</p>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="intro-card">
+        <h2>Welcome to Lightning Ledgerz</h2>
+        <p>This guide walks through the exact steps to get fully onboarded. It takes about 15–20 minutes and sets up everything needed to deliver your FP&A services. Follow the steps in order — each one unlocks the next.</p>
+        <p style="margin-top:10px;"><strong>Website:</strong> lightningledgerz.com &nbsp;|&nbsp; <strong>Email:</strong> zprizant@lightningledgerz.com &nbsp;|&nbsp; <strong>Phone:</strong> (702) 550-2513</p>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="step-card">
+        <div class="step-header">
+            <div class="step-num">1</div>
+            <h3>Create Your Account</h3>
+            <span class="step-tag">CLIENT ACTION</span>
+        </div>
+        <div class="step-body">
+            <span class="action-badge client">Client does this</span>
+            <p>Go to <strong>lightningledgerz.com</strong> and click <strong>"Get Started"</strong> in the top navigation. You'll be taken to the portal section where you can register.</p>
+            <ul>
+                <li>Enter your first name, last name, company name, email, and phone</li>
+                <li>Create a secure password</li>
+                <li>Agree to the Terms of Service and Privacy Policy</li>
+                <li>Click <strong>"Get Started"</strong> — your free 30-day trial starts immediately</li>
+            </ul>
+            <div class="tip-box">
+                <strong>Tip for Zac:</strong> If the client is on the call with you, you can navigate to the pricing section first and walk them through the "Find Your Plan" quiz together — it recommends the right package based on their needs.
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-card">
+        <div class="step-header">
+            <div class="step-num">2</div>
+            <h3>Sign the Client Services Agreement</h3>
+            <span class="step-tag">REQUIRED — CLIENT ACTION</span>
+        </div>
+        <div class="step-body">
+            <span class="action-badge client">Client does this</span>
+            <p>Immediately after logging in for the first time, a <strong>Client Services Agreement</strong> popup will appear. This is required before accessing the portal.</p>
+            <ul>
+                <li>Enter your company name and authorized representative name exactly as they should appear on the agreement</li>
+                <li>Click <strong>"Generate My Agreement"</strong> to view the full agreement</li>
+                <li>Read through all sections (especially Sections 9 and 6 — confidentiality and limitation of liability)</li>
+                <li>Check all four acceptance boxes</li>
+                <li>Click <strong>"I Accept This Agreement — Enter Portal"</strong></li>
+            </ul>
+            <div class="tip-box">
+                <strong>Important:</strong> Double-check company name spelling before accepting. The agreement is legally binding. If there's an error, contact zprizant@lightningledgerz.com for an amendment.
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step-card">
+        <div class="step-header">
+            <div class="step-num">3</div>
+            <h3>Upload Your Company Logo</h3>
+            <span class="step-tag">OPTIONAL — PERSONALIZES YOUR PORTAL</span>
+        </div>
+        <div class="step-body">
+            <span class="action-badge client">Client does this</span>
+            <p>In the portal dashboard, find <strong>Step 1: Company Logo</strong>. Click the logo box or the "Upload Logo" button to upload your company's logo.</p>
+            <ul>
+                <li>Accepted formats: PNG, JPG, SVG, WebP</li>
+                <li>This personalizes your dashboard and appears on your reports</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step-card">
+        <div class="step-header">
+            <div class="step-num">4</div>
+            <h3>Connect Your Accounting Platforms</h3>
+            <span class="step-tag">CRITICAL — ENABLES SERVICE DELIVERY</span>
+        </div>
+        <div class="step-body">
+            <span class="action-badge client">Client does this</span>
+            <p>In <strong>Step 2: Platform Integrations</strong>, click on each accounting or financial platform your business uses. This is how Zac accesses your financial data to deliver reports.</p>
+            <ul>
+                <li>Supported platforms: QuickBooks, Sage, Oracle NetSuite, Xero, Alteryx, Airtable, Power BI, Excel Online, and more</li>
+                <li>For each platform, choose how to grant access:
+                    <ul style="margin-top:5px;">
+                        <li><strong>Share your existing login</strong> — provide your username and password</li>
+                        <li><strong>Create a separate advisor login</strong> — create a new login specifically for Lightning Ledgerz and share those credentials</li>
+                    </ul>
+                </li>
+                <li>Check the permission checkbox for each platform</li>
+                <li>Click <strong>"Grant Access Securely"</strong> — credentials are 256-bit encrypted</li>
+            </ul>
+            <div class="tip-box">
+                <strong>For Zac:</strong> You will receive an email to zprizant@lightningledgerz.com with the credentials immediately after the client submits. You can also view all credentials in the Admin Dashboard under the "Platforms" tab.
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step-card">
+        <div class="step-header">
+            <div class="step-num">5</div>
+            <h3>Upload Financial Documents</h3>
+            <span class="step-tag">RECOMMENDED — SPEEDS UP DELIVERY</span>
+        </div>
+        <div class="step-body">
+            <span class="action-badge client">Client does this</span>
+            <p>In <strong>Step 3: Upload Files</strong>, drag and drop or browse to upload any financial documents for review.</p>
+            <p>Recommended documents to upload:</p>
+            <ul class="checklist">
+                <li><span class="icon">□</span> Prior year income statements (P&L)</li>
+                <li><span class="icon">□</span> Balance sheets (current + prior periods)</li>
+                <li><span class="icon">□</span> Cash flow statements</li>
+                <li><span class="icon">□</span> Existing budgets or forecasts</li>
+                <li><span class="icon">□</span> CapEx schedules</li>
+                <li><span class="icon">□</span> Debt schedules / loan summaries</li>
+                <li><span class="icon">□</span> Sources and uses of funds</li>
+                <li><span class="icon">□</span> Any existing reports or dashboards</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step-card">
+        <div class="step-header">
+            <div class="step-num">6</div>
+            <h3>Choose Your Plan & Start Billing</h3>
+            <span class="step-tag">COMPLETE BEFORE TRIAL ENDS</span>
+        </div>
+        <div class="step-body">
+            <span class="action-badge both">Zac + Client</span>
+            <p>The free 30-day trial gives full access to the portal. A countdown timer in your dashboard shows how many days remain. At day 30, the portal locks and a plan is required to continue.</p>
+            <ul>
+                <li><strong>Basic — $799/month:</strong> Monthly reporting, budget vs. actual, email support</li>
+                <li><strong>Gold — $1,299/month:</strong> Everything in Basic + weekly strategy calls, KPI dashboards, advanced modeling</li>
+                <li><strong>Diamond — $3,999/month:</strong> Everything in Gold + fractional CFO, board presentations, direct phone access</li>
+            </ul>
+            <p>To upgrade, click the <strong>"⬆ Upgrade"</strong> button in your dashboard header at any time, or visit the Pricing section on the website.</p>
+            <div class="tip-box">
+                <strong>Promo codes:</strong> If Zac gave you a promotional code, enter it in the promo code field on the Pricing page before selecting your plan.
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 7 -->
+    <div class="step-card">
+        <div class="step-header">
+            <div class="step-num">7</div>
+            <h3>Receive Your Reports</h3>
+            <span class="step-tag">ZAC ACTION</span>
+        </div>
+        <div class="step-body">
+            <span class="action-badge zac">Zac does this</span>
+            <p>Once onboarded, Zac will upload completed reports and deliverables directly to your portal under <strong>Step 4: My Reports</strong>. You can scroll through your reports, search by title or date, and open any report directly from the portal.</p>
+            <p>If you have a live financial dashboard connected (Gold/Diamond clients), a "Live Financial Dashboard" button will appear at the top of your reports section.</p>
+            <div class="tip-box">
+                <strong>Turnaround times:</strong> Basic — 5 business days for monthly reports. Gold — 2–3 business days. Diamond — next business day or same day for urgent items.
+            </div>
+        </div>
+    </div>
+
+    <div class="intro-card" style="margin-top:35px; border-left-color: #f5a623;">
+        <h2>Questions or Issues?</h2>
+        <p>Contact Zac directly at <strong>zprizant@lightningledgerz.com</strong> or call <strong>(702) 550-2513</strong>. You can also reply to any notification email and it'll reach Zac directly.</p>
+        <p style="margin-top:10px;"><strong>Lightning Ledgerz, LLC</strong> &nbsp;|&nbsp; 732 S 6th St, Ste R, Las Vegas, NV 89101 &nbsp;|&nbsp; lightningledgerz.com</p>
+    </div>
+
+</div>
+
+<div class="footer">
+    © 2026 Lightning Ledgerz, LLC • 732 S 6th St, Ste R, Las Vegas, NV 89101 • zprizant@lightningledgerz.com
+</div>
+
+</body>
+</html>
