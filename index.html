@@ -2550,6 +2550,46 @@
             box-shadow: 0 8px 25px rgba(255, 51, 51, 0.5);
         }
 
+        /* Forgot / Reset Password Modals */
+        .auth-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 99800; display: none;
+            justify-content: center; align-items: center; padding: 20px;
+        }
+        .auth-overlay.active { display: flex; }
+        .auth-mini-card {
+            background: rgba(0,0,0,0.97);
+            border: 2px solid var(--red);
+            border-radius: 20px;
+            padding: 40px 36px;
+            max-width: 420px; width: 100%;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+        }
+        .auth-mini-card h3 { color: #fff; font-size: 1.35rem; font-weight: 800; margin: 0 0 8px; }
+        .auth-mini-card p { color: rgba(255,255,255,0.55); font-size: 0.88rem; margin: 0 0 24px; line-height: 1.5; }
+        .auth-mini-card .form-input { margin-bottom: 14px; }
+        .auth-mini-close {
+            position: absolute; top: 14px; right: 18px;
+            background: none; border: none; color: rgba(255,255,255,0.4);
+            font-size: 1.7rem; cursor: pointer; line-height: 1;
+        }
+        .auth-mini-close:hover { color: #fff; }
+        .auth-success-msg {
+            background: rgba(44,160,28,0.15); border: 1px solid rgba(44,160,28,0.4);
+            border-radius: 10px; padding: 12px 16px;
+            color: #7de87d; font-size: 0.87rem; line-height: 1.5;
+            margin-top: 16px; display: none;
+        }
+        .forgot-link {
+            display: block; text-align: right;
+            color: rgba(255,255,255,0.4); font-size: 0.8rem;
+            text-decoration: none; margin-top: -8px; margin-bottom: 18px;
+            cursor: pointer;
+        }
+        .forgot-link:hover { color: rgba(255,255,255,0.75); }
+
         /* Google Sign-In Button */
         .google-btn {
             width: 100%;
@@ -6792,6 +6832,31 @@
         </div>
     </div>
 
+    <!-- Forgot Password Modal -->
+    <div class="auth-overlay" id="forgot-password-overlay" onclick="closeForgotPasswordModal()">
+        <div class="auth-mini-card" onclick="event.stopPropagation()">
+            <button class="auth-mini-close" onclick="closeForgotPasswordModal()">&times;</button>
+            <h3>Reset Your Password</h3>
+            <p>Enter your email address and I'll send you a reset link.</p>
+            <input type="email" class="form-input" id="forgot-email" placeholder="you@company.com">
+            <button class="form-submit" onclick="handleForgotPassword()" id="forgot-submit-btn">Send Reset Link</button>
+            <div class="auth-success-msg" id="forgot-success">
+                ✓ Reset link sent! Check your inbox (and spam folder). Click the link and you'll be able to set a new password.
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Password Modal (shown after clicking email link) -->
+    <div class="auth-overlay" id="reset-password-overlay">
+        <div class="auth-mini-card" onclick="event.stopPropagation()">
+            <h3>Set New Password</h3>
+            <p>Choose a new password for your account.</p>
+            <input type="password" class="form-input" id="new-password" placeholder="New password (min 8 characters)" minlength="8">
+            <input type="password" class="form-input" id="confirm-password" placeholder="Confirm new password" minlength="8">
+            <button class="form-submit" onclick="handleResetPassword()" id="reset-submit-btn">Update Password</button>
+        </div>
+    </div>
+
     <!-- Lightning Meter Float Widget -->
     <div class="lightning-float" id="lightning-float">
         <div class="lightning-float-bolt-wrap">
@@ -7123,6 +7188,7 @@
                     <label class="form-label">Password</label>
                     <input type="password" class="form-input" id="login-password" placeholder="••••••••" required>
                 </div>
+                <a class="forgot-link" onclick="openForgotPasswordModal()">Forgot password?</a>
                 <button type="submit" class="form-submit">Sign In</button>
             </form>
 
@@ -7682,6 +7748,13 @@
                 initSupabase(); // Try once more
             }
             if (supabase) {
+                // Listen for password recovery event (fired when user clicks reset link in email)
+                supabase.auth.onAuthStateChange(function(event, session) {
+                    if (event === 'PASSWORD_RECOVERY') {
+                        document.getElementById('reset-password-overlay').classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
                 checkExistingSession();
             } else {
                 console.log('Warning: Supabase not available at page load');
@@ -8110,6 +8183,62 @@
             } catch (error) {
                 showToast(error.message || 'Google login failed. Make sure Google OAuth is configured in Supabase.', 'error');
                 resetGoogleBtn();
+            }
+        }
+
+        // === FORGOT / RESET PASSWORD ===
+        function openForgotPasswordModal() {
+            document.getElementById('forgot-password-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeForgotPasswordModal() {
+            document.getElementById('forgot-password-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+            document.getElementById('forgot-email').value = '';
+            document.getElementById('forgot-success').style.display = 'none';
+            document.getElementById('forgot-submit-btn').textContent = 'Send Reset Link';
+            document.getElementById('forgot-submit-btn').disabled = false;
+        }
+
+        async function handleForgotPassword() {
+            const email = document.getElementById('forgot-email').value.toLowerCase().trim();
+            if (!email) { showToast('Please enter your email address', 'error'); return; }
+            const btn = document.getElementById('forgot-submit-btn');
+            btn.textContent = 'Sending...'; btn.disabled = true;
+            if (!supabase) { await new Promise(r => waitForSupabase(r, 20)); }
+            if (!supabase) { showToast('Server not ready. Try again in a moment.', 'error'); btn.textContent = 'Send Reset Link'; btn.disabled = false; return; }
+            try {
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: 'https://lightningledgerz.com'
+                });
+                if (error) throw error;
+                document.getElementById('forgot-success').style.display = 'block';
+                btn.textContent = 'Sent!';
+            } catch(err) {
+                showToast('Error: ' + err.message, 'error');
+                btn.textContent = 'Send Reset Link'; btn.disabled = false;
+            }
+        }
+
+        async function handleResetPassword() {
+            const newPwd = document.getElementById('new-password').value;
+            const confirmPwd = document.getElementById('confirm-password').value;
+            if (newPwd.length < 8) { showToast('Password must be at least 8 characters', 'error'); return; }
+            if (newPwd !== confirmPwd) { showToast('Passwords do not match', 'error'); return; }
+            const btn = document.getElementById('reset-submit-btn');
+            btn.textContent = 'Updating...'; btn.disabled = true;
+            try {
+                const { error } = await supabase.auth.updateUser({ password: newPwd });
+                if (error) throw error;
+                document.getElementById('reset-password-overlay').classList.remove('active');
+                document.body.style.overflow = '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirm-password').value = '';
+                showToast('Password updated! You can now sign in with your new password.', 'success');
+            } catch(err) {
+                showToast('Error: ' + err.message, 'error');
+                btn.textContent = 'Update Password'; btn.disabled = false;
             }
         }
 
