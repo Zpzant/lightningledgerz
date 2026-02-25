@@ -8224,7 +8224,7 @@
             if (!supabase) { showToast('Server not ready. Try again in a moment.', 'error'); btn.textContent = 'Send Reset Link'; btn.disabled = false; return; }
             try {
                 const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                    redirectTo: 'https://lightningledgerz.com'
+                    redirectTo: 'https://lightningledgerz.com/reset-password.html'
                 });
                 if (error) throw error;
                 document.getElementById('forgot-success').style.display = 'block';
