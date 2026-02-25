@@ -2711,6 +2711,7 @@
             border-radius: 20px;
             padding: 40px;
             color: #fff;
+            position: relative;
         }
 
         .dashboard-header {
@@ -3249,6 +3250,57 @@
             border-radius: 10px; padding: 10px 16px;
             color: #ffbb77; font-size: 0.85rem;
         }
+
+        /* Payment Gate Overlay */
+        .payment-gate {
+            position: absolute; inset: 0;
+            background: rgba(6,12,24,0.97);
+            z-index: 500;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px 24px 60px;
+            overflow-y: auto;
+            border-radius: 0 0 20px 20px;
+        }
+        .payment-gate.active { display: flex; }
+        .payment-gate-title { color: #fff; font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 8px; }
+        .payment-gate-sub { color: rgba(255,255,255,0.55); font-size: 0.92rem; text-align: center; margin-bottom: 8px; line-height: 1.5; }
+        .payment-gate-badge {
+            background: rgba(44,160,28,0.15); border: 1px solid rgba(44,160,28,0.4);
+            color: #7de87d; font-size: 0.82rem; font-weight: 700;
+            padding: 5px 16px; border-radius: 30px; margin-bottom: 28px;
+        }
+        .payment-gate-plans {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 14px; width: 100%; max-width: 780px; margin-bottom: 20px;
+        }
+        @media (max-width: 700px) { .payment-gate-plans { grid-template-columns: 1fr; } }
+        .payment-gate-plan {
+            background: rgba(255,255,255,0.04);
+            border: 1.5px solid rgba(255,255,255,0.12);
+            border-radius: 16px; padding: 22px 18px; text-align: center;
+            transition: border-color 0.2s;
+        }
+        .payment-gate-plan:hover { border-color: rgba(255,255,255,0.3); }
+        .payment-gate-plan.popular { border-color: var(--gold); background: rgba(245,166,35,0.06); }
+        .payment-gate-plan-name { color: #fff; font-size: 1rem; font-weight: 800; margin-bottom: 4px; }
+        .payment-gate-plan-price { color: var(--gold); font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
+        .payment-gate-plan-sub { color: rgba(255,255,255,0.4); font-size: 0.75rem; margin-bottom: 14px; }
+        .payment-gate-plan-features { list-style: none; padding: 0; margin: 0 0 16px; text-align: left; }
+        .payment-gate-plan-features li { color: rgba(255,255,255,0.65); font-size: 0.8rem; padding: 3px 0; }
+        .payment-gate-plan-features li::before { content: "✓ "; color: #7de87d; font-weight: 700; }
+        .payment-gate-plan-btn {
+            display: block; width: 100%;
+            background: linear-gradient(135deg, #1e3a5f, #2d5a9e);
+            color: #fff; border: none; padding: 12px;
+            border-radius: 25px; font-weight: 700; font-size: 0.88rem;
+            cursor: pointer; transition: all 0.2s; text-decoration: none;
+        }
+        .payment-gate-plan-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(30,58,95,0.4); }
+        .payment-gate-plan.popular .payment-gate-plan-btn { background: linear-gradient(135deg, #d4a017, #f5a623); }
+        .payment-gate-fine { color: rgba(255,255,255,0.3); font-size: 0.75rem; text-align: center; max-width: 480px; line-height: 1.5; }
 
         /* Security Bar */
         .portal-security-bar {
@@ -7205,7 +7257,7 @@
             </form>
 
             <form class="portal-form" id="register-form" onsubmit="handleRegister(event)">
-                <p class="form-subtitle">14-day trial. No credit card required.</p>
+                <p class="form-subtitle">30-day free trial. Card required — no charge until day 31.</p>
                 <div class="form-row">
                     <div class="form-group">
                         <input type="text" class="form-input" id="register-firstname" placeholder="First Name" required>
@@ -7239,6 +7291,57 @@
 
         <!-- Logged In Dashboard (hidden by default) -->
         <div class="portal-dashboard" id="portal-dashboard" style="display: none;">
+
+            <!-- Payment Gate — shown until Stripe trial checkout is complete -->
+            <div class="payment-gate" id="payment-gate">
+                <div class="payment-gate-title">Start Your Free Trial</div>
+                <p class="payment-gate-sub">Your agreement is signed. Add your payment info to activate your portal.<br>Pick the plan that fits — you can change it anytime.</p>
+                <div class="payment-gate-badge">✓ No charge today &nbsp;·&nbsp; Auto-bills after 30 days &nbsp;·&nbsp; Cancel anytime</div>
+                <div class="payment-gate-plans">
+                    <div class="payment-gate-plan">
+                        <div class="payment-gate-plan-name">⚡ Basic</div>
+                        <div class="payment-gate-plan-price">$799<span style="font-size:0.7rem;font-weight:400;color:rgba(255,255,255,0.4)">/mo</span></div>
+                        <div class="payment-gate-plan-sub">after free trial</div>
+                        <ul class="payment-gate-plan-features">
+                            <li>Monthly financial reports</li>
+                            <li>Budget vs. actual tracking</li>
+                            <li>Variance analysis</li>
+                            <li>Spreadsheet modeling</li>
+                            <li>Email support</li>
+                        </ul>
+                        <a class="payment-gate-plan-btn" id="trial-btn-basic" onclick="startTrial('basic')">Start Free Trial</a>
+                    </div>
+                    <div class="payment-gate-plan popular">
+                        <div style="font-size:0.72rem;font-weight:700;color:var(--gold);margin-bottom:6px;letter-spacing:1px;">MOST POPULAR</div>
+                        <div class="payment-gate-plan-name">✨ Gold</div>
+                        <div class="payment-gate-plan-price">$1,299<span style="font-size:0.7rem;font-weight:400;color:rgba(255,255,255,0.4)">/mo</span></div>
+                        <div class="payment-gate-plan-sub">after free trial</div>
+                        <ul class="payment-gate-plan-features">
+                            <li>Weekly strategy calls</li>
+                            <li>Advanced financial modeling</li>
+                            <li>Cash flow forecasting</li>
+                            <li>Custom KPI dashboard</li>
+                            <li>Priority support</li>
+                        </ul>
+                        <a class="payment-gate-plan-btn" id="trial-btn-gold" onclick="startTrial('gold')">Start Free Trial</a>
+                    </div>
+                    <div class="payment-gate-plan">
+                        <div class="payment-gate-plan-name">💎 Diamond</div>
+                        <div class="payment-gate-plan-price">$3,999<span style="font-size:0.7rem;font-weight:400;color:rgba(255,255,255,0.4)">/mo</span></div>
+                        <div class="payment-gate-plan-sub">after free trial</div>
+                        <ul class="payment-gate-plan-features">
+                            <li>Fractional CFO</li>
+                            <li>Board & investor prep</li>
+                            <li>Hourly reporting</li>
+                            <li>Strategic planning</li>
+                            <li>Direct phone access</li>
+                        </ul>
+                        <a class="payment-gate-plan-btn" id="trial-btn-diamond" onclick="startTrial('diamond')">Start Free Trial</a>
+                    </div>
+                </div>
+                <p class="payment-gate-fine">By starting your trial you confirm you have signed the Client Services Agreement above. Your card will not be charged until your 30-day trial ends. You may cancel before then with no penalty.</p>
+            </div>
+
             <div class="dashboard-header">
                 <div class="dashboard-greeting">
                     <img src="LightningLedgerzLogo.png" alt="Logo" class="dashboard-logo" id="dashboard-logo">
@@ -7767,6 +7870,8 @@
                         document.body.style.overflow = 'hidden';
                     }
                 });
+                // Handle return from Stripe trial checkout
+                handleTrialReturn();
                 checkExistingSession();
             } else {
                 console.log('Warning: Supabase not available at page load');
@@ -7955,6 +8060,15 @@
                 gold: 'YEARLY_GOLD_URL',        // Create in Stripe: $12,468/year
                 diamond: 'YEARLY_DIAMOND_URL'   // Create in Stripe: $38,388/year
             }
+        };
+
+        // Stripe TRIAL subscription links — card captured, $0 today, auto-bills day 31
+        // Create these in Stripe: Products → Subscriptions → Add 30-day free trial
+        // Set success URL to: https://lightningledgerz.com?trial=success&plan=PLANNAME
+        const STRIPE_TRIAL_URLS = {
+            basic:   'TRIAL_BASIC_URL',    // $799/mo subscription with 30-day trial
+            gold:    'TRIAL_GOLD_URL',     // $1,299/mo subscription with 30-day trial
+            diamond: 'TRIAL_DIAMOND_URL'  // $3,999/mo subscription with 30-day trial
         };
 
         // Select a plan - if logged in go to Stripe, else prompt signup
@@ -8414,8 +8528,10 @@
                 updateTrialBanner();
                 // Check if user selected a plan before signing up
                 checkPendingPlan();
-                // Check NDA - must be signed before quiz
+                // Check NDA - must be signed before payment
                 checkNDARequired();
+                // Check payment gate — shows after NDA if no active subscription
+                setTimeout(checkPaymentGate, 600);
                 // Show quiz on first login (after NDA check, with delay)
                 setTimeout(function() {
                     var userId = currentUserData?.id;
@@ -9752,12 +9868,15 @@
             if (modal) { modal.classList.remove('active'); document.body.style.overflow = ''; }
             showToast('Agreement accepted. Welcome to Lightning Ledgerz!', 'success');
 
-            // Show quiz if not seen
+            // After NDA, show payment gate (takes priority over quiz)
+            setTimeout(checkPaymentGate, 400);
+            // Show quiz only after payment is set up
             setTimeout(function() {
-                if (currentUserData?.id && !localStorage.getItem('quiz_seen_' + currentUserData.id)) {
+                var hasPaid = currentUserData?.profile?.subscription_status || localStorage.getItem('trial_activated_' + currentUserData?.id);
+                if (hasPaid && currentUserData?.id && !localStorage.getItem('quiz_seen_' + currentUserData.id)) {
                     openQuizModal();
                 }
-            }, 600);
+            }, 900);
         }
 
         async function sendNDAConfirmationEmail(toEmail, userName, company, repName, signedDate) {
@@ -9901,6 +10020,74 @@
         }
 
         // Check NDA on login - show if not accepted
+        // ===========================================
+        // PAYMENT GATE
+        // ===========================================
+        function checkPaymentGate() {
+            if (!currentUserData || currentUserData.isDemo || currentUserData.isAdmin) return;
+            var status = currentUserData?.profile?.subscription_status;
+            var localDone = currentUserData?.id ? localStorage.getItem('trial_activated_' + currentUserData.id) : null;
+            var gate = document.getElementById('payment-gate');
+            if (!gate) return;
+            // Show gate if no subscription and NDA is signed (payment comes after agreement)
+            var ndaSigned = currentUserData?.profile?.nda_accepted_at || localStorage.getItem('nda_done_' + currentUserData.id);
+            if (!status && !localDone && ndaSigned) {
+                gate.classList.add('active');
+            } else {
+                gate.classList.remove('active');
+            }
+        }
+
+        function startTrial(plan) {
+            var url = STRIPE_TRIAL_URLS[plan];
+            if (!url || url.startsWith('TRIAL_')) {
+                // Trial URLs not yet configured — fall back to regular checkout
+                showToast('Trial payment links not yet configured. Contact Zac to get started.', 'info');
+                return;
+            }
+            // Append email and return URL
+            var email = currentUserData?.email || '';
+            var successUrl = encodeURIComponent('https://lightningledgerz.com?trial=success&plan=' + plan);
+            window.location.href = url + '?prefilled_email=' + encodeURIComponent(email) + '&client_reference_id=' + (currentUserData?.id || '');
+        }
+
+        // Called on page load — handles return from Stripe trial checkout
+        async function handleTrialReturn() {
+            var params = new URLSearchParams(window.location.search);
+            if (params.get('trial') !== 'success') return;
+            var plan = params.get('plan') || 'basic';
+            // Clean URL
+            window.history.replaceState({}, '', window.location.pathname);
+            // Wait for user session
+            var attempts = 0;
+            var checkInterval = setInterval(async function() {
+                attempts++;
+                if (currentUserData?.id) {
+                    clearInterval(checkInterval);
+                    // Save to Supabase
+                    if (supabase) {
+                        await supabase.from('profiles').update({
+                            subscription_status: 'trialing',
+                            subscription_plan: plan,
+                            trial_started_at: new Date().toISOString()
+                        }).eq('id', currentUserData.id);
+                        if (currentUserData.profile) {
+                            currentUserData.profile.subscription_status = 'trialing';
+                            currentUserData.profile.subscription_plan = plan;
+                        }
+                    }
+                    // localStorage fallback
+                    localStorage.setItem('trial_activated_' + currentUserData.id, '1');
+                    // Hide gate
+                    var gate = document.getElementById('payment-gate');
+                    if (gate) gate.classList.remove('active');
+                    showToast('🎉 Trial activated! Your 30-day free trial has started. You\'ll be billed on day 31 unless you cancel.', 'success');
+                } else if (attempts > 30) {
+                    clearInterval(checkInterval);
+                }
+            }, 200);
+        }
+
         function checkNDARequired() {
             updateNDAStepStatus();
             setTimeout(updateLightningMeter, 300);
