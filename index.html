@@ -1937,6 +1937,16 @@
         .quiz-cta-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30,58,95,0.35); }
         .quiz-cta-divider { color: #bbb; font-size: 0.8rem; margin-bottom: 9px; }
         .quiz-cta-secondary { background: none; border: none; color: #4a90d9; font-size: 0.86rem; cursor: pointer; text-decoration: underline; font-weight: 600; }
+        .quiz-cta-call-now {
+            display: block; width: 100%;
+            background: rgba(30,58,95,0.08);
+            border: 1.5px solid #1e3a5f;
+            color: #1e3a5f; padding: 13px; border-radius: 30px;
+            font-weight: 700; font-size: 0.95rem; cursor: pointer;
+            text-decoration: none; text-align: center;
+            transition: all 0.2s; margin-bottom: 11px;
+        }
+        .quiz-cta-call-now:hover { background: #1e3a5f; color: #fff; }
         .quiz-footer {
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 30px 18px;
@@ -6818,7 +6828,9 @@
                             <strong>Want to make sure this is the right fit?</strong><br>
                             Book a free 30-minute strategy call — I'll walk through your exact situation and confirm the best plan for you.
                         </div>
-                        <button class="quiz-cta-primary" onclick="bookDiscoveryCall()">📞 Book Your Free Strategy Call</button>
+                        <button class="quiz-cta-primary" onclick="bookDiscoveryCall()">📅 Schedule a Free Strategy Call</button>
+                        <div class="quiz-cta-divider">want to move fast?</div>
+                        <a class="quiz-cta-call-now" href="tel:+17025502513">📞 Call Now — (702) 550-2513</a>
                         <div class="quiz-cta-divider">or</div>
                         <button class="quiz-cta-secondary" id="quiz-cta-trial" onclick="">Start my trial directly →</button>
                     </div>
@@ -7925,6 +7937,8 @@
         const DEMO_EMAIL = 'demo@lightningledgerz.com';
         const DEMO_PASSWORD = 'demo123';
         const ADMIN_EMAIL = 'zprizant@lightningledgerz.com';
+        const CALENDLY_URL = 'https://calendly.com/zprizant'; // Update with your real Calendly link
+        const ZAC_PHONE = '+17025502513';
 
         // Stripe checkout URLs for each plan (monthly and yearly)
         const STRIPE_URLS = {
@@ -9674,37 +9688,115 @@
             btn.textContent = 'Saving...';
             btn.disabled = true;
 
+            var now = new Date().toISOString();
+            var saveSuccess = false;
+
             try {
                 if (supabase && currentUserData?.id) {
-                    await supabase.from('profiles').update({
-                        nda_accepted_at: new Date().toISOString(),
+                    const { error: updateErr } = await supabase.from('profiles').update({
+                        nda_accepted_at: now,
                         nda_company_name: company,
                         nda_rep_name: repName
                     }).eq('id', currentUserData.id);
+
+                    if (updateErr) {
+                        console.error('NDA Supabase error:', updateErr);
+                        // Column may not exist yet — show SQL reminder
+                        showToast('Agreement saved locally. Run the Supabase SQL to enable persistent storage.', 'info');
+                    } else {
+                        saveSuccess = true;
+                    }
                 }
             } catch (e) { console.error('NDA save error:', e); }
 
-            // Update profile data locally
+            // Always update local state regardless of DB success
             if (currentUserData) {
                 if (!currentUserData.profile) currentUserData.profile = {};
-                currentUserData.profile.nda_accepted_at = new Date().toISOString();
+                currentUserData.profile.nda_accepted_at = now;
                 currentUserData.profile.nda_company_name = company;
                 currentUserData.profile.nda_rep_name = repName;
             }
             updateNDAStepStatus();
             setTimeout(updateLightningMeter, 200);
 
+            // Send confirmation emails
+            if (saveSuccess) {
+                var signedDate = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+                var userEmail = currentUserData?.email || '';
+                var userName = currentUserData?.name || repName;
+
+                // Email to client
+                sendNDAConfirmationEmail(userEmail, userName, company, repName, signedDate);
+                // Email to Zac
+                sendNDANotificationToZac(userEmail, userName, company, repName, signedDate);
+            }
+
             // Close NDA modal
             var modal = document.getElementById('nda-modal');
             if (modal) { modal.classList.remove('active'); document.body.style.overflow = ''; }
             showToast('Agreement accepted. Welcome to Lightning Ledgerz!', 'success');
 
-            // Now show quiz if not seen
+            // Show quiz if not seen
             setTimeout(function() {
                 if (currentUserData?.id && !localStorage.getItem('quiz_seen_' + currentUserData.id)) {
                     openQuizModal();
                 }
             }, 600);
+        }
+
+        async function sendNDAConfirmationEmail(toEmail, userName, company, repName, signedDate) {
+            try {
+                await fetch('https://api.resend.com/emails', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer re_UCWQV5bx_BrU63SdgrK1Tvzfdve93PFHM' },
+                    body: JSON.stringify({
+                        from: 'Lightning Ledgerz <noreply@lightningledgerz.com>',
+                        to: [toEmail],
+                        subject: 'Your Lightning Ledgerz Client Agreement — Signed ' + signedDate,
+                        html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;padding:32px;border-radius:12px;">
+                            <div style="text-align:center;margin-bottom:24px;">
+                                <h2 style="color:#1e3a5f;margin:0;">⚡ Lightning Ledgerz</h2>
+                                <p style="color:#888;margin:4px 0 0;">Client Services Agreement — Confirmed</p>
+                            </div>
+                            <p style="color:#333;">Hi ${userName},</p>
+                            <p style="color:#333;">Your Client Services Agreement has been electronically signed and is on file. Here is a summary of your acceptance:</p>
+                            <div style="background:#f8f9fc;border-left:4px solid #1e3a5f;padding:16px 20px;border-radius:8px;margin:20px 0;">
+                                <p style="margin:0 0 6px;color:#333;"><strong>Company:</strong> ${company}</p>
+                                <p style="margin:0 0 6px;color:#333;"><strong>Authorized Representative:</strong> ${repName}</p>
+                                <p style="margin:0 0 6px;color:#333;"><strong>Date Signed:</strong> ${signedDate}</p>
+                                <p style="margin:0;color:#333;"><strong>Consultant:</strong> Zachary Prizant, Founder & CEO — Lightning Ledgerz, LLC</p>
+                            </div>
+                            <p style="color:#555;font-size:0.9rem;">Please retain this email for your records. If you have any questions, reply to this email or reach out directly at <a href="mailto:zprizant@lightningledgerz.com" style="color:#1e3a5f;">zprizant@lightningledgerz.com</a>.</p>
+                            <p style="color:#555;font-size:0.9rem;">Looking forward to working with you.</p>
+                            <p style="color:#333;"><strong>— Zac Prizant</strong><br><span style="color:#888;font-size:0.85rem;">Founder & CEO, Lightning Ledgerz LLC<br>(702) 550-2513 · lightningledgerz.com</span></p>
+                        </div>`
+                    })
+                });
+            } catch(e) { console.error('NDA client email error:', e); }
+        }
+
+        async function sendNDANotificationToZac(userEmail, userName, company, repName, signedDate) {
+            try {
+                await fetch('https://api.resend.com/emails', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer re_UCWQV5bx_BrU63SdgrK1Tvzfdve93PFHM' },
+                    body: JSON.stringify({
+                        from: 'Lightning Ledgerz Portal <noreply@lightningledgerz.com>',
+                        to: [ADMIN_EMAIL],
+                        subject: '✅ Agreement Signed: ' + company + ' (' + repName + ')',
+                        html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;padding:32px;border-radius:12px;">
+                            <h2 style="color:#1e3a5f;">✅ New Agreement Signed</h2>
+                            <div style="background:#f0fdf4;border:1px solid #86efac;padding:16px 20px;border-radius:8px;margin:16px 0;">
+                                <p style="margin:0 0 6px;color:#166534;"><strong>Company:</strong> ${company}</p>
+                                <p style="margin:0 0 6px;color:#166534;"><strong>Representative:</strong> ${repName}</p>
+                                <p style="margin:0 0 6px;color:#166534;"><strong>Email:</strong> ${userEmail}</p>
+                                <p style="margin:0;color:#166534;"><strong>Signed:</strong> ${signedDate}</p>
+                            </div>
+                            <p style="color:#555;">Log in to the admin dashboard to view their profile and uploads.</p>
+                        </div>`
+                    })
+                });
+            } catch(e) { console.error('NDA Zac notification error:', e); }
         }
 
         function buildNDAText(company, repName, repTitle, date) {
@@ -9899,7 +9991,7 @@
         }
 
         function bookDiscoveryCall() {
-            window.location.href = 'mailto:zprizant@lightningledgerz.com?subject=Free%20Strategy%20Call%20Request&body=Hi%20Zac%2C%20I%27d%20like%20to%20book%20a%20free%20strategy%20call.';
+            window.open(CALENDLY_URL, '_blank');
         }
 
         function runQuiz() {} // legacy stub
