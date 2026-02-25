@@ -1742,57 +1742,63 @@
         }
 
         .quiz-header {
-            background: #0d2240;
-            padding: 25px 30px;
+            background: #fff;
+            padding: 30px 30px 20px;
             text-align: center;
             position: relative;
+            border-bottom: 1px solid #f0f0f0;
         }
 
-        .quiz-header h2 { color: #fff; margin: 0 0 5px; font-size: 1.5rem; }
-        .quiz-header p { color: rgba(255,255,255,0.75); margin: 0; font-size: 0.9rem; }
+        .quiz-header h2 { color: #1e3a5f; margin: 0 0 6px; font-size: 1.55rem; font-weight: 800; }
+        .quiz-header p { color: #777; margin: 0; font-size: 0.92rem; }
 
         .quiz-close {
             position: absolute;
             top: 15px; right: 20px;
             background: none; border: none;
-            color: rgba(255,255,255,0.6);
+            color: #aaa;
             font-size: 1.8rem; cursor: pointer; line-height: 1;
         }
+        .quiz-close:hover { color: #555; }
 
         .quiz-body { padding: 25px 30px; }
 
         .quiz-question {
             font-weight: 700;
             color: #1e3a5f;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             font-size: 1rem;
+            text-align: center;
         }
 
         .quiz-checks {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 25px;
+            justify-content: center;
         }
-
-        @media (max-width: 500px) { .quiz-checks { grid-template-columns: 1fr; } }
 
         .quiz-check-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            gap: 8px;
+            padding: 9px 18px;
+            border: 1.5px solid #d8d8d8;
+            border-radius: 50px;
             cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.88rem;
+            transition: all 0.18s;
+            font-size: 0.87rem;
             color: #444;
+            background: #fff;
+            white-space: nowrap;
+            user-select: none;
         }
 
-        .quiz-check-item:hover { border-color: #1e3a5f; background: #f0f4ff; }
-        .quiz-check-item input { accent-color: #1e3a5f; width: 16px; height: 16px; flex-shrink: 0; }
-        .quiz-check-item:has(input:checked) { border-color: #1e3a5f; background: #f0f4ff; font-weight: 600; color: #1e3a5f; }
+        .quiz-check-item:hover { border-color: #1e3a5f; background: #f5f8ff; color: #1e3a5f; }
+        .quiz-check-item input { accent-color: #1e3a5f; width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; }
+        .quiz-check-item:has(input:checked) { border-color: #1e3a5f; background: #e8effe; font-weight: 600; color: #1e3a5f; }
+        .quiz-check-item.consult-pill:has(input:checked) { border-color: #f5a623; background: #fff8ee; color: #c07800; }
 
         .quiz-result {
             display: none;
@@ -6179,14 +6185,14 @@
             <div class="quiz-header">
                 <button class="quiz-close" onclick="closeQuizModal()">&times;</button>
                 <h2>Find Your Perfect Plan</h2>
-                <p>Check everything that applies to your business needs</p>
+                <p>Select everything your business needs — I'll match you to the right package</p>
             </div>
             <div class="quiz-body">
-                <div class="quiz-question">What does your business need? (Check all that apply)</div>
+                <div class="quiz-question">What does your business need? (Select all that apply)</div>
                 <div class="quiz-checks" id="quiz-checks">
                     <label class="quiz-check-item"><input type="checkbox" value="1"> Monthly financial reports</label>
                     <label class="quiz-check-item"><input type="checkbox" value="1"> Budget vs. actual tracking</label>
-                    <label class="quiz-check-item"><input type="checkbox" value="1"> Basic bookkeeping support</label>
+                    <label class="quiz-check-item"><input type="checkbox" value="1"> Bookkeeping support</label>
                     <label class="quiz-check-item"><input type="checkbox" value="1"> Variance analysis & commentary</label>
                     <label class="quiz-check-item"><input type="checkbox" value="2"> Weekly strategy calls</label>
                     <label class="quiz-check-item"><input type="checkbox" value="2"> Cash flow forecasting</label>
@@ -6196,6 +6202,7 @@
                     <label class="quiz-check-item"><input type="checkbox" value="3"> Board or investor presentations</label>
                     <label class="quiz-check-item"><input type="checkbox" value="3"> Hourly or real-time reporting</label>
                     <label class="quiz-check-item"><input type="checkbox" value="3"> Direct phone access to advisor</label>
+                    <label class="quiz-check-item consult-pill"><input type="checkbox" value="consult"> Not sure / I need a consultation</label>
                 </div>
                 <div style="text-align: center; margin-bottom: 20px;">
                     <button onclick="runQuiz()" style="background: #1e3a5f; color: #fff; border: none; padding: 12px 35px; border-radius: 30px; font-weight: 700; font-size: 1rem; cursor: pointer;">See My Recommendation →</button>
@@ -8925,40 +8932,80 @@
 
         function runQuiz() {
             var checks = document.querySelectorAll('#quiz-checks input[type="checkbox"]:checked');
-            var score = 0;
-            checks.forEach(function(cb) { score += parseInt(cb.value || 1); });
+            if (checks.length === 0) { showToast('Select at least one option to see your recommendation', 'info'); return; }
 
-            var plan, planName, price, features, btnText;
-            if (score >= 9) {
+            var hasDiamond = Array.from(checks).some(function(cb) { return cb.value === '3'; });
+            var hasGold    = Array.from(checks).some(function(cb) { return cb.value === '2'; });
+            var hasConsult = Array.from(checks).some(function(cb) { return cb.value === 'consult'; });
+
+            var plan, planName, price, features, btnText, resultStyle;
+
+            if (hasConsult && !hasDiamond && !hasGold) {
+                // Pure consultation — show a CTA to book a call
+                var resultEl = document.getElementById('quiz-result');
+                resultEl.style.background = 'linear-gradient(135deg, #fff8ee, #ffefd6)';
+                resultEl.style.borderColor = '#f5a623';
+                document.getElementById('quiz-result-plan').textContent = 'Let\'s Talk First';
+                document.getElementById('quiz-result-price').textContent = 'Free 30-minute discovery call';
+                var featList = document.getElementById('quiz-result-features');
+                featList.innerHTML = '<li>Walk through your exact needs</li><li>Get a custom package recommendation</li><li>No commitment required</li>';
+                var ctaBtn = document.getElementById('quiz-cta-btn');
+                ctaBtn.style.background = 'linear-gradient(135deg, #f5a623, #e08c00)';
+                ctaBtn.textContent = 'Schedule a Free Call';
+                ctaBtn.onclick = function() { window.location.href = 'mailto:zprizant@lightningledgerz.com?subject=Free%20Discovery%20Call%20Request'; };
+                resultEl.classList.add('active');
+                resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                return;
+            }
+
+            if (hasDiamond || (hasConsult && hasDiamond)) {
                 plan = 'diamond';
                 planName = '💎 Diamond Package';
                 price = '$3,999/month';
                 features = ['Fractional CFO — your financial co-pilot', 'Board & investor presentation support', 'Hourly & real-time reporting dashboards', 'Complete strategic financial planning', 'Direct phone access to Zac Prizant', 'Everything in Gold'];
                 btnText = 'Start Diamond Trial';
-            } else if (score >= 5) {
+                resultStyle = { bg: 'linear-gradient(135deg, #f0f4ff, #e8ecff)', border: '#1e3a5f' };
+            } else if (hasGold || (hasConsult && hasGold)) {
                 plan = 'gold';
                 planName = '✨ Gold Package';
                 price = '$1,299/month';
                 features = ['Weekly strategy calls with your advisor', 'Advanced financial modeling', 'Cash flow optimization planning', 'Custom KPI dashboard creation', 'Priority support', 'Unlimited document uploads'];
                 btnText = 'Start Gold Trial';
+                resultStyle = { bg: 'linear-gradient(135deg, #fffbf0, #fff3d6)', border: '#f5a623' };
             } else {
                 plan = 'basic';
                 planName = '⚡ Basic Package';
                 price = '$799/month';
                 features = ['Monthly financial reporting', 'Budget vs. actual tracking', 'Variance analysis & commentary', 'Spreadsheet modeling', 'Email support'];
                 btnText = 'Start Basic Trial';
+                resultStyle = { bg: 'linear-gradient(135deg, #f0f4ff, #e8f0fe)', border: '#1e3a5f' };
             }
 
+            var resultEl = document.getElementById('quiz-result');
+            resultEl.style.background = resultStyle.bg;
+            resultEl.style.borderColor = resultStyle.border;
             document.getElementById('quiz-result-plan').textContent = planName;
             document.getElementById('quiz-result-price').textContent = price;
             var featList = document.getElementById('quiz-result-features');
             featList.innerHTML = features.map(function(f) { return '<li>' + f + '</li>'; }).join('');
             var ctaBtn = document.getElementById('quiz-cta-btn');
+            ctaBtn.style.background = '';
             ctaBtn.textContent = btnText;
             ctaBtn.onclick = function() { closeQuizModal(); selectPlan(plan); };
 
-            document.getElementById('quiz-result').classList.add('active');
-            document.getElementById('quiz-result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            resultEl.classList.add('active');
+            resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // Scroll to pricing and highlight the recommended plan card
+            setTimeout(function() {
+                var cardId = { basic: 'basic-card', gold: 'gold-card', diamond: 'diamond-card' }[plan];
+                var card = document.getElementById(cardId);
+                if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    card.classList.add('highlight');
+                    setTimeout(function() { card.classList.remove('highlight'); }, 3500);
+                }
+            }, 500);
         }
 
         function openUpgradeModal() {
