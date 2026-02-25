@@ -7784,10 +7784,10 @@
                     // User has an active session (e.g., returned from Google OAuth)
                     const user = session.user;
 
-                    // Get or create profile
+                    // Get or create profile — select ALL fields so nda_accepted_at etc. are available
                     let { data: profile } = await supabase
                         .from('profiles')
-                        .select('first_name, tier')
+                        .select('*')
                         .eq('id', user.id)
                         .single();
 
@@ -7803,10 +7803,11 @@
                             email: user.email,
                             first_name: firstName,
                             last_name: lastName,
-                            tier: 'basic'
+                            tier: 'basic',
+                            trial_started_at: user.created_at
                         });
 
-                        profile = { first_name: firstName, tier: 'basic' };
+                        profile = { first_name: firstName, tier: 'basic', trial_started_at: user.created_at };
                     }
 
                     const userName = profile?.first_name || user.email.split('@')[0];
@@ -7818,6 +7819,8 @@
                         email: user.email,
                         name: userName,
                         tier: userTier,
+                        created_at: profile?.trial_started_at || user.created_at,
+                        profile: profile,
                         isDemo: false,
                         isAdmin: isAdmin
                     };
@@ -8144,11 +8147,20 @@
                 const userTier = profile?.package_tier || 'basic';
                 const isAdmin = email.toLowerCase() === ADMIN_EMAIL || profile?.is_admin === true;
 
+                // Store trial_started_at in profile if not yet set
+                if (profile && !profile.trial_started_at) {
+                    await supabase.from('profiles').update({
+                        trial_started_at: data.user.created_at
+                    }).eq('id', data.user.id);
+                    profile.trial_started_at = data.user.created_at;
+                }
+
                 currentUserData = {
                     id: data.user.id,
                     email,
                     name: userName,
                     tier: userTier,
+                    created_at: profile?.trial_started_at || data.user.created_at,
                     profile: profile,
                     isDemo: false,
                     isAdmin: isAdmin
@@ -9715,6 +9727,10 @@
                 currentUserData.profile.nda_accepted_at = now;
                 currentUserData.profile.nda_company_name = company;
                 currentUserData.profile.nda_rep_name = repName;
+                // localStorage fallback so NDA never shows again even if Supabase columns not yet added
+                if (currentUserData.id) {
+                    localStorage.setItem('nda_done_' + currentUserData.id, '1');
+                }
             }
             updateNDAStepStatus();
             setTimeout(updateLightningMeter, 200);
@@ -9889,9 +9905,11 @@
             updateNDAStepStatus();
             setTimeout(updateLightningMeter, 300);
             if (!currentUserData || currentUserData.isDemo || currentUserData.isAdmin) return;
+            // Check Supabase profile first, then localStorage fallback
             var ndaAccepted = currentUserData?.profile?.nda_accepted_at;
-            if (!ndaAccepted) {
-                setTimeout(function() { openNDAModal(); }, 500);
+            var localDone   = currentUserData?.id ? localStorage.getItem('nda_done_' + currentUserData.id) : null;
+            if (!ndaAccepted && !localDone) {
+                setTimeout(function() { openNDAModal(); }, 800);
             }
         }
 
