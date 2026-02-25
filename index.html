@@ -2782,7 +2782,190 @@
 
         .portal-step-body {
             padding: 25px;
+            color: #444;
         }
+
+        .portal-step-body p, .portal-step-body label, .portal-step-body span,
+        .portal-step-body input, .portal-step-body select, .portal-step-body textarea {
+            color: #444;
+        }
+
+        /* Step 1: NDA */
+        .nda-step-sign-btn {
+            background: #1e3a5f;
+            color: #fff;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nda-step-sign-btn:hover { background: #0d2240; transform: translateY(-1px); }
+        .nda-signed-badge {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #f0fdf4;
+            border: 1.5px solid #86efac;
+            border-radius: 12px;
+            padding: 16px 20px;
+        }
+        .nda-signed-check {
+            width: 40px; height: 40px;
+            background: #22c55e;
+            color: #fff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; font-weight: 900; flex-shrink: 0;
+        }
+        .nda-signed-title { font-weight: 700; color: #166534; font-size: 1rem; }
+        .nda-signed-meta { font-size: 0.82rem; color: #4ade80; margin-top: 2px; }
+
+        /* Step 2: Platform Dropdown */
+        .trust-signals-bar {
+            display: flex; gap: 18px; flex-wrap: wrap;
+            background: #f0f4ff; border-radius: 8px;
+            padding: 10px 16px; margin-bottom: 16px;
+            font-size: 0.82rem; font-weight: 600; color: #1e3a5f;
+        }
+        .platform-dropdown-wrap { margin-bottom: 15px; position: relative; }
+        .platform-dropdown-label { display: block; font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 6px; }
+        .platform-dropdown-box {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 11px 16px; border: 1.5px solid #d0d7e5;
+            border-radius: 10px; background: #fff; cursor: pointer;
+            transition: border-color 0.2s; font-size: 0.9rem; color: #333;
+        }
+        .platform-dropdown-box:hover { border-color: #1e3a5f; }
+        .platform-dropdown-arrow { color: #888; font-size: 0.8rem; }
+        .platform-dropdown-list {
+            position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+            background: #fff; border: 1.5px solid #d0d7e5;
+            border-radius: 10px; box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            z-index: 200; overflow: hidden;
+        }
+        .platform-dropdown-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 14px; cursor: pointer;
+            transition: background 0.15s; font-size: 0.88rem; color: #333;
+        }
+        .platform-dropdown-item:hover { background: #f5f7fb; }
+        .platform-logo-sm {
+            width: 32px; height: 32px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-size: 0.68rem; font-weight: 900; color: #fff;
+        }
+        .pdrop-check { margin-left: auto; color: #22c55e; font-size: 0.9rem; font-weight: 700; }
+        .connected-platform-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #f0fdf4; border: 1px solid #86efac;
+            border-radius: 20px; padding: 4px 12px;
+            font-size: 0.78rem; font-weight: 600; color: #166534;
+        }
+
+        /* Step 3: Financial Upload Grid */
+        .fin-upload-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 10px;
+        }
+        @media (max-width: 720px) { .fin-upload-grid { grid-template-columns: 1fr; } }
+        .fin-upload-slot {
+            background: #f8f9fc; border: 1.5px dashed #d0d7e5;
+            border-radius: 12px; padding: 18px 14px; text-align: center;
+            transition: border-color 0.2s;
+        }
+        .fin-upload-slot:hover { border-color: #1e3a5f; background: #f3f6ff; }
+        .fin-slot-icon { font-size: 1.8rem; margin-bottom: 8px; }
+        .fin-slot-label { font-weight: 700; color: #1e3a5f; font-size: 0.88rem; margin-bottom: 3px; }
+        .fin-slot-sub { font-size: 0.75rem; color: #999; margin-bottom: 12px; }
+        .fin-upload-btn {
+            display: inline-block; background: #1e3a5f; color: #fff;
+            padding: 7px 16px; border-radius: 20px;
+            font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: background 0.2s;
+        }
+        .fin-upload-btn:hover { background: #0d2240; }
+        .fin-slot-status { font-size: 0.75rem; color: #22c55e; margin-top: 8px; min-height: 18px; font-weight: 600; }
+
+        /* Skip buttons */
+        .step-skip-row { text-align: right; margin-top: 14px; padding-top: 12px; border-top: 1px solid #f0f0f0; }
+        .step-skip-btn { background: none; border: none; color: #bbb; font-size: 0.8rem; cursor: pointer; text-decoration: underline; }
+        .step-skip-btn:hover { color: #888; }
+
+        /* Add Another Platform */
+        .add-platform-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: none; border: 1.5px dashed #d0d7e5; border-radius: 8px;
+            padding: 8px 16px; font-size: 0.83rem; font-weight: 600; color: #555;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .add-platform-btn:hover { border-color: #1e3a5f; color: #1e3a5f; background: #f5f7ff; }
+
+        /* Lightning Bolt Profile Meter */
+        .lightning-meter-bar {
+            background: rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 16px 22px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .lightning-meter-left { display: flex; align-items: center; gap: 16px; }
+        .lightning-bolt-wrap {
+            position: relative;
+            width: 40px; height: 70px;
+            flex-shrink: 0;
+        }
+        .lightning-bolt-svg {
+            position: absolute; top: 0; left: 0;
+            width: 40px; height: 70px;
+            filter: drop-shadow(0 0 4px rgba(255,42,42,0.5));
+            z-index: 2;
+        }
+        .lightning-bolt-fill {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, #ff0000, #ff4400, #ff8800);
+            border-radius: 3px;
+            transition: height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 1;
+            box-shadow: 0 0 10px rgba(255,42,42,0.6), 0 0 20px rgba(255,100,0,0.4);
+        }
+        .lightning-spark {
+            display: none;
+            position: absolute;
+            top: -8px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.2rem;
+            z-index: 3;
+            animation: sparkle 0.4s infinite alternate;
+        }
+        @keyframes sparkle {
+            from { opacity: 1; transform: translateX(-50%) scale(1); }
+            to   { opacity: 0.4; transform: translateX(-50%) scale(1.4) rotate(15deg); }
+        }
+        .lightning-meter-text { display: flex; flex-direction: column; gap: 3px; }
+        .lightning-meter-pct { color: #fff; font-size: 1.05rem; font-weight: 800; }
+        .lightning-meter-tip { color: rgba(255,255,255,0.6); font-size: 0.8rem; }
+        .lightning-meter-reward {
+            background: rgba(255,42,42,0.15); border: 1px solid rgba(255,100,0,0.4);
+            border-radius: 10px; padding: 10px 16px;
+            color: #ffbb77; font-size: 0.85rem;
+        }
+
+        /* Security Bar */
+        .portal-security-bar {
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px; flex-wrap: wrap;
+            background: rgba(255,255,255,0.12); border-radius: 10px;
+            padding: 12px 20px; margin-top: 20px;
+            font-size: 0.82rem; color: rgba(255,255,255,0.65);
+        }
+        .security-bar-dot { color: rgba(255,255,255,0.3); }
 
         /* Step 4: Reports Carousel */
         .portal-reports-carousel-container {
@@ -2822,55 +3005,105 @@
 
         .portal-report-card {
             flex-shrink: 0;
-            width: 280px;
-            background: linear-gradient(135deg, #f8f9fa, #fff);
-            border-radius: 16px;
+            width: 260px;
+            background: #fff;
+            border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
             cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.22s ease;
+            border: 1px solid #e8ecf0;
+            display: flex;
+            flex-direction: column;
         }
 
         .portal-report-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 26px rgba(0,0,0,0.12);
+            border-color: #c2d3f0;
         }
 
         .portal-report-card-thumbnail {
             width: 100%;
-            height: 180px;
-            background: linear-gradient(135deg, #e8f0fe, #d4e4fc);
+            height: 162px;
+            background: linear-gradient(135deg, #eef2ff, #dce8fc);
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid #edf0f5;
         }
 
         .portal-report-card-thumbnail img {
-            max-width: 100%;
-            max-height: 100%;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
         }
 
         .portal-report-card-label {
-            padding: 15px;
-            text-align: center;
+            padding: 13px 14px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
         }
 
-        .portal-report-card-label h4 {
+        .portal-report-card-title {
+            font-weight: 700;
+            color: #1a2e4a;
+            font-size: 0.88rem;
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .portal-report-card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .portal-report-card-date {
+            color: #9ca3af;
+            font-size: 0.75rem;
+        }
+
+        .portal-report-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 9px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+
+        .portal-report-status.status-delivered { background: #dcfce7; color: #166534; }
+        .portal-report-status.status-new { background: #fef3c7; color: #92400e; }
+
+        .portal-report-card-actions {
+            padding: 0 14px 13px;
+        }
+
+        .portal-report-dl-btn {
+            width: 100%;
+            background: #f5f7fb;
+            border: 1px solid #e0e7ef;
+            border-radius: 8px;
+            padding: 7px 0;
+            font-size: 0.78rem;
             font-weight: 600;
             color: #1e3a5f;
-            font-size: 0.95rem;
-            margin: 0 0 5px 0;
+            cursor: pointer;
+            transition: all 0.18s;
+            text-align: center;
+            display: block;
         }
 
-        .portal-report-card-label p {
-            color: #6B7280;
-            font-size: 0.8rem;
-            margin: 0;
-        }
+        .portal-report-dl-btn:hover { background: #e8effe; border-color: #b8c9f0; }
 
         .portal-scroll-hint {
             display: flex;
@@ -6633,115 +6866,158 @@
                 </div>
             </div>
 
+            <!-- Lightning Bolt Profile Meter -->
+            <div class="lightning-meter-bar">
+                <div class="lightning-meter-left">
+                    <div class="lightning-bolt-wrap" id="lightning-bolt-wrap">
+                        <div class="lightning-bolt-fill" id="lightning-bolt-fill" style="height:0%"></div>
+                        <svg class="lightning-bolt-svg" viewBox="0 0 40 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M24 2L4 40H20L16 68L36 28H20L24 2Z" stroke="#ff2a2a" stroke-width="2.5" stroke-linejoin="round"/>
+                        </svg>
+                        <div class="lightning-spark" id="lightning-spark"></div>
+                    </div>
+                    <div class="lightning-meter-text">
+                        <div class="lightning-meter-pct" id="lightning-meter-pct">0% Complete</div>
+                        <div class="lightning-meter-tip" id="lightning-meter-tip">Sign your agreement to get started</div>
+                    </div>
+                </div>
+                <div class="lightning-meter-reward" id="lightning-meter-reward" style="display:none;">
+                    <span>⚡ Profile complete! You've earned a <strong>free month</strong> — contact Zac to redeem.</span>
+                </div>
+            </div>
+
             <!-- 4-Step Portal Layout -->
             <div class="portal-steps-container">
 
-                <!-- STEP 1: Company Logo -->
-                <div class="portal-step-card">
+                <!-- STEP 1: Client Services Agreement -->
+                <div class="portal-step-card" id="step-nda">
                     <div class="portal-step-header">
                         <div class="portal-step-number">1</div>
-                        <h4>Company Logo</h4>
+                        <h4>Client Services Agreement</h4>
                     </div>
                     <div class="portal-step-body">
-                        <div class="logo-upload-column">
-                            <div class="company-logo-preview" id="company-logo-preview" onclick="document.getElementById('logo-input').click()">
-                                <span class="placeholder" id="logo-placeholder">Click to upload<br>your logo</span>
-                                <img id="company-logo-img" src="" alt="Company Logo" style="display: none;">
-                            </div>
-                            <input type="file" id="logo-input" accept=".png,.jpg,.jpeg,.svg,.webp" style="display: none;" onchange="handleLogoUpload(event)">
-                            <button class="logo-upload-btn" onclick="document.getElementById('logo-input').click()">Upload Logo</button>
+                        <div id="nda-step-unsigned">
+                            <p style="margin-bottom:16px;">Before using your portal, review and sign your Client Services Agreement. This establishes the terms of our engagement and protects both parties.</p>
+                            <button class="nda-step-sign-btn" onclick="openNDAModal()">Review &amp; Sign Agreement &rarr;</button>
                         </div>
+                        <div id="nda-step-signed" style="display:none;">
+                            <div class="nda-signed-badge">
+                                <span class="nda-signed-check">&#10003;</span>
+                                <div>
+                                    <div class="nda-signed-title">Agreement Signed</div>
+                                    <div class="nda-signed-meta" id="nda-signed-meta"></div>
+                                </div>
+                            </div>
+                            <p style="font-size:0.83rem;color:#888;margin-top:12px;">Your Client Services Agreement is on file. Contact <a href="mailto:zprizant@lightningledgerz.com" style="color:#1e3a5f;">zprizant@lightningledgerz.com</a> with any questions.</p>
+                        </div>
+                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('nda')">Skip for now</button></div>
                     </div>
                 </div>
 
-                <!-- STEP 2: Platform Integrations -->
+                <!-- STEP 2: Database Access -->
                 <div class="portal-step-card" id="platform-integrations">
                     <div class="portal-step-header">
                         <div class="portal-step-number">2</div>
-                        <h4>Platform Integrations</h4>
+                        <h4>Database Access</h4>
                     </div>
-                    <div class="portal-step-body" style="color: #333;">
-                        <!-- Trust Signals Bar -->
-                        <div style="background: #f0f4ff; padding: 12px 20px; display: flex; gap: 25px; flex-wrap: wrap; border-radius: 8px; margin-bottom: 20px;">
-                            <span style="color: var(--mckinsey-blue); font-size: 0.85rem; font-weight: 600;">&#128274; 256-bit Encrypted</span>
-                            <span style="color: var(--mckinsey-blue); font-size: 0.85rem; font-weight: 600;">&#128737; SOC 2 Compliant</span>
-                            <span style="color: var(--mckinsey-blue); font-size: 0.85rem; font-weight: 600;">&#9989; Revoke Anytime</span>
+                    <div class="portal-step-body">
+                        <div class="trust-signals-bar">
+                            <span>&#128274; 256-bit Encrypted</span>
+                            <span>&#128737; SOC 2 Compliant</span>
+                            <span>&#9989; Revoke Anytime</span>
                         </div>
-                        <p style="color: #555; font-size: 0.9rem; margin-bottom: 20px;">Click a platform to connect it. You can share your existing login or create a separate login for your advisor.</p>
+                        <p style="font-size:0.88rem;color:#666;margin-bottom:16px;">Select your accounting platform and share login credentials. I use read-only access to pull your financial data for reporting.</p>
 
-                        <div class="platform-grid">
-                            <div class="platform-tile" id="tile-quickbooks" onclick="selectPlatform('quickbooks')">
-                                <div class="platform-logo" style="background: #2CA01C;">
-                                    <span style="color: #fff; font-size: 1.5rem; font-weight: 900;">QB</span>
-                                </div>
-                                <span class="platform-name">QuickBooks</span>
-                                <span class="platform-status" id="status-quickbooks"></span>
+                        <!-- Platform Dropdown -->
+                        <div class="platform-dropdown-wrap">
+                            <label class="platform-dropdown-label">Your accounting platform</label>
+                            <div class="platform-dropdown-box" id="platform-dropdown-box" onclick="togglePlatformDropdown()">
+                                <span id="platform-dropdown-selected"><span style="color:#aaa;">-- Select a platform --</span></span>
+                                <span class="platform-dropdown-arrow">&#9660;</span>
                             </div>
-                            <div class="platform-tile" id="tile-sage" onclick="selectPlatform('sage')">
-                                <div class="platform-logo" style="background: #00D639;">
-                                    <span style="color: #fff; font-size: 1.2rem; font-weight: 900;">SAGE</span>
+                            <div class="platform-dropdown-list" id="platform-dropdown-list" style="display:none;">
+                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('quickbooks')">
+                                    <div class="platform-logo-sm" style="background:#2CA01C;"><span>QB</span></div>
+                                    <span>QuickBooks</span>
+                                    <span class="pdrop-check" id="pdrop-quickbooks"></span>
                                 </div>
-                                <span class="platform-name">Sage</span>
-                                <span class="platform-status" id="status-sage"></span>
-                            </div>
-                            <div class="platform-tile" id="tile-netsuite" onclick="selectPlatform('netsuite')">
-                                <div class="platform-logo" style="background: #1A1A2E;">
-                                    <span style="color: #fff; font-size: 1rem; font-weight: 700;">NetSuite</span>
+                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('sage')">
+                                    <div class="platform-logo-sm" style="background:#00D639;"><span>SAGE</span></div>
+                                    <span>Sage</span>
+                                    <span class="pdrop-check" id="pdrop-sage"></span>
                                 </div>
-                                <span class="platform-name">Oracle NetSuite</span>
-                                <span class="platform-status" id="status-netsuite"></span>
-                            </div>
-                            <div class="platform-tile" id="tile-xero" onclick="selectPlatform('xero')">
-                                <div class="platform-logo" style="background: #13B5EA;">
-                                    <span style="color: #fff; font-size: 1.3rem; font-weight: 900;">xero</span>
+                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('netsuite')">
+                                    <div class="platform-logo-sm" style="background:#1A1A2E;"><span>NS</span></div>
+                                    <span>Oracle NetSuite</span>
+                                    <span class="pdrop-check" id="pdrop-netsuite"></span>
                                 </div>
-                                <span class="platform-name">Xero</span>
-                                <span class="platform-status" id="status-xero"></span>
-                            </div>
-                            <div class="platform-tile" id="tile-alteryx" onclick="selectPlatform('alteryx')">
-                                <div class="platform-logo" style="background: #0078C0;">
-                                    <span style="color: #fff; font-size: 1.1rem; font-weight: 700;">Ax</span>
+                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('xero')">
+                                    <div class="platform-logo-sm" style="background:#13B5EA;"><span>xero</span></div>
+                                    <span>Xero</span>
+                                    <span class="pdrop-check" id="pdrop-xero"></span>
                                 </div>
-                                <span class="platform-name">Alteryx</span>
-                                <span class="platform-status" id="status-alteryx"></span>
-                            </div>
-                            <div class="platform-tile" id="tile-airtable" onclick="selectPlatform('airtable')">
-                                <div class="platform-logo" style="background: #FCBF49;">
-                                    <span style="color: #333; font-size: 1.3rem; font-weight: 900;">AT</span>
+                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('alteryx')">
+                                    <div class="platform-logo-sm" style="background:#0078C0;"><span>Ax</span></div>
+                                    <span>Alteryx</span>
+                                    <span class="pdrop-check" id="pdrop-alteryx"></span>
                                 </div>
-                                <span class="platform-name">Airtable</span>
-                                <span class="platform-status" id="status-airtable"></span>
-                            </div>
-                            <div class="platform-tile" id="tile-powerbi" onclick="selectPlatform('powerbi')">
-                                <div class="platform-logo" style="background: #F2C811;">
-                                    <span style="color: #333; font-size: 1rem; font-weight: 900;">PBI</span>
+                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('airtable')">
+                                    <div class="platform-logo-sm" style="background:#FCBF49;"><span style="color:#333;">AT</span></div>
+                                    <span>Airtable</span>
+                                    <span class="pdrop-check" id="pdrop-airtable"></span>
                                 </div>
-                                <span class="platform-name">Power BI</span>
-                                <span class="platform-status" id="status-powerbi"></span>
-                            </div>
-                            <div class="platform-tile" id="tile-excel" onclick="selectPlatform('excel')">
-                                <div class="platform-logo" style="background: #217346;">
-                                    <span style="color: #fff; font-size: 1.2rem; font-weight: 900;">Ex</span>
+                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('powerbi')">
+                                    <div class="platform-logo-sm" style="background:#F2C811;"><span style="color:#333;">PBI</span></div>
+                                    <span>Power BI</span>
+                                    <span class="pdrop-check" id="pdrop-powerbi"></span>
                                 </div>
-                                <span class="platform-name">Excel Online</span>
-                                <span class="platform-status" id="status-excel"></span>
-                            </div>
-                            <div class="platform-tile" id="tile-other" onclick="selectPlatform('other')">
-                                <div class="platform-logo" style="background: #666;">
-                                    <span style="color: #fff; font-size: 1.5rem;">+</span>
+                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('excel')">
+                                    <div class="platform-logo-sm" style="background:#217346;"><span>Ex</span></div>
+                                    <span>Excel Online</span>
+                                    <span class="pdrop-check" id="pdrop-excel"></span>
                                 </div>
-                                <span class="platform-name">Other</span>
-                                <span class="platform-status" id="status-other"></span>
+                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('other')">
+                                    <div class="platform-logo-sm" style="background:#666;"><span>+</span></div>
+                                    <span>Other / Custom</span>
+                                    <span class="pdrop-check" id="pdrop-other"></span>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Platform Credential Form (shown when a platform is selected) -->
+                        <!-- Add Another Platform -->
+                        <div id="add-another-platform-row" style="display:none; margin-top:10px;">
+                            <button class="add-platform-btn" onclick="showAnotherPlatformDropdown()">&#43; Add Another Platform</button>
+                            <div class="platform-dropdown-wrap" id="platform-dropdown-2-wrap" style="display:none; margin-top:10px;">
+                                <div class="platform-dropdown-box" id="platform-dropdown-box-2" onclick="togglePlatformDropdown2()">
+                                    <span id="platform-dropdown-selected-2"><span style="color:#aaa;">-- Select another platform --</span></span>
+                                    <span class="platform-dropdown-arrow">&#9660;</span>
+                                </div>
+                                <div class="platform-dropdown-list" id="platform-dropdown-list-2" style="display:none;">
+                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('quickbooks')"><div class="platform-logo-sm" style="background:#2CA01C;"><span>QB</span></div><span>QuickBooks</span></div>
+                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('sage')"><div class="platform-logo-sm" style="background:#00D639;"><span>SAGE</span></div><span>Sage</span></div>
+                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('netsuite')"><div class="platform-logo-sm" style="background:#1A1A2E;"><span>NS</span></div><span>Oracle NetSuite</span></div>
+                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('xero')"><div class="platform-logo-sm" style="background:#13B5EA;"><span>xero</span></div><span>Xero</span></div>
+                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('alteryx')"><div class="platform-logo-sm" style="background:#0078C0;"><span>Ax</span></div><span>Alteryx</span></div>
+                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('airtable')"><div class="platform-logo-sm" style="background:#FCBF49;"><span style="color:#333;">AT</span></div><span>Airtable</span></div>
+                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('powerbi')"><div class="platform-logo-sm" style="background:#F2C811;"><span style="color:#333;">PBI</span></div><span>Power BI</span></div>
+                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('excel')"><div class="platform-logo-sm" style="background:#217346;"><span>Ex</span></div><span>Excel Online</span></div>
+                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('other')"><div class="platform-logo-sm" style="background:#666;"><span>+</span></div><span>Other / Custom</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Connected platform badges -->
+                        <div id="connected-platforms-badges" style="display:none; margin:14px 0 4px;">
+                            <div style="font-size:0.78rem;color:#999;margin-bottom:6px;font-weight:600;letter-spacing:0.3px;">CONNECTED:</div>
+                            <div id="connected-badges-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+                        </div>
+
+                        <!-- Platform Credential Form -->
                         <div class="platform-cred-form" id="platform-cred-form" style="display: none;">
                             <div class="platform-cred-header" id="platform-cred-header">
                                 <h5 id="platform-cred-title">Connect QuickBooks</h5>
                                 <button onclick="closePlatformForm()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#999;">&times;</button>
                             </div>
-
                             <div class="qb-field">
                                 <label>How would you like to grant access?</label>
                                 <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
@@ -6755,7 +7031,6 @@
                                     </label>
                                 </div>
                             </div>
-
                             <div id="platform-fields">
                                 <div class="qb-field">
                                     <label for="platform-url">Login URL / Company Link</label>
@@ -6777,47 +7052,72 @@
                                     <textarea id="platform-notes" placeholder="e.g., MFA codes, company name, specific access needed..." rows="2"></textarea>
                                 </div>
                             </div>
-
-                            <!-- Permission Checkbox -->
                             <div style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 10px; padding: 18px; margin-bottom: 20px;">
                                 <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; color: #333; font-size: 0.9rem;">
                                     <input type="checkbox" id="platform-agree-checkbox" style="margin-top: 3px; width: 18px; height: 18px; accent-color: var(--mckinsey-blue); flex-shrink: 0;">
-                                    <span>I grant <strong>Lightning Ledgerz LLC</strong> permission to access my <strong id="platform-agree-name">QuickBooks</strong> account using the credentials provided above, solely for the purpose of delivering FP&A advisory services. I understand my credentials are encrypted with 256-bit encryption, accessible only to my assigned advisor (Zac Prizant), and that I can revoke access at any time.</span>
+                                    <span>I grant <strong>Lightning Ledgerz LLC</strong> permission to access my <strong id="platform-agree-name">QuickBooks</strong> account using the credentials provided above, solely for the purpose of delivering FP&A advisory services. My credentials are encrypted with 256-bit encryption, accessible only to my assigned advisor (Zac Prizant), and I can revoke access at any time.</span>
                                 </label>
                             </div>
-
                             <div class="qb-actions">
                                 <button class="qb-save-btn" onclick="savePlatformCredentials()">Grant Access Securely</button>
                                 <span class="qb-saved-status" id="platform-saved-status"></span>
                             </div>
                         </div>
+                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('db')">Skip — I'll share access later</button></div>
                     </div>
                 </div>
 
-                <!-- STEP 3: Upload Files -->
+                <!-- STEP 3: Upload Financial Statements -->
                 <div class="portal-step-card">
                     <div class="portal-step-header">
                         <div class="portal-step-number">3</div>
-                        <h4>Upload Files</h4>
+                        <h4>Upload Financial Statements</h4>
                     </div>
                     <div class="portal-step-body">
-                        <p class="upload-file-types">Upload your financial documents for review: income statements, balance sheets, cash flow statements, capex schedules, debt schedules, sources and uses, budgets, and more.</p>
-
-                        <div class="upload-dropzone" id="upload-dropzone" style="margin-bottom: 15px; padding: 20px;">
-                            <div class="dropzone-content">
-                                <span class="dropzone-icon" style="font-size: 2rem;">📤</span>
-                                <p style="margin: 10px 0 0; font-size: 0.9rem;">Drag & drop or <label for="file-input" class="upload-browse">browse</label></p>
-                                <input type="file" id="file-input" accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.ppt,.pptx,.txt,.rtf,.png,.jpg,.jpeg" multiple style="display: none;">
+                        <p style="font-size:0.88rem;color:#666;margin-bottom:20px;">Upload monthly statements for as many years as you have available. Excel, CSV, and PDF all work.</p>
+                        <div class="fin-upload-grid">
+                            <div class="fin-upload-slot">
+                                <div class="fin-slot-icon">📊</div>
+                                <div class="fin-slot-label">P&amp;L / Income Statement</div>
+                                <div class="fin-slot-sub">Monthly &middot; All available years</div>
+                                <label class="fin-upload-btn" for="fin-pl-input">+ Upload Files</label>
+                                <input type="file" id="fin-pl-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('PL', this)">
+                                <div class="fin-slot-status" id="fin-pl-status"></div>
+                            </div>
+                            <div class="fin-upload-slot">
+                                <div class="fin-slot-icon">⚖️</div>
+                                <div class="fin-slot-label">Balance Sheet</div>
+                                <div class="fin-slot-sub">Monthly &middot; All available years</div>
+                                <label class="fin-upload-btn" for="fin-bs-input">+ Upload Files</label>
+                                <input type="file" id="fin-bs-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('Balance Sheet', this)">
+                                <div class="fin-slot-status" id="fin-bs-status"></div>
+                            </div>
+                            <div class="fin-upload-slot">
+                                <div class="fin-slot-icon">💸</div>
+                                <div class="fin-slot-label">Cash Flow Statement</div>
+                                <div class="fin-slot-sub">Monthly &middot; All available years</div>
+                                <label class="fin-upload-btn" for="fin-cf-input">+ Upload Files</label>
+                                <input type="file" id="fin-cf-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('Cash Flow', this)">
+                                <div class="fin-slot-status" id="fin-cf-status"></div>
                             </div>
                         </div>
-
-                        <div class="carousel-search">
-                            <input type="text" id="uploads-search" placeholder="Search by name or date..." oninput="filterCarousel('uploads')">
+                        <div style="margin-top:18px; border-top:1px solid #f0f0f0; padding-top:15px;">
+                            <p style="font-size:0.82rem;color:#999;margin-bottom:10px;">Other supporting documents (budgets, CapEx schedules, etc.):</p>
+                            <div class="upload-dropzone" id="upload-dropzone" style="padding:14px; margin-bottom:12px;">
+                                <div class="dropzone-content">
+                                    <span class="dropzone-icon" style="font-size:1.4rem;">📎</span>
+                                    <p style="margin:5px 0 0;font-size:0.85rem;">Drag &amp; drop or <label for="file-input" class="upload-browse">browse</label></p>
+                                    <input type="file" id="file-input" accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.ppt,.pptx,.txt,.rtf,.png,.jpg,.jpeg" multiple style="display: none;">
+                                </div>
+                            </div>
                         </div>
-
+                        <div class="carousel-search">
+                            <input type="text" id="uploads-search" placeholder="Search uploaded files..." oninput="filterCarousel('uploads')">
+                        </div>
                         <div class="column-carousel" id="user-uploads-carousel">
                             <p class="carousel-empty" id="uploads-empty">No files yet. Upload above.</p>
                         </div>
+                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('files')">Skip — I'll upload files later</button></div>
                     </div>
                 </div>
 
@@ -6828,7 +7128,6 @@
                         <h4>My Reports</h4>
                     </div>
                     <div class="portal-step-body">
-                        <!-- Fathom Live Dashboard Link (shown when admin sets it) -->
                         <div class="fathom-link-card" id="fathom-link-card" style="display: none;">
                             <div class="fathom-link-header">
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 6-10"/></svg>
@@ -6837,34 +7136,30 @@
                             <p class="fathom-link-desc">Your advisor has linked a live reporting dashboard for your business.</p>
                             <a href="#" id="fathom-link-url" target="_blank" class="fathom-link-btn">Open Dashboard</a>
                         </div>
-
                         <div class="carousel-search">
                             <input type="text" id="reports-search" placeholder="Search by title or date..." oninput="filterReportsCarousel()">
                         </div>
-
                         <div class="portal-reports-carousel-container" id="reports-carousel-container">
                             <div class="portal-reports-carousel" id="reports-carousel">
-                                <p class="carousel-empty" id="reports-empty">Your FP&A reports will appear here.</p>
+                                <p class="carousel-empty" id="reports-empty">Your FP&amp;A reports will appear here.</p>
                             </div>
                         </div>
                         <div class="portal-scroll-hint">
-                            <span>Drag to scroll</span>
-                            <span>&rarr;</span>
+                            <span>Drag to explore</span>
+                            <span>&#8594;</span>
                         </div>
                     </div>
                 </div>
 
             </div>
 
-            <!-- Disclaimers -->
-            <div class="portal-disclaimers">
-                <h5>Important Notices</h5>
-                <ul>
-                    <li><strong>Confidentiality:</strong> All documents, credentials, and financial data are encrypted and strictly confidential.</li>
-                    <li><strong>Data Handling:</strong> Your data is used solely for FP&A services. Lightning Ledgerz will never share, sell, or distribute client data to any third party.</li>
-                    <li><strong>Security:</strong> Industry-standard 256-bit encryption. Only you and your assigned advisor can access your files and credentials.</li>
-                    <li><strong>Platform Access:</strong> All platform credentials are encrypted at rest. You can revoke access at any time by removing credentials from this portal.</li>
-                </ul>
+            <!-- Security Bar -->
+            <div class="portal-security-bar">
+                <span>&#128274; 256-bit encrypted</span>
+                <span class="security-bar-dot">&middot;</span>
+                <span>Your data is never shared or sold</span>
+                <span class="security-bar-dot">&middot;</span>
+                <span>Revoke access at any time</span>
             </div>
         </div>
 
@@ -8125,12 +8420,6 @@
         };
 
         function selectPlatform(platform) {
-            // Deselect previous
-            document.querySelectorAll('.platform-tile').forEach(function(t) { t.classList.remove('selected'); });
-            // Select new
-            var tile = document.getElementById('tile-' + platform);
-            if (tile) tile.classList.add('selected');
-
             selectedPlatform = platform;
             var form = document.getElementById('platform-cred-form');
             form.style.display = 'block';
@@ -8154,7 +8443,6 @@
 
         function closePlatformForm() {
             document.getElementById('platform-cred-form').style.display = 'none';
-            document.querySelectorAll('.platform-tile').forEach(function(t) { t.classList.remove('selected'); });
             selectedPlatform = null;
         }
 
@@ -8236,10 +8524,13 @@
                     if (error) throw error;
                 }
 
-                // Mark tile as connected
-                var tile = document.getElementById('tile-' + selectedPlatform);
-                tile.classList.add('connected');
-                document.getElementById('status-' + selectedPlatform).textContent = 'Connected';
+                // Mark dropdown item as connected, add badge, show "add another"
+                var dropCheck = document.getElementById('pdrop-' + selectedPlatform);
+                if (dropCheck) dropCheck.textContent = '✓';
+                addConnectedBadge(selectedPlatform);
+                var addRow = document.getElementById('add-another-platform-row');
+                if (addRow) addRow.style.display = 'block';
+                setTimeout(updateLightningMeter, 200);
 
                 var status = document.getElementById('platform-saved-status');
                 status.textContent = 'Access granted securely!';
@@ -8801,6 +9092,16 @@
                 }
             } catch (e) { console.error('NDA save error:', e); }
 
+            // Update profile data locally
+            if (currentUserData) {
+                if (!currentUserData.profile) currentUserData.profile = {};
+                currentUserData.profile.nda_accepted_at = new Date().toISOString();
+                currentUserData.profile.nda_company_name = company;
+                currentUserData.profile.nda_rep_name = repName;
+            }
+            updateNDAStepStatus();
+            setTimeout(updateLightningMeter, 200);
+
             // Close NDA modal
             var modal = document.getElementById('nda-modal');
             if (modal) { modal.classList.remove('active'); document.body.style.overflow = ''; }
@@ -8901,6 +9202,8 @@
 
         // Check NDA on login - show if not accepted
         function checkNDARequired() {
+            updateNDAStepStatus();
+            setTimeout(updateLightningMeter, 300);
             if (!currentUserData || currentUserData.isDemo || currentUserData.isAdmin) return;
             var ndaAccepted = currentUserData?.profile?.nda_accepted_at;
             if (!ndaAccepted) {
@@ -9006,6 +9309,171 @@
                     setTimeout(function() { card.classList.remove('highlight'); }, 3500);
                 }
             }, 500);
+        }
+
+        // ===========================================
+        // NDA STEP STATUS
+        // ===========================================
+        function updateNDAStepStatus() {
+            var accepted = currentUserData?.profile?.nda_accepted_at;
+            var unsigned = document.getElementById('nda-step-unsigned');
+            var signed = document.getElementById('nda-step-signed');
+            if (!unsigned || !signed) return;
+            if (accepted) {
+                unsigned.style.display = 'none';
+                signed.style.display = 'block';
+                var meta = document.getElementById('nda-signed-meta');
+                if (meta) {
+                    var company = currentUserData.profile.nda_company_name || '';
+                    var d = new Date(accepted);
+                    meta.textContent = (company ? company + ' · ' : '') + 'Signed ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                }
+            } else {
+                unsigned.style.display = 'block';
+                signed.style.display = 'none';
+            }
+        }
+
+        // ===========================================
+        // PLATFORM DROPDOWN
+        // ===========================================
+        function togglePlatformDropdown() {
+            var list = document.getElementById('platform-dropdown-list');
+            if (!list) return;
+            list.style.display = list.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function selectPlatformDrop(key) {
+            // Update dropdown display with logo + name
+            var names = { quickbooks: 'QuickBooks', sage: 'Sage', netsuite: 'Oracle NetSuite', xero: 'Xero', alteryx: 'Alteryx', airtable: 'Airtable', powerbi: 'Power BI', excel: 'Excel Online', other: 'Other / Custom' };
+            var colors = { quickbooks: '#2CA01C', sage: '#00D639', netsuite: '#1A1A2E', xero: '#13B5EA', alteryx: '#0078C0', airtable: '#FCBF49', powerbi: '#F2C811', excel: '#217346', other: '#666' };
+            var abbrs = { quickbooks: 'QB', sage: 'SAGE', netsuite: 'NS', xero: 'xero', alteryx: 'Ax', airtable: 'AT', powerbi: 'PBI', excel: 'Ex', other: '+' };
+            var selectedEl = document.getElementById('platform-dropdown-selected');
+            if (selectedEl) {
+                selectedEl.innerHTML = '<div style="display:flex;align-items:center;gap:10px;"><div class="platform-logo-sm" style="background:' + (colors[key] || '#666') + ';width:26px;height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:900;color:#fff;">' + (abbrs[key] || '+') + '</div><span>' + (names[key] || key) + '</span></div>';
+            }
+            document.getElementById('platform-dropdown-list').style.display = 'none';
+            selectPlatform(key);
+        }
+
+        // ===========================================
+        // LIGHTNING BOLT PROFILE METER
+        // ===========================================
+        function updateLightningMeter() {
+            var pct = 0;
+            var tip = '';
+            var ndaDone = !!(currentUserData?.profile?.nda_accepted_at);
+            var dbDone = document.getElementById('connected-badges-list')?.children.length > 0;
+            var filesDone = document.querySelectorAll('#user-uploads-carousel .carousel-card').length > 0
+                         || document.getElementById('fin-pl-status')?.textContent.includes('✓')
+                         || document.getElementById('fin-bs-status')?.textContent.includes('✓')
+                         || document.getElementById('fin-cf-status')?.textContent.includes('✓');
+
+            if (ndaDone) pct += 33;
+            if (dbDone) pct += 34;
+            if (filesDone) pct += 33;
+
+            if (!ndaDone) tip = 'Sign your agreement to get started';
+            else if (!dbDone) tip = 'Connect your accounting platform to boost your meter';
+            else if (!filesDone) tip = 'Upload your financial statements to complete your profile';
+            else tip = 'Profile complete — reach out to redeem your free month!';
+
+            var fill = document.getElementById('lightning-bolt-fill');
+            var pctEl = document.getElementById('lightning-meter-pct');
+            var tipEl = document.getElementById('lightning-meter-tip');
+            var spark = document.getElementById('lightning-spark');
+            var reward = document.getElementById('lightning-meter-reward');
+            if (fill) fill.style.height = pct + '%';
+            if (pctEl) pctEl.textContent = pct + '% Complete';
+            if (tipEl) tipEl.textContent = tip;
+            if (spark) { spark.style.display = pct >= 100 ? 'block' : 'none'; spark.textContent = '⚡'; }
+            if (reward) reward.style.display = pct >= 100 ? 'flex' : 'none';
+        }
+
+        function skipStep(step) {
+            // Visually collapse/dim the step — just scroll to next
+            var nextCard = { nda: 'platform-integrations', db: null, files: null };
+            if (nextCard[step]) {
+                document.getElementById(nextCard[step])?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Second platform dropdown
+        function showAnotherPlatformDropdown() {
+            document.getElementById('platform-dropdown-2-wrap').style.display = 'block';
+            document.getElementById('add-another-platform-row').querySelector('.add-platform-btn').style.display = 'none';
+        }
+        function togglePlatformDropdown2() {
+            var list = document.getElementById('platform-dropdown-list-2');
+            list.style.display = list.style.display === 'none' ? 'block' : 'none';
+        }
+        function selectPlatformDrop2(key) {
+            var names = { quickbooks: 'QuickBooks', sage: 'Sage', netsuite: 'Oracle NetSuite', xero: 'Xero', alteryx: 'Alteryx', airtable: 'Airtable', powerbi: 'Power BI', excel: 'Excel Online', other: 'Other / Custom' };
+            var colors = { quickbooks: '#2CA01C', sage: '#00D639', netsuite: '#1A1A2E', xero: '#13B5EA', alteryx: '#0078C0', airtable: '#FCBF49', powerbi: '#F2C811', excel: '#217346', other: '#666' };
+            var abbrs  = { quickbooks: 'QB', sage: 'SAGE', netsuite: 'NS', xero: 'xero', alteryx: 'Ax', airtable: 'AT', powerbi: 'PBI', excel: 'Ex', other: '+' };
+            var selectedEl = document.getElementById('platform-dropdown-selected-2');
+            if (selectedEl) {
+                selectedEl.innerHTML = '<div style="display:flex;align-items:center;gap:10px;"><div class="platform-logo-sm" style="background:' + (colors[key]||'#666') + ';width:26px;height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:900;color:#fff;">' + (abbrs[key]||'+') + '</div><span>' + (names[key]||key) + '</span></div>';
+            }
+            document.getElementById('platform-dropdown-list-2').style.display = 'none';
+            selectPlatform(key);
+        }
+
+        function addConnectedBadge(platform) {
+            var names = { quickbooks: 'QuickBooks', sage: 'Sage', netsuite: 'Oracle NetSuite', xero: 'Xero', alteryx: 'Alteryx', airtable: 'Airtable', powerbi: 'Power BI', excel: 'Excel Online', other: 'Other' };
+            var badgesList = document.getElementById('connected-badges-list');
+            var badgesWrap = document.getElementById('connected-platforms-badges');
+            if (!badgesList || !badgesWrap) return;
+            // Don't add duplicate
+            if (document.getElementById('badge-' + platform)) return;
+            var badge = document.createElement('span');
+            badge.className = 'connected-platform-badge';
+            badge.id = 'badge-' + platform;
+            badge.textContent = '✓ ' + (names[platform] || platform);
+            badgesList.appendChild(badge);
+            badgesWrap.style.display = 'block';
+        }
+
+        // ===========================================
+        // FINANCIAL DOCUMENT UPLOADS
+        // ===========================================
+        async function handleFinUpload(type, input) {
+            if (!input.files || input.files.length === 0) return;
+            var statusId = { 'PL': 'fin-pl-status', 'Balance Sheet': 'fin-bs-status', 'Cash Flow': 'fin-cf-status' }[type] || null;
+            var statusEl = statusId ? document.getElementById(statusId) : null;
+            if (statusEl) statusEl.textContent = 'Uploading…';
+
+            var files = Array.from(input.files);
+            var uploaded = 0;
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var prefixedName = '[' + type + '] ' + file.name;
+                // Reuse the existing file upload pipeline by creating a synthetic event-like object
+                if (supabase && currentUserData?.id) {
+                    try {
+                        var path = currentUserData.id + '/' + Date.now() + '_' + prefixedName;
+                        var { error: upErr } = await supabase.storage.from('client-files').upload(path, file, { upsert: true });
+                        if (!upErr) {
+                            var { data: urlData } = supabase.storage.from('client-files').getPublicUrl(path);
+                            await supabase.from('user_files').insert([{
+                                user_id: currentUserData.id,
+                                file_name: prefixedName,
+                                file_url: urlData?.publicUrl || '',
+                                file_type: file.name.split('.').pop().toLowerCase(),
+                                file_size: file.size,
+                                uploaded_at: new Date().toISOString()
+                            }]);
+                            uploaded++;
+                        }
+                    } catch(e) { console.error('fin upload error', e); }
+                }
+            }
+
+            input.value = '';
+            if (statusEl) {
+                statusEl.textContent = uploaded > 0 ? uploaded + ' file' + (uploaded > 1 ? 's' : '') + ' uploaded ✓' : 'Upload failed — try again';
+                if (uploaded > 0) { showToast(type + ' files uploaded successfully', 'success'); loadUserFiles(); updateLightningMeter(); }
+            }
         }
 
         function openUpgradeModal() {
