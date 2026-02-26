@@ -2599,6 +2599,40 @@
             cursor: pointer;
         }
         .forgot-link:hover { color: rgba(255,255,255,0.75); }
+        /* Check-your-email confirmation state */
+        .check-email-state { display: none; text-align: center; }
+        .check-email-state.visible { display: block; }
+        .check-email-icon {
+            font-size: 3rem; margin-bottom: 16px; display: block;
+        }
+        .check-email-state h3 { font-size: 1.5rem; margin-bottom: 12px; }
+        .check-email-state .check-email-body {
+            color: rgba(255,255,255,0.6); font-size: 0.88rem;
+            line-height: 1.6; margin-bottom: 8px;
+        }
+        .check-email-state .check-email-body strong { color: #fff; }
+        .check-email-state .check-email-hint {
+            color: rgba(255,255,255,0.4); font-size: 0.82rem;
+            line-height: 1.6; margin-bottom: 28px;
+        }
+        .check-email-state .check-email-hint a {
+            color: var(--red); text-decoration: none; cursor: pointer;
+        }
+        .check-email-state .check-email-hint a:hover { text-decoration: underline; }
+        .open-gmail-btn {
+            display: block; width: 100%;
+            background: linear-gradient(45deg, #ff3333, #ff5555);
+            color: #fff; border: none; padding: 15px;
+            border-radius: 12px; font-size: 1rem; font-weight: 700;
+            cursor: pointer; font-family: inherit; text-decoration: none;
+            transition: all 0.2s; margin-bottom: 16px;
+        }
+        .open-gmail-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,51,51,0.4); }
+        .return-to-signin {
+            display: block; color: var(--red); font-size: 0.88rem;
+            font-weight: 600; text-decoration: none; cursor: pointer;
+        }
+        .return-to-signin:hover { text-decoration: underline; }
 
         /* Google Sign-In Button */
         .google-btn {
@@ -6900,12 +6934,27 @@
     <div class="auth-overlay" id="forgot-password-overlay" onclick="closeForgotPasswordModal()">
         <div class="auth-mini-card" onclick="event.stopPropagation()">
             <button class="auth-mini-close" onclick="closeForgotPasswordModal()">&times;</button>
-            <h3>Reset Your Password</h3>
-            <p>Enter your email address and I'll send you a reset link.</p>
-            <input type="email" class="form-input" id="forgot-email" placeholder="you@company.com">
-            <button class="form-submit" onclick="handleForgotPassword()" id="forgot-submit-btn">Send Reset Link</button>
-            <div class="auth-success-msg" id="forgot-success">
-                ✓ Reset link sent! Check your inbox (and spam folder). Click the link and you'll be able to set a new password.
+
+            <!-- Step 1: Enter email -->
+            <div id="forgot-form-state">
+                <h3>Reset Your Password</h3>
+                <p>Enter your email and I'll send you a reset link.</p>
+                <input type="email" class="form-input" id="forgot-email" placeholder="you@company.com">
+                <button class="form-submit" onclick="handleForgotPassword()" id="forgot-submit-btn">Send Reset Link</button>
+            </div>
+
+            <!-- Step 2: Check your email -->
+            <div class="check-email-state" id="forgot-success-state">
+                <span class="check-email-icon">📬</span>
+                <h3>Check your email</h3>
+                <p class="check-email-body">
+                    If <strong id="forgot-email-shown"></strong> matches an address we have on file, I've sent you a link to reset your password.
+                </p>
+                <p class="check-email-hint">
+                    Didn't get it? Check your spam folder, <a onclick="resendResetEmail()">resend</a>, or <a onclick="showForgotForm()">try a different address</a>.
+                </p>
+                <a href="https://mail.google.com" target="_blank" class="open-gmail-btn">Open Gmail</a>
+                <a class="return-to-signin" onclick="closeForgotPasswordModal()">Return to sign in</a>
             </div>
         </div>
     </div>
@@ -8335,11 +8384,18 @@
         function closeForgotPasswordModal() {
             document.getElementById('forgot-password-overlay').classList.remove('active');
             document.body.style.overflow = '';
+            setTimeout(showForgotForm, 300); // reset to step 1 after close animation
+        }
+
+        function showForgotForm() {
+            document.getElementById('forgot-form-state').style.display = 'block';
+            document.getElementById('forgot-success-state').classList.remove('visible');
             document.getElementById('forgot-email').value = '';
-            document.getElementById('forgot-success').style.display = 'none';
             document.getElementById('forgot-submit-btn').textContent = 'Send Reset Link';
             document.getElementById('forgot-submit-btn').disabled = false;
         }
+
+        var _lastForgotEmail = '';
 
         async function handleForgotPassword() {
             const email = document.getElementById('forgot-email').value.toLowerCase().trim();
@@ -8353,12 +8409,23 @@
                     redirectTo: 'https://lightningledgerz.com/reset-password.html'
                 });
                 if (error) throw error;
-                document.getElementById('forgot-success').style.display = 'block';
-                btn.textContent = 'Sent!';
+                _lastForgotEmail = email;
+                document.getElementById('forgot-email-shown').textContent = email;
+                document.getElementById('forgot-form-state').style.display = 'none';
+                document.getElementById('forgot-success-state').classList.add('visible');
             } catch(err) {
                 showToast('Error: ' + err.message, 'error');
                 btn.textContent = 'Send Reset Link'; btn.disabled = false;
             }
+        }
+
+        async function resendResetEmail() {
+            if (!_lastForgotEmail) return;
+            if (!supabase) { await new Promise(r => waitForSupabase(r, 20)); }
+            await supabase.auth.resetPasswordForEmail(_lastForgotEmail, {
+                redirectTo: 'https://lightningledgerz.com/reset-password.html'
+            });
+            showToast('Reset link resent!', 'success');
         }
 
         async function handleResetPassword() {
@@ -8528,19 +8595,16 @@
                 updateTrialBanner();
                 // Check if user selected a plan before signing up
                 checkPendingPlan();
-                // Check NDA - must be signed before payment
-                checkNDARequired();
-                // Check payment gate — shows after NDA if no active subscription
-                setTimeout(checkPaymentGate, 600);
-                // Show quiz on first login (after NDA check, with delay)
+                // Update step status indicators + lightning meter (no popups on login)
+                updateNDAStepStatus();
+                setTimeout(updateLightningMeter, 300);
+                // Show quiz after 30 seconds — give user time to explore first
                 setTimeout(function() {
                     var userId = currentUserData?.id;
-                    if (userId && !localStorage.getItem('quiz_seen_' + userId) && !currentUserData?.profile?.nda_accepted_at) {
-                        // NDA modal takes priority - quiz fires after NDA is accepted
-                    } else if (userId && !localStorage.getItem('quiz_seen_' + userId)) {
+                    if (userId && !localStorage.getItem('quiz_seen_' + userId)) {
                         openQuizModal();
                     }
-                }, 1200);
+                }, 30000);
             } else {
                 // Show demo placeholders
                 var uploadsCarousel = document.getElementById('user-uploads-carousel');
@@ -9424,17 +9488,16 @@
                 return;
             }
 
-            // Use created_at or fall back to localStorage (for existing users)
-            var rawDate = currentUserData.created_at || currentUserData.createdAt || currentUserData.profile?.created_at;
-            var createdAt;
-            if (rawDate) {
-                createdAt = new Date(rawDate);
-            } else {
-                // Existing user: start timer now, store in localStorage
-                var stored = localStorage.getItem('trial_start_' + currentUserData.id);
-                if (!stored) { stored = new Date().toISOString(); localStorage.setItem('trial_start_' + currentUserData.id, stored); }
-                createdAt = new Date(stored);
+            // Only show trial banner if trial was explicitly started (card on file)
+            var rawDate = currentUserData.profile?.trial_started_at;
+            if (!rawDate) {
+                // No trial started yet — hide all trial UI silently
+                if (banner) banner.style.display = 'none';
+                if (countdown) countdown.style.display = 'none';
+                if (earlybirdBanner) earlybirdBanner.style.display = 'none';
+                return;
             }
+            var createdAt = new Date(rawDate);
             if (isNaN(createdAt.getTime())) { banner.style.display = 'none'; return; }
 
             var trialEndDate = new Date(createdAt.getTime() + (30 * 24 * 60 * 60 * 1000));
@@ -9868,15 +9931,12 @@
             if (modal) { modal.classList.remove('active'); document.body.style.overflow = ''; }
             showToast('Agreement accepted. Welcome to Lightning Ledgerz!', 'success');
 
-            // After NDA, show payment gate (takes priority over quiz)
-            setTimeout(checkPaymentGate, 400);
-            // Show quiz only after payment is set up
+            // Show quiz 30 seconds after NDA if not yet seen
             setTimeout(function() {
-                var hasPaid = currentUserData?.profile?.subscription_status || localStorage.getItem('trial_activated_' + currentUserData?.id);
-                if (hasPaid && currentUserData?.id && !localStorage.getItem('quiz_seen_' + currentUserData.id)) {
+                if (currentUserData?.id && !localStorage.getItem('quiz_seen_' + currentUserData.id)) {
                     openQuizModal();
                 }
-            }, 900);
+            }, 30000);
         }
 
         async function sendNDAConfirmationEmail(toEmail, userName, company, repName, signedDate) {
