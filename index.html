@@ -7442,26 +7442,6 @@
                 </div>
             </div>
 
-            <!-- Trial Expired Lockout -->
-            <div class="trial-lockout" id="trial-lockout">
-                <div class="trial-lockout-content">
-                    <div class="trial-lockout-icon">⚡</div>
-                    <h2>Your Free Trial Has Ended</h2>
-                    <p>Thank you for trying Lightning Ledgerz! To continue accessing your portal, reports, and advisor tools, choose a plan below.</p>
-                    <div class="trial-lockout-plans">
-                        <button class="lockout-plan-btn gold" onclick="selectPlan('basic')">
-                            Basic — $799/mo
-                        </button>
-                        <button class="lockout-plan-btn gold" onclick="selectPlan('gold')">
-                            ✨ Gold — $1,299/mo
-                        </button>
-                        <button class="lockout-plan-btn diamond" onclick="selectPlan('diamond')">
-                            💎 Diamond — $3,999/mo
-                        </button>
-                    </div>
-                    <button class="lockout-logout" onclick="handleLogout()">Sign out instead</button>
-                </div>
-            </div>
 
             <!-- Lightning Bolt Profile Meter -->
             <div class="lightning-meter-bar">
@@ -9509,12 +9489,11 @@
             var minsLeft = Math.floor((msLeft % (60 * 60 * 1000)) / 60000);
             var pctUsed = Math.min(100, Math.round(((30 * 24 * 60 - totalMinLeft) / (30 * 24 * 60)) * 100));
 
-            // EXPIRED
+            // EXPIRED — just hide everything, no lockout
             if (msLeft === 0) {
                 banner.style.display = 'none';
                 if (countdown) countdown.style.display = 'none';
                 if (earlybirdBanner) earlybirdBanner.style.display = 'none';
-                if (lockout) lockout.classList.add('active');
                 return;
             }
 
