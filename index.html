@@ -2844,6 +2844,49 @@
         }
         .earlybird-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,166,35,0.5); }
 
+        /* Subscription status banners (expired / past_due) */
+        .sub-status-banner {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            flex-wrap: wrap;
+        }
+        .sub-status-banner.visible { display: flex; }
+        .sub-status-banner.expired {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.7);
+        }
+        .sub-status-banner.past-due {
+            background: rgba(255,140,0,0.1);
+            border: 1px solid rgba(255,140,0,0.3);
+            color: #ffb347;
+        }
+        .sub-status-banner a {
+            white-space: nowrap;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 7px 16px;
+            border-radius: 8px;
+            font-size: 0.83rem;
+            transition: opacity 0.2s;
+        }
+        .sub-status-banner a:hover { opacity: 0.8; }
+        .sub-status-banner.expired a {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+        }
+        .sub-status-banner.past-due a {
+            background: rgba(255,140,0,0.25);
+            color: #ffb347;
+        }
+
         /* Trial Banner */
         .trial-banner {
             border-radius: 12px;
@@ -7341,6 +7384,18 @@
         <!-- Logged In Dashboard (hidden by default) -->
         <div class="portal-dashboard" id="portal-dashboard" style="display: none;">
 
+            <!-- Subscription expired — quiet nudge, no lockout -->
+            <div class="sub-status-banner expired" id="banner-expired">
+                Your subscription has ended. Ready to continue?
+                <a href="javascript:void(0)" onclick="scrollToSection('#pricing')">Schedule a call →</a>
+            </div>
+
+            <!-- Payment past due — card declined -->
+            <div class="sub-status-banner past-due" id="banner-past-due">
+                ⚠️ Your last payment didn't go through. Update your billing info to avoid interruption.
+                <a href="javascript:void(0)" onclick="openBillingPortal()">Update payment →</a>
+            </div>
+
             <!-- Payment Gate — shown until Stripe trial checkout is complete -->
             <div class="payment-gate" id="payment-gate">
                 <div class="payment-gate-title">Start Your Free Trial</div>
@@ -8573,6 +8628,7 @@
                 loadQBCredentials();
                 loadDashboardLink();
                 updateTrialBanner();
+                checkSubscriptionStatusBanners();
                 // Check if user selected a plan before signing up
                 checkPendingPlan();
                 // Update step status indicators + lightning meter (no popups on login)
@@ -9445,6 +9501,30 @@
 
         // Trial tracking
         var trialTickInterval = null;
+
+        function checkSubscriptionStatusBanners() {
+            var expiredBanner = document.getElementById('banner-expired');
+            var pastDueBanner = document.getElementById('banner-past-due');
+            if (!expiredBanner || !pastDueBanner) return;
+            // Reset both
+            expiredBanner.classList.remove('visible');
+            pastDueBanner.classList.remove('visible');
+            if (!currentUserData || currentUserData.isDemo || currentUserData.isAdmin) return;
+            var status = currentUserData?.profile?.subscription_status;
+            if (status === 'expired') {
+                expiredBanner.classList.add('visible');
+            } else if (status === 'past_due') {
+                pastDueBanner.classList.add('visible');
+            }
+        }
+
+        function openBillingPortal() {
+            // Stripe Customer Portal — update this URL after creating it in Stripe dashboard
+            // Stripe → Settings → Billing → Customer portal → Copy link
+            var portalUrl = 'https://billing.stripe.com/p/login/YOUR_PORTAL_LINK';
+            var email = currentUserData?.email || '';
+            window.open(portalUrl + (email ? '?prefilled_email=' + encodeURIComponent(email) : ''), '_blank');
+        }
 
         function updateTrialBanner() {
             var banner = document.getElementById('trial-banner');
