@@ -9,7 +9,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: white;
+    background: #d0d0d0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -26,21 +26,20 @@
     position: relative;
     display: flex;
     background: #fff;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.22);
   }
 
-  /* Golden Gate — slightly more visible than back */
-  .bg-img {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    object-fit: cover; object-position: center;
-    opacity: 0.26;
+  /* Faint watermark logo centered in card */
+  .bg-watermark {
+    position: absolute;
+    left: 62%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 1.35in;
+    opacity: 0.05;
     z-index: 0;
-  }
-  .bg-fade {
-    position: absolute; inset: 0;
-    background: rgba(255, 252, 248, 0.82);
-    z-index: 1;
+    pointer-events: none;
+    filter: grayscale(100%);
   }
 
   /* Red left bar */
@@ -51,113 +50,102 @@
     position: relative; z-index: 3;
   }
 
-  /* White right bar — mirrors red bar */
-  .white-bar {
-    width: 10px;
-    flex-shrink: 0;
-    background: #ffffff;
-    position: relative; z-index: 3;
-  }
-
   /* Photo */
   .photo-col {
-    width: 1.2in;
+    width: 1.45in;
     flex-shrink: 0;
     position: relative;
     overflow: hidden;
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    align-items: flex-end;
+    justify-content: center;
     z-index: 3;
   }
-  .photo-col::before {
+  .photo-col::after {
     content: '';
     position: absolute; inset: 0;
-    background: radial-gradient(ellipse 60% 90% at 55% 70%,
-      rgba(232,35,26,0.22) 0%, rgba(232,35,26,0.08) 50%, transparent 75%);
+    background: radial-gradient(ellipse 70% 80% at 60% 80%,
+      rgba(232,35,26,0.12) 0%, rgba(232,35,26,0.04) 50%, transparent 75%);
     z-index: 1; pointer-events: none;
   }
   .photo-col img {
     height: 100%; width: auto;
-    margin-left: 6px;
     position: relative; z-index: 2;
   }
 
-  /* Info column — 3-zone flex layout */
+  /* Info column */
   .info-col {
     flex: 1;
-    padding: 12px 0 10px 2px;
-    margin-left: -4px;
+    padding: 11px 10px 9px 10px;
     display: flex;
     flex-direction: column;
     position: relative; z-index: 3;
   }
 
-  /* ── TOP ZONE: Lightning Ledgerz branding ── */
+  /* ── TOP: Logo + tagline ── */
   .top-block { flex-shrink: 0; }
 
   .logo-line {
     font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
+    font-size: 19px;
     font-weight: 900;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     line-height: 1;
     text-transform: uppercase;
     display: flex;
     align-items: center;
-    width: 100%;
   }
+  .logo-line .l1 { color: #e8231a; margin-right: 4px; }
+  .logo-line .l2 { color: #0a1628; }
   .lightning-z {
-    height: 16px;
+    height: 21px;
     width: auto;
     flex-shrink: 0;
-    margin-left: auto;
-    margin-right: 0;
+    margin-left: 2px;
   }
-  .logo-line .l1 { color: #e8231a; margin-right: 5px; }
-  .logo-line .l2 { color: #0a1628; }
 
   .tagline {
     font-family: 'Montserrat', sans-serif;
-    font-size: 7px;
+    font-size: 8px;
     font-weight: 700;
     color: #e8231a;
-    letter-spacing: 2px;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
-    margin-top: 2px;
+    margin-top: 4px;
   }
 
+  /* Full-width solid red rule */
   .divider {
-    width: 34px; height: 2px;
-    background: linear-gradient(90deg, #e8231a, transparent);
-    margin: 6px 0 0;
+    height: 2px;
+    background: #e8231a;
+    margin-top: 5px;
+    width: 100%;
   }
 
-  /* ── MIDDLE ZONE: Name + title — vertically centered ── */
+  /* ── MIDDLE: Name + title ── */
   .middle-block {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 3px;
+    gap: 4px;
+    padding-top: 2px;
   }
 
-  /* Cinzel for name, Paul Allen color kept dark navy */
   .name {
     font-family: 'Cinzel', serif;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
     color: #0a1628;
     letter-spacing: 1px;
     line-height: 1;
   }
 
-  /* Cinzel + glossy dark gold for lines below name */
   .ceo-line {
     font-family: 'Cinzel', serif;
-    font-size: 5.8px;
+    font-size: 6px;
     font-weight: 600;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     background: linear-gradient(160deg, #C9A44A 0%, #7A5800 35%, #B8920A 55%, #6B4C00 80%, #C9A44A 100%);
     -webkit-background-clip: text;
@@ -167,50 +155,53 @@
 
   .cornell-line {
     font-family: 'Cinzel', serif;
-    font-size: 5.8px;
+    font-size: 6px;
     font-weight: 400;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     display: flex;
-    align-items: flex-end;
-    gap: 3px;
+    align-items: center;
+    gap: 4px;
     background: linear-gradient(160deg, #C9A44A 0%, #7A5800 35%, #B8920A 55%, #6B4C00 80%, #C9A44A 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   .cornell-logo {
-    height: 9px;
+    height: 10px;
     width: auto;
     flex-shrink: 0;
   }
 
-  /* ── BOTTOM ZONE: Contact + QR ── */
+  /* ── BOTTOM: Contact + QR ── */
   .h-rule {
+    flex-shrink: 0;
     height: 1px;
-    background: rgba(0,0,0,0.08);
-    margin-bottom: 5px;
+    background: rgba(0,0,0,0.10);
+    margin-bottom: 6px;
   }
   .bottom-row {
     flex-shrink: 0;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    gap: 6px;
   }
 
   .contact-block {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 48px;
+    height: 50px;
+    flex: 1;
   }
 
   .citem {
     font-family: 'Cinzel', serif;
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 5.8px;
+    gap: 5px;
+    font-size: 6.5px;
     font-weight: 400;
     letter-spacing: 0.5px;
     color: #0a1628;
@@ -219,20 +210,37 @@
   .citem .icon {
     color: #e8231a;
     -webkit-text-fill-color: #e8231a;
-    font-size: 7px;
-    width: 9px;
+    font-size: 8px;
+    width: 10px;
     text-align: center;
     flex-shrink: 0;
   }
 
-  /* QR — no background, sits flat */
+  /* QR with SCAN HERE label */
+  .qr-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
   .qr-img {
     display: block;
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     object-fit: contain;
-    object-position: right center;
-    flex-shrink: 0;
+    border: 1.5px solid #e8231a;
+    border-radius: 3px;
+    padding: 1px;
+  }
+  .qr-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 5.5px;
+    font-weight: 900;
+    color: #e8231a;
+    letter-spacing: 1.5px;
+    text-align: center;
+    margin-top: 2px;
+    text-transform: uppercase;
   }
 
   @media print {
@@ -248,8 +256,7 @@
 <body>
 
 <div class="card">
-  <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
-  <div class="bg-fade"></div>
+  <img class="bg-watermark" src="LightningLedgerzLogo.png" alt="">
 
   <div class="red-bar"></div>
 
@@ -259,7 +266,6 @@
 
   <div class="info-col">
 
-    <!-- TOP: brand -->
     <div class="top-block">
       <div class="logo-line">
         <span class="l1">LIGHTNING</span><span class="l2">LEDGER</span><img class="lightning-z" src="lightningz.png" alt="Z">
@@ -268,14 +274,12 @@
       <div class="divider"></div>
     </div>
 
-    <!-- MIDDLE: name + title centered -->
     <div class="middle-block">
       <div class="name">Zac Prizant</div>
       <div class="ceo-line">President &amp; FP&amp;A Advisor</div>
       <div class="cornell-line">Cornell Masters of Management <img class="cornell-logo" src="cornred.png" alt="Cornell"></div>
     </div>
 
-    <!-- BOTTOM: contact + QR -->
     <div class="h-rule"></div>
     <div class="bottom-row">
       <div class="contact-block">
@@ -284,7 +288,7 @@
         <div class="citem">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round"
-            style="width:9px;height:9px;flex-shrink:0;">
+            style="width:10px;height:10px;flex-shrink:0;">
             <circle cx="12" cy="12" r="10"/>
             <line x1="2" y1="12" x2="22" y2="12"/>
             <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
@@ -292,11 +296,13 @@
           lightningledgerz.com
         </div>
       </div>
-      <img class="qr-img" src="ledgerzqrcode.png" alt="Scan QR Code">
+      <div class="qr-block">
+        <img class="qr-img" src="ledgerzqrcode.png" alt="QR Code">
+        <div class="qr-label">Scan Here</div>
+      </div>
     </div>
 
   </div>
-  <div class="white-bar"></div>
 </div>
 
 </body>
