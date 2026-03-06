@@ -4,384 +4,248 @@
 <meta charset="UTF-8">
 <title>Lightning Ledgerz Business Card</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Cinzel:wght@400;600;700;900&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     background: #d0d0d0;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    gap: 40px;
-    padding: 50px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Cinzel', serif;
   }
 
-  .instructions {
-    background: white;
-    padding: 12px 28px;
-    border-radius: 8px;
-    font-size: 13px;
-    color: #444;
-    text-align: center;
-    max-width: 540px;
-    line-height: 1.7;
-  }
-
-  .card-set {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    align-items: center;
-  }
-
-  .label {
-    color: #222;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: -20px;
-  }
-
-  /* ===================== FRONT ===================== */
-  .card-front {
+  /* ── Card: exactly 3.5 × 2 inches ── */
+  .card {
     width: 3.5in;
     height: 2in;
-    border-radius: 14px;
+    border-radius: 10px;
     overflow: hidden;
     position: relative;
     display: flex;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-    background: #0a1628;
+    background: #fff;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.22);
   }
 
-  /* Background image hidden for dark version */
-  .card-front .bg-img {
-    display: none;
-  }
-
-  /* Dark overlay */
-  .card-front .bg-fade {
+  /* Faint watermark logo centered in card */
+  .bg-watermark {
     position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, #0d1e3a 0%, #0a1628 60%, #111e38 100%);
-    z-index: 1;
+    left: 62%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 1.35in;
+    opacity: 0.05;
+    z-index: 0;
+    pointer-events: none;
+    filter: grayscale(100%);
   }
 
-  /* Red left accent */
-  .card-front .red-bar {
+  /* Red left bar */
+  .red-bar {
     width: 6px;
     flex-shrink: 0;
     background: linear-gradient(180deg, #e8231a, #a80e08);
-    position: relative;
-    z-index: 3;
+    position: relative; z-index: 3;
   }
 
-  /* Photo column */
-  .card-front .photo-col {
-    width: 1.3in;
+  /* Photo */
+  .photo-col {
+    width: 1.45in;
     flex-shrink: 0;
     position: relative;
     overflow: hidden;
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    align-items: flex-end;
+    justify-content: center;
     z-index: 3;
   }
-
-  .card-front .photo-col::before {
+  .photo-col::after {
     content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse 55% 90% at 52% 65%, rgba(232,35,26,0.42) 0%, rgba(232,35,26,0.18) 40%, rgba(232,35,26,0.05) 65%, transparent 80%);
-    z-index: 1;
-    pointer-events: none;
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 80% at 60% 80%,
+      rgba(232,35,26,0.12) 0%, rgba(232,35,26,0.04) 50%, transparent 75%);
+    z-index: 1; pointer-events: none;
   }
-
-  .card-front .photo-col img {
-    height: 100%;
-    width: auto;
-    margin-left: -10px;
-    margin-bottom: 0;
-    position: relative;
-    z-index: 2;
+  .photo-col img {
+    height: 100%; width: auto;
+    position: relative; z-index: 2;
   }
 
   /* Info column */
-  .card-front .info-col {
+  .info-col {
     flex: 1;
-    padding: 16px 8px 10px 0px;
-    margin-left: -6px;
+    padding: 11px 10px 9px 10px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-    z-index: 3;
+    position: relative; z-index: 3;
   }
 
-  /* Text logo top */
-  .card-front .text-logo .main {
-    font-size: 16px;
+  /* ── TOP: Logo + tagline ── */
+  .top-block { flex-shrink: 0; }
+
+  .logo-line {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 19px;
     font-weight: 900;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     line-height: 1;
     text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .card-front .text-logo .main .l1 { color: #e8231a; }
-  .card-front .text-logo .main .l2 { color: #ffffff; }
-
-  .card-front .text-logo .sub {
-    font-size: 7.5px;
-    font-weight: 700;
-    color: #e8231a;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 2px;
-    margin-left: -1px;
-  }
-
-  .card-front .divider {
-    width: 36px;
-    height: 2px;
-    background: linear-gradient(90deg, #e8231a, transparent);
-    margin: 5px 0 3px;
-  }
-
-  .card-front .name {
-    font-size: 13px;
-    font-weight: 800;
-    color: #ffffff;
-  }
-
-  .card-front .title {
-    font-size: 5.5px;
-    color: #7a90b8;
-    font-weight: 600;
-    letter-spacing: 0.15px;
-    text-transform: uppercase;
-    margin-top: 2px;
-    margin-bottom: 3px;
-    white-space: nowrap;
-  }
-
-  /* Services hidden on dark version */
-  .card-front .services {
-    display: none;
-  }
-
-  /* Bottom row: contact + logo */
-  .card-front .bottom-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding-top: 5px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    margin-top: 7px;
-    flex: 1;
+  }
+  .logo-line .l1 { color: #e8231a; margin-right: 4px; }
+  .logo-line .l2 { color: #0a1628; }
+  .lightning-z {
+    height: 21px;
+    width: auto;
+    flex-shrink: 0;
+    margin-left: 2px;
   }
 
-  .card-front .contact-block {
+  .tagline {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    color: #e8231a;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* Full-width solid red rule */
+  .divider {
+    height: 2px;
+    background: #e8231a;
+    margin-top: 5px;
+    width: 100%;
+  }
+
+  /* ── MIDDLE: Name + title ── */
+  .middle-block {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 3px;
-    padding-right: 0;
+    justify-content: center;
+    gap: 4px;
+    padding-top: 2px;
   }
 
-  .card-front .citem {
+  .name {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0a1628;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+
+  .ceo-line {
+    font-family: 'Cinzel', serif;
+    font-size: 6px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: linear-gradient(160deg, #C9A44A 0%, #7A5800 35%, #B8920A 55%, #6B4C00 80%, #C9A44A 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .cornell-line {
+    font-family: 'Cinzel', serif;
+    font-size: 6px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 6.5px;
-    color: #aabbd4;
-    font-weight: 500;
+    background: linear-gradient(160deg, #C9A44A 0%, #7A5800 35%, #B8920A 55%, #6B4C00 80%, #C9A44A 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .cornell-logo {
+    height: 10px;
+    width: auto;
+    flex-shrink: 0;
   }
 
-  .card-front .citem .icon {
+  /* ── BOTTOM: Contact + QR ── */
+  .h-rule {
+    flex-shrink: 0;
+    height: 1px;
+    background: rgba(0,0,0,0.10);
+    margin-bottom: 6px;
+  }
+  .bottom-row {
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .contact-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 50px;
+    flex: 1;
+  }
+
+  .citem {
+    font-family: 'Cinzel', serif;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 6.5px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    color: #0a1628;
+    text-transform: uppercase;
+  }
+  .citem .icon {
     color: #e8231a;
-    font-size: 7px;
-    width: 9px;
+    -webkit-text-fill-color: #e8231a;
+    font-size: 8px;
+    width: 10px;
     text-align: center;
     flex-shrink: 0;
   }
 
-  .card-front .logo-btn {
-    display: none;
+  /* QR with SCAN HERE label */
+  .qr-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
   }
-
-  .card-front .logo-br {
-    height: 38px;
-    width: auto;
-    object-fit: contain;
+  .qr-img {
     display: block;
-  }
-
-  /* ===================== BACK ===================== */
-  .card-back {
-    width: 3.5in;
-    height: 2in;
-    border-radius: 14px;
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-    background: #fff;
-  }
-
-  .card-back .bg-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    opacity: 0.20;
-    z-index: 0;
-  }
-
-  .card-back .bg-fade {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(160deg,
-      rgba(255,255,255,0.82) 0%,
-      rgba(255,250,245,0.75) 50%,
-      rgba(255,245,235,0.82) 100%
-    );
-    z-index: 1;
-  }
-
-  .card-back .back-content {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .card-back .text-logo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1px;
-  }
-
-  .card-back .text-logo .main {
-    font-size: 22px;
-    font-weight: 900;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    line-height: 1;
-  }
-
-  .card-back .text-logo .main .l1 { color: #e8231a; }
-  .card-back .text-logo .main .l2 { color: #0a1628; }
-
-  .card-back .text-logo .sub {
-    font-size: 7px;
-    font-weight: 700;
-    color: #e8231a;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
-
-  .card-back .back-divider {
-    width: 100px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #e8231a, transparent);
-  }
-
-  .card-back .back-services {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-  }
-
-  .card-back .svc-row {
-    display: flex;
-    gap: 14px;
-  }
-
-  .card-back .svc {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    font-size: 6.5px;
-    color: #1a2a45;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-  }
-
-  .card-back .svc .bolt { color: #e8231a; font-size: 8px; }
-
-  .card-back .logo-corner {
-    position: absolute;
-    bottom: 11px;
-    right: 13px;
-    z-index: 3;
-    height: 28px;
-    width: auto;
+    width: 50px;
+    height: 50px;
     object-fit: contain;
+    border: 1.5px solid #e8231a;
+    border-radius: 3px;
+    padding: 1px;
   }
-
-  /* ===================== PRINT SHEET ===================== */
-  .print-sheet-label {
-    color: #222;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
+  .qr-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 5.5px;
+    font-weight: 900;
+    color: #e8231a;
+    letter-spacing: 1.5px;
+    text-align: center;
+    margin-top: 2px;
     text-transform: uppercase;
-    margin-top: 20px;
-  }
-
-  .print-sheet {
-    width: 8.5in;
-    height: 11in;
-    background: white;
-    display: grid;
-    grid-template-columns: repeat(2, 3.5in);
-    grid-template-rows: repeat(5, 2in);
-    column-gap: 0;
-    row-gap: 0;
-    padding: 0.5in 0.75in;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-    box-sizing: border-box;
-  }
-
-  .print-sheet .card-front {
-    border-radius: 0;
-    box-shadow: none;
-    border: 0.5px dashed #ccc;
   }
 
   @media print {
-    body { background: white; padding: 0; gap: 0; }
-    .instructions { display: none; }
-    .card-set { display: none; }
-    .label { display: none; }
-    .print-sheet-label { display: none; }
-    .print-sheet {
-      box-shadow: none;
-      padding: 0.5in 0.75in;
-      page-break-after: always;
-    }
-    .print-sheet .card-front {
-      border: none;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-    .card-front, .card-back {
+    body { background: white; margin: 0; padding: 0; }
+    .card {
       box-shadow: none;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
@@ -391,411 +255,54 @@
 </head>
 <body>
 
-<div class="instructions">
-  <strong>Step 1:</strong> Save the Golden Gate screenshot to this folder as <code>golden-gate.jpg</code><br>
-  <strong>Step 2:</strong> Open in Chrome → Ctrl+P → Scale 100%, Margins: None, ✅ Background graphics
-</div>
+<div class="card">
+  <img class="bg-watermark" src="LightningLedgerzLogo.png" alt="">
 
-<div class="card-set">
+  <div class="red-bar"></div>
 
-  <div class="label">— Front —</div>
+  <div class="photo-col">
+    <img src="zacredtiebest.png" alt="Zac Prizant">
+  </div>
 
-  <div class="card-front">
-    <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
-    <div class="bg-fade"></div>
-    <div class="red-bar"></div>
+  <div class="info-col">
 
-    <div class="photo-col">
-      <img src="zacfullsuitnoback.png" alt="Zac Prizant">
-    </div>
-
-    <div class="info-col">
-      <div class="text-logo">
-        <div class="main"><span class="l1">LIGHTNING </span><span class="l2">LEDGERZ</span></div>
-        <div class="sub">Budget &nbsp;·&nbsp; Save &nbsp;·&nbsp; Build</div>
+    <div class="top-block">
+      <div class="logo-line">
+        <span class="l1">LIGHTNING</span><span class="l2">LEDGER</span><img class="lightning-z" src="lightningz.png" alt="Z">
       </div>
-
+      <div class="tagline">Budget &nbsp;·&nbsp; Bookkeep &nbsp;·&nbsp; Build</div>
       <div class="divider"></div>
+    </div>
 
+    <div class="middle-block">
       <div class="name">Zac Prizant</div>
-      <div class="title">CEO &amp; FP&amp;A Advisor &nbsp;·&nbsp; Cornell Masters of Management</div>
-
-      <div class="services">
-        <div class="svc"><span class="bolt">⚡</span> Budget vs. Actual Analysis</div>
-        <div class="svc"><span class="bolt">⚡</span> Financial Modeling &amp; Forecasting</div>
-        <div class="svc"><span class="bolt">⚡</span> Cash Flow &amp; Strategic Planning</div>
-        <div class="svc"><span class="bolt">⚡</span> Bookkeeping</div>
-        <div class="svc"><span class="bolt">⚡</span> Boardroom-Ready Presentations</div>
-      </div>
-
-      <div class="bottom-row">
-        <div class="contact-block">
-          <div class="citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
-          <div class="citem"><span class="icon">☎</span> (702) 550-2513</div>
-          <div class="citem"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> lightningledgerz.com</div>
-        </div>
-        <div class="logo-btn">
-          <img src="LightningLedgerzLogo.png" class="logo-br" alt="LL Logo">
-        </div>
-      </div>
+      <div class="ceo-line">President &amp; FP&amp;A Advisor</div>
+      <div class="cornell-line">Cornell Masters of Management <img class="cornell-logo" src="cornred.png" alt="Cornell"></div>
     </div>
-  </div>
 
-  <div class="label">— Back —</div>
-
-  <div class="card-back">
-    <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
-    <div class="bg-fade"></div>
-
-    <div class="back-content">
-      <div class="text-logo">
-        <div class="main"><span class="l1">LIGHTNING </span><span class="l2">LEDGERZ</span></div>
-        <div class="sub">Budget &nbsp;·&nbsp; Save &nbsp;·&nbsp; Build</div>
+    <div class="h-rule"></div>
+    <div class="bottom-row">
+      <div class="contact-block">
+        <div class="citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
+        <div class="citem"><span class="icon">☎</span> (702) 550-2513</div>
+        <div class="citem">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"
+            style="width:10px;height:10px;flex-shrink:0;">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          lightningledgerz.com
+        </div>
       </div>
-      <div class="back-divider"></div>
-      <div class="back-services">
-        <div class="svc-row">
-          <div class="svc"><span class="bolt">⚡</span> Budget &amp; Forecast</div>
-          <div class="svc"><span class="bolt">⚡</span> Financial Modeling</div>
-          <div class="svc"><span class="bolt">⚡</span> KPI Dashboards</div>
-        </div>
-        <div class="svc-row">
-          <div class="svc"><span class="bolt">⚡</span> Cash Flow Analysis</div>
-          <div class="svc"><span class="bolt">⚡</span> Board Decks</div>
-          <div class="svc"><span class="bolt">⚡</span> Fractional CFO</div>
-        </div>
+      <div class="qr-block">
+        <img class="qr-img" src="ledgerzqrcode.png" alt="QR Code">
+        <div class="qr-label">Scan Here</div>
       </div>
     </div>
 
-    <img src="LightningLedgerzLogo.png" class="logo-corner" alt="LL Logo">
   </div>
-
-</div>
-
-<div class="print-sheet-label">— Print Sheet (10 cards · 2×5 · Letter) —</div>
-
-<div class="print-sheet">
-
-  <!-- Card 1 -->
-  <div class="card-front">
-    <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
-    <div class="bg-fade"></div>
-    <div class="red-bar"></div>
-    <div class="photo-col"><img src="zacfullsuitnoback.png" alt="Zac Prizant"></div>
-    <div class="info-col">
-      <div class="text-logo">
-        <div class="main"><span class="l1">LIGHTNING </span><span class="l2">LEDGERZ</span></div>
-        <div class="sub">Budget &nbsp;·&nbsp; Save &nbsp;·&nbsp; Build</div>
-      </div>
-      <div class="divider"></div>
-      <div class="name">Zac Prizant</div>
-      <div class="title">CEO &amp; FP&amp;A Advisor &nbsp;·&nbsp; Cornell Masters of Management</div>
-      <div class="services">
-        <div class="svc"><span class="bolt">⚡</span> Budget vs. Actual Analysis</div>
-        <div class="svc"><span class="bolt">⚡</span> Financial Modeling &amp; Forecasting</div>
-        <div class="svc"><span class="bolt">⚡</span> Cash Flow &amp; Strategic Planning</div>
-        <div class="svc"><span class="bolt">⚡</span> Bookkeeping</div>
-        <div class="svc"><span class="bolt">⚡</span> Boardroom-Ready Presentations</div>
-      </div>
-      <div class="bottom-row">
-        <div class="contact-block">
-          <div class="citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
-          <div class="citem"><span class="icon">☎</span> (702) 550-2513</div>
-          <div class="citem"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> lightningledgerz.com</div>
-        </div>
-        <div class="logo-btn"><img src="LightningLedgerzLogo.png" class="logo-br" alt="LL Logo"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 2 -->
-  <div class="card-front">
-    <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
-    <div class="bg-fade"></div>
-    <div class="red-bar"></div>
-    <div class="photo-col"><img src="zacfullsuitnoback.png" alt="Zac Prizant"></div>
-    <div class="info-col">
-      <div class="text-logo">
-        <div class="main"><span class="l1">LIGHTNING </span><span class="l2">LEDGERZ</span></div>
-        <div class="sub">Budget &nbsp;·&nbsp; Save &nbsp;·&nbsp; Build</div>
-      </div>
-      <div class="divider"></div>
-      <div class="name">Zac Prizant</div>
-      <div class="title">CEO &amp; FP&amp;A Advisor &nbsp;·&nbsp; Cornell Masters of Management</div>
-      <div class="services">
-        <div class="svc"><span class="bolt">⚡</span> Budget vs. Actual Analysis</div>
-        <div class="svc"><span class="bolt">⚡</span> Financial Modeling &amp; Forecasting</div>
-        <div class="svc"><span class="bolt">⚡</span> Cash Flow &amp; Strategic Planning</div>
-        <div class="svc"><span class="bolt">⚡</span> Bookkeeping</div>
-        <div class="svc"><span class="bolt">⚡</span> Boardroom-Ready Presentations</div>
-      </div>
-      <div class="bottom-row">
-        <div class="contact-block">
-          <div class="citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
-          <div class="citem"><span class="icon">☎</span> (702) 550-2513</div>
-          <div class="citem"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> lightningledgerz.com</div>
-        </div>
-        <div class="logo-btn"><img src="LightningLedgerzLogo.png" class="logo-br" alt="LL Logo"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 3 -->
-  <div class="card-front">
-    <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
-    <div class="bg-fade"></div>
-    <div class="red-bar"></div>
-    <div class="photo-col"><img src="zacfullsuitnoback.png" alt="Zac Prizant"></div>
-    <div class="info-col">
-      <div class="text-logo">
-        <div class="main"><span class="l1">LIGHTNING </span><span class="l2">LEDGERZ</span></div>
-        <div class="sub">Budget &nbsp;·&nbsp; Save &nbsp;·&nbsp; Build</div>
-      </div>
-      <div class="divider"></div>
-      <div class="name">Zac Prizant</div>
-      <div class="title">CEO &amp; FP&amp;A Advisor &nbsp;·&nbsp; Cornell Masters of Management</div>
-      <div class="services">
-        <div class="svc"><span class="bolt">⚡</span> Budget vs. Actual Analysis</div>
-        <div class="svc"><span class="bolt">⚡</span> Financial Modeling &amp; Forecasting</div>
-        <div class="svc"><span class="bolt">⚡</span> Cash Flow &amp; Strategic Planning</div>
-        <div class="svc"><span class="bolt">⚡</span> Bookkeeping</div>
-        <div class="svc"><span class="bolt">⚡</span> Boardroom-Ready Presentations</div>
-      </div>
-      <div class="bottom-row">
-        <div class="contact-block">
-          <div class="citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
-          <div class="citem"><span class="icon">☎</span> (702) 550-2513</div>
-          <div class="citem"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> lightningledgerz.com</div>
-        </div>
-        <div class="logo-btn"><img src="LightningLedgerzLogo.png" class="logo-br" alt="LL Logo"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 4 -->
-  <div class="card-front">
-    <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
-    <div class="bg-fade"></div>
-    <div class="red-bar"></div>
-    <div class="photo-col"><img src="zacfullsuitnoback.png" alt="Zac Prizant"></div>
-    <div class="info-col">
-      <div class="text-logo">
-        <div class="main"><span class="l1">LIGHTNING </span><span class="l2">LEDGERZ</span></div>
-        <div class="sub">Budget &nbsp;·&nbsp; Save &nbsp;·&nbsp; Build</div>
-      </div>
-      <div class="divider"></div>
-      <div class="name">Zac Prizant</div>
-      <div class="title">CEO &amp; FP&amp;A Advisor &nbsp;·&nbsp; Cornell Masters of Management</div>
-      <div class="services">
-        <div class="svc"><span class="bolt">⚡</span> Budget vs. Actual Analysis</div>
-        <div class="svc"><span class="bolt">⚡</span> Financial Modeling &amp; Forecasting</div>
-        <div class="svc"><span class="bolt">⚡</span> Cash Flow &amp; Strategic Planning</div>
-        <div class="svc"><span class="bolt">⚡</span> Bookkeeping</div>
-        <div class="svc"><span class="bolt">⚡</span> Boardroom-Ready Presentations</div>
-      </div>
-      <div class="bottom-row">
-        <div class="contact-block">
-          <div class="citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
-          <div class="citem"><span class="icon">☎</span> (702) 550-2513</div>
-          <div class="citem"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> lightningledgerz.com</div>
-        </div>
-        <div class="logo-btn"><img src="LightningLedgerzLogo.png" class="logo-br" alt="LL Logo"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 5 -->
-  <div class="card-front">
-    <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
-    <div class="bg-fade"></div>
-    <div class="red-bar"></div>
-    <div class="photo-col"><img src="zacfullsuitnoback.png" alt="Zac Prizant"></div>
-    <div class="info-col">
-      <div class="text-logo">
-        <div class="main"><span class="l1">LIGHTNING </span><span class="l2">LEDGERZ</span></div>
-        <div class="sub">Budget &nbsp;·&nbsp; Save &nbsp;·&nbsp; Build</div>
-      </div>
-      <div class="divider"></div>
-      <div class="name">Zac Prizant</div>
-      <div class="title">CEO &amp; FP&amp;A Advisor &nbsp;·&nbsp; Cornell Masters of Management</div>
-      <div class="services">
-        <div class="svc"><span class="bolt">⚡</span> Budget vs. Actual Analysis</div>
-        <div class="svc"><span class="bolt">⚡</span> Financial Modeling &amp; Forecasting</div>
-        <div class="svc"><span class="bolt">⚡</span> Cash Flow &amp; Strategic Planning</div>
-        <div class="svc"><span class="bolt">⚡</span> Bookkeeping</div>
-        <div class="svc"><span class="bolt">⚡</span> Boardroom-Ready Presentations</div>
-      </div>
-      <div class="bottom-row">
-        <div class="contact-block">
-          <div class="citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
-          <div class="citem"><span class="icon">☎</span> (702) 550-2513</div>
-          <div class="citem"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> lightningledgerz.com</div>
-        </div>
-        <div class="logo-btn"><img src="LightningLedgerzLogo.png" class="logo-br" alt="LL Logo"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 6 -->
-  <div class="card-front">
-    <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
-    <div class="bg-fade"></div>
-    <div class="red-bar"></div>
-    <div class="photo-col"><img src="zacfullsuitnoback.png" alt="Zac Prizant"></div>
-    <div class="info-col">
-      <div class="text-logo">
-        <div class="main"><span class="l1">LIGHTNING </span><span class="l2">LEDGERZ</span></div>
-        <div class="sub">Budget &nbsp;·&nbsp; Save &nbsp;·&nbsp; Build</div>
-      </div>
-      <div class="divider"></div>
-      <div class="name">Zac Prizant</div>
-      <div class="title">CEO &amp; FP&amp;A Advisor &nbsp;·&nbsp; Cornell Masters of Management</div>
-      <div class="services">
-        <div class="svc"><span class="bolt">⚡</span> Budget vs. Actual Analysis</div>
-        <div class="svc"><span class="bolt">⚡</span> Financial Modeling &amp; Forecasting</div>
-        <div class="svc"><span class="bolt">⚡</span> Cash Flow &amp; Strategic Planning</div>
-        <div class="svc"><span class="bolt">⚡</span> Bookkeeping</div>
-        <div class="svc"><span class="bolt">⚡</span> Boardroom-Ready Presentations</div>
-      </div>
-      <div class="bottom-row">
-        <div class="contact-block">
-          <div class="citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
-          <div class="citem"><span class="icon">☎</span> (702) 550-2513</div>
-          <div class="citem"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> lightningledgerz.com</div>
-        </div>
-        <div class="logo-btn"><img src="LightningLedgerzLogo.png" class="logo-br" alt="LL Logo"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 7 -->
-  <div class="card-front">
-    <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
-    <div class="bg-fade"></div>
-    <div class="red-bar"></div>
-    <div class="photo-col"><img src="zacfullsuitnoback.png" alt="Zac Prizant"></div>
-    <div class="info-col">
-      <div class="text-logo">
-        <div class="main"><span class="l1">LIGHTNING </span><span class="l2">LEDGERZ</span></div>
-        <div class="sub">Budget &nbsp;·&nbsp; Save &nbsp;·&nbsp; Build</div>
-      </div>
-      <div class="divider"></div>
-      <div class="name">Zac Prizant</div>
-      <div class="title">CEO &amp; FP&amp;A Advisor &nbsp;·&nbsp; Cornell Masters of Management</div>
-      <div class="services">
-        <div class="svc"><span class="bolt">⚡</span> Budget vs. Actual Analysis</div>
-        <div class="svc"><span class="bolt">⚡</span> Financial Modeling &amp; Forecasting</div>
-        <div class="svc"><span class="bolt">⚡</span> Cash Flow &amp; Strategic Planning</div>
-        <div class="svc"><span class="bolt">⚡</span> Bookkeeping</div>
-        <div class="svc"><span class="bolt">⚡</span> Boardroom-Ready Presentations</div>
-      </div>
-      <div class="bottom-row">
-        <div class="contact-block">
-          <div class="citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
-          <div class="citem"><span class="icon">☎</span> (702) 550-2513</div>
-          <div class="citem"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> lightningledgerz.com</div>
-        </div>
-        <div class="logo-btn"><img src="LightningLedgerzLogo.png" class="logo-br" alt="LL Logo"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 8 -->
-  <div class="card-front">
-    <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
-    <div class="bg-fade"></div>
-    <div class="red-bar"></div>
-    <div class="photo-col"><img src="zacfullsuitnoback.png" alt="Zac Prizant"></div>
-    <div class="info-col">
-      <div class="text-logo">
-        <div class="main"><span class="l1">LIGHTNING </span><span class="l2">LEDGERZ</span></div>
-        <div class="sub">Budget &nbsp;·&nbsp; Save &nbsp;·&nbsp; Build</div>
-      </div>
-      <div class="divider"></div>
-      <div class="name">Zac Prizant</div>
-      <div class="title">CEO &amp; FP&amp;A Advisor &nbsp;·&nbsp; Cornell Masters of Management</div>
-      <div class="services">
-        <div class="svc"><span class="bolt">⚡</span> Budget vs. Actual Analysis</div>
-        <div class="svc"><span class="bolt">⚡</span> Financial Modeling &amp; Forecasting</div>
-        <div class="svc"><span class="bolt">⚡</span> Cash Flow &amp; Strategic Planning</div>
-        <div class="svc"><span class="bolt">⚡</span> Bookkeeping</div>
-        <div class="svc"><span class="bolt">⚡</span> Boardroom-Ready Presentations</div>
-      </div>
-      <div class="bottom-row">
-        <div class="contact-block">
-          <div class="citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
-          <div class="citem"><span class="icon">☎</span> (702) 550-2513</div>
-          <div class="citem"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> lightningledgerz.com</div>
-        </div>
-        <div class="logo-btn"><img src="LightningLedgerzLogo.png" class="logo-br" alt="LL Logo"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 9 -->
-  <div class="card-front">
-    <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
-    <div class="bg-fade"></div>
-    <div class="red-bar"></div>
-    <div class="photo-col"><img src="zacfullsuitnoback.png" alt="Zac Prizant"></div>
-    <div class="info-col">
-      <div class="text-logo">
-        <div class="main"><span class="l1">LIGHTNING </span><span class="l2">LEDGERZ</span></div>
-        <div class="sub">Budget &nbsp;·&nbsp; Save &nbsp;·&nbsp; Build</div>
-      </div>
-      <div class="divider"></div>
-      <div class="name">Zac Prizant</div>
-      <div class="title">CEO &amp; FP&amp;A Advisor &nbsp;·&nbsp; Cornell Masters of Management</div>
-      <div class="services">
-        <div class="svc"><span class="bolt">⚡</span> Budget vs. Actual Analysis</div>
-        <div class="svc"><span class="bolt">⚡</span> Financial Modeling &amp; Forecasting</div>
-        <div class="svc"><span class="bolt">⚡</span> Cash Flow &amp; Strategic Planning</div>
-        <div class="svc"><span class="bolt">⚡</span> Bookkeeping</div>
-        <div class="svc"><span class="bolt">⚡</span> Boardroom-Ready Presentations</div>
-      </div>
-      <div class="bottom-row">
-        <div class="contact-block">
-          <div class="citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
-          <div class="citem"><span class="icon">☎</span> (702) 550-2513</div>
-          <div class="citem"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> lightningledgerz.com</div>
-        </div>
-        <div class="logo-btn"><img src="LightningLedgerzLogo.png" class="logo-br" alt="LL Logo"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 10 -->
-  <div class="card-front">
-    <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
-    <div class="bg-fade"></div>
-    <div class="red-bar"></div>
-    <div class="photo-col"><img src="zacfullsuitnoback.png" alt="Zac Prizant"></div>
-    <div class="info-col">
-      <div class="text-logo">
-        <div class="main"><span class="l1">LIGHTNING </span><span class="l2">LEDGERZ</span></div>
-        <div class="sub">Budget &nbsp;·&nbsp; Save &nbsp;·&nbsp; Build</div>
-      </div>
-      <div class="divider"></div>
-      <div class="name">Zac Prizant</div>
-      <div class="title">CEO &amp; FP&amp;A Advisor &nbsp;·&nbsp; Cornell Masters of Management</div>
-      <div class="services">
-        <div class="svc"><span class="bolt">⚡</span> Budget vs. Actual Analysis</div>
-        <div class="svc"><span class="bolt">⚡</span> Financial Modeling &amp; Forecasting</div>
-        <div class="svc"><span class="bolt">⚡</span> Cash Flow &amp; Strategic Planning</div>
-        <div class="svc"><span class="bolt">⚡</span> Bookkeeping</div>
-        <div class="svc"><span class="bolt">⚡</span> Boardroom-Ready Presentations</div>
-      </div>
-      <div class="bottom-row">
-        <div class="contact-block">
-          <div class="citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
-          <div class="citem"><span class="icon">☎</span> (702) 550-2513</div>
-          <div class="citem"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> lightningledgerz.com</div>
-        </div>
-        <div class="logo-btn"><img src="LightningLedgerzLogo.png" class="logo-br" alt="LL Logo"></div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 </body>
