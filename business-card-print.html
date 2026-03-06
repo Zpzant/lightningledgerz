@@ -9,16 +9,28 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #d0d0d0;
+    background: #c8c8c8;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    padding: 40px;
+    padding: 60px 40px;
+    gap: 40px;
     font-family: 'Cinzel', serif;
   }
 
-  /* ── Card: exactly 3.5 × 2 inches ── */
+  .card-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: -28px;
+  }
+
+  /* ── FRONT ── */
   .card {
     width: 3.5in;
     height: 2in;
@@ -30,20 +42,19 @@
     box-shadow: 0 8px 32px rgba(0,0,0,0.22);
   }
 
-  /* Faint watermark logo centered in card */
-  .bg-watermark {
-    position: absolute;
-    left: 62%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 1.35in;
-    opacity: 0.05;
+  .bg-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+    opacity: 0.26;
     z-index: 0;
-    pointer-events: none;
-    filter: grayscale(100%);
+  }
+  .bg-fade {
+    position: absolute; inset: 0;
+    background: rgba(255, 252, 248, 0.82);
+    z-index: 1;
   }
 
-  /* Red left bar */
   .red-bar {
     width: 6px;
     flex-shrink: 0;
@@ -51,91 +62,95 @@
     position: relative; z-index: 3;
   }
 
-  /* Photo */
+  .white-bar {
+    width: 10px;
+    flex-shrink: 0;
+    background: #ffffff;
+    position: relative; z-index: 3;
+  }
+
   .photo-col {
-    width: 1.45in;
+    width: 1.2in;
     flex-shrink: 0;
     position: relative;
     overflow: hidden;
     display: flex;
-    align-items: flex-end;
-    justify-content: center;
+    align-items: center;
+    justify-content: flex-start;
     z-index: 3;
   }
-  .photo-col::after {
+  .photo-col::before {
     content: '';
     position: absolute; inset: 0;
-    background: radial-gradient(ellipse 70% 80% at 60% 80%,
-      rgba(232,35,26,0.12) 0%, rgba(232,35,26,0.04) 50%, transparent 75%);
+    background: radial-gradient(ellipse 60% 90% at 55% 70%,
+      rgba(232,35,26,0.22) 0%, rgba(232,35,26,0.08) 50%, transparent 75%);
     z-index: 1; pointer-events: none;
   }
   .photo-col img {
     height: 100%; width: auto;
+    margin-left: 6px;
     position: relative; z-index: 2;
   }
 
-  /* Info column */
   .info-col {
     flex: 1;
-    padding: 11px 10px 9px 10px;
+    padding: 12px 0 10px 2px;
+    margin-left: -4px;
     display: flex;
     flex-direction: column;
     position: relative; z-index: 3;
   }
 
-  /* ── TOP: Logo + tagline ── */
   .top-block { flex-shrink: 0; }
 
   .logo-line {
     font-family: 'Montserrat', sans-serif;
-    font-size: 19px;
+    font-size: 16px;
     font-weight: 900;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     line-height: 1;
     text-transform: uppercase;
     display: flex;
     align-items: center;
+    width: 100%;
   }
-  .logo-line .l1 { color: #e8231a; margin-right: 4px; }
-  .logo-line .l2 { color: #0a1628; }
   .lightning-z {
-    height: 21px;
+    height: 16px;
     width: auto;
     flex-shrink: 0;
-    margin-left: 2px;
+    margin-left: auto;
+    margin-right: 0;
   }
+  .logo-line .l1 { color: #e8231a; margin-right: 5px; }
+  .logo-line .l2 { color: #0a1628; }
 
   .tagline {
     font-family: 'Montserrat', sans-serif;
-    font-size: 8px;
+    font-size: 7px;
     font-weight: 700;
     color: #e8231a;
-    letter-spacing: 2.5px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    margin-top: 4px;
+    margin-top: 2px;
   }
 
-  /* Full-width solid red rule */
   .divider {
-    height: 2px;
-    background: #e8231a;
-    margin-top: 5px;
-    width: 100%;
+    width: 34px; height: 2px;
+    background: linear-gradient(90deg, #e8231a, transparent);
+    margin: 6px 0 0;
   }
 
-  /* ── MIDDLE: Name + title ── */
   .middle-block {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 4px;
-    padding-top: 2px;
+    gap: 3px;
   }
 
   .name {
     font-family: 'Cinzel', serif;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     color: #0a1628;
     letter-spacing: 1px;
@@ -144,9 +159,9 @@
 
   .ceo-line {
     font-family: 'Cinzel', serif;
-    font-size: 6px;
+    font-size: 5.8px;
     font-weight: 600;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     background: linear-gradient(160deg, #C9A44A 0%, #7A5800 35%, #B8920A 55%, #6B4C00 80%, #C9A44A 100%);
     -webkit-background-clip: text;
@@ -156,109 +171,199 @@
 
   .cornell-line {
     font-family: 'Cinzel', serif;
-    font-size: 6px;
+    font-size: 5.8px;
     font-weight: 400;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     display: flex;
-    align-items: center;
-    gap: 4px;
+    align-items: flex-end;
+    gap: 3px;
     background: linear-gradient(160deg, #C9A44A 0%, #7A5800 35%, #B8920A 55%, #6B4C00 80%, #C9A44A 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   .cornell-logo {
-    height: 10px;
+    height: 9px;
     width: auto;
     flex-shrink: 0;
   }
 
-  /* ── BOTTOM: Contact + QR ── */
   .h-rule {
-    flex-shrink: 0;
     height: 1px;
-    background: rgba(0,0,0,0.10);
-    margin-bottom: 6px;
+    background: rgba(0,0,0,0.08);
+    margin-bottom: 5px;
   }
   .bottom-row {
     flex-shrink: 0;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 6px;
   }
 
   .contact-block {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 50px;
-    flex: 1;
+    height: 48px;
   }
 
   .citem {
     font-family: 'Cinzel', serif;
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 6.5px;
-    font-weight: 400;
-    letter-spacing: 0.5px;
-    color: #1a4480;
+    gap: 4px;
+    font-size: 5.8px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: #0a1628;
     text-transform: uppercase;
   }
   .citem .icon {
     color: #e8231a;
     -webkit-text-fill-color: #e8231a;
-    font-size: 8px;
-    width: 10px;
+    font-size: 7px;
+    width: 9px;
     text-align: center;
     flex-shrink: 0;
   }
 
-  /* QR with SCAN HERE label */
-  .qr-block {
+  .qr-img {
+    display: block;
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    object-position: right center;
+    flex-shrink: 0;
+  }
+
+  /* ── BACK ── */
+  .card-back {
+    width: 3.5in;
+    height: 2in;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex-shrink: 0;
+    justify-content: center;
+    gap: 6px;
+    background: #fff;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.22);
   }
-  .qr-img {
-    display: block;
-    width: 50px;
-    height: 50px;
-    object-fit: contain;
-    border: 1.5px solid #e8231a;
-    border-radius: 3px;
-    padding: 1px;
+
+  .card-back .bg-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+    opacity: 0.22;
+    z-index: 0;
   }
-  .qr-label {
+  .card-back .bg-fade {
+    position: absolute; inset: 0;
+    background: rgba(255, 252, 248, 0.80);
+    z-index: 1;
+  }
+  .card-back .red-bar-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #e8231a, #a80e08);
+    z-index: 3;
+  }
+  .card-back .red-bar-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #a80e08, #e8231a);
+    z-index: 3;
+  }
+
+  .back-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .back-logo-line {
     font-family: 'Montserrat', sans-serif;
-    font-size: 5.5px;
+    font-size: 22px;
     font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .back-logo-line .l1 { color: #e8231a; }
+  .back-logo-line .l2 { color: #0a1628; }
+  .back-lightning-z {
+    height: 22px;
+    width: auto;
+  }
+
+  .back-tagline {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 7.5px;
+    font-weight: 700;
     color: #e8231a;
-    letter-spacing: 1.5px;
-    text-align: center;
-    margin-top: 2px;
+    letter-spacing: 3px;
     text-transform: uppercase;
   }
 
+  .back-divider {
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #e8231a, transparent);
+  }
+
+  .back-services {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .svc-row {
+    display: flex;
+    gap: 12px;
+  }
+  .svc {
+    font-family: 'Cinzel', serif;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 5.5px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #0a1628;
+  }
+  .svc .bolt { color: #e8231a; font-size: 7px; }
+
   @media print {
-    body { background: white; margin: 0; padding: 0; }
-    .card {
+    body { background: white; margin: 0; padding: 0; gap: 0; }
+    .card-label { display: none; }
+    .card, .card-back {
       box-shadow: none;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
+      page-break-after: always;
     }
   }
 </style>
 </head>
 <body>
 
-<div class="card">
-  <img class="bg-watermark" src="LightningLedgerzLogo.png" alt="">
+<div class="card-label">— Front —</div>
 
+<div class="card">
+  <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
+  <div class="bg-fade"></div>
   <div class="red-bar"></div>
 
   <div class="photo-col">
@@ -266,7 +371,6 @@
   </div>
 
   <div class="info-col">
-
     <div class="top-block">
       <div class="logo-line">
         <span class="l1">LIGHTNING</span><span class="l2">LEDGER</span><img class="lightning-z" src="lightningz.png" alt="Z">
@@ -289,7 +393,7 @@
         <div class="citem">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round"
-            style="width:10px;height:10px;flex-shrink:0;">
+            style="width:9px;height:9px;flex-shrink:0;">
             <circle cx="12" cy="12" r="10"/>
             <line x1="2" y1="12" x2="22" y2="12"/>
             <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
@@ -297,12 +401,39 @@
           lightningledgerz.com
         </div>
       </div>
-      <div class="qr-block">
-        <img class="qr-img" src="ledgerzqrcode.png" alt="QR Code">
-        <div class="qr-label">Scan Here</div>
+      <img class="qr-img" src="ledgerzqrcode.png" alt="Scan QR Code">
+    </div>
+  </div>
+
+  <div class="white-bar"></div>
+</div>
+
+<div class="card-label">— Back —</div>
+
+<div class="card-back">
+  <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
+  <div class="bg-fade"></div>
+  <div class="red-bar-top"></div>
+  <div class="red-bar-bottom"></div>
+
+  <div class="back-content">
+    <div class="back-logo-line">
+      <span class="l1">LIGHTNING</span><span class="l2">LEDGER</span><img class="back-lightning-z" src="lightningz.png" alt="Z">
+    </div>
+    <div class="back-tagline">Budget &nbsp;·&nbsp; Bookkeep &nbsp;·&nbsp; Build</div>
+    <div class="back-divider"></div>
+    <div class="back-services">
+      <div class="svc-row">
+        <div class="svc"><span class="bolt">⚡</span> Budget vs. Actual</div>
+        <div class="svc"><span class="bolt">⚡</span> Financial Modeling</div>
+        <div class="svc"><span class="bolt">⚡</span> KPI Dashboards</div>
+      </div>
+      <div class="svc-row">
+        <div class="svc"><span class="bolt">⚡</span> Cash Flow Analysis</div>
+        <div class="svc"><span class="bolt">⚡</span> Boardroom Decks</div>
+        <div class="svc"><span class="bolt">⚡</span> Fractional CFO</div>
       </div>
     </div>
-
   </div>
 </div>
 
