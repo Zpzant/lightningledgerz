@@ -6637,14 +6637,15 @@
             <div class="contact-dropdown" style="position:relative;">
                 <button onclick="this.parentElement.classList.toggle('open')" style="background:none;border:1px solid rgba(30,58,95,0.2);color:#1e3a5f;padding:6px 10px;border-radius:6px;font-size:1rem;cursor:pointer;line-height:1;">☰</button>
                 <div class="contact-dropdown-menu" style="display:none;position:absolute;top:110%;right:0;background:#fff;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.15);padding:10px 0;min-width:200px;z-index:999;">
-                    <a href="javascript:void(0)" onclick="showHomepage()" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">← Back to Homepage</a>
+                    <a href="javascript:void(0)" onclick="showHomepage()" id="hamburger-homepage" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">← Back to Homepage</a>
+                    <a href="javascript:void(0)" onclick="backToPortal()" id="hamburger-portal" style="display:none;padding:10px 20px;color:#e8231a;text-decoration:none;font-size:0.88rem;font-weight:700;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">⚡ Back to Portal</a>
                     <a href="#pricing" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">Services</a>
                     <a href="#work" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">Portfolio</a>
                     <a href="#about" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">About</a>
                     <a href="#schedule" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">Schedule</a>
                     <div style="height:1px;background:#e2e8f0;margin:6px 0;"></div>
                     <a href="tel:+17025502513" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">☎ (702) 550-2513</a>
-                    <a href="mailto:info@lightningledgerz.com" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">✉ info@lightningledgerz.com</a>
+                    <a href="mailto:info@lightningledgerz.com" style="display:flex;align-items:center;gap:6px;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;white-space:nowrap;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">✉ info@lightningledgerz.com</a>
                 </div>
             </div>
             <a href="javascript:void(0)" onclick="handleLogout()" style="color:#64748b;text-decoration:none;font-size:0.78rem;font-weight:600;white-space:nowrap;">Sign Out</a>
@@ -8959,10 +8960,10 @@
         }
 
         function showHomepage() {
-            // Temporarily show all sections so user can browse
+            // Show all sections so user can browse the marketing site
             var heroSection = document.getElementById('top');
             var videoHeros = document.querySelectorAll('.video-hero-section');
-            if (heroSection) heroSection.style.display = '';
+            if (heroSection) { heroSection.style.display = ''; heroSection.style.minHeight = ''; heroSection.style.height = ''; heroSection.style.overflow = ''; var hc = heroSection.querySelector('.saas-hero-content'); if (hc) hc.style.display = ''; }
             videoHeros.forEach(function(v) { v.style.display = ''; });
             ['work', 'pricing', 'about', 'schedule'].forEach(function(id) {
                 var el = document.getElementById(id);
@@ -8970,8 +8971,38 @@
             });
             var workCarousel = document.querySelector('.work-carousel-section');
             if (workCarousel) workCarousel.style.display = '';
+            // Hide portal when browsing homepage
+            var portal = document.getElementById('portal');
+            if (portal) portal.style.display = 'none';
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            // Close any open dropdowns
+            // Toggle hamburger links
+            var hHome = document.getElementById('hamburger-homepage');
+            var hPortal = document.getElementById('hamburger-portal');
+            if (hHome) hHome.style.display = 'none';
+            if (hPortal) hPortal.style.display = 'block';
+            // Close dropdowns
+            document.querySelectorAll('.contact-dropdown.open').forEach(function(d) { d.classList.remove('open'); });
+        }
+
+        function backToPortal() {
+            // Hide marketing sections, show portal
+            var heroSection = document.getElementById('top');
+            if (heroSection) { heroSection.style.display = 'none'; }
+            document.querySelectorAll('.video-hero-section').forEach(function(v) { v.style.display = 'none'; });
+            ['work', 'pricing', 'about', 'schedule'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+            var workCarousel = document.querySelector('.work-carousel-section');
+            if (workCarousel) workCarousel.style.display = 'none';
+            var portal = document.getElementById('portal');
+            if (portal) portal.style.display = '';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Toggle hamburger links
+            var hHome = document.getElementById('hamburger-homepage');
+            var hPortal = document.getElementById('hamburger-portal');
+            if (hHome) hHome.style.display = 'block';
+            if (hPortal) hPortal.style.display = 'none';
             document.querySelectorAll('.contact-dropdown.open').forEach(function(d) { d.classList.remove('open'); });
         }
 
@@ -9739,34 +9770,70 @@
             var file = event.target.files[0];
             if (!file) return;
 
-            // Preview the logo
+            // Preview in nav avatar immediately
             var reader = new FileReader();
             reader.onload = function(e) {
-                var img = document.getElementById('company-logo-img');
-                var placeholder = document.getElementById('logo-placeholder');
-                if (img && placeholder) {
-                    img.src = e.target.result;
-                    img.style.display = 'block';
-                    placeholder.style.display = 'none';
+                var avatarImg = document.getElementById('nav-avatar-img');
+                var avatarInitials = document.getElementById('nav-avatar-initials');
+                var companyLogoImg = document.getElementById('company-logo-img');
+                if (avatarImg) {
+                    avatarImg.src = e.target.result;
+                    avatarImg.style.display = 'block';
+                }
+                if (avatarInitials) avatarInitials.style.display = 'none';
+                if (companyLogoImg) {
+                    companyLogoImg.src = e.target.result;
+                    companyLogoImg.style.display = 'block';
                 }
                 setTimeout(updateLightningMeter, 300);
             };
             reader.readAsDataURL(file);
 
-            // Upload to Supabase if available
+            // Upload to Supabase storage and save URL to profile
             if (supabase && currentUserData?.id) {
                 try {
-                    var filePath = `${currentUserData.id}/company-logo.${file.name.split('.').pop()}`;
+                    var ext = file.name.split('.').pop().toLowerCase();
+                    var filePath = currentUserData.id + '/company-logo.' + ext;
                     var { error } = await supabase.storage
                         .from('user-documents')
                         .upload(filePath, file, { upsert: true });
                     if (!error) {
-                        showToast('Logo uploaded successfully!', 'success');
-                        // Save logo path to user profile
-                        await supabase.from('users').update({ company_logo: filePath }).eq('id', currentUserData.id);
+                        // Get public URL
+                        var { data: urlData } = supabase.storage
+                            .from('user-documents')
+                            .getPublicUrl(filePath);
+                        var logoUrl = urlData?.publicUrl || '';
+                        // Save to profiles table
+                        await supabase.from('profiles')
+                            .update({ company_logo: logoUrl })
+                            .eq('id', currentUserData.id);
+                        currentUserData.profile.company_logo = logoUrl;
+                        showToast('Logo uploaded!', 'success');
+                    } else {
+                        showToast('Upload failed: ' + error.message, 'error');
                     }
                 } catch (err) {
                     console.error('Logo upload error:', err);
+                    showToast('Upload error', 'error');
+                }
+            }
+        }
+
+        // Load saved logo into nav avatar on login
+        function loadUserLogo() {
+            var logoUrl = currentUserData?.profile?.company_logo;
+            if (logoUrl) {
+                var avatarImg = document.getElementById('nav-avatar-img');
+                var avatarInitials = document.getElementById('nav-avatar-initials');
+                var companyLogoImg = document.getElementById('company-logo-img');
+                if (avatarImg) {
+                    avatarImg.src = logoUrl;
+                    avatarImg.style.display = 'block';
+                }
+                if (avatarInitials) avatarInitials.style.display = 'none';
+                if (companyLogoImg) {
+                    companyLogoImg.src = logoUrl;
+                    companyLogoImg.style.display = 'block';
                 }
             }
         }
