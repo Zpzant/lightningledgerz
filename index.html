@@ -6744,14 +6744,15 @@
         </div>
 
         <div style="text-align: center; margin-bottom: 24px;">
-            <div onclick="openQuizModal()" style="display:inline-block; background: linear-gradient(135deg, #1e3a5f, #2d5a8e); color: #fff; padding: 16px 32px; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 20px rgba(30,58,95,0.3);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 30px rgba(30,58,95,0.4)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 4px 20px rgba(30,58,95,0.3)'">
-                <div style="font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.7; margin-bottom: 4px;">Not sure which plan fits?</div>
-                <div>Answer 3 Questions — Get Your Perfect Plan ⚡</div>
+            <div onclick="openQuizModal()" style="display:inline-flex; flex-direction:column; align-items:center; justify-content:center; background: #fff; color: #1e3a5f; border: 2px solid #e8231a; padding: 24px 32px; border-radius: 14px; cursor: pointer; transition: all 0.3s; box-shadow: 0 2px 12px rgba(0,0,0,0.06); min-width: 220px;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 25px rgba(232,35,26,0.15)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.06)'">
+                <div style="font-size: 2rem; margin-bottom: 8px;">🎯</div>
+                <div style="font-size: 1.05rem; font-weight: 800; color: #1e3a5f;">Find Your Perfect Plan</div>
+                <div style="font-size: 0.82rem; color: #64748b; margin-top: 4px;">Quick quiz — takes under a minute</div>
             </div>
         </div>
 
         <div class="pricing-toggle-container">
-            <span class="pricing-toggle-label active" id="monthly-label">Month-to-Month</span>
+            <span class="pricing-toggle-label active" id="monthly-label">Billed Monthly</span>
             <div class="pricing-toggle" id="pricing-toggle" onclick="togglePricingPeriod()">
                 <div class="pricing-toggle-knob"></div>
             </div>
