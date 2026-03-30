@@ -7627,33 +7627,30 @@
                 <p class="payment-gate-fine">By subscribing you confirm you have signed the Client Services Agreement above. You may cancel anytime with no penalty.</p>
             </div>
 
-            <div class="dashboard-header">
-                <div class="dashboard-greeting">
-                    <img src="LightningLedgerzLogo.png" alt="Logo" class="dashboard-logo" id="dashboard-logo">
-                    <h3>Hi <span id="user-display-name">there</span>!</h3>
-                </div>
-                <!-- Tier badge + countdown clock -->
-                <div class="header-tier-group" id="header-tier-group">
-                    <div class="dashboard-tier-badge" id="tier-badge">Basic</div>
-                    <div class="header-countdown" id="header-countdown" style="display:none;">
-                        <span id="countdown-display">30d 00h 00m</span>
-                        <span class="countdown-label">left</span>
+            <!-- Plan Status Bar — replaces old dashboard header -->
+            <div id="plan-status-bar" style="background:linear-gradient(135deg,#0d1b2a,#1e3a5f);border-radius:14px;padding:18px 28px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                <div style="display:flex;align-items:center;gap:14px;">
+                    <span id="user-display-name" style="display:none;">there</span>
+                    <div id="plan-status-text" style="color:#fff;font-size:0.95rem;font-weight:600;">
+                        You don't have a plan yet
                     </div>
+                    <div id="plan-status-badge" style="display:none;padding:4px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;"></div>
                 </div>
-                <!-- Demo Tier Selector (only visible in demo mode) -->
-                <div id="demo-tier-selector" class="demo-tier-selector" style="display: none;">
-                    <label>Preview Tier:</label>
-                    <select id="demo-tier-select" onchange="changeDemoTier(this.value)">
-                        <option value="basic">Basic</option>
-                        <option value="gold">Gold</option>
-                        <option value="diamond">Diamond</option>
-                    </select>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div id="token-display" style="display:none;color:#fff;font-size:0.85rem;font-weight:700;">
+                        ⚡ <span id="token-count">0</span> reports left
+                    </div>
+                    <a href="#pricing" id="plan-action-btn" onclick="showHomepage();setTimeout(function(){document.getElementById('pricing').scrollIntoView({behavior:'smooth'})},300)" style="background:#e8231a;color:#fff;padding:10px 22px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.88rem;cursor:pointer;white-space:nowrap;">Select a Plan →</a>
+                    <button id="admin-btn" class="btn-admin" onclick="openAdminDashboard()" style="display:none;background:rgba(255,255,255,0.15);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-weight:700;font-size:0.82rem;cursor:pointer;">Admin</button>
                 </div>
-                <!-- Upgrade Button (visible for basic and gold tiers) -->
-                <button id="upgrade-btn" class="btn-upgrade" onclick="openUpgradeModal()" style="display: none;">⬆ Upgrade</button>
-                <!-- Admin Button (only visible for admin) -->
-                <button id="admin-btn" class="btn-admin" onclick="openAdminDashboard()" style="display: none;">Admin</button>
-                <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+            </div>
+            <!-- Hidden elements needed by JS -->
+            <div style="display:none;">
+                <div id="tier-badge"></div>
+                <div id="header-tier-group"></div>
+                <div id="header-countdown"><span id="countdown-display"></span><span class="countdown-label"></span></div>
+                <div id="demo-tier-selector"><select id="demo-tier-select" onchange="changeDemoTier(this.value)"><option value="basic">Basic</option><option value="gold">Gold</option><option value="diamond">Diamond</option></select></div>
+                <button id="upgrade-btn" style="display:none;"></button>
             </div>
 
             <!-- Early-Bird Discount Banner -->
@@ -8761,7 +8758,7 @@
             var avatarInitials = document.getElementById('nav-avatar-initials');
             if (avatarInitials) avatarInitials.textContent = name.charAt(0).toUpperCase();
 
-            // Update plan badge and Choose Plan button
+            // Update plan badge and Choose Plan button in nav
             var choosePlanBtn = document.getElementById('nav-choose-plan');
             if (tier === 'none') {
                 if (planBadge) { planBadge.style.display = 'none'; }
@@ -8774,6 +8771,43 @@
                     planBadge.style.background = ''; planBadge.style.border = ''; planBadge.style.padding = '';
                 }
                 if (choosePlanBtn) { choosePlanBtn.textContent = 'Upgrade'; choosePlanBtn.style.display = tier === 'diamond' ? 'none' : 'inline-block'; }
+            }
+
+            // Update plan status bar in dashboard
+            var planStatusText = document.getElementById('plan-status-text');
+            var planStatusBadge = document.getElementById('plan-status-badge');
+            var planActionBtn = document.getElementById('plan-action-btn');
+            var tokenDisplay = document.getElementById('token-display');
+            var tokenCount = document.getElementById('token-count');
+            var tokenLimits = { none: 0, basic: 2, gold: 5, diamond: 999 };
+            var tokens = tokenLimits[tier] || 0;
+
+            if (tier === 'none') {
+                if (planStatusText) planStatusText.innerHTML = 'You don\'t have a plan yet — <strong>select one to unlock reports</strong>';
+                if (planActionBtn) { planActionBtn.textContent = 'Select a Plan →'; planActionBtn.style.display = ''; }
+                if (planStatusBadge) planStatusBadge.style.display = 'none';
+                if (tokenDisplay) tokenDisplay.style.display = 'none';
+            } else {
+                var tierLabel = tier.charAt(0).toUpperCase() + tier.slice(1);
+                if (planStatusText) planStatusText.textContent = tierLabel + ' Plan Active';
+                if (planStatusBadge) {
+                    planStatusBadge.style.display = 'inline-block';
+                    planStatusBadge.textContent = tierLabel;
+                    planStatusBadge.style.background = tier === 'gold' ? 'linear-gradient(135deg,#d4a017,#f5a623)' : tier === 'diamond' ? 'linear-gradient(135deg,#667eea,#764ba2)' : '#e8231a';
+                    planStatusBadge.style.color = '#fff';
+                }
+                if (tokenDisplay) {
+                    tokenDisplay.style.display = 'flex';
+                    if (tokenCount) tokenCount.textContent = tier === 'diamond' ? '∞' : tokens;
+                }
+                if (planActionBtn) {
+                    if (tier === 'diamond') {
+                        planActionBtn.style.display = 'none';
+                    } else {
+                        planActionBtn.textContent = 'Need more reports? Upgrade →';
+                        planActionBtn.style.background = 'rgba(255,255,255,0.15)';
+                    }
+                }
             }
 
             // Apply tier-based theming
