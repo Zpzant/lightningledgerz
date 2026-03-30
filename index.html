@@ -10531,7 +10531,35 @@
                 selectedEl.innerHTML = '<div style="display:flex;align-items:center;gap:10px;"><div class="platform-logo-sm" style="background:' + (colors[key] || '#666') + ';width:26px;height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:900;color:#fff;">' + (abbrs[key] || '+') + '</div><span>' + (names[key] || key) + '</span></div>';
             }
             document.getElementById('platform-dropdown-list').style.display = 'none';
+            // QuickBooks uses OAuth — redirect instead of credential form
+            if (key === 'quickbooks') {
+                connectQuickBooksOAuth();
+                return;
+            }
             selectPlatform(key);
+        }
+
+        // ===========================================
+        // QUICKBOOKS OAUTH CONNECT
+        // ===========================================
+        const QB_CLIENT_ID = 'ABxl1RhrTrtUsFGcdET6nuocD76EoC3NMKVPtpoRBGgPJkOOBE';
+        const QB_REDIRECT_URI = window.location.origin + '/callback.html';
+        const QB_AUTH_URL = 'https://appcenter.intuit.com/connect/oauth2';
+        const QB_SCOPES = 'com.intuit.quickbooks.accounting com.intuit.quickbooks.payment';
+
+        function connectQuickBooksOAuth() {
+            if (!currentUserData || !currentUserData.id) {
+                showToast('Please log in first.', 'error');
+                return;
+            }
+            var state = currentUserData.id; // pass user ID as state for verification
+            var authUrl = QB_AUTH_URL
+                + '?client_id=' + encodeURIComponent(QB_CLIENT_ID)
+                + '&redirect_uri=' + encodeURIComponent(QB_REDIRECT_URI)
+                + '&response_type=code'
+                + '&scope=' + encodeURIComponent(QB_SCOPES)
+                + '&state=' + encodeURIComponent(state);
+            window.location.href = authUrl;
         }
 
         // ===========================================

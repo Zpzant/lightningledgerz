@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connecting QuickBooks — Lightning Ledgerz</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f8fafc;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
+  }
+  .cb-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 48px;
+    text-align: center;
+    max-width: 440px;
+    width: 90%;
+  }
+  .cb-logo { height: 48px; margin-bottom: 20px; }
+  .cb-title { font-size: 1.3rem; font-weight: 800; color: #1e3a5f; margin-bottom: 8px; }
+  .cb-sub { color: #64748b; font-size: 0.9rem; margin-bottom: 24px; line-height: 1.5; }
+  .cb-spinner {
+    width: 40px; height: 40px;
+    border: 4px solid #e2e8f0;
+    border-top-color: #2CA01C;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 20px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .cb-success { color: #16a34a; font-weight: 700; font-size: 1.1rem; }
+  .cb-error { color: #ef4444; font-weight: 600; font-size: 0.95rem; }
+  .cb-btn {
+    display: inline-block;
+    background: #1e3a5f; color: #fff;
+    padding: 12px 28px; border-radius: 10px;
+    text-decoration: none; font-weight: 700; font-size: 0.9rem;
+    margin-top: 16px;
+  }
+</style>
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.10/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+
+<div class="cb-card">
+  <img class="cb-logo" src="lightning_ledgerz_transparent.png" alt="Lightning Ledgerz">
+  <div id="cb-status">
+    <div class="cb-spinner"></div>
+    <div class="cb-title">Connecting QuickBooks...</div>
+    <div class="cb-sub">Please wait while we securely link your account.</div>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://uxicgilvxcqpoxavilxp.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4aWNnaWx2eGNxcG94YXZpbHhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzYwNzYsImV4cCI6MjA3NjY1MjA3Nn0.W6_iO15HAxjzvNfp_FHWSS0HYOpaJb7-oC-Z3_KaZaw';
+
+  async function handleCallback() {
+    const status = document.getElementById('cb-status');
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const realmId = params.get('realmId');
+    const state = params.get('state');
+    const error = params.get('error');
+
+    if (error) {
+      status.innerHTML = `
+        <div class="cb-error">Connection declined or failed.</div>
+        <div class="cb-sub">${error}</div>
+        <a href="https://lightningledgerz.com/#portal" class="cb-btn">Back to Portal</a>
+      `;
+      return;
+    }
+
+    if (!code || !realmId) {
+      status.innerHTML = `
+        <div class="cb-error">Missing authorization. Please try again.</div>
+        <a href="https://lightningledgerz.com/#portal" class="cb-btn">Back to Portal</a>
+      `;
+      return;
+    }
+
+    try {
+      // Initialize Supabase and get current user
+      const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const { data: { session } } = await sb.auth.getSession();
+
+      if (!session) {
+        status.innerHTML = `
+          <div class="cb-error">Not logged in. Please sign in first.</div>
+          <a href="https://lightningledgerz.com/#portal" class="cb-btn">Sign In</a>
+        `;
+        return;
+      }
+
+      // Exchange auth code for tokens via Supabase Edge Function
+      const response = await fetch(SUPABASE_URL + '/functions/v1/qb-token-exchange', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + session.access_token
+        },
+        body: JSON.stringify({
+          code: code,
+          realm_id: realmId,
+          redirect_uri: window.location.origin + '/callback.html'
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        status.innerHTML = `
+          <div class="cb-success">QuickBooks Connected!</div>
+          <div class="cb-sub">Your QuickBooks account has been securely linked to Lightning Ledgerz. Your financial data will now appear in your dashboard.</div>
+          <a href="https://lightningledgerz.com/#portal" class="cb-btn">Go to Dashboard</a>
+        `;
+      } else {
+        throw new Error(result.error || 'Token exchange failed');
+      }
+
+    } catch (err) {
+      status.innerHTML = `
+        <div class="cb-error">Connection error: ${err.message}</div>
+        <div class="cb-sub">Please try again or contact support.</div>
+        <a href="https://lightningledgerz.com/#portal" class="cb-btn">Back to Portal</a>
+      `;
+    }
+  }
+
+  handleCallback();
+</script>
+
+</body>
+</html>
