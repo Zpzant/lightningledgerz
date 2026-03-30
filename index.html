@@ -6574,7 +6574,7 @@
             <!-- Contact for mobile only -->
             <li class="mobile-only nav-package-divider"></li>
             <li class="mobile-only"><a href="tel:+17025502513" onclick="closeMobileMenu()" style="display: flex; align-items: center; gap: 8px;">&#9742; (702) 550-2513</a></li>
-            <li class="mobile-only"><a href="mailto:zprizant@lightningledgerz.com" onclick="closeMobileMenu()" style="display: flex; align-items: center; gap: 8px;">&#9993; zprizant@lightningledgerz.com</a></li>
+            <li class="mobile-only"><a href="mailto:info@lightningledgerz.com" onclick="closeMobileMenu()" style="display: flex; align-items: center; gap: 8px;">&#9993; info@lightningledgerz.com</a></li>
             <!-- Package buttons for mobile only -->
             <li class="mobile-only nav-package-divider"></li>
             <li class="mobile-only"><a href="#basic-card" onclick="highlightPackageCard('basic-card'); closeMobileMenu(); return false;" class="nav-package-link basic">⚡ Basic</a></li>
@@ -6582,8 +6582,7 @@
             <li class="mobile-only"><a href="#diamond-card" onclick="highlightPackageCard('diamond-card'); closeMobileMenu(); return false;" class="nav-package-link diamond">💎 Diamond</a></li>
         </ul>
         <div class="nav-contact-info">
-            <a href="tel:+17025502513">&#9742; (702) 550-2513</a>
-            <a href="mailto:zprizant@lightningledgerz.com">&#9993; zprizant@lightningledgerz.com</a>
+            <a href="mailto:info@lightningledgerz.com" style="background:#e8231a;color:#fff;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.85rem;letter-spacing:0.3px;">Contact Us</a>
         </div>
         <a href="#portal" class="nav-cta">Get Started</a>
         <a href="tel:+17025502513" class="nav-mobile-phone">&#9742; (702) 550-2513</a>
@@ -8684,7 +8683,10 @@
             var badge = document.getElementById('tier-badge');
             if (badge) {
                 if (tier === 'none') {
-                    badge.textContent = 'Free Consultation';
+                    badge.innerHTML = '<a href="#portal" style="color:#4285f4;text-decoration:none;font-weight:700;">Book Your Free Call →</a>';
+                    badge.style.background = 'rgba(66,133,244,0.1)';
+                    badge.style.color = '#4285f4';
+                    badge.style.borderColor = '#4285f4';
                 } else {
                     badge.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
                 }
@@ -8724,8 +8726,16 @@
                 welcomeText.textContent = 'Hi, ' + name + '!';
             }
             if (planBadge) {
-                planBadge.className = 'plan-badge badge-' + tier;
-                planBadge.textContent = tier === 'none' ? 'Free Consultation' : tier.charAt(0).toUpperCase() + tier.slice(1);
+                if (tier === 'none') {
+                    planBadge.innerHTML = '<a href="#portal" style="background:#4285f4;color:#fff;padding:8px 20px;border-radius:30px;text-decoration:none;font-weight:700;font-size:0.82rem;white-space:nowrap;">Book Your Free Call →</a>';
+                    planBadge.className = '';
+                    planBadge.style.background = 'none';
+                    planBadge.style.border = 'none';
+                    planBadge.style.padding = '0';
+                } else {
+                    planBadge.className = 'plan-badge badge-' + tier;
+                    planBadge.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+                }
             }
             if (getStartedBtn) {
                 getStartedBtn.style.display = 'none';
