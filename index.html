@@ -468,6 +468,14 @@
             background: #fff;
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
         }
+        nav.nav-logged-in {
+            background: #0d1b2a !important;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3) !important;
+        }
+        nav.nav-logged-in #nav-welcome-text { color: #fff !important; }
+        nav.nav-logged-in #nav-meter-pct { color: #fff !important; text-shadow: none !important; }
+        nav.nav-logged-in #nav-logged-in-actions > a:last-child { color: rgba(255,255,255,0.7) !important; text-shadow: none !important; }
+        nav.nav-logged-in .logo img { background: none !important; }
 
         .logo {
             cursor: pointer;
@@ -8173,10 +8181,13 @@
             var packageSidebar = document.querySelector('.package-sidebar');
             var heroHeight = document.querySelector('.saas-hero') ? document.querySelector('.saas-hero').offsetHeight : 500;
 
-            if (window.scrollY > 50) {
-                nav.classList.add('nav-scrolled');
-            } else {
-                nav.classList.remove('nav-scrolled');
+            // Don't add nav-scrolled when logged in — keep nav-logged-in style
+            if (!nav.classList.contains('nav-logged-in')) {
+                if (window.scrollY > 50) {
+                    nav.classList.add('nav-scrolled');
+                } else {
+                    nav.classList.remove('nav-scrolled');
+                }
             }
 
             // Hide package buttons when scrolled past hero
@@ -8723,6 +8734,13 @@
             }
 
             // === LOGGED-IN NAV TRANSFORMATION ===
+            // Force nav to dark navy when logged in
+            var navEl = document.querySelector('nav');
+            if (navEl) {
+                navEl.classList.remove('nav-scrolled');
+                navEl.classList.add('nav-logged-in');
+            }
+
             // Hide page links, show action bar
             var navLinks = document.getElementById('nav-links');
             var navActions = document.getElementById('nav-logged-in-actions');
@@ -8790,9 +8808,17 @@
             }
 
             // Hide all non-portal sections when logged in — portal is the only view
+            // Keep video iframe playing in background, just hide hero content
             var heroSection = document.getElementById('top');
+            if (heroSection) {
+                // Hide hero content but keep video background visible
+                var heroContent = heroSection.querySelector('.saas-hero-content');
+                if (heroContent) heroContent.style.display = 'none';
+                heroSection.style.minHeight = '0';
+                heroSection.style.height = '0';
+                heroSection.style.overflow = 'visible';
+            }
             var videoHeros = document.querySelectorAll('.video-hero-section');
-            if (heroSection) heroSection.style.display = 'none';
             videoHeros.forEach(function(v) { v.style.display = 'none'; });
             // Hide portfolio, about, schedule, pricing, reports carousel
             ['work', 'pricing', 'about', 'schedule'].forEach(function(id) {
@@ -8930,6 +8956,10 @@
             videoHeros.forEach(function(v) { v.style.display = ''; });
             var pkgSidebar = document.querySelector('.package-sidebar');
             if (pkgSidebar) pkgSidebar.style.display = '';
+
+            // Remove logged-in nav style
+            var navEl = document.querySelector('nav');
+            if (navEl) navEl.classList.remove('nav-logged-in');
 
             // Restore nav: show links + contact, hide logged-in actions
             var navLinks = document.getElementById('nav-links');
@@ -10655,21 +10685,21 @@
         // LIGHTNING BOLT PROFILE METER
         // ===========================================
         function updateLightningMeter() {
-            // 4 steps × 25% = 100%
+            // 5 steps × 20% = 100% — account creation counts as step 1
+            var acctDone   = true; // always true if logged in
             var callDone   = !!(localStorage.getItem('call_booked_' + (currentUserData?.id || 'demo')));
             var dbDone     = document.getElementById('connected-badges-list')?.children.length > 0;
             var filesDone  = document.getElementById('fin-pl-status')?.textContent.includes('✓')
                           || document.getElementById('fin-bs-status')?.textContent.includes('✓')
-                          || document.getElementById('fin-cf-status')?.textContent.includes('✓')
-                          || document.querySelectorAll('#user-uploads-carousel .carousel-card').length > 0;
+                          || document.getElementById('fin-cf-status')?.textContent.includes('✓');
             var logoDone   = !!(document.getElementById('company-logo-img')?.src && !document.getElementById('company-logo-img')?.src.endsWith('/'));
-            var steps      = [callDone, dbDone, filesDone, logoDone];
+            var steps      = [acctDone, callDone, dbDone, filesDone, logoDone];
             var doneCount  = steps.filter(Boolean).length;
-            var pct        = Math.round((doneCount / 4) * 100);
+            var pct        = Math.round((doneCount / 5) * 100);
 
-            var tips = ['Book your free call', 'Connect QuickBooks', 'Upload financials', 'Add your logo'];
+            var tips = ['Account created!', 'Book your free call', 'Connect QuickBooks', 'Upload financials', 'Add your logo'];
             var tipIdx = steps.indexOf(false);
-            var tip = tipIdx >= 0 ? tips[tipIdx] : 'All set!';
+            var tip = tipIdx >= 0 ? tips[tipIdx] : 'Fully Charged!';
 
             // Update float widget
             var floatFill   = document.getElementById('lightning-float-fill');
