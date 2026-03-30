@@ -2840,6 +2840,14 @@
             box-shadow: 0 8px 25px rgba(45, 212, 191, 0.5);
         }
 
+        .gen-pw-btn {
+            background: var(--mckinsey-blue, #1e3a5f); color: #fff;
+            border: none; padding: 10px 14px; border-radius: 8px;
+            font-family: inherit; font-size: 0.78rem; font-weight: 700;
+            cursor: pointer; white-space: nowrap; letter-spacing: 0.3px;
+        }
+        .gen-pw-btn:hover { opacity: 0.9; }
+
         /* Portal Dashboard (Logged In) - WHITE THEME */
         .portal-dashboard {
             max-width: 1200px;
@@ -6712,7 +6720,7 @@
 
         <div class="carousel-cta">
             <h3>Get These Reports for Your Business</h3>
-            <a href="#portal" class="btn-saas-primary">Start My Free Trial →</a>
+            <a href="#portal" class="btn-saas-primary">Book Your Free Call →</a>
         </div>
     </section>
 
@@ -6770,7 +6778,7 @@
                     <span class="monthly-price">$799/month</span>
                     <span class="yearly-price">$639/month<div class="yearly-savings">12-month commitment • Save $1,920/year</div></span>
                 </div>
-                <div class="package-trial">First month FREE</div>
+                <div class="package-trial">Free consultation included</div>
                 <ul class="package-features">
                     <li>Comprehensive budget creation</li>
                     <li>Monthly financial reporting</li>
@@ -6778,7 +6786,7 @@
                     <li>Variance commentary</li>
                     <li>Email support</li>
                 </ul>
-                <button onclick="selectPlan('basic')" class="btn-primary">Start Free Trial</button>
+                <button onclick="selectPlan('basic')" class="btn-primary">Get Started</button>
             </div>
 
             <div class="package-card gold" id="gold-card">
@@ -6788,7 +6796,7 @@
                     <span class="monthly-price">$1,299/month</span>
                     <span class="yearly-price">$1,039/month<div class="yearly-savings">12-month commitment • Save $3,120/year</div></span>
                 </div>
-                <div class="package-trial">First month FREE</div>
+                <div class="package-trial">Free consultation included</div>
                 <ul class="package-features">
                     <li>Everything in Basic</li>
                     <li>Weekly strategic calls</li>
@@ -6797,7 +6805,7 @@
                     <li>KPI dashboard creation</li>
                     <li>Priority support</li>
                 </ul>
-                <button onclick="selectPlan('gold')" class="btn-primary">Start Free Trial</button>
+                <button onclick="selectPlan('gold')" class="btn-primary">Get Started</button>
             </div>
 
             <div class="package-card diamond" id="diamond-card">
@@ -6806,7 +6814,7 @@
                     <span class="monthly-price">$3,999/month</span>
                     <span class="yearly-price">$3,199/month<div class="yearly-savings">12-month commitment • Save $9,600/year</div></span>
                 </div>
-                <div class="package-trial">First month FREE</div>
+                <div class="package-trial">Free consultation included</div>
                 <ul class="package-features">
                     <li>Everything in Gold</li>
                     <li>Fractional CFO services</li>
@@ -6815,7 +6823,7 @@
                     <li>Board presentation support</li>
                     <li>Direct phone access</li>
                 </ul>
-                <button onclick="selectPlan('diamond')" class="btn-primary">Start Free Trial</button>
+                <button onclick="selectPlan('diamond')" class="btn-primary">Get Started</button>
             </div>
         </div>
 
@@ -7452,7 +7460,7 @@
             </form>
 
             <form class="portal-form" id="register-form" onsubmit="handleRegister(event)">
-                <p class="form-subtitle">30-day free trial. Card required — no charge until day 31.</p>
+                <p class="form-subtitle">Create your account to get started. Your first consultation is free.</p>
                 <div class="form-row">
                     <div class="form-group">
                         <input type="text" class="form-input" id="register-firstname" placeholder="First Name" required>
@@ -7471,7 +7479,11 @@
                     <input type="tel" class="form-input" id="register-phone" placeholder="Phone" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-input" id="register-password" placeholder="Create Password (min 8 characters)" required minlength="8">
+                    <div style="position:relative;display:flex;gap:8px;">
+                        <input type="password" class="form-input" id="register-password" placeholder="Create Password (min 8 characters)" required minlength="8" style="flex:1;">
+                        <button type="button" class="gen-pw-btn" onclick="generateStrongPassword()" title="Generate strong password">⚡ Generate</button>
+                    </div>
+                    <div id="pw-strength-bar" style="height:3px;border-radius:2px;margin-top:5px;transition:all 0.3s;"></div>
                 </div>
                 <div class="form-group">
                     <input type="text" class="form-input" id="register-referral" placeholder="Referral Code (Optional)">
@@ -7501,14 +7513,14 @@
 
             <!-- Payment Gate — shown until Stripe trial checkout is complete -->
             <div class="payment-gate" id="payment-gate">
-                <div class="payment-gate-title">Start Your Free Trial</div>
-                <p class="payment-gate-sub">Your agreement is signed. Add your payment info to activate your portal.<br>Pick the plan that fits — you can change it anytime.</p>
-                <div class="payment-gate-badge">✓ No charge today &nbsp;·&nbsp; Auto-bills after 30 days &nbsp;·&nbsp; Cancel anytime</div>
+                <div class="payment-gate-title">Choose Your Plan</div>
+                <p class="payment-gate-sub">Your agreement is signed. Select a plan to activate your portal.</p>
+                <div class="payment-gate-badge">✓ Cancel anytime &nbsp;·&nbsp; Upgrade or downgrade freely</div>
                 <div class="payment-gate-plans">
                     <div class="payment-gate-plan">
                         <div class="payment-gate-plan-name">⚡ Basic</div>
                         <div class="payment-gate-plan-price">$799<span style="font-size:0.7rem;font-weight:400;color:rgba(255,255,255,0.4)">/mo</span></div>
-                        <div class="payment-gate-plan-sub">after free trial</div>
+                        <div class="payment-gate-plan-sub">per month</div>
                         <ul class="payment-gate-plan-features">
                             <li>Monthly financial reports</li>
                             <li>Budget vs. actual tracking</li>
@@ -7516,13 +7528,13 @@
                             <li>Spreadsheet modeling</li>
                             <li>Email support</li>
                         </ul>
-                        <a class="payment-gate-plan-btn" id="trial-btn-basic" onclick="startTrial('basic')">Start Free Trial</a>
+                        <a class="payment-gate-plan-btn" id="trial-btn-basic" onclick="startTrial('basic')">Get Started</a>
                     </div>
                     <div class="payment-gate-plan popular">
                         <div style="font-size:0.72rem;font-weight:700;color:var(--gold);margin-bottom:6px;letter-spacing:1px;">MOST POPULAR</div>
                         <div class="payment-gate-plan-name">✨ Gold</div>
                         <div class="payment-gate-plan-price">$1,299<span style="font-size:0.7rem;font-weight:400;color:rgba(255,255,255,0.4)">/mo</span></div>
-                        <div class="payment-gate-plan-sub">after free trial</div>
+                        <div class="payment-gate-plan-sub">per month</div>
                         <ul class="payment-gate-plan-features">
                             <li>Weekly strategy calls</li>
                             <li>Advanced financial modeling</li>
@@ -7530,12 +7542,12 @@
                             <li>Custom KPI dashboard</li>
                             <li>Priority support</li>
                         </ul>
-                        <a class="payment-gate-plan-btn" id="trial-btn-gold" onclick="startTrial('gold')">Start Free Trial</a>
+                        <a class="payment-gate-plan-btn" id="trial-btn-gold" onclick="startTrial('gold')">Get Started</a>
                     </div>
                     <div class="payment-gate-plan">
                         <div class="payment-gate-plan-name">💎 Diamond</div>
                         <div class="payment-gate-plan-price">$3,999<span style="font-size:0.7rem;font-weight:400;color:rgba(255,255,255,0.4)">/mo</span></div>
-                        <div class="payment-gate-plan-sub">after free trial</div>
+                        <div class="payment-gate-plan-sub">per month</div>
                         <ul class="payment-gate-plan-features">
                             <li>Fractional CFO</li>
                             <li>Board & investor prep</li>
@@ -7543,10 +7555,10 @@
                             <li>Strategic planning</li>
                             <li>Direct phone access</li>
                         </ul>
-                        <a class="payment-gate-plan-btn" id="trial-btn-diamond" onclick="startTrial('diamond')">Start Free Trial</a>
+                        <a class="payment-gate-plan-btn" id="trial-btn-diamond" onclick="startTrial('diamond')">Get Started</a>
                     </div>
                 </div>
-                <p class="payment-gate-fine">By starting your trial you confirm you have signed the Client Services Agreement above. Your card will not be charged until your 30-day trial ends. You may cancel before then with no penalty.</p>
+                <p class="payment-gate-fine">By subscribing you confirm you have signed the Client Services Agreement above. You may cancel anytime with no penalty.</p>
             </div>
 
             <div class="dashboard-header">
@@ -8083,15 +8095,14 @@
                             email: user.email,
                             first_name: firstName,
                             last_name: lastName,
-                            tier: 'basic',
-                            trial_started_at: user.created_at
+                            tier: 'none'
                         });
 
-                        profile = { first_name: firstName, tier: 'basic', trial_started_at: user.created_at };
+                        profile = { first_name: firstName, tier: 'none' };
                     }
 
                     const userName = profile?.first_name || user.email.split('@')[0];
-                    const userTier = profile?.tier || 'basic';
+                    const userTier = profile?.tier || profile?.package_tier || 'none';
                     const isAdmin = user.email === ADMIN_EMAIL;
 
                     currentUserData = {
@@ -8237,13 +8248,13 @@
             }
         };
 
-        // Stripe TRIAL subscription links — card captured, $0 today, auto-bills day 31
-        // Create these in Stripe: Products → Subscriptions → Add 30-day free trial
+        // Stripe subscription links — direct billing, no free trial
+        // Create these in Stripe: Products → Payment Links
         // Set success URL to: https://lightningledgerz.com?trial=success&plan=PLANNAME
         const STRIPE_TRIAL_URLS = {
-            basic:   'TRIAL_BASIC_URL',    // $799/mo subscription with 30-day trial
-            gold:    'TRIAL_GOLD_URL',     // $1,299/mo subscription with 30-day trial
-            diamond: 'TRIAL_DIAMOND_URL'  // $3,999/mo subscription with 30-day trial
+            basic:   'STRIPE_BASIC_URL',    // $799/mo subscription
+            gold:    'STRIPE_GOLD_URL',     // $1,299/mo subscription
+            diamond: 'STRIPE_DIAMOND_URL'   // $3,999/mo subscription
         };
 
         // Select a plan - if logged in go to Stripe, else prompt signup
@@ -8433,16 +8444,8 @@
                     .single();
 
                 const userName = profile?.first_name || data.user?.user_metadata?.full_name || email.split('@')[0];
-                const userTier = profile?.package_tier || 'basic';
+                const userTier = profile?.package_tier || profile?.tier || 'none';
                 const isAdmin = email.toLowerCase() === ADMIN_EMAIL || profile?.is_admin === true;
-
-                // Store trial_started_at in profile if not yet set
-                if (profile && !profile.trial_started_at) {
-                    await supabase.from('profiles').update({
-                        trial_started_at: data.user.created_at
-                    }).eq('id', data.user.id);
-                    profile.trial_started_at = data.user.created_at;
-                }
 
                 currentUserData = {
                     id: data.user.id,
@@ -8575,6 +8578,19 @@
             }
         }
 
+        function generateStrongPassword() {
+            var chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%&*';
+            var pw = '';
+            for (var i = 0; i < 16; i++) pw += chars[Math.floor(Math.random() * chars.length)];
+            var input = document.getElementById('register-password');
+            input.value = pw;
+            input.type = 'text'; // show it so user can see/copy
+            setTimeout(function() { input.type = 'password'; }, 5000); // re-hide after 5s
+            var bar = document.getElementById('pw-strength-bar');
+            if (bar) { bar.style.background = '#22c55e'; bar.style.width = '100%'; }
+            showToast('Strong password generated! Visible for 5 seconds.', 'success');
+        }
+
         async function handleRegister(e) {
             e.preventDefault();
             var firstName = document.getElementById('register-firstname').value;
@@ -8634,17 +8650,17 @@
                         company: company,
                         phone: phone,
                         referral_code: referral,
-                        package_tier: 'basic'
+                        package_tier: 'none'
                     }]);
 
                     currentUserData = {
                         id: data.user.id,
                         email: email,
                         name: firstName,
-                        tier: 'basic'
+                        tier: 'none'
                     };
 
-                    showLoggedInDashboard(firstName, 'basic');
+                    showLoggedInDashboard(firstName, 'none');
                     showToast('Welcome to Lightning Ledgerz, ' + firstName + '!', 'success');
                 } else {
                     showToast('Check your email to verify your account!', 'success');
@@ -8665,7 +8681,11 @@
             // Update tier badge in dashboard
             var badge = document.getElementById('tier-badge');
             if (badge) {
-                badge.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+                if (tier === 'none') {
+                    badge.textContent = 'Free Consultation';
+                } else {
+                    badge.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+                }
             }
 
             // Show/hide demo tier selector
@@ -8683,7 +8703,7 @@
                 adminBtn.style.display = isAdmin ? 'inline-block' : 'none';
             }
 
-            // Show/hide upgrade button (visible for basic and gold, not diamond)
+            // Show/hide upgrade button (visible for non-diamond, non-demo users)
             var upgradeBtn = document.getElementById('upgrade-btn');
             if (upgradeBtn) {
                 upgradeBtn.style.display = (tier !== 'diamond' && !isDemo) ? 'inline-block' : 'none';
@@ -8703,7 +8723,7 @@
             }
             if (planBadge) {
                 planBadge.className = 'plan-badge badge-' + tier;
-                planBadge.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+                planBadge.textContent = tier === 'none' ? 'Free Consultation' : tier.charAt(0).toUpperCase() + tier.slice(1);
             }
             if (getStartedBtn) {
                 getStartedBtn.style.display = 'none';
@@ -9844,22 +9864,53 @@
                     </ul>
                     <p><strong>IN NO EVENT SHALL OUR TOTAL LIABILITY EXCEED THE AMOUNT YOU PAID FOR THE SPECIFIC SERVICE GIVING RISE TO THE CLAIM.</strong></p>
 
-                    <h3>7. Indemnification</h3>
+                    <h3>7. Payment, Billing &amp; Subscription Terms</h3>
+                    <p>By subscribing to any Lightning Ledgerz service plan, you agree to the following:</p>
+                    <ul>
+                        <li>Payments are charged using the credit card or payment method on file for the Client.</li>
+                        <li>The Service is billed in advance on a monthly or annual basis as selected. Fees are non-refundable. There are no refunds or credits for partial months of service, upgrade or downgrade refunds, or refunds for months unused with an open account.</li>
+                        <li>All fees are exclusive of applicable taxes, levies, or duties imposed by taxing authorities. You are responsible for payment of all such taxes.</li>
+                        <li>For any upgrade or downgrade in plan level, you will be charged the new rate commencing from the start of your next billing cycle.</li>
+                        <li>Downgrading your plan may result in a reduction in features or capacity. Lightning Ledgerz has no liability for such reduction.</li>
+                        <li>Unless you notify Lightning Ledgerz before the end of your current subscription period that you wish to cancel, your subscription will automatically renew and you authorize us to collect the then-applicable subscription fee.</li>
+                    </ul>
+
+                    <h3>8. Cancellation &amp; Termination</h3>
+                    <p>If you wish to cancel your subscription:</p>
+                    <ul>
+                        <li>The Account Holder must notify Lightning Ledgerz in writing via email to zprizant@lightningledgerz.com. A phone request alone is not sufficient for cancellation.</li>
+                        <li>Upon cancellation, your account data will be retained for 30 days to allow reversal of the cancellation, after which it will be permanently deleted unless retention is required by law.</li>
+                        <li>There is no refund or credit for cancellation during a billing period.</li>
+                        <li>Failure to pay fees may result in the suspension or termination of your account and, after a reasonable period, the deletion of your account and associated data.</li>
+                        <li>Lightning Ledgerz, in its sole discretion, may decline to provide Services to anyone for any reason, and may suspend or terminate accounts for any reason at any time.</li>
+                    </ul>
+
+                    <h3>9. Modifications to Service &amp; Pricing</h3>
+                    <ul>
+                        <li>Lightning Ledgerz may modify or discontinue the Services (or any part of them) with or without prior notice.</li>
+                        <li>Prices are subject to change upon 30 days' prior notice. Such notice may be provided via email, posting on the site, or through the Service itself.</li>
+                        <li>Lightning Ledgerz is not liable to you or to any third party for any modification, price change, suspension, or discontinuance of the Service.</li>
+                    </ul>
+
+                    <h3>10. Indemnification</h3>
                     <p>You agree to indemnify, defend, and hold harmless Lightning Ledgerz LLC, its owners, officers, employees, and contractors from any claims, damages, losses, or expenses (including reasonable attorney fees) arising from your use of our services, your breach of these Terms, or your violation of any rights of a third party.</p>
 
-                    <h3>8. Intellectual Property</h3>
-                    <p>All content, features, methodologies, templates, and functionality of Lightning Ledgerz are owned by Lightning Ledgerz LLC and are protected by copyright and other intellectual property laws. Deliverables created for you are licensed for your internal business use only.</p>
+                    <h3>11. Intellectual Property</h3>
+                    <p>All content, features, methodologies, templates, and functionality of Lightning Ledgerz are owned by Lightning Ledgerz LLC and are protected by copyright and other intellectual property laws. Deliverables created for you are licensed for your internal business use only and may not be redistributed, resold, or shared without written consent.</p>
 
-                    <h3>9. Governing Law</h3>
+                    <h3>12. Marketing</h3>
+                    <p>Unless you have specifically notified Lightning Ledgerz to the contrary in writing, Lightning Ledgerz may disclose your company as a client and may use your company's name and logo on our website and promotional materials in accordance with your brand guidelines, if provided. You may revoke this permission at any time by notifying us in writing.</p>
+
+                    <h3>13. Governing Law</h3>
                     <p>These Terms shall be governed by and construed in accordance with the laws of the State of Nevada, without regard to its conflict of law provisions. Any disputes shall be resolved in the courts of Nevada.</p>
 
-                    <h3>10. Changes to Terms</h3>
-                    <p>We reserve the right to modify these Terms at any time. Continued use of our services after changes constitutes acceptance of the modified Terms.</p>
+                    <h3>14. Changes to Terms</h3>
+                    <p>Lightning Ledgerz may amend these Terms from time to time. Amended terms will be published on the Site and are effective from the date of publication. We will make every effort to communicate substantial changes to you via email. Continued use of the Service after amendment constitutes acceptance of the amended Terms.</p>
 
-                    <h3>11. Contact</h3>
+                    <h3>15. Contact</h3>
                     <p>For questions about these Terms, contact us at: zprizant@lightningledgerz.com</p>
 
-                    <p style="margin-top: 25px; color: rgba(255,255,255,0.5); font-size: 0.85rem;">Lightning Ledgerz LLC | Nevada, USA | Incorporated 2025<br>Last updated: February 2026</p>
+                    <p style="margin-top: 25px; color: rgba(255,255,255,0.5); font-size: 0.85rem;">Lightning Ledgerz LLC | Nevada, USA | Incorporated 2025<br>Last updated: March 2026</p>
                 `
             },
             privacy: {
@@ -9922,10 +9973,13 @@
                         <li>Lightning Ledgerz accepts full liability for any unauthorized access resulting from negligence in handling your credentials.</li>
                     </ul>
 
-                    <h3>8. Data Retention</h3>
-                    <p>Your uploaded files, reports, and credentials are retained only for the duration of our engagement. You may request deletion of your data at any time by contacting us. Upon account termination, we will delete all data — including credentials, files, and reports — within 30 days unless retention is required by law. We will provide written confirmation of data deletion upon request.</p>
+                    <h3>8. Third-Party Information</h3>
+                    <p>Through your use of our services, you may provide us with information about other individuals (e.g., employees, partners, or clients). If you provide us with personal information about someone else, you must ensure that you are duly authorized to do so, and that we may use, collect, and disclose that information for the purposes described in this Policy. You must take reasonable steps to ensure the relevant individual is aware of and consents to their information being handled in accordance with this Policy.</p>
 
-                    <h3>8. Your Rights</h3>
+                    <h3>9. Data Retention</h3>
+                    <p>Your uploaded files, reports, and credentials are retained only for the duration of our engagement. You may request deletion of your data at any time by contacting us. Upon account termination, we will delete all data — including credentials, files, and reports — within 30 days unless retention is required by law. Lightning Ledgerz reserves the right to maintain non-identifiable, anonymized data for statistical and security purposes. We will provide written confirmation of data deletion upon request.</p>
+
+                    <h3>10. Your Rights</h3>
                     <p>You have the right to:</p>
                     <ul>
                         <li>Access the personal data we hold about you</li>
@@ -9933,18 +9987,29 @@
                         <li>Request deletion of your data ("right to be forgotten")</li>
                         <li>Export your data in a portable format</li>
                         <li>Withdraw consent for data processing</li>
+                        <li>Opt out of marketing communications at any time</li>
                     </ul>
+                    <p>You may contact us anonymously or using a pseudonym; however, this right will not apply if it is impracticable for us to communicate with you that way or where we are required by law to verify your identity.</p>
 
-                    <h3>9. Cookies</h3>
-                    <p>We use essential cookies to maintain your session and preferences. We do not use tracking cookies for advertising purposes or sell cookie data to third parties.</p>
+                    <h3>11. Direct Marketing</h3>
+                    <p>We may use your information to send you updates about new services, features, and offers by email or other electronic communication. You can opt out of receiving marketing material at any time by contacting us. Even if you opt out, we will still send you essential information we are legally required to send relating to the services we provide.</p>
 
-                    <h3>10. Changes to Privacy Policy</h3>
+                    <h3>12. Cookies</h3>
+                    <p>A "cookie" is a packet of information that allows our server to identify and interact more effectively with your device. We use essential cookies to maintain your session and preferences. The information collected by cookies is not linked to personal information and cannot be used to identify you. We do not use tracking cookies for advertising purposes or sell cookie data to third parties.</p>
+
+                    <h3>13. Data Breach Notification</h3>
+                    <p>If we experience a security breach where your personal information is lost, stolen, accessed, used, disclosed, copied, modified, or disposed of by any unauthorized person or in any unauthorized manner, we will notify you within 24 hours and take immediate action to secure your accounts. If you reasonably believe there has been unauthorized use or disclosure of your personal information, please contact us immediately.</p>
+
+                    <h3>14. Changes to Privacy Policy</h3>
                     <p>We may update this Privacy Policy periodically. We will notify you of significant changes via email or through our platform. Your continued use constitutes acceptance of the updated policy.</p>
 
-                    <h3>11. Contact Us</h3>
-                    <p>For privacy-related inquiries or to exercise your data rights, contact us at: zprizant@lightningledgerz.com</p>
+                    <h3>15. Contact Us</h3>
+                    <p>For privacy-related inquiries or to exercise your data rights, contact:<br>
+                    <strong>Privacy Officer</strong><br>
+                    Lightning Ledgerz LLC<br>
+                    zprizant@lightningledgerz.com</p>
 
-                    <p style="margin-top: 25px; color: rgba(255,255,255,0.5); font-size: 0.85rem;">Lightning Ledgerz LLC | Nevada, USA | Incorporated 2025<br>Last updated: February 2026</p>
+                    <p style="margin-top: 25px; color: rgba(255,255,255,0.5); font-size: 0.85rem;">Lightning Ledgerz LLC | Nevada, USA | Incorporated 2025<br>Last updated: March 2026</p>
                 `
             }
         };
@@ -10291,7 +10356,7 @@
                     // Hide gate
                     var gate = document.getElementById('payment-gate');
                     if (gate) gate.classList.remove('active');
-                    showToast('🎉 Trial activated! Your 30-day free trial has started. You\'ll be billed on day 31 unless you cancel.', 'success');
+                    showToast('Welcome aboard! Your subscription is now active.', 'success');
                 } else if (attempts > 30) {
                     clearInterval(checkInterval);
                 }

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Lightning Ledgerz Business Card</title>
+<title>Lightning Ledgerz Business Card — Back</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Cinzel:wght@400;600;700;900&display=swap');
 
@@ -11,178 +11,12 @@
   body {
     background: #c8c8c8;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    padding: 60px 40px;
-    gap: 40px;
     font-family: 'Cinzel', serif;
   }
 
-  .card-label {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: #555;
-    margin-bottom: -28px;
-  }
-
-  /* ══════════════ FRONT ══════════════ */
-  .card {
-    width: 3.5in;
-    height: 2in;
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    background: #fff;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.22);
-  }
-
-  .bg-img {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    object-fit: cover; object-position: center;
-    opacity: 0.26; z-index: 0;
-  }
-  .bg-fade {
-    position: absolute; inset: 0;
-    background: rgba(255,252,248,0.82);
-    z-index: 1;
-  }
-
-  .red-bar {
-    width: 6px; flex-shrink: 0;
-    background: linear-gradient(180deg, #e8231a, #a80e08);
-    position: relative; z-index: 3;
-  }
-  .white-bar {
-    width: 10px; flex-shrink: 0;
-    background: #ffffff;
-    position: relative; z-index: 3;
-  }
-
-  .photo-col {
-    width: 1.2in; flex-shrink: 0;
-    position: relative; overflow: hidden;
-    display: flex; align-items: center; justify-content: flex-start;
-    z-index: 3;
-  }
-  .photo-col::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse 60% 90% at 55% 70%,
-      rgba(232,35,26,0.22) 0%, rgba(232,35,26,0.08) 50%, transparent 75%);
-    z-index: 1; pointer-events: none;
-  }
-  .photo-col img {
-    height: 100%; width: auto;
-    margin-left: 6px;
-    position: relative; z-index: 2;
-  }
-
-  .info-col {
-    flex: 1;
-    padding: 12px 0 10px 2px;
-    margin-left: -4px;
-    display: flex; flex-direction: column;
-    position: relative; z-index: 3;
-  }
-
-  .top-block { flex-shrink: 0; }
-
-  .logo-line {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 16px; font-weight: 900;
-    letter-spacing: 1px; line-height: 1;
-    text-transform: uppercase;
-    display: flex; align-items: center; width: 100%;
-  }
-  .logo-line .l1 { color: #e8231a; margin-right: 5px; }
-  .logo-line .l2 { color: #0a1628; }
-  .lightning-z {
-    height: 20px; width: auto;
-    flex-shrink: 0;
-    margin-left: auto; margin-right: 0;
-  }
-
-  .tagline {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 7px; font-weight: 700;
-    color: #e8231a; letter-spacing: 2px;
-    text-transform: uppercase; margin-top: 2px;
-  }
-
-  .divider {
-    width: 34px; height: 2px;
-    background: linear-gradient(90deg, #e8231a, transparent);
-    margin: 6px 0 0;
-  }
-
-  .middle-block {
-    flex: 1; display: flex; flex-direction: column;
-    justify-content: center; gap: 3px;
-  }
-
-  .name {
-    font-family: 'Cinzel', serif;
-    font-size: 14px; font-weight: 700;
-    color: #0a1628; letter-spacing: 1px; line-height: 1;
-  }
-
-  .ceo-line {
-    font-family: 'Cinzel', serif;
-    font-size: 5.8px; font-weight: 600;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    background: linear-gradient(160deg, #C9A44A 0%, #7A5800 35%, #B8920A 55%, #6B4C00 80%, #C9A44A 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-
-  .cornell-line {
-    font-family: 'Cinzel', serif;
-    font-size: 5.8px; font-weight: 400;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    display: flex; align-items: flex-end; gap: 3px;
-    background: linear-gradient(160deg, #C9A44A 0%, #7A5800 35%, #B8920A 55%, #6B4C00 80%, #C9A44A 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .cornell-logo { height: 9px; width: auto; flex-shrink: 0; }
-
-  .h-rule {
-    height: 1px; background: rgba(0,0,0,0.08); margin-bottom: 4px;
-  }
-
-  /* Bottom row — contact centered vertically, QR on right */
-  .bottom-row {
-    flex-shrink: 0;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-
-  .contact-block {
-    display: flex; flex-direction: column;
-    gap: 4px;
-  }
-
-  .citem {
-    font-family: 'Cinzel', serif;
-    display: flex; align-items: center; gap: 4px;
-    font-size: 5.8px; font-weight: 700;
-    letter-spacing: 0.6px; color: #0a1628;
-    text-transform: uppercase;
-  }
-  .citem .icon {
-    color: #e8231a; -webkit-text-fill-color: #e8231a;
-    font-size: 7px; width: 9px; text-align: center; flex-shrink: 0;
-  }
-
-  .qr-img {
-    display: block; width: 44px; height: 44px;
-    object-fit: contain; object-position: right center; flex-shrink: 0;
-  }
-
-  /* ══════════════ BACK ══════════════ */
   .card-back {
     width: 3.5in; height: 2in;
     border-radius: 10px; overflow: hidden;
@@ -211,160 +45,86 @@
     height: 6px; background: linear-gradient(90deg, #a80e08, #e8231a); z-index: 3;
   }
 
+  /* Full card layout: center-row fills all space above footer */
   .back-inner {
     position: relative; z-index: 2;
     flex: 1;
     display: flex; flex-direction: column;
-    padding: 10px 18px 8px 18px;
+    padding: 6px 10px 7px 10px;
     justify-content: space-between;
   }
 
-  /* Groups logo + services together so they center as a unit */
-  .back-main {
+  /* Row: [left col] [logo] [right col] — stretches full height of remaining space */
+  .back-center-row {
     flex: 1;
+    display: flex; flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  /* Logo centered in its column */
+  .back-real-logo {
+    height: 155px; width: auto;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  /* Service columns stretch full height, items spread evenly top to bottom */
+  .back-svc-col {
     display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 5px;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-shrink: 0;
   }
 
-  .back-top {
-    display: flex; flex-direction: column;
-    align-items: center; gap: 1px;
-  }
-
-  .back-logo-line {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 22px; font-weight: 900;
-    letter-spacing: 1px; text-transform: uppercase; line-height: 1;
-    display: flex; align-items: center; gap: 0;
-  }
-  .back-logo-line .l1 { color: #e8231a; margin-right: 4px; }
-  .back-logo-line .l2 { color: #0a1628; margin-right: 0; }
-  .back-lightning-z {
-    height: 38px; width: auto;
-    margin-left: -5px;
-  }
-
-  .back-tagline {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 7.5px; font-weight: 700;
-    color: #e8231a; letter-spacing: 3px; text-transform: uppercase;
-  }
-
-  .back-divider {
-    width: 110px; height: 2px;
-    background: linear-gradient(90deg, transparent, #e8231a, transparent);
-  }
-
-  .back-middle {
-    display: flex; flex-direction: column;
-    align-items: center; gap: 3px;
-  }
-
-  .back-services {
-    display: flex; flex-direction: column;
-    align-items: center; gap: 3px;
-  }
-  .svc-row { display: flex; gap: 10px; }
   .svc {
     font-family: 'Cinzel', serif;
     display: flex; align-items: center; gap: 3px;
-    font-size: 6.5px; font-weight: 700;
+    font-size: 5.5px; font-weight: 700;
     letter-spacing: 0.4px; text-transform: uppercase; color: #0a1628;
+    white-space: nowrap;
   }
   .svc .bolt {
-    font-size: 7px;
+    font-size: 5.5px;
     background: linear-gradient(160deg, #C9A44A 0%, #B8920A 55%, #C9A44A 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    flex-shrink: 0;
   }
 
-  /* Bottom: single line contact */
+  /* Footer — bumped up font so it's actually visible */
   .back-footer {
     display: flex; align-items: center; justify-content: center;
-    border-top: 1px solid rgba(0,0,0,0.08);
-    padding-top: 5px; gap: 10px;
-    margin-top: 2px;
+    gap: 8px; flex-shrink: 0;
   }
 
   .back-citem {
     font-family: 'Cinzel', serif;
     display: flex; align-items: center; gap: 3px;
-    font-size: 5px; font-weight: 700;
+    font-size: 5.5px; font-weight: 700;
     letter-spacing: 0.4px; color: #0a1628; text-transform: uppercase;
     white-space: nowrap;
   }
   .back-citem .icon {
     color: #e8231a; -webkit-text-fill-color: #e8231a;
-    font-size: 6px; width: 7px; text-align: center; flex-shrink: 0;
+    font-size: 7px; width: 8px; text-align: center; flex-shrink: 0;
   }
   .back-sep {
-    color: rgba(0,0,0,0.2);
+    color: rgba(0,0,0,0.25);
     font-size: 8px; line-height: 1;
   }
 
   @media print {
-    body { background: white; margin: 0; padding: 0; gap: 0; }
-    .card-label { display: none; }
-    .card, .card-back {
+    body { background: white; margin: 0; padding: 0; }
+    .card-back {
       box-shadow: none;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
-      page-break-after: always;
     }
   }
 </style>
 </head>
 <body>
-
-<div class="card-label">— Front —</div>
-
-<div class="card">
-  <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
-  <div class="bg-fade"></div>
-  <div class="red-bar"></div>
-
-  <div class="photo-col">
-    <img src="zacredtiebest.png" alt="Zac Prizant">
-  </div>
-
-  <div class="info-col">
-    <div class="top-block">
-      <div class="logo-line">
-        <span class="l1">LIGHTNING</span><span class="l2">LEDGER</span><img class="lightning-z" src="lightningz.png" alt="Z">
-      </div>
-      <div class="tagline">Budget &nbsp;·&nbsp; Bookkeep &nbsp;·&nbsp; Build</div>
-      <div class="divider"></div>
-    </div>
-
-    <div class="middle-block">
-      <div class="name">Zac Prizant</div>
-      <div class="ceo-line">President &amp; FP&amp;A Advisor</div>
-      <div class="cornell-line">Cornell Masters of Management <img class="cornell-logo" src="cornred.png" alt="Cornell"></div>
-    </div>
-
-    <div class="h-rule"></div>
-    <div class="bottom-row">
-      <div class="contact-block">
-        <div class="citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
-        <div class="citem"><span class="icon">☎</span> (702) 550-2513</div>
-        <div class="citem">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0;">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="2" y1="12" x2="22" y2="12"/>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-          </svg>
-          lightningledgerz.com
-        </div>
-      </div>
-      <img class="qr-img" src="ledgerzqrcode.png" alt="Scan QR Code">
-    </div>
-  </div>
-
-  <div class="white-bar"></div>
-</div>
-
-<div class="card-label">— Back —</div>
 
 <div class="card-back">
   <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
@@ -373,50 +133,29 @@
   <div class="red-bar-bottom"></div>
 
   <div class="back-inner">
-    <div class="back-main">
-    <div class="back-top">
-      <div class="back-logo-line">
-        <span class="l1">LIGHTNING</span><span class="l2">LEDGER</span><img class="back-lightning-z" src="lightningz.png" alt="Z">
+    <div class="back-center-row">
+
+      <!-- Left services — evenly spaced top to bottom -->
+      <div class="back-svc-col">
+        <div class="svc"><span class="bolt">⚡</span> Automation</div>
+        <div class="svc"><span class="bolt">⚡</span> Financial Modeling</div>
+        <div class="svc"><span class="bolt">⚡</span> Bookkeeping</div>
+        <div class="svc"><span class="bolt">⚡</span> Cash Flow Analysis</div>
       </div>
-      <div class="back-tagline">Budget &nbsp;·&nbsp; Bookkeep &nbsp;·&nbsp; Build</div>
-      <div class="back-divider"></div>
+
+      <!-- Center logo -->
+      <img src="lightning_ledgerz_transparent.png" class="back-real-logo" alt="Lightning Ledgerz">
+
+      <!-- Right services — evenly spaced top to bottom -->
+      <div class="back-svc-col">
+        <div class="svc"><span class="bolt">⚡</span> Boardroom Decks</div>
+        <div class="svc"><span class="bolt">⚡</span> Fractional CFO</div>
+        <div class="svc"><span class="bolt">⚡</span> Budget Creation</div>
+        <div class="svc"><span class="bolt">⚡</span> Budget vs. Actual</div>
+      </div>
+
     </div>
 
-    <div class="back-middle">
-      <div class="back-services">
-        <div class="svc-row">
-          <div class="svc"><span class="bolt">⚡</span> Automation</div>
-          <div class="svc"><span class="bolt">⚡</span> Financial Modeling</div>
-          <div class="svc"><span class="bolt">⚡</span> Bookkeeping</div>
-        </div>
-        <div class="svc-row">
-          <div class="svc"><span class="bolt">⚡</span> Cash Flow Analysis</div>
-          <div class="svc"><span class="bolt">⚡</span> Boardroom Decks</div>
-          <div class="svc"><span class="bolt">⚡</span> Fractional CFO</div>
-        </div>
-        <div class="svc-row">
-          <div class="svc"><span class="bolt">⚡</span> Budget Creation</div>
-          <div class="svc"><span class="bolt">⚡</span> Budget vs. Actual Analysis</div>
-        </div>
-      </div>
-    </div>
-    </div><!-- end back-main -->
-
-    <div class="back-footer">
-      <div class="back-citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
-      <span class="back-sep">|</span>
-      <div class="back-citem"><span class="icon">☎</span> (702) 550-2513</div>
-      <span class="back-sep">|</span>
-      <div class="back-citem">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#e8231a" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round" style="width:7px;height:7px;flex-shrink:0;">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="2" y1="12" x2="22" y2="12"/>
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-        </svg>
-        lightningledgerz.com
-      </div>
-    </div>
   </div>
 </div>
 
