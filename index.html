@@ -6593,6 +6593,7 @@
                 </div>
             </div>
         </div>
+        <a href="javascript:void(0)" class="nav-signout" id="nav-signout" onclick="handleLogout()" style="display:none;color:#fff;text-decoration:none;font-size:0.82rem;font-weight:600;opacity:0.8;cursor:pointer;text-shadow:0 1px 3px rgba(0,0,0,0.3);">Sign Out</a>
         <a href="#portal" class="nav-cta">Get Started</a>
         <a href="tel:+17025502513" class="nav-mobile-phone">&#9742; (702) 550-2513</a>
         <button class="nav-mobile-toggle" id="hamburger-btn" onclick="toggleMobileMenu()">☰</button>
@@ -8706,9 +8707,9 @@
                 upgradeBtn.style.display = (tier !== 'diamond' && !isDemo) ? 'inline-block' : 'none';
             }
 
-            // Hide contact info when logged in
-            var navContact = document.getElementById('nav-contact-info');
-            if (navContact) navContact.style.display = 'none';
+            // Show sign out button in nav when logged in
+            var navSignout = document.getElementById('nav-signout');
+            if (navSignout) navSignout.style.display = 'inline';
 
             // Show nav welcome section and update greeting
             var welcomeNav = document.getElementById('user-welcome-nav');
@@ -8768,6 +8769,16 @@
                 if (uploadsCarousel) uploadsCarousel.innerHTML = '<p class="carousel-empty">Demo mode - uploads disabled</p>';
                 if (reportsCarousel) reportsCarousel.innerHTML = '<p class="carousel-empty">Demo mode - reports N/A</p>';
             }
+
+            // Hide hero sections when logged in — portal becomes the top content
+            var heroSection = document.getElementById('top');
+            var videoHeros = document.querySelectorAll('.video-hero-section');
+            if (heroSection) heroSection.style.display = 'none';
+            videoHeros.forEach(function(v) { v.style.display = 'none'; });
+
+            // Hide package sidebar when logged in
+            var pkgSidebar = document.querySelector('.package-sidebar');
+            if (pkgSidebar) pkgSidebar.style.display = 'none';
         }
 
         // Demo tier change handler
@@ -8858,6 +8869,21 @@
             currentUserData = null;
             showLoginForm();
             showToast('Signed out successfully', 'success');
+
+            // Restore hero sections
+            var heroSection = document.getElementById('top');
+            var videoHeros = document.querySelectorAll('.video-hero-section');
+            if (heroSection) heroSection.style.display = '';
+            videoHeros.forEach(function(v) { v.style.display = ''; });
+            var pkgSidebar = document.querySelector('.package-sidebar');
+            if (pkgSidebar) pkgSidebar.style.display = '';
+
+            // Hide sign out, show contact
+            var navSignout = document.getElementById('nav-signout');
+            if (navSignout) navSignout.style.display = 'none';
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // ===========================================
