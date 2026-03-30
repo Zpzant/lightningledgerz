@@ -577,6 +577,9 @@
             color: var(--red);
         }
 
+        .contact-dropdown.open .contact-dropdown-menu { display: block !important; animation: fadeIn 0.15s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
         /* When nav is scrolled (white background), use dark text */
         nav.nav-scrolled .nav-contact-info a {
             color: #4B5563;
@@ -3286,11 +3289,11 @@
         }
         @media (max-width: 720px) { .fin-upload-grid { grid-template-columns: 1fr; } }
         .fin-upload-slot {
-            background: #f8f9fc; border: 1.5px dashed #d0d7e5;
+            background: #fff; border: 1.5px dashed #d0d7e5;
             border-radius: 12px; padding: 18px 14px; text-align: center;
             transition: border-color 0.2s;
         }
-        .fin-upload-slot:hover { border-color: #1e3a5f; background: #f3f6ff; }
+        .fin-upload-slot:hover { border-color: #1e3a5f; background: #f8faff; }
         .fin-slot-icon { font-size: 1.8rem; margin-bottom: 8px; }
         .fin-slot-label { font-weight: 700; color: #1e3a5f; font-size: 0.88rem; margin-bottom: 3px; }
         .fin-slot-sub { font-size: 0.75rem; color: #999; margin-bottom: 12px; }
@@ -6581,8 +6584,14 @@
             <li class="mobile-only"><a href="#gold-card" onclick="highlightPackageCard('gold-card'); closeMobileMenu(); return false;" class="nav-package-link gold">✨ Gold</a></li>
             <li class="mobile-only"><a href="#diamond-card" onclick="highlightPackageCard('diamond-card'); closeMobileMenu(); return false;" class="nav-package-link diamond">💎 Diamond</a></li>
         </ul>
-        <div class="nav-contact-info">
-            <a href="mailto:info@lightningledgerz.com" style="background:#e8231a;color:#fff;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.85rem;letter-spacing:0.3px;">Contact Us</a>
+        <div class="nav-contact-info" id="nav-contact-info">
+            <div class="contact-dropdown" style="position:relative;">
+                <button onclick="this.parentElement.classList.toggle('open')" style="background:#e8231a;color:#fff;padding:8px 18px;border-radius:8px;border:none;font-family:inherit;font-weight:700;font-size:0.85rem;letter-spacing:0.3px;cursor:pointer;">Contact Us ▾</button>
+                <div class="contact-dropdown-menu" style="display:none;position:absolute;top:110%;right:0;background:#fff;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.15);padding:10px 0;min-width:260px;z-index:999;">
+                    <a href="tel:+17025502513" style="display:flex;align-items:center;gap:10px;padding:12px 20px;color:#1e3a5f;text-decoration:none;font-size:0.9rem;font-weight:600;text-shadow:none;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">☎ (702) 550-2513</a>
+                    <a href="mailto:info@lightningledgerz.com" style="display:flex;align-items:center;gap:10px;padding:12px 20px;color:#1e3a5f;text-decoration:none;font-size:0.9rem;font-weight:600;text-shadow:none;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">✉ info@lightningledgerz.com</a>
+                </div>
+            </div>
         </div>
         <a href="#portal" class="nav-cta">Get Started</a>
         <a href="tel:+17025502513" class="nav-mobile-phone">&#9742; (702) 550-2513</a>
@@ -7659,30 +7668,7 @@
                     </div>
                 </div>
 
-                <!-- STEP 2: Client Services Agreement -->
-                <div class="portal-step-card" id="step-nda">
-                    <div class="portal-step-header">
-                        <div class="portal-step-number">2</div>
-                        <h4>Client Services Agreement</h4>
-                    </div>
-                    <div class="portal-step-body">
-                        <div id="nda-step-unsigned">
-                            <p style="margin-bottom:16px;">Before using your portal, review and sign your Client Services Agreement. This establishes the terms of our engagement and protects both parties.</p>
-                            <button class="nda-step-sign-btn" onclick="openNDAModal()">Review &amp; Sign Agreement &rarr;</button>
-                        </div>
-                        <div id="nda-step-signed" style="display:none;">
-                            <div class="nda-signed-badge">
-                                <span class="nda-signed-check">&#10003;</span>
-                                <div>
-                                    <div class="nda-signed-title">Agreement Signed</div>
-                                    <div class="nda-signed-meta" id="nda-signed-meta"></div>
-                                </div>
-                            </div>
-                            <p style="font-size:0.83rem;color:#888;margin-top:12px;">Your Client Services Agreement is on file. Contact <a href="mailto:zprizant@lightningledgerz.com" style="color:#1e3a5f;">zprizant@lightningledgerz.com</a> with any questions.</p>
-                        </div>
-                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('nda')">Skip for now</button></div>
-                    </div>
-                </div>
+                <!-- Client Services Agreement removed — now accepted at signup via Terms checkbox -->
 
                 <!-- STEP 3: Database Access -->
                 <div class="portal-step-card" id="platform-integrations">
@@ -8712,6 +8698,10 @@
             if (upgradeBtn) {
                 upgradeBtn.style.display = (tier !== 'diamond' && !isDemo) ? 'inline-block' : 'none';
             }
+
+            // Hide contact info when logged in
+            var navContact = document.getElementById('nav-contact-info');
+            if (navContact) navContact.style.display = 'none';
 
             // Show nav welcome section and update greeting
             var welcomeNav = document.getElementById('user-welcome-nav');
@@ -10059,6 +10049,11 @@
                     }
                 });
             }
+            // Close contact dropdown on click outside
+            document.addEventListener('click', function(e) {
+                var dd = document.querySelector('.contact-dropdown');
+                if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+            });
         });
 
         // ===========================================
