@@ -6594,7 +6594,23 @@
                 </div>
             </div>
         </div>
-        <a href="javascript:void(0)" class="nav-signout" id="nav-signout" onclick="handleLogout()" style="display:none;color:#fff;text-decoration:none;font-size:0.82rem;font-weight:600;opacity:0.8;cursor:pointer;text-shadow:0 1px 3px rgba(0,0,0,0.3);">Sign Out</a>
+        <!-- Logged-in nav actions (hidden by default) -->
+        <div id="nav-logged-in-actions" style="display:none;align-items:center;gap:12px;">
+            <a href="#pricing" id="nav-choose-plan" style="background:#e8231a;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.82rem;white-space:nowrap;">Choose Plan</a>
+            <a href="javascript:void(0)" onclick="connectQuickBooksOAuth()" id="nav-connect-qb" style="background:#2CA01C;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.82rem;white-space:nowrap;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                <svg viewBox="0 0 40 40" width="16" height="16"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M13 12v16M13 12c0-2.2 1.8-4 4-4h2c2.2 0 4 1.8 4 4v8c0 2.2-1.8 4-4 4h-2" stroke="#2CA01C" stroke-width="3" fill="none"/><path d="M27 28V12M27 28c0 2.2-1.8 4-4 4h-2c-2.2 0-4-1.8-4-4v-8c0-2.2 1.8-4 4-4h2" stroke="#2CA01C" stroke-width="3" fill="none"/></svg>
+                Connect QuickBooks
+            </a>
+            <!-- Mini lightning meter in nav -->
+            <div id="nav-meter" style="display:flex;align-items:center;gap:6px;cursor:pointer;" onclick="document.getElementById('portal').scrollIntoView({behavior:'smooth'})" title="Profile completion">
+                <div style="position:relative;width:20px;height:34px;">
+                    <div id="nav-meter-fill" style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,#e8231a,#f59e0b,#22c55e);border-radius:2px;height:0%;transition:height 0.8s ease;z-index:1;"></div>
+                    <svg viewBox="0 0 40 70" width="20" height="34" style="position:absolute;top:0;left:0;z-index:2;" fill="none"><path d="M24 2L4 40H20L16 68L36 28H20L24 2Z" stroke="#e8231a" stroke-width="3" stroke-linejoin="round"/></svg>
+                </div>
+                <span id="nav-meter-pct" style="font-size:0.75rem;font-weight:800;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.3);"></span>
+            </div>
+            <a href="javascript:void(0)" onclick="handleLogout()" style="color:#fff;text-decoration:none;font-size:0.8rem;font-weight:600;opacity:0.7;text-shadow:0 1px 3px rgba(0,0,0,0.3);">Sign Out</a>
+        </div>
         <a href="#portal" class="nav-cta">Get Started</a>
         <a href="tel:+17025502513" class="nav-mobile-phone">&#9742; (702) 550-2513</a>
         <button class="nav-mobile-toggle" id="hamburger-btn" onclick="toggleMobileMenu()">☰</button>
@@ -7340,7 +7356,7 @@
     <!-- About Section -->
     <section class="section" id="about">
         <div class="section-header">
-            <h2>About Zachary Prizant — Founder of Lightning Ledgerz</h2>
+            <h2>About</h2>
         </div>
 
         <div class="about-content about-three-col">
@@ -8708,36 +8724,37 @@
                 upgradeBtn.style.display = (tier !== 'diamond' && !isDemo) ? 'inline-block' : 'none';
             }
 
-            // Show sign out button in nav when logged in
-            var navSignout = document.getElementById('nav-signout');
-            if (navSignout) navSignout.style.display = 'inline';
+            // === LOGGED-IN NAV TRANSFORMATION ===
+            // Hide page links, show action bar
+            var navLinks = document.getElementById('nav-links');
+            var navActions = document.getElementById('nav-logged-in-actions');
+            var navContact = document.getElementById('nav-contact-info');
+            var getStartedBtn = document.querySelector('.nav-cta');
+            if (navLinks) navLinks.style.display = 'none';
+            if (navContact) navContact.style.display = 'none';
+            if (getStartedBtn) getStartedBtn.style.display = 'none';
+            if (navActions) navActions.style.display = 'flex';
 
-            // Show nav welcome section and update greeting
+            // Show welcome
             var welcomeNav = document.getElementById('user-welcome-nav');
             var welcomeText = document.getElementById('nav-welcome-text');
             var planBadge = document.getElementById('nav-plan-badge');
-            var getStartedBtn = document.querySelector('.nav-cta');
+            if (welcomeNav) welcomeNav.style.display = 'flex';
+            if (welcomeText) welcomeText.textContent = 'Hi, ' + name + '!';
 
-            if (welcomeNav) {
-                welcomeNav.style.display = 'flex';
-            }
-            if (welcomeText) {
-                welcomeText.textContent = 'Hi, ' + name + '!';
-            }
-            if (planBadge) {
-                if (tier === 'none') {
-                    planBadge.innerHTML = '<a href="#portal" style="background:#4285f4;color:#fff;padding:8px 20px;border-radius:30px;text-decoration:none;font-weight:700;font-size:0.82rem;white-space:nowrap;">Book Your Free Call →</a>';
-                    planBadge.className = '';
-                    planBadge.style.background = 'none';
-                    planBadge.style.border = 'none';
-                    planBadge.style.padding = '0';
-                } else {
+            // Update plan badge and Choose Plan button
+            var choosePlanBtn = document.getElementById('nav-choose-plan');
+            if (tier === 'none') {
+                if (planBadge) { planBadge.style.display = 'none'; }
+                if (choosePlanBtn) { choosePlanBtn.style.display = 'inline-block'; choosePlanBtn.textContent = 'Choose Plan'; }
+            } else {
+                if (planBadge) {
+                    planBadge.style.display = '';
                     planBadge.className = 'plan-badge badge-' + tier;
                     planBadge.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+                    planBadge.style.background = ''; planBadge.style.border = ''; planBadge.style.padding = '';
                 }
-            }
-            if (getStartedBtn) {
-                getStartedBtn.style.display = 'none';
+                if (choosePlanBtn) { choosePlanBtn.textContent = 'Upgrade'; choosePlanBtn.style.display = tier === 'diamond' ? 'none' : 'inline-block'; }
             }
 
             // Apply tier-based theming
@@ -8771,13 +8788,20 @@
                 if (reportsCarousel) reportsCarousel.innerHTML = '<p class="carousel-empty">Demo mode - reports N/A</p>';
             }
 
-            // Hide hero sections when logged in — portal becomes the top content
+            // Hide all non-portal sections when logged in — portal is the only view
             var heroSection = document.getElementById('top');
             var videoHeros = document.querySelectorAll('.video-hero-section');
             if (heroSection) heroSection.style.display = 'none';
             videoHeros.forEach(function(v) { v.style.display = 'none'; });
+            // Hide portfolio, about, schedule, pricing, reports carousel
+            ['work', 'pricing', 'about', 'schedule'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+            var workCarousel = document.querySelector('.work-carousel-section');
+            if (workCarousel) workCarousel.style.display = 'none';
 
-            // Hide package sidebar when logged in
+            // Hide package sidebar
             var pkgSidebar = document.querySelector('.package-sidebar');
             if (pkgSidebar) pkgSidebar.style.display = 'none';
         }
@@ -8879,9 +8903,18 @@
             var pkgSidebar = document.querySelector('.package-sidebar');
             if (pkgSidebar) pkgSidebar.style.display = '';
 
-            // Hide sign out, show contact
-            var navSignout = document.getElementById('nav-signout');
-            if (navSignout) navSignout.style.display = 'none';
+            // Restore nav: show links + contact, hide logged-in actions
+            var navLinks = document.getElementById('nav-links');
+            var navActions = document.getElementById('nav-logged-in-actions');
+            var navContact = document.getElementById('nav-contact-info');
+            if (navLinks) navLinks.style.display = '';
+            if (navActions) navActions.style.display = 'none';
+            if (navContact) navContact.style.display = '';
+
+            // Show all sections again
+            document.querySelectorAll('.section').forEach(function(s) { s.style.display = ''; });
+            var workSection = document.querySelector('.work-carousel-section');
+            if (workSection) workSection.style.display = '';
 
             // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -10619,6 +10652,12 @@
             if (floatFill)  floatFill.style.height = pct + '%';
             if (floatPct)   floatPct.textContent = pct + '%';
             if (floatTip)   floatTip.textContent = tip;
+
+            // Update nav mini meter
+            var navMeterFill = document.getElementById('nav-meter-fill');
+            var navMeterPct = document.getElementById('nav-meter-pct');
+            if (navMeterFill) navMeterFill.style.height = pct + '%';
+            if (navMeterPct) navMeterPct.textContent = pct >= 100 ? 'Fully Charged!' : pct + '%';
 
             // 50% milestone toast (show once)
             if (pct >= 50 && pct < 100 && !localStorage.getItem('milestone50_' + (currentUserData?.id||'demo'))) {
