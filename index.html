@@ -7946,107 +7946,17 @@
                 </div>
             </div>
 
-            <!-- 4-Step Portal Layout -->
+            <!-- Portal Steps -->
             <div class="portal-steps-container">
 
-                <!-- STEP 1: Book a Discovery Call -->
-                <div class="portal-step-card" id="step-call">
-                    <div class="portal-step-header">
-                        <div class="portal-step-number">1</div>
-                        <h4>Book a Discovery Call</h4>
-                    </div>
-                    <div class="portal-step-body">
-                        <p style="margin-bottom:14px;">Schedule a free 30-minute call with Zac. On the call: walk through your business needs, see live sample deliverables, get a walkthrough of the portal, and apply a discount code if you're ready to sign up.</p>
-                        <a href="mailto:zprizant@lightningledgerz.com?subject=Discovery%20Call%20Request" class="book-call-btn" id="book-call-btn" onclick="markCallBooked()">Schedule My Free Call &rarr;</a>
-                        <div id="call-booked-badge" style="display:none; margin-top:12px;">
-                            <div class="nda-signed-badge">
-                                <span class="nda-signed-check">&#128222;</span>
-                                <div>
-                                    <div class="nda-signed-title">Call Scheduled</div>
-                                    <div class="nda-signed-meta">Check your email for confirmation</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('call')">Skip — I'll book later</button></div>
-                    </div>
-                </div>
-
-                <!-- Client Services Agreement removed — now accepted at signup via Terms checkbox -->
-
-                <!-- STEP 3: Database Access -->
-                <div class="portal-step-card" id="platform-integrations">
-                    <div class="portal-step-header">
-                        <div class="portal-step-number">3</div>
-                        <h4>Connect QuickBooks</h4>
-                    </div>
-                    <div class="portal-step-body">
-                        <p style="font-size:0.88rem;color:#666;margin-bottom:16px;">Connect your QuickBooks account — I pull your financials directly, no manual uploads needed.</p>
-
-                        <!-- QB OAuth Connect Button -->
-                        <a href="javascript:void(0)" onclick="connectQuickBooksOAuth()" id="qb-connect-btn-portal" style="display:inline-flex;align-items:center;gap:10px;background:#2CA01C;color:#fff;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-size:0.95rem;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 15px rgba(44,160,28,0.3);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
-                            <svg viewBox="0 0 40 40" width="24" height="24"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M13 12v16M13 12c0-2.2 1.8-4 4-4h2c2.2 0 4 1.8 4 4v8c0 2.2-1.8 4-4 4h-2" stroke="#2CA01C" stroke-width="2.5" fill="none"/><path d="M27 28V12M27 28c0 2.2-1.8 4-4 4h-2c-2.2 0-4-1.8-4-4v-8c0-2.2 1.8-4 4-4h2" stroke="#2CA01C" stroke-width="2.5" fill="none"/></svg>
-                            Connect QuickBooks
-                        </a>
-
-                        <!-- Connected badge -->
-                        <div id="connected-platforms-badges" style="display:none; margin:14px 0 4px;">
-                            <div id="connected-badges-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
-                        </div>
-
-                        <div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-radius:8px;display:flex;align-items:center;gap:8px;">
-                            <span style="font-size:0.78rem;color:#94a3b8;">&#128274; 256-bit encrypted &middot; Revoke anytime</span>
-                        </div>
-
-                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('db')">Skip — I'll connect later</button></div>
-                    </div>
-                </div>
-
-                <!-- STEP 4: Upload Financial Statements -->
-                <div class="portal-step-card">
-                    <div class="portal-step-header">
-                        <div class="portal-step-number">4</div>
-                        <h4>Upload Financial Statements</h4>
-                    </div>
-                    <div class="portal-step-body">
-                        <p style="font-size:0.88rem;color:#666;margin-bottom:20px;">Upload monthly statements for as many years as you have available. Excel, CSV, and PDF all work.</p>
-                        <div class="fin-upload-grid">
-                            <div class="fin-upload-slot">
-                                <div class="fin-slot-icon">📊</div>
-                                <div class="fin-slot-label">P&amp;L / Income Statement</div>
-                                <div class="fin-slot-sub">Monthly &middot; All available years</div>
-                                <label class="fin-upload-btn" for="fin-pl-input">+ Upload Files</label>
-                                <input type="file" id="fin-pl-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('PL', this)">
-                                <div class="fin-slot-status" id="fin-pl-status"></div>
-                            </div>
-                            <div class="fin-upload-slot">
-                                <div class="fin-slot-icon">⚖️</div>
-                                <div class="fin-slot-label">Balance Sheet</div>
-                                <div class="fin-slot-sub">Monthly &middot; All available years</div>
-                                <label class="fin-upload-btn" for="fin-bs-input">+ Upload Files</label>
-                                <input type="file" id="fin-bs-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('Balance Sheet', this)">
-                                <div class="fin-slot-status" id="fin-bs-status"></div>
-                            </div>
-                            <div class="fin-upload-slot">
-                                <div class="fin-slot-icon">💸</div>
-                                <div class="fin-slot-label">Cash Flow Statement</div>
-                                <div class="fin-slot-sub">Monthly &middot; All available years</div>
-                                <label class="fin-upload-btn" for="fin-cf-input">+ Upload Files</label>
-                                <input type="file" id="fin-cf-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('Cash Flow', this)">
-                                <div class="fin-slot-status" id="fin-cf-status"></div>
-                            </div>
-                        </div>
-                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('files')">Skip — I'll upload files later</button></div>
-                    </div>
-                </div>
-
-                <!-- Logo upload moved to nav avatar -->
+                <!-- Logo upload (hidden input) -->
                 <input type="file" id="logo-input" accept=".png,.jpg,.jpeg,.svg,.webp" style="display: none;" onchange="handleLogoUpload(event)">
                 <img id="company-logo-img" src="" alt="Company Logo" style="display: none;">
 
-                <!-- STEP 5: Select Bookkeeping Services -->
+                <!-- STEP 1: Select Bookkeeping Services -->
                 <div class="portal-step-card" id="step-services">
                     <div class="portal-step-header">
-                        <div class="portal-step-number">5</div>
+                        <div class="portal-step-number">1</div>
                         <h4>What Do You Need Help With?</h4>
                     </div>
                     <div class="portal-step-body">
@@ -8093,10 +8003,10 @@
                     </div>
                 </div>
 
-                <!-- STEP 6: Request a Report -->
+                <!-- STEP 2: Request a Report -->
                 <div class="portal-step-card" id="step-report-catalog">
                     <div class="portal-step-header">
-                        <div class="portal-step-number">6</div>
+                        <div class="portal-step-number">2</div>
                         <h4>Request a Report</h4>
                         <div id="step6-token-badge" style="margin-left:auto;display:none;background:#f0f9ff;color:#1e3a5f;font-size:0.78rem;font-weight:700;padding:5px 12px;border-radius:20px;">⚡ <span id="step6-token-count">0</span> reports left</div>
                     </div>
@@ -8114,10 +8024,10 @@
                     </div>
                 </div>
 
-                <!-- STEP 7: My Delivered Reports -->
+                <!-- STEP 3: My Delivered Reports -->
                 <div class="portal-step-card">
                     <div class="portal-step-header">
-                        <div class="portal-step-number">7</div>
+                        <div class="portal-step-number">3</div>
                         <h4>My Reports</h4>
                     </div>
                     <div class="portal-step-body">
@@ -8141,6 +8051,88 @@
                             <span>Drag to explore</span>
                             <span>&#8594;</span>
                         </div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Book a Discovery Call -->
+                <div class="portal-step-card" id="step-call">
+                    <div class="portal-step-header">
+                        <div class="portal-step-number">4</div>
+                        <h4>Book a Discovery Call</h4>
+                    </div>
+                    <div class="portal-step-body">
+                        <p style="margin-bottom:14px;font-size:0.88rem;color:#666;">Schedule a free 30-minute call with Zac to walk through your needs and see sample deliverables.</p>
+                        <a href="mailto:zprizant@lightningledgerz.com?subject=Discovery%20Call%20Request" class="book-call-btn" id="book-call-btn" onclick="markCallBooked()">Schedule My Free Call &rarr;</a>
+                        <div id="call-booked-badge" style="display:none; margin-top:12px;">
+                            <div class="nda-signed-badge">
+                                <span class="nda-signed-check">&#128222;</span>
+                                <div>
+                                    <div class="nda-signed-title">Call Scheduled</div>
+                                    <div class="nda-signed-meta">Check your email for confirmation</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('call')">Skip</button></div>
+                    </div>
+                </div>
+
+                <!-- STEP 5: Connect QuickBooks -->
+                <div class="portal-step-card" id="platform-integrations">
+                    <div class="portal-step-header">
+                        <div class="portal-step-number">5</div>
+                        <h4>Connect QuickBooks</h4>
+                    </div>
+                    <div class="portal-step-body">
+                        <p style="font-size:0.88rem;color:#666;margin-bottom:16px;">Connect your QuickBooks account — I pull your financials directly, no manual uploads needed.</p>
+                        <a href="javascript:void(0)" onclick="connectQuickBooksOAuth()" id="qb-connect-btn-portal" style="display:inline-flex;align-items:center;gap:10px;background:#2CA01C;color:#fff;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-size:0.95rem;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 15px rgba(44,160,28,0.3);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+                            <svg viewBox="0 0 40 40" width="24" height="24"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M13 12v16M13 12c0-2.2 1.8-4 4-4h2c2.2 0 4 1.8 4 4v8c0 2.2-1.8 4-4 4h-2" stroke="#2CA01C" stroke-width="2.5" fill="none"/><path d="M27 28V12M27 28c0 2.2-1.8 4-4 4h-2c-2.2 0-4-1.8-4-4v-8c0-2.2 1.8-4 4-4h2" stroke="#2CA01C" stroke-width="2.5" fill="none"/></svg>
+                            Connect QuickBooks
+                        </a>
+                        <div id="connected-platforms-badges" style="display:none; margin:14px 0 4px;">
+                            <div id="connected-badges-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+                        </div>
+                        <div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-radius:8px;">
+                            <span style="font-size:0.78rem;color:#94a3b8;">&#128274; 256-bit encrypted &middot; Revoke anytime</span>
+                        </div>
+                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('db')">Skip</button></div>
+                    </div>
+                </div>
+
+                <!-- STEP 6: Upload Financial Statements -->
+                <div class="portal-step-card" id="step-upload">
+                    <div class="portal-step-header">
+                        <div class="portal-step-number">6</div>
+                        <h4>Upload Financial Statements</h4>
+                    </div>
+                    <div class="portal-step-body">
+                        <p style="font-size:0.88rem;color:#666;margin-bottom:20px;">Upload monthly statements for as many years as you have available. Excel, CSV, and PDF all work.</p>
+                        <div class="fin-upload-grid">
+                            <div class="fin-upload-slot">
+                                <div class="fin-slot-icon">📊</div>
+                                <div class="fin-slot-label">P&amp;L / Income Statement</div>
+                                <div class="fin-slot-sub">Monthly &middot; All available years</div>
+                                <label class="fin-upload-btn" for="fin-pl-input">+ Upload Files</label>
+                                <input type="file" id="fin-pl-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('PL', this)">
+                                <div class="fin-slot-status" id="fin-pl-status"></div>
+                            </div>
+                            <div class="fin-upload-slot">
+                                <div class="fin-slot-icon">⚖️</div>
+                                <div class="fin-slot-label">Balance Sheet</div>
+                                <div class="fin-slot-sub">Monthly &middot; All available years</div>
+                                <label class="fin-upload-btn" for="fin-bs-input">+ Upload Files</label>
+                                <input type="file" id="fin-bs-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('Balance Sheet', this)">
+                                <div class="fin-slot-status" id="fin-bs-status"></div>
+                            </div>
+                            <div class="fin-upload-slot">
+                                <div class="fin-slot-icon">💸</div>
+                                <div class="fin-slot-label">Cash Flow Statement</div>
+                                <div class="fin-slot-sub">Monthly &middot; All available years</div>
+                                <label class="fin-upload-btn" for="fin-cf-input">+ Upload Files</label>
+                                <input type="file" id="fin-cf-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('Cash Flow', this)">
+                                <div class="fin-slot-status" id="fin-cf-status"></div>
+                            </div>
+                        </div>
+                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('files')">Skip</button></div>
                     </div>
                 </div>
 
@@ -11567,10 +11559,25 @@
         }
 
         function skipStep(step) {
-            // Visually collapse/dim the step — just scroll to next
-            var nextCard = { nda: 'platform-integrations', db: null, files: null };
-            if (nextCard[step]) {
-                document.getElementById(nextCard[step])?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Collapse the step card and scroll to the next sibling
+            var targets = { call: 'step-call', db: 'platform-integrations', files: 'step-upload' };
+            var card = document.getElementById(targets[step]);
+            if (card) {
+                card.style.opacity = '0.4';
+                card.style.maxHeight = '60px';
+                card.style.overflow = 'hidden';
+                card.style.transition = 'all 0.4s ease';
+                card.style.cursor = 'pointer';
+                card.onclick = function() {
+                    card.style.opacity = '1';
+                    card.style.maxHeight = '2000px';
+                    card.style.cursor = '';
+                    card.onclick = null;
+                };
+                // Scroll to next sibling step card
+                var next = card.nextElementSibling;
+                while (next && !next.classList.contains('portal-step-card')) next = next.nextElementSibling;
+                if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
 
