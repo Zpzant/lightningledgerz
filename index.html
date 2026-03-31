@@ -3330,18 +3330,203 @@
             display: flex; flex-direction: column; align-items: center;
             text-align: center; padding: 18px 12px; border-radius: 12px;
             border: 2px solid #e2e8f0; background: #fff;
-            cursor: pointer; transition: all 0.2s;
+            cursor: pointer; transition: all 0.2s; position: relative;
         }
         .svc-select-card:hover { border-color: #1e3a5f; background: #f8faff; }
         .svc-select-card:has(input:checked) {
             border-color: #22c55e; background: rgba(34,197,94,0.06);
             box-shadow: 0 0 0 3px rgba(34,197,94,0.15);
         }
+        .svc-select-card.svc-locked {
+            opacity: 0.55; pointer-events: none; position: relative;
+        }
+        .svc-select-card.svc-locked::after {
+            content: ''; position: absolute; inset: 0; border-radius: 12px;
+            background: rgba(255,255,255,0.3); z-index: 1;
+        }
+        .svc-lock-badge {
+            position: absolute; top: 8px; right: 8px; z-index: 2;
+            background: linear-gradient(135deg,#d4a017,#f5a623); color: #fff;
+            font-size: 0.6rem; font-weight: 800; padding: 3px 8px;
+            border-radius: 10px; letter-spacing: 0.5px; text-transform: uppercase;
+            display: flex; align-items: center; gap: 3px;
+        }
+        .svc-lock-badge.diamond-lock { background: linear-gradient(135deg,#667eea,#764ba2); }
         .svc-select-icon { font-size: 1.6rem; margin-bottom: 8px; }
         .svc-select-name { font-weight: 700; color: #1e3a5f; font-size: 0.88rem; margin-bottom: 4px; }
         .svc-select-desc { font-size: 0.72rem; color: #94a3b8; line-height: 1.4; }
         @media (max-width: 720px) {
             #service-select-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+
+        /* ── Report Catalog Carousel ── */
+        .report-catalog-container {
+            overflow-x: auto; overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding: 10px 5px 20px; cursor: grab;
+            user-select: none; scrollbar-width: thin;
+            scrollbar-color: var(--mckinsey-blue, #1e3a5f) #e0e0e0;
+        }
+        .report-catalog-container:active { cursor: grabbing; }
+        .report-catalog-container::-webkit-scrollbar { height: 8px; }
+        .report-catalog-container::-webkit-scrollbar-track { background: #e0e0e0; border-radius: 10px; }
+        .report-catalog-container::-webkit-scrollbar-thumb { background: var(--mckinsey-blue, #1e3a5f); border-radius: 10px; }
+        @media (max-width: 768px) {
+            .report-catalog-container { scrollbar-width: none; -ms-overflow-style: none; }
+            .report-catalog-container::-webkit-scrollbar { display: none; }
+        }
+        .report-catalog-grid {
+            display: flex; gap: 16px; width: max-content;
+        }
+        .report-catalog-card {
+            flex-shrink: 0; width: 220px;
+            background: #fff; border: 2px solid #e2e8f0; border-radius: 14px;
+            padding: 22px 16px; text-align: center; cursor: pointer;
+            transition: all 0.25s; position: relative; overflow: hidden;
+        }
+        .report-catalog-card:hover {
+            border-color: #1e3a5f; transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(30,58,95,0.12);
+        }
+        .report-catalog-card.report-locked {
+            opacity: 0.45; cursor: pointer;
+        }
+        .report-catalog-card.report-locked:hover {
+            transform: none; box-shadow: none; border-color: #cbd5e1;
+            opacity: 0.55;
+        }
+        .report-catalog-card.report-locked::after {
+            content: ''; position: absolute; inset: 0;
+            background: rgba(200,200,210,0.15); z-index: 1;
+        }
+        .report-lock-overlay {
+            position: absolute; top: 10px; right: 10px; z-index: 2;
+            width: 30px; height: 30px; border-radius: 50%;
+            background: rgba(0,0,0,0.55); display: flex;
+            align-items: center; justify-content: center;
+            font-size: 0.9rem; color: #fff;
+        }
+        .report-card-icon { font-size: 2.2rem; margin-bottom: 10px; }
+        .report-card-title { font-weight: 700; color: #1e3a5f; font-size: 0.88rem; margin-bottom: 5px; }
+        .report-card-desc { font-size: 0.72rem; color: #94a3b8; line-height: 1.4; margin-bottom: 12px; min-height: 32px; }
+        .report-card-token {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: #f0f9ff; color: #1e3a5f; font-size: 0.72rem;
+            font-weight: 700; padding: 5px 12px; border-radius: 20px;
+        }
+        .report-tier-badge {
+            position: absolute; top: 10px; left: 10px; z-index: 2;
+            font-size: 0.6rem; font-weight: 800; padding: 3px 8px;
+            border-radius: 10px; letter-spacing: 0.5px; text-transform: uppercase;
+            color: #fff;
+        }
+        .report-tier-badge.gold-only { background: linear-gradient(135deg,#d4a017,#f5a623); }
+        .report-tier-badge.diamond-only { background: linear-gradient(135deg,#667eea,#764ba2); }
+
+        /* ── Report Order Modal ── */
+        .report-order-overlay {
+            display: none; position: fixed; inset: 0; z-index: 10000;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            align-items: center; justify-content: center;
+        }
+        .report-order-overlay.active { display: flex; }
+        .report-order-modal {
+            background: #fff; border-radius: 18px; padding: 36px;
+            max-width: 520px; width: 90%; max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); position: relative;
+        }
+        .report-order-close {
+            position: absolute; top: 14px; right: 16px;
+            background: none; border: none; font-size: 1.5rem;
+            cursor: pointer; color: #999; line-height: 1;
+        }
+        .report-order-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .report-order-title { font-size: 1.2rem; font-weight: 800; color: #1e3a5f; margin-bottom: 4px; }
+        .report-order-desc { font-size: 0.85rem; color: #64748b; margin-bottom: 20px; }
+        .report-order-field label {
+            display: block; font-size: 0.82rem; font-weight: 700;
+            color: #1e3a5f; margin-bottom: 6px;
+        }
+        .report-order-field textarea {
+            width: 100%; border: 2px solid #e2e8f0; border-radius: 10px;
+            padding: 12px; font-family: inherit; font-size: 0.88rem;
+            resize: vertical; min-height: 100px; transition: border-color 0.2s;
+        }
+        .report-order-field textarea:focus {
+            outline: none; border-color: #1e3a5f;
+        }
+        .report-order-token-info {
+            display: flex; align-items: center; gap: 8px;
+            background: #f0f9ff; padding: 12px 16px; border-radius: 10px;
+            margin: 16px 0; font-size: 0.85rem; color: #1e3a5f; font-weight: 600;
+        }
+        .report-order-submit {
+            width: 100%; padding: 14px; border: none; border-radius: 10px;
+            background: linear-gradient(135deg,#1e3a5f,#2d5a9e);
+            color: #fff; font-family: inherit; font-size: 1rem;
+            font-weight: 700; cursor: pointer; transition: all 0.2s;
+        }
+        .report-order-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(30,58,95,0.3); }
+        .report-order-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* ── Upgrade Prompt Modal ── */
+        .upgrade-prompt-overlay {
+            display: none; position: fixed; inset: 0; z-index: 10001;
+            background: rgba(0,0,0,0.65); backdrop-filter: blur(4px);
+            align-items: center; justify-content: center;
+        }
+        .upgrade-prompt-overlay.active { display: flex; }
+        .upgrade-prompt-modal {
+            background: #fff; border-radius: 18px; padding: 36px;
+            max-width: 480px; width: 90%; text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); position: relative;
+        }
+        .upgrade-prompt-close {
+            position: absolute; top: 14px; right: 16px;
+            background: none; border: none; font-size: 1.5rem;
+            cursor: pointer; color: #999; line-height: 1;
+        }
+        .upgrade-prompt-icon { font-size: 3rem; margin-bottom: 12px; }
+        .upgrade-prompt-title { font-size: 1.2rem; font-weight: 800; color: #1e3a5f; margin-bottom: 8px; }
+        .upgrade-prompt-desc { font-size: 0.9rem; color: #64748b; margin-bottom: 24px; line-height: 1.5; }
+        .upgrade-prompt-cards {
+            display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+        }
+        .upgrade-prompt-card {
+            flex: 1; min-width: 140px; max-width: 200px; padding: 18px 14px;
+            border: 2px solid #e2e8f0; border-radius: 14px; cursor: pointer;
+            transition: all 0.2s; text-align: center;
+        }
+        .upgrade-prompt-card:hover {
+            border-color: #1e3a5f; transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30,58,95,0.12);
+        }
+        .upgrade-prompt-card.recommended {
+            border-color: #d4a017; box-shadow: 0 0 0 3px rgba(212,160,23,0.2);
+        }
+        .upgrade-card-name { font-weight: 800; font-size: 0.95rem; color: #1e3a5f; margin-bottom: 4px; }
+        .upgrade-card-price { font-weight: 700; font-size: 0.82rem; color: #64748b; margin-bottom: 6px; }
+        .upgrade-card-tokens { font-size: 0.72rem; color: #22c55e; font-weight: 700; }
+
+        /* ── Token animation ── */
+        @keyframes tokenPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); color: #e8231a; }
+            100% { transform: scale(1); }
+        }
+        .token-pulse { animation: tokenPulse 0.5s ease; }
+        @keyframes sparkBurst {
+            0% { opacity: 1; transform: scale(0.5); }
+            100% { opacity: 0; transform: scale(2); }
+        }
+        .spark-burst {
+            position: absolute; width: 40px; height: 40px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(232,35,26,0.4) 0%, transparent 70%);
+            animation: sparkBurst 0.6s ease-out forwards; pointer-events: none;
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
         .fin-upload-btn:hover { background: #0d2240; }
         .fin-slot-status { font-size: 0.75rem; color: #22c55e; margin-top: 8px; min-height: 18px; font-weight: 600; }
@@ -7933,39 +8118,39 @@
                         <h4>What Do You Need Help With?</h4>
                     </div>
                     <div class="portal-step-body">
-                        <p style="font-size:0.88rem;color:#666;margin-bottom:18px;">Select the services you need. We'll tailor your engagement and reporting to match.</p>
+                        <p style="font-size:0.88rem;color:#666;margin-bottom:18px;">Select the services you need. I'll tailor your engagement and reporting to match.</p>
                         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;" id="service-select-grid">
-                            <label class="svc-select-card" onclick="this.querySelector('input').checked=!this.querySelector('input').checked;updateServiceSelections()">
+                            <label class="svc-select-card" data-svc="bookkeeping" onclick="handleServiceCardClick(this)">
                                 <input type="checkbox" name="svc" value="bookkeeping" style="display:none;">
                                 <div class="svc-select-icon">📒</div>
                                 <div class="svc-select-name">Bookkeeping</div>
                                 <div class="svc-select-desc">Accurate financial records, bank reconciliation, chart of accounts</div>
                             </label>
-                            <label class="svc-select-card" onclick="this.querySelector('input').checked=!this.querySelector('input').checked;updateServiceSelections()">
+                            <label class="svc-select-card" data-svc="ar-ap" onclick="handleServiceCardClick(this)">
                                 <input type="checkbox" name="svc" value="ar-ap" style="display:none;">
                                 <div class="svc-select-icon">💳</div>
                                 <div class="svc-select-name">AR & AP</div>
                                 <div class="svc-select-desc">Invoicing, bill pay, collections, vendor management</div>
                             </label>
-                            <label class="svc-select-card" onclick="this.querySelector('input').checked=!this.querySelector('input').checked;updateServiceSelections()">
+                            <label class="svc-select-card" data-svc="tax" data-min-tier="gold" onclick="handleServiceCardClick(this)">
                                 <input type="checkbox" name="svc" value="tax" style="display:none;">
                                 <div class="svc-select-icon">🏛️</div>
                                 <div class="svc-select-name">Tax Preparation</div>
                                 <div class="svc-select-desc">Compliance, filing, strategy, quarterly estimates</div>
                             </label>
-                            <label class="svc-select-card" onclick="this.querySelector('input').checked=!this.querySelector('input').checked;updateServiceSelections()">
+                            <label class="svc-select-card" data-svc="payroll" data-min-tier="gold" onclick="handleServiceCardClick(this)">
                                 <input type="checkbox" name="svc" value="payroll" style="display:none;">
                                 <div class="svc-select-icon">👥</div>
                                 <div class="svc-select-name">Payroll</div>
                                 <div class="svc-select-desc">Processing, tax deposits, W-2s, 1099s, compliance</div>
                             </label>
-                            <label class="svc-select-card" onclick="this.querySelector('input').checked=!this.querySelector('input').checked;updateServiceSelections()">
+                            <label class="svc-select-card" data-svc="cfo" onclick="handleServiceCardClick(this)">
                                 <input type="checkbox" name="svc" value="cfo" style="display:none;">
                                 <div class="svc-select-icon">📊</div>
                                 <div class="svc-select-name">CFO Reporting</div>
                                 <div class="svc-select-desc">P&L, cash flow forecasting, KPI dashboards, board decks</div>
                             </label>
-                            <label class="svc-select-card" onclick="this.querySelector('input').checked=!this.querySelector('input').checked;updateServiceSelections()">
+                            <label class="svc-select-card" data-svc="formation" data-min-tier="diamond" onclick="handleServiceCardClick(this)">
                                 <input type="checkbox" name="svc" value="formation" style="display:none;">
                                 <div class="svc-select-icon">🏢</div>
                                 <div class="svc-select-name">Company Formation</div>
@@ -7976,10 +8161,31 @@
                     </div>
                 </div>
 
-                <!-- STEP 6: My Reports -->
-                <div class="portal-step-card">
+                <!-- STEP 6: Request a Report -->
+                <div class="portal-step-card" id="step-report-catalog">
                     <div class="portal-step-header">
                         <div class="portal-step-number">6</div>
+                        <h4>Request a Report</h4>
+                        <div id="step6-token-badge" style="margin-left:auto;display:none;background:#f0f9ff;color:#1e3a5f;font-size:0.78rem;font-weight:700;padding:5px 12px;border-radius:20px;">⚡ <span id="step6-token-count">0</span> reports left</div>
+                    </div>
+                    <div class="portal-step-body">
+                        <p style="font-size:0.88rem;color:#666;margin-bottom:14px;">Swipe through available reports — click one to describe your needs and submit. Each request uses 1 report token.</p>
+                        <div class="report-catalog-container" id="report-catalog-container">
+                            <div class="report-catalog-grid" id="report-catalog-grid">
+                                <!-- Populated by JS based on tier -->
+                            </div>
+                        </div>
+                        <div class="portal-scroll-hint">
+                            <span>Swipe to explore</span>
+                            <span>&#8594;</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 7: My Delivered Reports -->
+                <div class="portal-step-card">
+                    <div class="portal-step-header">
+                        <div class="portal-step-number">7</div>
                         <h4>My Reports</h4>
                     </div>
                     <div class="portal-step-body">
@@ -8015,6 +8221,38 @@
                 <span>Your data is never shared or sold</span>
                 <span class="security-bar-dot">&middot;</span>
                 <span>Revoke access at any time</span>
+            </div>
+        </div>
+
+        <!-- Report Order Modal -->
+        <div class="report-order-overlay" id="report-order-overlay" onclick="if(event.target===this)closeReportOrder()">
+            <div class="report-order-modal">
+                <button class="report-order-close" onclick="closeReportOrder()">&times;</button>
+                <div class="report-order-icon" id="report-order-icon"></div>
+                <div class="report-order-title" id="report-order-title"></div>
+                <div class="report-order-desc" id="report-order-desc"></div>
+                <div class="report-order-field">
+                    <label for="report-order-notes">Describe what you need</label>
+                    <textarea id="report-order-notes" placeholder="E.g., I need a budget vs. actual for Q1 2026 with variance commentary for my board meeting next Tuesday..."></textarea>
+                </div>
+                <div class="report-order-token-info">
+                    <span>⚡</span>
+                    <span>This request uses <strong>1 report token</strong>. You have <strong id="report-order-remaining">0</strong> remaining.</span>
+                </div>
+                <button class="report-order-submit" id="report-order-submit" onclick="submitReportOrder()">Submit Report Request</button>
+            </div>
+        </div>
+
+        <!-- Upgrade Prompt Modal -->
+        <div class="upgrade-prompt-overlay" id="upgrade-prompt-overlay" onclick="if(event.target===this)closeUpgradePrompt()">
+            <div class="upgrade-prompt-modal">
+                <button class="upgrade-prompt-close" onclick="closeUpgradePrompt()">&times;</button>
+                <div class="upgrade-prompt-icon" id="upgrade-prompt-icon">🔒</div>
+                <div class="upgrade-prompt-title" id="upgrade-prompt-title">Upgrade to Unlock</div>
+                <div class="upgrade-prompt-desc" id="upgrade-prompt-desc">This feature requires a higher plan. Upgrade to access more reports, services, and dedicated support.</div>
+                <div class="upgrade-prompt-cards" id="upgrade-prompt-cards">
+                    <!-- Populated by JS -->
+                </div>
             </div>
         </div>
 
@@ -8883,6 +9121,9 @@
             // Apply tier-based theming
             applyTierTheme(tier);
 
+            // Initialize credit system (tokens, report catalog, service locking)
+            initCreditSystem(tier);
+
             // Load user's uploaded files and reports (skip for demo)
             if (!isDemo) {
                 loadUserFiles();
@@ -8963,6 +9204,9 @@
                 }
 
                 showToast('Previewing ' + newTier.charAt(0).toUpperCase() + newTier.slice(1) + ' tier', 'success');
+
+                // Re-init credit system for new tier
+                initCreditSystem(newTier);
             }
         }
 
@@ -9047,6 +9291,374 @@
             } else {
                 if (summary) summary.style.display = 'none';
             }
+        }
+
+        // ===========================================
+        // CREDIT SYSTEM & REPORT ORDERING
+        // ===========================================
+
+        // Token state — persisted per-user in localStorage
+        var userTokensRemaining = 0;
+        var TOKEN_LIMITS = { none: 0, basic: 2, gold: 5, diamond: 999 };
+
+        // Report catalog definition
+        var REPORT_CATALOG = [
+            { id: 'budget-vs-actual', icon: '📊', title: 'Budget vs. Actual', desc: 'Monthly variance analysis with commentary', minTier: 'basic' },
+            { id: 'pl-statement', icon: '📈', title: 'P&L Statement', desc: 'Income statement with month-over-month trends', minTier: 'basic' },
+            { id: 'cash-flow-forecast', icon: '💰', title: 'Cash Flow Forecast', desc: '13-week or quarterly cash flow projection', minTier: 'basic' },
+            { id: 'kpi-dashboard', icon: '🎯', title: 'KPI Dashboard', desc: 'Custom metrics dashboard for your business', minTier: 'basic' },
+            { id: 'balance-sheet', icon: '⚖️', title: 'Balance Sheet Analysis', desc: 'Assets, liabilities, and equity breakdown', minTier: 'basic' },
+            { id: 'board-deck', icon: '🎤', title: 'Board Deck / Investor Deck', desc: 'Boardroom-ready presentation with financials', minTier: 'basic' },
+            { id: 'tax-projection', icon: '🏛️', title: 'Tax Projection Report', desc: 'Estimated quarterly tax liability and strategy', minTier: 'gold' },
+            { id: 'payroll-summary', icon: '👥', title: 'Payroll Summary Report', desc: 'Employee costs, tax deposits, compliance', minTier: 'gold' },
+            { id: 'three-statement', icon: '📋', title: '3-Statement Model', desc: 'Integrated P&L, balance sheet, and cash flow', minTier: 'gold' },
+            { id: 'scenario-analysis', icon: '🔀', title: 'Scenario Analysis', desc: 'Best/base/worst case financial projections', minTier: 'gold' },
+            { id: 'valuation-model', icon: '💎', title: 'Valuation Model', desc: 'DCF, comparables, and enterprise value', minTier: 'diamond' },
+            { id: 'ma-analysis', icon: '🏗️', title: 'M&A / Due Diligence Pack', desc: 'Full financial due diligence package', minTier: 'diamond' },
+        ];
+
+        var TIER_ORDER = { none: 0, basic: 1, gold: 2, diamond: 3 };
+        var pendingReportId = null;
+
+        function getUserTier() {
+            if (currentUserData?.tier) return currentUserData.tier;
+            if (currentUserData?.package_tier) return currentUserData.package_tier;
+            return 'none';
+        }
+
+        function initTokens(tier) {
+            var userId = currentUserData?.id || 'anon';
+            var key = 'tokens_' + userId + '_' + new Date().getFullYear() + '_' + (new Date().getMonth() + 1);
+            var stored = localStorage.getItem(key);
+            if (stored !== null) {
+                userTokensRemaining = parseInt(stored, 10);
+            } else {
+                userTokensRemaining = TOKEN_LIMITS[tier] || 0;
+                localStorage.setItem(key, userTokensRemaining);
+            }
+            updateAllTokenDisplays();
+        }
+
+        function spendToken() {
+            if (getUserTier() === 'diamond') return true; // unlimited
+            if (userTokensRemaining <= 0) return false;
+            userTokensRemaining--;
+            var userId = currentUserData?.id || 'anon';
+            var key = 'tokens_' + userId + '_' + new Date().getFullYear() + '_' + (new Date().getMonth() + 1);
+            localStorage.setItem(key, userTokensRemaining);
+            updateAllTokenDisplays();
+            animateTokenSpend();
+            return true;
+        }
+
+        function updateAllTokenDisplays() {
+            var tier = getUserTier();
+            var isUnlimited = tier === 'diamond';
+            var displayVal = isUnlimited ? '∞' : userTokensRemaining;
+
+            // Main nav token counter
+            var tc = document.getElementById('token-count');
+            if (tc) tc.textContent = displayVal;
+
+            // Step 6 token badge
+            var s6badge = document.getElementById('step6-token-badge');
+            var s6count = document.getElementById('step6-token-count');
+            if (s6badge && tier !== 'none') {
+                s6badge.style.display = 'inline-flex';
+                if (s6count) s6count.textContent = displayVal;
+                s6badge.style.background = (userTokensRemaining <= 0 && !isUnlimited) ? '#fff0f0' : '#f0f9ff';
+                s6badge.style.color = (userTokensRemaining <= 0 && !isUnlimited) ? '#e8231a' : '#1e3a5f';
+            }
+
+            // Report order modal remaining
+            var ror = document.getElementById('report-order-remaining');
+            if (ror) ror.textContent = displayVal;
+        }
+
+        function animateTokenSpend() {
+            var tc = document.getElementById('token-count');
+            if (tc) {
+                tc.classList.remove('token-pulse');
+                void tc.offsetWidth; // reflow
+                tc.classList.add('token-pulse');
+            }
+            var s6 = document.getElementById('step6-token-count');
+            if (s6) {
+                s6.classList.remove('token-pulse');
+                void s6.offsetWidth;
+                s6.classList.add('token-pulse');
+            }
+        }
+
+        function renderReportCatalog() {
+            var grid = document.getElementById('report-catalog-grid');
+            if (!grid) return;
+            var tier = getUserTier();
+            var tierRank = TIER_ORDER[tier] || 0;
+            grid.innerHTML = '';
+
+            REPORT_CATALOG.forEach(function(report) {
+                var reportTierRank = TIER_ORDER[report.minTier] || 0;
+                var isLocked = tierRank < reportTierRank;
+                var card = document.createElement('div');
+                card.className = 'report-catalog-card' + (isLocked ? ' report-locked' : '');
+                card.setAttribute('data-report-id', report.id);
+
+                var html = '';
+                if (isLocked) {
+                    html += '<div class="report-lock-overlay">🔒</div>';
+                    var badgeClass = report.minTier === 'diamond' ? 'diamond-only' : 'gold-only';
+                    html += '<div class="report-tier-badge ' + badgeClass + '">' + report.minTier + '+</div>';
+                }
+                html += '<div class="report-card-icon">' + report.icon + '</div>';
+                html += '<div class="report-card-title">' + report.title + '</div>';
+                html += '<div class="report-card-desc">' + report.desc + '</div>';
+                if (!isLocked) {
+                    html += '<div class="report-card-token">⚡ 1 token</div>';
+                }
+                card.innerHTML = html;
+
+                if (isLocked) {
+                    card.onclick = function() { showUpgradePrompt(report.minTier, report.title); };
+                } else {
+                    card.onclick = function() { openReportOrder(report); };
+                }
+                grid.appendChild(card);
+            });
+        }
+
+        function openReportOrder(report) {
+            var tier = getUserTier();
+            if (tier === 'none') {
+                showUpgradePrompt('basic', 'report requests');
+                return;
+            }
+            if (userTokensRemaining <= 0 && tier !== 'diamond') {
+                showUpgradePrompt(tier === 'basic' ? 'gold' : 'diamond', 'more report tokens');
+                return;
+            }
+            pendingReportId = report.id;
+            document.getElementById('report-order-icon').textContent = report.icon;
+            document.getElementById('report-order-title').textContent = 'Request: ' + report.title;
+            document.getElementById('report-order-desc').textContent = report.desc;
+            document.getElementById('report-order-notes').value = '';
+            updateAllTokenDisplays();
+            var btn = document.getElementById('report-order-submit');
+            btn.disabled = false;
+            btn.textContent = 'Submit Report Request';
+            document.getElementById('report-order-overlay').classList.add('active');
+        }
+
+        function closeReportOrder() {
+            document.getElementById('report-order-overlay').classList.remove('active');
+            pendingReportId = null;
+        }
+
+        function submitReportOrder() {
+            var notes = document.getElementById('report-order-notes').value.trim();
+            if (!notes) {
+                document.getElementById('report-order-notes').style.borderColor = '#e8231a';
+                document.getElementById('report-order-notes').placeholder = 'Please describe what you need before submitting...';
+                return;
+            }
+            var report = REPORT_CATALOG.find(function(r) { return r.id === pendingReportId; });
+            if (!report) return;
+
+            // Spend token
+            if (getUserTier() !== 'diamond') {
+                if (!spendToken()) {
+                    showUpgradePrompt('gold', 'more report tokens');
+                    closeReportOrder();
+                    return;
+                }
+            }
+
+            var btn = document.getElementById('report-order-submit');
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            // Build email body
+            var userName = currentUserData?.name || currentUserData?.first_name || 'Unknown';
+            var userEmail = currentUserData?.email || 'N/A';
+            var tier = getUserTier();
+            var subject = 'Report Request: ' + report.title + ' — ' + userName;
+            var body = 'REPORT REQUEST\n'
+                + '══════════════\n'
+                + 'Report: ' + report.title + '\n'
+                + 'Client: ' + userName + ' (' + userEmail + ')\n'
+                + 'Tier: ' + tier.charAt(0).toUpperCase() + tier.slice(1) + '\n'
+                + 'Date: ' + new Date().toLocaleDateString() + '\n\n'
+                + 'DETAILS:\n' + notes;
+
+            // Send via Resend edge function (if available) or mailto fallback
+            sendReportEmail(subject, body, report, userName);
+        }
+
+        function sendReportEmail(subject, body, report, userName) {
+            // Try Supabase edge function first
+            if (typeof supabase !== 'undefined' && supabase?.functions) {
+                supabase.functions.invoke('send-email', {
+                    body: {
+                        to: 'zprizant@lightningledgerz.com',
+                        subject: subject,
+                        text: body
+                    }
+                }).then(function(resp) {
+                    reportOrderSuccess(report, userName);
+                }).catch(function() {
+                    // Fallback to mailto
+                    reportOrderMailtoFallback(subject, body, report, userName);
+                });
+            } else {
+                reportOrderMailtoFallback(subject, body, report, userName);
+            }
+        }
+
+        function reportOrderMailtoFallback(subject, body, report, userName) {
+            var mailtoLink = 'mailto:zprizant@lightningledgerz.com?subject='
+                + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+            window.open(mailtoLink, '_blank');
+            reportOrderSuccess(report, userName);
+        }
+
+        function reportOrderSuccess(report, userName) {
+            closeReportOrder();
+            // Show success toast
+            var toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed;top:80px;right:20px;background:#166534;color:#fff;padding:16px 24px;border-radius:12px;font-weight:700;font-size:0.9rem;z-index:10002;box-shadow:0 8px 30px rgba(0,0,0,0.2);display:flex;align-items:center;gap:10px;animation:slideInRight 0.4s ease;';
+            toast.innerHTML = '⚡ Report request sent! ' + report.title;
+            document.body.appendChild(toast);
+            setTimeout(function() { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; }, 3000);
+            setTimeout(function() { toast.remove(); }, 3500);
+
+            // Save to Supabase report_requests table
+            if (typeof supabase !== 'undefined' && currentUserData?.id) {
+                supabase.from('report_requests').insert({
+                    user_id: currentUserData.id,
+                    report_type: report.id,
+                    report_title: report.title,
+                    notes: document.getElementById('report-order-notes')?.value || '',
+                    status: 'pending',
+                    created_at: new Date().toISOString()
+                });
+            }
+
+            // Update meter
+            setTimeout(updateLightningMeter, 300);
+        }
+
+        // ── Service Tier Locking ──
+        function applyServiceTierLocking() {
+            var tier = getUserTier();
+            var tierRank = TIER_ORDER[tier] || 0;
+            var cards = document.querySelectorAll('#service-select-grid .svc-select-card');
+            cards.forEach(function(card) {
+                var minTier = card.getAttribute('data-min-tier');
+                if (!minTier) return; // no restriction
+                var requiredRank = TIER_ORDER[minTier] || 0;
+                // Remove old lock state
+                card.classList.remove('svc-locked');
+                var oldBadge = card.querySelector('.svc-lock-badge');
+                if (oldBadge) oldBadge.remove();
+
+                if (tierRank < requiredRank) {
+                    card.classList.add('svc-locked');
+                    var badge = document.createElement('div');
+                    badge.className = 'svc-lock-badge' + (minTier === 'diamond' ? ' diamond-lock' : '');
+                    badge.innerHTML = '🔒 ' + minTier.charAt(0).toUpperCase() + minTier.slice(1) + '+';
+                    card.appendChild(badge);
+                }
+            });
+        }
+
+        function handleServiceCardClick(card) {
+            if (card.classList.contains('svc-locked')) {
+                var minTier = card.getAttribute('data-min-tier') || 'gold';
+                var svcName = card.querySelector('.svc-select-name')?.textContent || 'this service';
+                showUpgradePrompt(minTier, svcName);
+                return;
+            }
+            var input = card.querySelector('input');
+            if (input) input.checked = !input.checked;
+            updateServiceSelections();
+        }
+
+        // ── Upgrade Prompt ──
+        function showUpgradePrompt(targetTier, featureName) {
+            var overlay = document.getElementById('upgrade-prompt-overlay');
+            var title = document.getElementById('upgrade-prompt-title');
+            var desc = document.getElementById('upgrade-prompt-desc');
+            var icon = document.getElementById('upgrade-prompt-icon');
+            var cardsContainer = document.getElementById('upgrade-prompt-cards');
+
+            if (targetTier === 'basic') {
+                icon.textContent = '⚡';
+                title.textContent = 'Select a Plan to Get Started';
+                desc.textContent = 'You need an active plan to access ' + featureName + '. Choose a plan below.';
+            } else if (userTokensRemaining <= 0 && getUserTier() !== 'none') {
+                icon.textContent = '⚡';
+                title.textContent = 'Out of Report Tokens';
+                desc.textContent = 'You\'ve used all your tokens this month. Upgrade for more reports or wait until next month.';
+            } else {
+                icon.textContent = '🔒';
+                title.textContent = 'Upgrade to ' + targetTier.charAt(0).toUpperCase() + targetTier.slice(1);
+                desc.textContent = featureName + ' requires the ' + targetTier.charAt(0).toUpperCase() + targetTier.slice(1) + ' plan or higher.';
+            }
+
+            // Build upgrade cards
+            var plans = [
+                { tier: 'basic', name: '⚡ Basic', price: '$799/mo', tokens: '2 reports/mo' },
+                { tier: 'gold', name: '✨ Gold', price: '$1,299/mo', tokens: '5 reports/mo' },
+                { tier: 'diamond', name: '💎 Diamond', price: '$3,999/mo', tokens: 'Unlimited reports' }
+            ];
+            var currentRank = TIER_ORDER[getUserTier()] || 0;
+            cardsContainer.innerHTML = '';
+            plans.forEach(function(plan) {
+                var planRank = TIER_ORDER[plan.tier];
+                if (planRank <= currentRank) return; // don't show current or lower
+                var card = document.createElement('div');
+                card.className = 'upgrade-prompt-card' + (plan.tier === targetTier ? ' recommended' : '');
+                card.innerHTML = '<div class="upgrade-card-name">' + plan.name + '</div>'
+                    + '<div class="upgrade-card-price">' + plan.price + '</div>'
+                    + '<div class="upgrade-card-tokens">' + plan.tokens + '</div>';
+                card.onclick = function() {
+                    closeUpgradePrompt();
+                    if (typeof selectPlan === 'function') {
+                        selectPlan(plan.tier);
+                    } else {
+                        showHomepage();
+                        setTimeout(function() { document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' }); }, 300);
+                    }
+                };
+                cardsContainer.appendChild(card);
+            });
+
+            overlay.classList.add('active');
+        }
+
+        function closeUpgradePrompt() {
+            document.getElementById('upgrade-prompt-overlay').classList.remove('active');
+        }
+
+        // ── Diamond Logo Swap ──
+        function applyDiamondLogoSwap(tier) {
+            var navLogo = document.querySelector('nav .logo img');
+            if (!navLogo) return;
+            if (tier === 'diamond') {
+                navLogo.src = 'LightningLedgerzLogo-diamond.png';
+            } else if (tier === 'gold') {
+                navLogo.src = 'LightningLedgerzLogo-gold.png';
+            } else {
+                navLogo.src = 'LightningLedgerzLogo.png';
+            }
+        }
+
+        // ── Initialize Credit System on Login ──
+        function initCreditSystem(tier) {
+            initTokens(tier);
+            renderReportCatalog();
+            applyServiceTierLocking();
+            applyDiamondLogoSwap(tier);
         }
 
         function showHomepage() {
@@ -11783,6 +12395,56 @@
             });
 
             reportsCarousel.style.cursor = 'grab';
+        });
+
+        // ===========================================
+        // DRAG TO SCROLL - REPORT CATALOG CAROUSEL
+        // ===========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const catalogCarousel = document.getElementById('report-catalog-container');
+            if (!catalogCarousel) return;
+
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            let hasDragged = false;
+
+            catalogCarousel.addEventListener('mousedown', (e) => {
+                isDown = true;
+                hasDragged = false;
+                catalogCarousel.style.cursor = 'grabbing';
+                startX = e.pageX - catalogCarousel.offsetLeft;
+                scrollLeft = catalogCarousel.scrollLeft;
+            });
+
+            catalogCarousel.addEventListener('mouseleave', () => {
+                isDown = false;
+                catalogCarousel.style.cursor = 'grab';
+            });
+
+            catalogCarousel.addEventListener('mouseup', () => {
+                isDown = false;
+                catalogCarousel.style.cursor = 'grab';
+            });
+
+            catalogCarousel.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                hasDragged = true;
+                const x = e.pageX - catalogCarousel.offsetLeft;
+                const walk = (x - startX) * 2;
+                catalogCarousel.scrollLeft = scrollLeft - walk;
+            });
+
+            // Prevent card click if user was dragging
+            catalogCarousel.addEventListener('click', (e) => {
+                if (hasDragged) {
+                    e.stopPropagation();
+                    hasDragged = false;
+                }
+            }, true);
+
+            catalogCarousel.style.cursor = 'grab';
         });
     </script>
 
