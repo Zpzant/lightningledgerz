@@ -3542,6 +3542,25 @@
             from { transform: translateX(100px); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
+
+        /* Achievement items */
+        .achievement-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 14px; border-radius: 10px; cursor: pointer;
+            transition: all 0.2s; border: 1px solid #f0f0f0;
+        }
+        .achievement-item:hover { background: #f8faff; border-color: #d0d7e5; }
+        .achievement-item.done { opacity: 0.6; }
+        .achievement-item.done:hover { opacity: 0.8; }
+        .achievement-check {
+            width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 800;
+        }
+        .achievement-check.pending { background: #f0f0f0; color: #ccc; border: 2px solid #ddd; }
+        .achievement-check.complete { background: #22c55e; color: #fff; border: 2px solid #22c55e; }
+        .achievement-label { font-size: 0.85rem; font-weight: 600; color: #1e3a5f; }
+        .achievement-item.done .achievement-label { text-decoration: line-through; color: #94a3b8; }
         .fin-upload-btn:hover { background: #0d2240; }
         .fin-slot-status { font-size: 0.75rem; color: #22c55e; margin-top: 8px; min-height: 18px; font-weight: 600; }
 
@@ -7896,8 +7915,8 @@
             </div>
 
 
-            <!-- Lightning Bolt Profile Meter -->
-            <div class="lightning-meter-bar">
+            <!-- Lightning Bolt Profile Meter + Achievements -->
+            <div class="lightning-meter-bar" id="lightning-meter-bar" onclick="toggleAchievements()" style="cursor:pointer;">
                 <div class="lightning-meter-left">
                     <div class="lightning-bolt-wrap" id="lightning-bolt-wrap">
                         <div class="lightning-bolt-fill" id="lightning-bolt-fill" style="height:0%"></div>
@@ -7908,11 +7927,22 @@
                     </div>
                     <div class="lightning-meter-text">
                         <div class="lightning-meter-pct" id="lightning-meter-pct">0% Complete</div>
-                        <div class="lightning-meter-tip" id="lightning-meter-tip">Sign your agreement to get started</div>
+                        <div class="lightning-meter-tip" id="lightning-meter-tip" style="font-size:0.72rem;color:#94a3b8;">Tap to see achievements</div>
                     </div>
                 </div>
                 <div class="lightning-meter-reward" id="lightning-meter-reward" style="display:none;">
                     <span>⚡ Profile complete! You've earned a <strong>free month</strong> — contact Zac to redeem.</span>
+                </div>
+            </div>
+
+            <!-- Achievements Panel (hidden by default) -->
+            <div id="achievements-panel" style="display:none;background:#fff;border:2px solid #e2e8f0;border-radius:14px;padding:20px 24px;margin-bottom:20px;transition:all 0.3s;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                    <div style="font-weight:800;color:#1e3a5f;font-size:1rem;">⚡ Achievements</div>
+                    <div id="achievements-pct-badge" style="background:#f0f9ff;color:#1e3a5f;font-size:0.78rem;font-weight:700;padding:4px 12px;border-radius:20px;">0%</div>
+                </div>
+                <div id="achievements-list" style="display:flex;flex-direction:column;gap:8px;">
+                    <!-- Populated by JS -->
                 </div>
             </div>
 
@@ -11459,6 +11489,71 @@
                         floatEl.style.display = entries[0].isIntersecting ? 'flex' : 'none';
                     }, { threshold: 0.05 }).observe(portalEl);
                 }
+            }
+        }
+
+        function toggleAchievements() {
+            var panel = document.getElementById('achievements-panel');
+            if (!panel) return;
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                renderAchievements();
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+
+        function renderAchievements() {
+            var acctDone   = true;
+            var callDone   = !!(localStorage.getItem('call_booked_' + (currentUserData?.id || 'demo')));
+            var dbDone     = document.getElementById('connected-badges-list')?.children.length > 0;
+            var filesDone  = document.getElementById('fin-pl-status')?.textContent.includes('✓')
+                          || document.getElementById('fin-bs-status')?.textContent.includes('✓')
+                          || document.getElementById('fin-cf-status')?.textContent.includes('✓');
+            var logoDone   = !!(document.getElementById('company-logo-img')?.src && !document.getElementById('company-logo-img')?.src.endsWith('/'));
+
+            var achievements = [
+                { label: 'Create your account', done: acctDone, target: null },
+                { label: 'Book a discovery call', done: callDone, target: 'step-call' },
+                { label: 'Connect QuickBooks', done: dbDone, target: 'platform-integrations' },
+                { label: 'Upload financial statements', done: filesDone, target: 'step-services' },
+                { label: 'Add your company logo', done: logoDone, target: 'nav-avatar' }
+            ];
+
+            var list = document.getElementById('achievements-list');
+            var pctBadge = document.getElementById('achievements-pct-badge');
+            if (!list) return;
+            list.innerHTML = '';
+            var doneCount = 0;
+
+            achievements.forEach(function(a) {
+                if (a.done) doneCount++;
+                var item = document.createElement('div');
+                item.className = 'achievement-item' + (a.done ? ' done' : '');
+                item.innerHTML = '<div class="achievement-check ' + (a.done ? 'complete' : 'pending') + '">'
+                    + (a.done ? '✓' : (achievements.indexOf(a) + 1))
+                    + '</div><div class="achievement-label">' + a.label + '</div>';
+                if (a.target && !a.done) {
+                    item.onclick = function(e) {
+                        e.stopPropagation();
+                        var el = document.getElementById(a.target);
+                        if (a.target === 'nav-avatar') {
+                            document.getElementById('logo-input')?.click();
+                        } else if (el) {
+                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            el.style.boxShadow = '0 0 0 4px rgba(232,35,26,0.3)';
+                            setTimeout(function() { el.style.boxShadow = ''; }, 2000);
+                        }
+                    };
+                }
+                list.appendChild(item);
+            });
+
+            var pct = Math.round((doneCount / 5) * 100);
+            if (pctBadge) {
+                pctBadge.textContent = pct + '%';
+                pctBadge.style.background = pct >= 100 ? '#dcfce7' : '#f0f9ff';
+                pctBadge.style.color = pct >= 100 ? '#166534' : '#1e3a5f';
             }
         }
 
