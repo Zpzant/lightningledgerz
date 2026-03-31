@@ -819,13 +819,14 @@
         .package-sidebar {
             position: fixed;
             right: 20px;
-            top: 70px;
+            top: 50%;
+            transform: translateY(-50%);
             z-index: 999;
             display: flex;
             flex-direction: column;
             gap: 8px;
             pointer-events: auto;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: opacity 0.3s ease;
         }
 
         .package-sidebar.hidden {
@@ -6849,9 +6850,10 @@
             <li class="mobile-only"><a href="#gold-card" onclick="highlightPackageCard('gold-card'); closeMobileMenu(); return false;" class="nav-package-link gold">✨ Gold</a></li>
             <li class="mobile-only"><a href="#diamond-card" onclick="highlightPackageCard('diamond-card'); closeMobileMenu(); return false;" class="nav-package-link diamond">💎 Diamond</a></li>
         </ul>
-        <div class="nav-contact-info" id="nav-contact-info">
+        <div class="nav-contact-info" id="nav-contact-info" style="display:flex;align-items:center;gap:10px;">
+            <a href="#portal" class="nav-cta" style="background:#e8231a;color:#fff;border:2px solid #e8231a;">Get Started</a>
             <div class="contact-dropdown" style="position:relative;">
-                <button onclick="this.parentElement.classList.toggle('open')" style="background:#e8231a;color:#fff;padding:8px 18px;border-radius:8px;border:none;font-family:inherit;font-weight:700;font-size:0.85rem;letter-spacing:0.3px;cursor:pointer;">Contact Us ▾</button>
+                <button onclick="this.parentElement.classList.toggle('open')" style="background:transparent;color:#fff;padding:8px 18px;border-radius:8px;border:2px solid rgba(255,255,255,0.4);font-family:inherit;font-weight:700;font-size:0.85rem;letter-spacing:0.3px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#fff';this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.4)';this.style.background='transparent'">Contact Us ▾</button>
                 <div class="contact-dropdown-menu" style="display:none;position:absolute;top:110%;right:0;background:#fff;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.15);padding:10px 0;min-width:260px;z-index:999;">
                     <a href="tel:+17025502513" style="display:flex;align-items:center;gap:10px;padding:12px 20px;color:#1e3a5f;text-decoration:none;font-size:0.9rem;font-weight:600;text-shadow:none;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">☎ (702) 550-2513</a>
                     <a href="mailto:info@lightningledgerz.com" style="display:flex;align-items:center;gap:10px;padding:12px 20px;color:#1e3a5f;text-decoration:none;font-size:0.9rem;font-weight:600;text-shadow:none;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">✉ info@lightningledgerz.com</a>
@@ -6890,7 +6892,6 @@
             </div>
             <a href="javascript:void(0)" onclick="handleLogout()" style="color:#64748b;text-decoration:none;font-size:0.78rem;font-weight:600;white-space:nowrap;">Sign Out</a>
         </div>
-        <a href="#portal" class="nav-cta">Get Started</a>
         <a href="tel:+17025502513" class="nav-mobile-phone">&#9742; (702) 550-2513</a>
         <button class="nav-mobile-toggle" id="hamburger-btn" onclick="toggleMobileMenu()">☰</button>
     </nav>
