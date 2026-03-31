@@ -6842,7 +6842,7 @@
             </div>
             <span id="nav-welcome-text">Hi, User!</span>
             <span id="nav-plan-badge" class="plan-badge badge-basic">Basic</span>
-            <span id="nav-token-badge" style="display:none;font-size:0.75rem;font-weight:700;color:#1e3a5f;background:#f0f9ff;padding:3px 10px;border-radius:12px;">⚡ <span id="nav-token-count-inline">0</span></span>
+            <span id="nav-token-badge" style="display:none;font-size:0.75rem;font-weight:700;color:#1e3a5f;background:#f0f9ff;padding:3px 10px;border-radius:12px;cursor:pointer;" onclick="document.getElementById('step-report-catalog')?.scrollIntoView({behavior:'smooth',block:'center'})">⚡ <span id="nav-token-count-inline">0</span></span>
         </div>
         <ul class="nav-links" id="nav-links">
             <li class="mobile-only"><a href="#portal" onclick="closeMobileMenu()" class="mobile-cta">Get Started</a></li>
@@ -6873,7 +6873,7 @@
         </div>
         <!-- Logged-in nav actions (hidden by default) -->
         <div id="nav-logged-in-actions" style="display:none;align-items:center;gap:10px;">
-            <a href="#pricing" id="nav-choose-plan" style="background:#e8231a;color:#fff;padding:7px 14px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.8rem;white-space:nowrap;">Choose Plan</a>
+            <a href="#pricing" id="nav-choose-plan" style="display:none;">Choose Plan</a>
             <a href="javascript:void(0)" onclick="connectQuickBooksOAuth()" id="nav-connect-qb" style="background:#2CA01C;color:#fff;padding:7px 14px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.8rem;white-space:nowrap;display:flex;align-items:center;gap:6px;cursor:pointer;">
                 <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:#fff;border-radius:50%;font-size:0.55rem;font-weight:900;color:#2CA01C;font-style:italic;letter-spacing:-0.5px;line-height:1;">qb</span>
                 Connect QuickBooks
@@ -7877,25 +7877,28 @@
                 <p class="payment-gate-fine">By subscribing you confirm you have signed the Client Services Agreement above. You may cancel anytime with no penalty.</p>
             </div>
 
-            <!-- Inline Plan Cards -->
+            <!-- Quiz + Inline Plan Cards -->
+            <div style="text-align:center;margin-bottom:12px;">
+                <a href="javascript:void(0)" onclick="openQuizModal()" style="display:inline-flex;align-items:center;gap:6px;color:#1e3a5f;font-size:0.82rem;font-weight:700;text-decoration:none;padding:6px 16px;border:1.5px solid #d0d7e5;border-radius:20px;transition:all 0.2s;" onmouseover="this.style.borderColor='#1e3a5f';this.style.background='#f8faff'" onmouseout="this.style.borderColor='#d0d7e5';this.style.background='transparent'">🎯 Not sure which plan? Take our 1-minute quiz</a>
+            </div>
             <div id="portal-plan-cards" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
                 <div class="portal-plan-card" id="portal-plan-basic" onclick="selectPlan('basic')" style="border:2px solid #e2e8f0;border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:all 0.25s;background:#fff;position:relative;">
                     <div style="font-size:0.72rem;font-weight:800;color:#e8231a;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">⚡ Basic</div>
                     <div style="font-size:1.3rem;font-weight:800;color:#1e3a5f;">$799<span style="font-size:0.7rem;font-weight:400;color:#94a3b8">/mo</span></div>
-                    <div style="font-size:0.68rem;color:#94a3b8;margin:4px 0 8px;">2 reports/month</div>
-                    <div class="portal-plan-cta" style="background:#e8231a;color:#fff;padding:8px 16px;border-radius:8px;font-size:0.75rem;font-weight:700;display:inline-block;">Select Basic</div>
+                    <div style="font-size:0.65rem;color:#64748b;margin:6px 0 10px;line-height:1.4;">Bookkeeping, AR/AP, budget reports, variance analysis — 2 reports/month</div>
+                    <div class="portal-plan-cta" style="background:#e8231a;color:#fff;padding:8px 16px;border-radius:8px;font-size:0.75rem;font-weight:700;display:inline-block;">Get Started</div>
                 </div>
                 <div class="portal-plan-card" id="portal-plan-gold" onclick="selectPlan('gold')" style="border:2px solid #d4a017;border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:all 0.25s;background:#fff;position:relative;box-shadow:0 0 0 1px rgba(212,160,23,0.2);">
                     <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#d4a017,#f5a623);color:#fff;font-size:0.6rem;font-weight:800;padding:3px 12px;border-radius:10px;letter-spacing:1px;text-transform:uppercase;">MOST POPULAR</div>
                     <div style="font-size:0.72rem;font-weight:800;color:#d4a017;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;margin-top:4px;">✨ Gold</div>
                     <div style="font-size:1.3rem;font-weight:800;color:#1e3a5f;">$1,299<span style="font-size:0.7rem;font-weight:400;color:#94a3b8">/mo</span></div>
-                    <div style="font-size:0.68rem;color:#94a3b8;margin:4px 0 8px;">5 reports/month</div>
+                    <div style="font-size:0.65rem;color:#64748b;margin:6px 0 10px;line-height:1.4;">Everything in Basic + payroll, cash flow forecasting, KPI dashboards, weekly calls — 5 reports/month</div>
                     <div class="portal-plan-cta" style="background:linear-gradient(135deg,#d4a017,#f5a623);color:#fff;padding:8px 16px;border-radius:8px;font-size:0.75rem;font-weight:700;display:inline-block;">Upgrade to Gold</div>
                 </div>
                 <div class="portal-plan-card" id="portal-plan-diamond" onclick="selectPlan('diamond')" style="border:2px solid #667eea;border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:all 0.25s;background:#fff;position:relative;">
                     <div style="font-size:0.72rem;font-weight:800;color:#667eea;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">💎 Diamond</div>
                     <div style="font-size:1.3rem;font-weight:800;color:#1e3a5f;">$3,999<span style="font-size:0.7rem;font-weight:400;color:#94a3b8">/mo</span></div>
-                    <div style="font-size:0.68rem;color:#94a3b8;margin:4px 0 8px;">Unlimited reports</div>
+                    <div style="font-size:0.65rem;color:#64748b;margin:6px 0 10px;line-height:1.4;">Everything in Gold + tax prep, fractional CFO, board decks, unlimited reports, direct phone access</div>
                     <div class="portal-plan-cta" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:8px 16px;border-radius:8px;font-size:0.75rem;font-weight:700;display:inline-block;">Go Diamond</div>
                 </div>
             </div>
@@ -7997,7 +8000,7 @@
                                 <div class="svc-select-name">AR & AP</div>
                                 <div class="svc-select-desc">Invoicing, bill pay, collections, vendor management</div>
                             </label>
-                            <label class="svc-select-card" data-svc="tax" data-min-tier="gold" onclick="handleServiceCardClick(this)">
+                            <label class="svc-select-card" data-svc="tax" data-min-tier="diamond" onclick="handleServiceCardClick(this)">
                                 <input type="checkbox" name="svc" value="tax" style="display:none;">
                                 <div class="svc-select-icon">🏛️</div>
                                 <div class="svc-select-name">Tax Preparation</div>
@@ -9362,6 +9365,16 @@
             if (navTokenBadge) {
                 navTokenBadge.style.display = 'inline-block';
                 if (navTokenCount) navTokenCount.textContent = displayVal;
+                // Dynamic tooltip
+                if (tier === 'none') {
+                    navTokenBadge.title = 'No report coins yet — select a plan to start earning coins';
+                } else if (isUnlimited) {
+                    navTokenBadge.title = 'Unlimited report coins — Diamond plan';
+                } else if (userTokensRemaining <= 0) {
+                    navTokenBadge.title = 'Out of coins — upgrade your plan for more, or wait until next month';
+                } else {
+                    navTokenBadge.title = userTokensRemaining + ' report coin' + (userTokensRemaining !== 1 ? 's' : '') + ' remaining this period';
+                }
             }
         }
 
@@ -9658,8 +9671,9 @@
             var plans = ['basic', 'gold', 'diamond'];
             var tierRank = TIER_ORDER[tier] || 0;
             var upsellText = {
-                basic: { gold: 'Need more reports? Upgrade', diamond: 'Unlimited reporting — Go Diamond' },
-                gold: { diamond: 'Need unlimited reports? Go Diamond' },
+                none: { basic: 'Get Started', gold: 'Upgrade to Gold', diamond: 'Go Diamond' },
+                basic: { gold: 'Want payroll + more reports? Upgrade', diamond: 'Need unlimited + tax prep? Go Diamond' },
+                gold: { diamond: 'Need unlimited reports + tax? Go Diamond' },
                 diamond: {}
             };
             plans.forEach(function(plan) {
