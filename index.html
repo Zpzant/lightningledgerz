@@ -9282,24 +9282,41 @@
 
         function initTokens(tier) {
             var userId = currentUserData?.id || 'anon';
-            var key = 'tokens_' + userId + '_' + new Date().getFullYear() + '_' + (new Date().getMonth() + 1);
-            var stored = localStorage.getItem(key);
-            if (stored !== null) {
-                userTokensRemaining = parseInt(stored, 10);
-            } else {
-                userTokensRemaining = TOKEN_LIMITS[tier] || 0;
-                localStorage.setItem(key, userTokensRemaining);
+            var balanceKey = 'token_balance_' + userId;
+            var creditedKey = 'tokens_credited_' + userId;
+            var monthKey = new Date().getFullYear() + '_' + (new Date().getMonth() + 1);
+
+            // Load current balance
+            var stored = localStorage.getItem(balanceKey);
+            userTokensRemaining = stored !== null ? parseInt(stored, 10) : 0;
+
+            // Check if this month's credits have been added
+            var credited = JSON.parse(localStorage.getItem(creditedKey) || '[]');
+            if (tier !== 'none' && tier !== 'diamond' && credited.indexOf(monthKey) === -1) {
+                // Add this month's allocation (credits compile)
+                var monthlyAdd = TOKEN_LIMITS[tier] || 0;
+                userTokensRemaining += monthlyAdd;
+                credited.push(monthKey);
+                localStorage.setItem(creditedKey, JSON.stringify(credited));
+                localStorage.setItem(balanceKey, userTokensRemaining);
             }
+
+            // First-time user with no history — seed with tier allocation
+            if (stored === null && tier !== 'none' && tier !== 'diamond') {
+                // Already added above via credited check
+            }
+
             updateAllTokenDisplays();
         }
 
         function spendToken() {
-            if (getUserTier() === 'diamond') return true; // unlimited
+            var tier = getUserTier();
+            if (tier === 'diamond') return true; // unlimited
+            if (tier === 'none') return false; // expired — tokens frozen
             if (userTokensRemaining <= 0) return false;
             userTokensRemaining--;
             var userId = currentUserData?.id || 'anon';
-            var key = 'tokens_' + userId + '_' + new Date().getFullYear() + '_' + (new Date().getMonth() + 1);
-            localStorage.setItem(key, userTokensRemaining);
+            localStorage.setItem('token_balance_' + userId, userTokensRemaining);
             updateAllTokenDisplays();
             animateTokenSpend();
             return true;
