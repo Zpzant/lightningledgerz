@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Lightning Ledgerz Business Card — Back</title>
+<title>Lightning Ledgerz Business Cards — Print Reference</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Cinzel:wght@400;600;700;900&display=swap');
 
@@ -11,19 +11,185 @@
   body {
     background: #c8c8c8;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    padding: 40px;
+    gap: 40px;
     font-family: 'Cinzel', serif;
   }
 
-  .card-back {
-    width: 3.5in; height: 2in;
-    border-radius: 10px; overflow: hidden;
+  .card-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: #555; margin-bottom: -28px;
+  }
+
+  .print-notes {
+    font-family: 'Montserrat', sans-serif;
+    background: #fff3cd; border: 1px solid #ffc107;
+    border-radius: 8px; padding: 16px 24px;
+    font-size: 12px; color: #856404; max-width: 500px;
+    line-height: 1.6;
+  }
+  .print-notes strong { color: #664d03; }
+
+  /* ══════════════ CARDS — 3.75" x 2.25" (includes .125" bleed) ══════════════ */
+  /* Trim size: 3.5" x 2" — bleed extends .125" on each side */
+
+  .card, .card-back {
+    width: 3.75in; height: 2.25in;
+    /* NO border-radius — rounded corners done by die-cut in production */
+    border-radius: 0;
+    overflow: hidden;
     position: relative;
-    display: flex; flex-direction: column;
     background: #fff;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+
+  /* Trim line guide (visual only — shows where the card will be cut) */
+  .card::after, .card-back::after {
+    content: '';
+    position: absolute;
+    top: 0.125in; right: 0.125in; bottom: 0.125in; left: 0.125in;
+    border: 1px dashed rgba(0,0,0,0.15);
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  /* ══════════════ FRONT ══════════════ */
+  .card {
+    display: flex;
+  }
+
+  .bg-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+    opacity: 0.26; z-index: 0;
+  }
+  .bg-fade {
+    position: absolute; inset: 0;
+    background: rgba(255,252,248,0.82);
+    z-index: 1;
+  }
+
+  .red-bar {
+    width: 6px; flex-shrink: 0;
+    background: linear-gradient(180deg, #e8231a, #a80e08);
+    position: relative; z-index: 3;
+  }
+
+  .photo-col {
+    width: 1.3in; flex-shrink: 0;
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: flex-start;
+    z-index: 3;
+  }
+  .photo-col img {
+    height: 100%; width: auto;
+    margin-left: 4px;
+    position: relative; z-index: 2;
+  }
+
+  .info-col {
+    flex: 1;
+    padding: 16px 16px 12px 4px;
+    display: flex; flex-direction: column;
+    position: relative; z-index: 3;
+  }
+
+  .top-block { flex-shrink: 0; }
+
+  .logo-line {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px; font-weight: 900;
+    letter-spacing: 1px; line-height: 1;
+    text-transform: uppercase;
+    display: flex; align-items: center; width: 100%;
+  }
+  .logo-line .l1 { color: #e8231a; margin-right: 5px; }
+  .logo-line .l2 { color: #0a1628; }
+  .lightning-z {
+    height: 20px; width: auto; flex-shrink: 0;
+    margin-left: auto; margin-right: 0;
+  }
+
+  .tagline {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 7px; font-weight: 700;
+    color: #e8231a; letter-spacing: 2px;
+    text-transform: uppercase; margin-top: 2px;
+  }
+
+  .divider {
+    width: 34px; height: 2px;
+    background: linear-gradient(90deg, #e8231a, transparent);
+    margin: 6px 0 0;
+  }
+
+  .middle-block {
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center; gap: 3px;
+  }
+
+  .name {
+    font-family: 'Cinzel', serif;
+    font-size: 14px; font-weight: 700;
+    color: #0a1628; letter-spacing: 1px; line-height: 1;
+  }
+
+  .ceo-line {
+    font-family: 'Cinzel', serif;
+    font-size: 5.8px; font-weight: 600;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    background: linear-gradient(160deg, #C9A44A 0%, #7A5800 35%, #B8920A 55%, #6B4C00 80%, #C9A44A 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+
+  .cornell-line {
+    font-family: 'Cinzel', serif;
+    font-size: 5.8px; font-weight: 400;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    display: flex; align-items: flex-end; gap: 3px;
+    background: linear-gradient(160deg, #C9A44A 0%, #7A5800 35%, #B8920A 55%, #6B4C00 80%, #C9A44A 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .cornell-logo { height: 9px; width: auto; flex-shrink: 0; }
+
+  .h-rule { height: 1px; background: rgba(0,0,0,0.08); margin-bottom: 4px; }
+
+  .bottom-row {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .contact-block {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .citem {
+    font-family: 'Cinzel', serif;
+    display: flex; align-items: center; gap: 4px;
+    font-size: 5.8px; font-weight: 700;
+    letter-spacing: 0.6px; color: #0a1628;
+    text-transform: uppercase;
+  }
+  .citem .icon {
+    color: #e8231a; -webkit-text-fill-color: #e8231a;
+    font-size: 7px; width: 9px; text-align: center; flex-shrink: 0;
+  }
+
+  .qr-img {
+    display: block; width: 44px; height: 44px;
+    object-fit: contain; flex-shrink: 0;
+  }
+
+  /* ══════════════ BACK ══════════════ */
+  .card-back {
+    display: flex; flex-direction: column;
   }
 
   .card-back .bg-img {
@@ -45,32 +211,28 @@
     height: 6px; background: linear-gradient(90deg, #a80e08, #e8231a); z-index: 3;
   }
 
-  /* Full card layout: center-row fills all space above footer */
   .back-inner {
     position: relative; z-index: 2;
     flex: 1;
     display: flex; flex-direction: column;
-    padding: 6px 10px 7px 10px;
-    justify-content: space-between;
+    padding: 10px 16px 10px 16px;
+    justify-content: center;
   }
 
-  /* Row: [left col] [logo] [right col] — stretches full height of remaining space */
   .back-center-row {
     flex: 1;
     display: flex; flex-direction: row;
     align-items: stretch;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
   }
 
-  /* Logo centered in its column */
   .back-real-logo {
     height: 155px; width: auto;
     flex-shrink: 0;
     align-self: center;
   }
 
-  /* Service columns stretch full height, items spread evenly top to bottom */
   .back-svc-col {
     display: flex; flex-direction: column;
     justify-content: space-between;
@@ -92,39 +254,70 @@
     flex-shrink: 0;
   }
 
-  /* Footer — bumped up font so it's actually visible */
-  .back-footer {
-    display: flex; align-items: center; justify-content: center;
-    gap: 8px; flex-shrink: 0;
-  }
-
-  .back-citem {
-    font-family: 'Cinzel', serif;
-    display: flex; align-items: center; gap: 3px;
-    font-size: 5.5px; font-weight: 700;
-    letter-spacing: 0.4px; color: #0a1628; text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .back-citem .icon {
-    color: #e8231a; -webkit-text-fill-color: #e8231a;
-    font-size: 7px; width: 8px; text-align: center; flex-shrink: 0;
-  }
-  .back-sep {
-    color: rgba(0,0,0,0.25);
-    font-size: 8px; line-height: 1;
-  }
-
   @media print {
-    body { background: white; margin: 0; padding: 0; }
-    .card-back {
+    body { background: white; margin: 0; padding: 0; gap: 20px; }
+    .card-label, .print-notes { display: none; }
+    .card, .card-back {
       box-shadow: none;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
+      page-break-after: always;
     }
+    /* Hide trim guides for final print */
+    .card::after, .card-back::after { display: none; }
   }
 </style>
 </head>
 <body>
+
+<div class="print-notes">
+  <strong>PRINT REFERENCE — NOT PRINT-READY</strong><br>
+  Size: 3.75" x 2.25" (3.5" x 2" + 0.125" bleed)<br>
+  Dashed line = trim/cut line<br>
+  Recreate in Canva/Illustrator for CMYK + vector text<br>
+  QR code: generate at qrcode-monkey.com → lightningledgerz.com
+</div>
+
+<div class="card-label">— Front —</div>
+
+<div class="card">
+  <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
+  <div class="bg-fade"></div>
+  <div class="red-bar"></div>
+
+  <div class="photo-col">
+    <img src="zacredtiebest.png" alt="Zac Prizant">
+  </div>
+
+  <div class="info-col">
+    <div class="top-block">
+      <div class="logo-line">
+        <span class="l1">LIGHTNING</span><span class="l2">LEDGER</span><img class="lightning-z" src="lightningz.png" alt="Z">
+      </div>
+      <div class="tagline">Budget &nbsp;·&nbsp; Bookkeep &nbsp;·&nbsp; Build</div>
+      <div class="divider"></div>
+    </div>
+
+    <div class="middle-block">
+      <div class="name">Zac Prizant</div>
+      <div class="ceo-line">President &amp; FP&amp;A Advisor</div>
+      <div class="cornell-line">Cornell Masters of Management <img class="cornell-logo" src="cornred.png" alt="Cornell"></div>
+    </div>
+
+    <div class="h-rule"></div>
+    <div class="bottom-row">
+      <div class="contact-block">
+        <div class="citem"><span class="icon">✉</span> zprizant@lightningledgerz.com</div>
+        <div class="citem"><span class="icon">☎</span> (702) 550-2513</div>
+        <div class="citem"><span class="icon">🌐</span> lightningledgerz.com</div>
+      </div>
+      <!-- Replace with QR from qrcode-monkey.com -->
+      <img class="qr-img" src="lightningledgerzqrcode.png" alt="QR Code">
+    </div>
+  </div>
+</div>
+
+<div class="card-label">— Back —</div>
 
 <div class="card-back">
   <img class="bg-img" src="Screenshot 2026-02-27 145907.png" alt="">
@@ -135,7 +328,6 @@
   <div class="back-inner">
     <div class="back-center-row">
 
-      <!-- Left services — evenly spaced top to bottom -->
       <div class="back-svc-col">
         <div class="svc"><span class="bolt">⚡</span> Automation</div>
         <div class="svc"><span class="bolt">⚡</span> Financial Modeling</div>
@@ -143,10 +335,8 @@
         <div class="svc"><span class="bolt">⚡</span> Cash Flow Analysis</div>
       </div>
 
-      <!-- Center logo -->
       <img src="lightning_ledgerz_transparent.png" class="back-real-logo" alt="Lightning Ledgerz">
 
-      <!-- Right services — evenly spaced top to bottom -->
       <div class="back-svc-col">
         <div class="svc"><span class="bolt">⚡</span> Boardroom Decks</div>
         <div class="svc"><span class="bolt">⚡</span> Fractional CFO</div>
@@ -155,7 +345,6 @@
       </div>
 
     </div>
-
   </div>
 </div>
 
