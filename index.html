@@ -7705,8 +7705,8 @@
     <!-- Portal Section -->
     <section class="section section-dark" id="portal">
         <div class="section-header">
-            <h2>Client Portal</h2>
-            <p id="portal-subtitle">Upload documents securely and access your deliverables.</p>
+            <h2 id="portal-title">Client Portal</h2>
+            <p id="portal-subtitle" style="display:none;"></p>
         </div>
 
         <div class="portal-card">
@@ -9190,15 +9190,14 @@
             var pkgSidebar = document.querySelector('.package-sidebar');
             if (pkgSidebar) pkgSidebar.style.display = 'none';
 
-            // Update portal subtitle based on tier
+            // Update portal title to company name
+            var portalTitle = document.getElementById('portal-title');
             var portalSub = document.getElementById('portal-subtitle');
-            if (portalSub) {
-                if (tier === 'none') {
-                    portalSub.innerHTML = 'Your free consultation is ready. <strong>Choose a plan</strong> to unlock your full dashboard — budget reports, cash flow analysis, and a dedicated CFO advisor.';
-                } else {
-                    portalSub.textContent = 'Your ' + tier.charAt(0).toUpperCase() + tier.slice(1) + ' dashboard — upload documents, connect QuickBooks, and access your deliverables.';
-                }
+            var companyName = currentUserData?.profile?.nda_company_name || currentUserData?.profile?.company_name || '';
+            if (portalTitle) {
+                portalTitle.textContent = companyName ? companyName : (name ? name + '\'s Portal' : 'Client Portal');
             }
+            if (portalSub) portalSub.style.display = 'none';
         }
 
         // Demo tier change handler
