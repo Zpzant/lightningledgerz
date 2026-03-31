@@ -7945,140 +7945,27 @@
                 <div class="portal-step-card" id="platform-integrations">
                     <div class="portal-step-header">
                         <div class="portal-step-number">3</div>
-                        <h4>Connect Your QuickBooks Account</h4>
+                        <h4>Connect QuickBooks</h4>
                     </div>
                     <div class="portal-step-body">
-                        <div class="trust-signals-bar">
-                            <span>&#128274; 256-bit Encrypted</span>
-                            <span>&#128737; SOC 2 Compliant</span>
-                            <span>&#9989; Revoke Anytime</span>
-                        </div>
-                        <p style="font-size:0.88rem;color:#666;margin-bottom:16px;">Connect your QuickBooks account for lightning fast reporting. I pull your financials directly — no manual uploads needed.</p>
+                        <p style="font-size:0.88rem;color:#666;margin-bottom:16px;">Connect your QuickBooks account — I pull your financials directly, no manual uploads needed.</p>
 
-                        <!-- Platform Dropdown -->
-                        <div class="platform-dropdown-wrap">
-                            <label class="platform-dropdown-label">Your accounting platform</label>
-                            <div class="platform-dropdown-box" id="platform-dropdown-box" onclick="togglePlatformDropdown()">
-                                <span id="platform-dropdown-selected"><span style="color:#aaa;">-- Select a platform --</span></span>
-                                <span class="platform-dropdown-arrow">&#9660;</span>
-                            </div>
-                            <div class="platform-dropdown-list" id="platform-dropdown-list" style="display:none;">
-                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('quickbooks')">
-                                    <div class="platform-logo-sm" style="background:#2CA01C;border-radius:50%;"><svg viewBox="0 0 40 40" width="22" height="22"><circle cx="20" cy="20" r="18" fill="#2CA01C"/><path d="M13 12v16M13 12c0-2.2 1.8-4 4-4h2c2.2 0 4 1.8 4 4v8c0 2.2-1.8 4-4 4h-2" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M27 28V12M27 28c0 2.2-1.8 4-4 4h-2c-2.2 0-4-1.8-4-4v-8c0-2.2 1.8-4 4-4h2" stroke="#fff" stroke-width="2.5" fill="none"/></svg></div>
-                                    <span>QuickBooks</span>
-                                    <span class="pdrop-check" id="pdrop-quickbooks"></span>
-                                </div>
-                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('sage')">
-                                    <div class="platform-logo-sm" style="background:#00D639;"><span>SAGE</span></div>
-                                    <span>Sage</span>
-                                    <span class="pdrop-check" id="pdrop-sage"></span>
-                                </div>
-                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('netsuite')">
-                                    <div class="platform-logo-sm" style="background:#1A1A2E;"><span>NS</span></div>
-                                    <span>Oracle NetSuite</span>
-                                    <span class="pdrop-check" id="pdrop-netsuite"></span>
-                                </div>
-                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('xero')">
-                                    <div class="platform-logo-sm" style="background:#13B5EA;"><span>xero</span></div>
-                                    <span>Xero</span>
-                                    <span class="pdrop-check" id="pdrop-xero"></span>
-                                </div>
-                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('alteryx')">
-                                    <div class="platform-logo-sm" style="background:#0078C0;"><span>Ax</span></div>
-                                    <span>Alteryx</span>
-                                    <span class="pdrop-check" id="pdrop-alteryx"></span>
-                                </div>
-                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('airtable')">
-                                    <div class="platform-logo-sm" style="background:#FCBF49;"><span style="color:#333;">AT</span></div>
-                                    <span>Airtable</span>
-                                    <span class="pdrop-check" id="pdrop-airtable"></span>
-                                </div>
-                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('powerbi')">
-                                    <div class="platform-logo-sm" style="background:#F2C811;"><span style="color:#333;">PBI</span></div>
-                                    <span>Power BI</span>
-                                    <span class="pdrop-check" id="pdrop-powerbi"></span>
-                                </div>
-                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('excel')">
-                                    <div class="platform-logo-sm" style="background:#217346;"><span>Ex</span></div>
-                                    <span>Excel Online</span>
-                                    <span class="pdrop-check" id="pdrop-excel"></span>
-                                </div>
-                                <div class="platform-dropdown-item" onclick="selectPlatformDrop('other')">
-                                    <div class="platform-logo-sm" style="background:#666;"><span>+</span></div>
-                                    <span>Other / Custom</span>
-                                    <span class="pdrop-check" id="pdrop-other"></span>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- QB OAuth Connect Button -->
+                        <a href="javascript:void(0)" onclick="connectQuickBooksOAuth()" id="qb-connect-btn-portal" style="display:inline-flex;align-items:center;gap:10px;background:#2CA01C;color:#fff;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-size:0.95rem;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 15px rgba(44,160,28,0.3);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+                            <svg viewBox="0 0 40 40" width="24" height="24"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M13 12v16M13 12c0-2.2 1.8-4 4-4h2c2.2 0 4 1.8 4 4v8c0 2.2-1.8 4-4 4h-2" stroke="#2CA01C" stroke-width="2.5" fill="none"/><path d="M27 28V12M27 28c0 2.2-1.8 4-4 4h-2c-2.2 0-4-1.8-4-4v-8c0-2.2 1.8-4 4-4h2" stroke="#2CA01C" stroke-width="2.5" fill="none"/></svg>
+                            Connect QuickBooks
+                        </a>
 
-                        <!-- Add Another Platform -->
-                        <div id="add-another-platform-row" style="display:none; margin-top:10px;">
-                            <button class="add-platform-btn" onclick="showAnotherPlatformDropdown()">&#43; Add Another Platform</button>
-                            <div class="platform-dropdown-wrap" id="platform-dropdown-2-wrap" style="display:none; margin-top:10px;">
-                                <div class="platform-dropdown-box" id="platform-dropdown-box-2" onclick="togglePlatformDropdown2()">
-                                    <span id="platform-dropdown-selected-2"><span style="color:#aaa;">-- Select another platform --</span></span>
-                                    <span class="platform-dropdown-arrow">&#9660;</span>
-                                </div>
-                                <div class="platform-dropdown-list" id="platform-dropdown-list-2" style="display:none;">
-                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('quickbooks')"><div class="platform-logo-sm" style="background:#2CA01C;"><span>QB</span></div><span>QuickBooks</span></div>
-                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('sage')"><div class="platform-logo-sm" style="background:#00D639;"><span>SAGE</span></div><span>Sage</span></div>
-                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('netsuite')"><div class="platform-logo-sm" style="background:#1A1A2E;"><span>NS</span></div><span>Oracle NetSuite</span></div>
-                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('xero')"><div class="platform-logo-sm" style="background:#13B5EA;"><span>xero</span></div><span>Xero</span></div>
-                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('alteryx')"><div class="platform-logo-sm" style="background:#0078C0;"><span>Ax</span></div><span>Alteryx</span></div>
-                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('airtable')"><div class="platform-logo-sm" style="background:#FCBF49;"><span style="color:#333;">AT</span></div><span>Airtable</span></div>
-                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('powerbi')"><div class="platform-logo-sm" style="background:#F2C811;"><span style="color:#333;">PBI</span></div><span>Power BI</span></div>
-                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('excel')"><div class="platform-logo-sm" style="background:#217346;"><span>Ex</span></div><span>Excel Online</span></div>
-                                    <div class="platform-dropdown-item" onclick="selectPlatformDrop2('other')"><div class="platform-logo-sm" style="background:#666;"><span>+</span></div><span>Other / Custom</span></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Connected platform badges -->
+                        <!-- Connected badge -->
                         <div id="connected-platforms-badges" style="display:none; margin:14px 0 4px;">
-                            <div style="font-size:0.78rem;color:#999;margin-bottom:6px;font-weight:600;letter-spacing:0.3px;">CONNECTED:</div>
                             <div id="connected-badges-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
                         </div>
 
-                        <!-- Platform Credential Form -->
-                        <div class="platform-cred-form" id="platform-cred-form" style="display: none;">
-                            <div class="platform-cred-header" id="platform-cred-header">
-                                <h5 id="platform-cred-title">Connect QuickBooks</h5>
-                                <button onclick="closePlatformForm()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#999;">&times;</button>
-                            </div>
-                            <p style="font-size:0.85rem;color:#888;margin-bottom:16px;">Enter whichever login you'd like me to use — your existing one or a separate advisor login.</p>
-                            <div id="platform-fields">
-                                <div class="qb-field">
-                                    <label for="platform-url">Login URL / Company Link</label>
-                                    <input type="url" id="platform-url" placeholder="https://..." autocomplete="off">
-                                </div>
-                                <div class="qb-field">
-                                    <label for="platform-username">Username / Email</label>
-                                    <input type="text" id="platform-username" placeholder="your@email.com" autocomplete="off">
-                                </div>
-                                <div class="qb-field">
-                                    <label for="platform-password">Password</label>
-                                    <div class="qb-password-wrap">
-                                        <input type="password" id="platform-password" placeholder="Enter password" autocomplete="new-password">
-                                        <button type="button" class="qb-toggle-pw" onclick="togglePlatformPassword()">Show</button>
-                                    </div>
-                                </div>
-                                <div class="qb-field">
-                                    <label for="platform-notes">Additional Notes (optional)</label>
-                                    <textarea id="platform-notes" placeholder="e.g., MFA codes, company name, specific access needed..." rows="2"></textarea>
-                                </div>
-                            </div>
-                            <div style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 10px; padding: 18px; margin-bottom: 20px;">
-                                <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; color: #333; font-size: 0.9rem;">
-                                    <input type="checkbox" id="platform-agree-checkbox" style="margin-top: 3px; width: 18px; height: 18px; accent-color: var(--mckinsey-blue); flex-shrink: 0;">
-                                    <span>I grant <strong>Lightning Ledgerz LLC</strong> permission to access my <strong id="platform-agree-name">QuickBooks</strong> account using the credentials provided above, solely for the purpose of delivering FP&A advisory services. My credentials are encrypted with 256-bit encryption, accessible only to my assigned advisor (Zac Prizant), and I can revoke access at any time.</span>
-                                </label>
-                            </div>
-                            <div class="qb-actions">
-                                <button class="qb-save-btn" onclick="savePlatformCredentials()">Grant Access Securely</button>
-                                <span class="qb-saved-status" id="platform-saved-status"></span>
-                            </div>
+                        <div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-radius:8px;display:flex;align-items:center;gap:8px;">
+                            <span style="font-size:0.78rem;color:#94a3b8;">&#128274; 256-bit encrypted &middot; Revoke anytime</span>
                         </div>
-                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('db')">Skip — I'll share access later</button></div>
+
+                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('db')">Skip — I'll connect later</button></div>
                     </div>
                 </div>
 
