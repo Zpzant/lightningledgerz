@@ -332,6 +332,7 @@
             --saas-navy: #0B1220;
             --saas-bg: #F8FAFC;
             --saas-card: #FFFFFF;
+            --mckinsey-blue: #1e3a5f;
         }
 
         * {
@@ -6844,7 +6845,7 @@
             </div>
             <span id="nav-welcome-text">Hi, User!</span>
             <span id="nav-plan-badge" class="plan-badge badge-basic">Basic</span>
-            <span id="nav-token-badge" style="display:none;font-size:0.75rem;font-weight:700;color:#1e3a5f;background:#f0f9ff;padding:3px 10px;border-radius:12px;cursor:pointer;" onclick="document.getElementById('step-report-catalog')?.scrollIntoView({behavior:'smooth',block:'center'})">⚡ <span id="nav-token-count-inline">0</span></span>
+            <span id="nav-token-badge" style="display:none;font-size:0.75rem;font-weight:700;color:#1e3a5f;background:#f0f9ff;padding:3px 10px;border-radius:12px;cursor:pointer;" onclick="document.getElementById('portal-plan-cards')?.scrollIntoView({behavior:'smooth',block:'center'})">⚡ <span id="nav-token-count-inline">0</span></span>
         </div>
         <ul class="nav-links" id="nav-links">
             <li class="mobile-only"><a href="#portal" onclick="closeMobileMenu()" class="mobile-cta">Get Started</a></li>
@@ -7886,21 +7887,27 @@
                 <div class="portal-plan-card" id="portal-plan-basic" onclick="selectPlan('basic')" style="border:2px solid #e2e8f0;border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:all 0.25s;background:#fff;position:relative;">
                     <div style="font-size:0.72rem;font-weight:800;color:#e8231a;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">⚡ Basic</div>
                     <div style="font-size:1.3rem;font-weight:800;color:#1e3a5f;">$799<span style="font-size:0.7rem;font-weight:400;color:#94a3b8">/mo</span></div>
-                    <div style="font-size:0.65rem;color:#64748b;margin:6px 0 10px;line-height:1.4;">Bookkeeping, AR/AP, budget reports, variance analysis — 2 reports/month</div>
+                    <div style="font-size:0.65rem;color:#64748b;margin:6px 0 6px;line-height:1.4;">Bookkeeping, AR/AP, budget reports, variance analysis</div>
+                    <div style="font-size:0.72rem;font-weight:800;color:#e8231a;margin-bottom:8px;">⚡ 2 coins/month</div>
                     <div class="portal-plan-cta" style="background:#e8231a;color:#fff;padding:8px 16px;border-radius:8px;font-size:0.75rem;font-weight:700;display:inline-block;">Get Started</div>
+                    <div style="margin-top:6px;"><a href="javascript:void(0)" onclick="event.stopPropagation();showHomepage();setTimeout(function(){document.getElementById('basic-card')?.scrollIntoView({behavior:'smooth',block:'center'})},300)" style="font-size:0.65rem;color:#94a3b8;text-decoration:underline;">See full details →</a></div>
                 </div>
                 <div class="portal-plan-card" id="portal-plan-gold" onclick="selectPlan('gold')" style="border:2px solid #d4a017;border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:all 0.25s;background:#fff;position:relative;box-shadow:0 0 0 1px rgba(212,160,23,0.2);">
                     <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#d4a017,#f5a623);color:#fff;font-size:0.6rem;font-weight:800;padding:3px 12px;border-radius:10px;letter-spacing:1px;text-transform:uppercase;">MOST POPULAR</div>
                     <div style="font-size:0.72rem;font-weight:800;color:#d4a017;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;margin-top:4px;">✨ Gold</div>
                     <div style="font-size:1.3rem;font-weight:800;color:#1e3a5f;">$1,299<span style="font-size:0.7rem;font-weight:400;color:#94a3b8">/mo</span></div>
-                    <div style="font-size:0.65rem;color:#64748b;margin:6px 0 10px;line-height:1.4;">Everything in Basic + payroll, cash flow forecasting, KPI dashboards, weekly calls — 5 reports/month</div>
+                    <div style="font-size:0.65rem;color:#64748b;margin:6px 0 6px;line-height:1.4;">Everything in Basic + payroll, cash flow forecasting, KPI dashboards, weekly calls</div>
+                    <div style="font-size:0.72rem;font-weight:800;color:#d4a017;margin-bottom:8px;">⚡ 5 coins/month</div>
                     <div class="portal-plan-cta" style="background:linear-gradient(135deg,#d4a017,#f5a623);color:#fff;padding:8px 16px;border-radius:8px;font-size:0.75rem;font-weight:700;display:inline-block;">Upgrade to Gold</div>
+                    <div style="margin-top:6px;"><a href="javascript:void(0)" onclick="event.stopPropagation();showHomepage();setTimeout(function(){document.getElementById('gold-card')?.scrollIntoView({behavior:'smooth',block:'center'})},300)" style="font-size:0.65rem;color:#94a3b8;text-decoration:underline;">See full details →</a></div>
                 </div>
                 <div class="portal-plan-card" id="portal-plan-diamond" onclick="selectPlan('diamond')" style="border:2px solid #667eea;border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:all 0.25s;background:#fff;position:relative;">
                     <div style="font-size:0.72rem;font-weight:800;color:#667eea;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">💎 Diamond</div>
                     <div style="font-size:1.3rem;font-weight:800;color:#1e3a5f;">$3,999<span style="font-size:0.7rem;font-weight:400;color:#94a3b8">/mo</span></div>
-                    <div style="font-size:0.65rem;color:#64748b;margin:6px 0 10px;line-height:1.4;">Everything in Gold + tax prep, fractional CFO, board decks, unlimited reports, direct phone access</div>
+                    <div style="font-size:0.65rem;color:#64748b;margin:6px 0 6px;line-height:1.4;">Everything in Gold + tax prep, fractional CFO, board decks, direct phone access</div>
+                    <div style="font-size:0.72rem;font-weight:800;color:#667eea;margin-bottom:8px;">⚡ Unlimited coins</div>
                     <div class="portal-plan-cta" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:8px 16px;border-radius:8px;font-size:0.75rem;font-weight:700;display:inline-block;">Go Diamond</div>
+                    <div style="margin-top:6px;"><a href="javascript:void(0)" onclick="event.stopPropagation();showHomepage();setTimeout(function(){document.getElementById('diamond-card')?.scrollIntoView({behavior:'smooth',block:'center'})},300)" style="font-size:0.65rem;color:#94a3b8;text-decoration:underline;">See full details →</a></div>
                 </div>
             </div>
             <!-- Hidden elements needed by JS -->
