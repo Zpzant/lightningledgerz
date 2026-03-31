@@ -3598,6 +3598,7 @@
 
         /* Lightning Bolt Profile Meter */
         .lightning-meter-bar { display: none !important; }
+        .lightning-float { display: none !important; }
 
         /* Lightning Meter — Floating Right Widget */
         .lightning-float {
@@ -9104,14 +9105,13 @@
             var pkgSidebar = document.querySelector('.package-sidebar');
             if (pkgSidebar) pkgSidebar.style.display = 'none';
 
-            // Update portal title to company name
-            var portalTitle = document.getElementById('portal-title');
-            var portalSub = document.getElementById('portal-subtitle');
+            // Hide portal header when logged in — portal name goes in nav welcome text
+            var portalHeader = document.querySelector('#portal > .section-header');
+            if (portalHeader) portalHeader.style.display = 'none';
             var companyName = currentUserData?.profile?.nda_company_name || currentUserData?.profile?.company_name || '';
-            if (portalTitle) {
-                portalTitle.textContent = companyName ? companyName : (name ? name + '\'s Portal' : 'Client Portal');
-            }
-            if (portalSub) portalSub.style.display = 'none';
+            var portalName = companyName ? companyName : (name ? name + '\'s Portal' : 'Client Portal');
+            // Show portal name in nav welcome area
+            if (welcomeText) welcomeText.textContent = portalName;
         }
 
         // Demo tier change handler
