@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lightning Ledgerz — FP&A Advisory, Bookkeeping & Financial Modeling | Las Vegas</title>
-    <meta name="description" content="Zachary Prizant (Zac Prizant) — Founder of Lightning Ledgerz LLC. Expert FP&A advisory, bookkeeping, financial modeling, QuickBooks, boardroom presentations, and fractional CFO services in Las Vegas. Cornell Masters of Management. Budget. Bookkeep. Build.">
+    <meta name="description" content="Lightning Ledgerz LLC — Expert FP&A advisory, bookkeeping, financial modeling, QuickBooks, boardroom presentations, and fractional CFO services in Las Vegas. Budget. Bookkeep. Build.">
     <meta name="keywords" content="
       Lightning Ledgerz, Lightning Ledgers, lightningledgerz.com, Lightning Ledgerz LLC,
       Zachary Prizant, Zac Prizant, zprizant, Zachary Prizant Las Vegas, Zac Prizant CFO, Zac Prizant finance, Zachary Prizant finance, Zachary Prizant Cornell, Zac Prizant Cornell, Zac Prizant FP&A, Zachary Prizant FP&A, Zac Prizant bookkeeping, Zachary Prizant bookkeeping, Zac Prizant advisor, Zachary Prizant advisor, Zac Prizant financial modeling, Zachary Prizant financial modeling,
@@ -121,7 +121,7 @@
         "name": "Lightning Ledgerz LLC",
         "legalName": "Lightning Ledgerz LLC",
         "alternateName": ["Lightning Ledgers", "Lightning Ledgerz", "lightningledgerz.com", "Lightning Ledgerz Advisory"],
-        "description": "Expert FP&A advisory in Las Vegas — financial modeling, budget vs. actual reporting, KPI dashboards, cash flow forecasting, bookkeeping, QuickBooks, boardroom-ready presentations, and fractional CFO services for growing businesses. Founded by Zachary Prizant (Zac Prizant), Cornell Masters of Management. Budget. Bookkeep. Build.",
+        "description": "Expert FP&A advisory in Las Vegas — financial modeling, budget vs. actual reporting, KPI dashboards, cash flow forecasting, bookkeeping, QuickBooks, boardroom-ready presentations, and fractional CFO services for growing businesses. Budget. Bookkeep. Build.",
         "slogan": "Budget. Bookkeep. Build.",
         "url": "https://lightningledgerz.com",
         "logo": {
@@ -1145,6 +1145,8 @@
         section#pricing {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.88) 100%) !important;
             color: #1e3a5f;
+            padding-top: 60px !important;
+            padding-bottom: 60px !important;
         }
 
         section#pricing .section-header h2 {
@@ -5025,7 +5027,7 @@
             gap: 25px;
             margin-top: 30px;
             flex-wrap: wrap;
-            justify-content: flex-start;
+            justify-content: center;
         }
 
         @media (max-width: 768px) {
@@ -6872,20 +6874,19 @@
             </div>
         </div>
         <!-- Logged-in nav actions (hidden by default) -->
-        <div id="nav-logged-in-actions" style="display:none;align-items:center;gap:10px;">
+        <div id="nav-logged-in-actions" style="display:none;align-items:center;gap:6px;">
             <a href="#pricing" id="nav-choose-plan" style="display:none;">Choose Plan</a>
-            <a href="javascript:void(0)" onclick="connectQuickBooksOAuth()" id="nav-connect-qb" style="background:#2CA01C;color:#fff;padding:7px 14px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.8rem;white-space:nowrap;display:flex;align-items:center;gap:6px;cursor:pointer;">
-                <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:#fff;border-radius:50%;font-size:0.55rem;font-weight:900;color:#2CA01C;font-style:italic;letter-spacing:-0.5px;line-height:1;">qb</span>
-                Connect QuickBooks
-            </a>
-            <!-- Mini lightning meter -->
-            <div id="nav-meter" style="display:flex;align-items:center;gap:4px;cursor:pointer;" onclick="document.getElementById('portal').scrollIntoView({behavior:'smooth'})" title="Profile completion">
-                <div style="position:relative;width:18px;height:30px;">
-                    <div id="nav-meter-fill" style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,#e8231a,#f59e0b,#22c55e);border-radius:2px;height:0%;transition:height 0.8s ease;z-index:1;"></div>
-                    <svg viewBox="0 0 40 70" width="18" height="30" style="position:absolute;top:0;left:0;z-index:2;" fill="none"><path d="M24 2L4 40H20L16 68L36 28H20L24 2Z" stroke="#e8231a" stroke-width="3" stroke-linejoin="round"/></svg>
-                </div>
-                <span id="nav-meter-pct" style="font-size:0.7rem;font-weight:800;"></span>
+            <!-- Portal section nav -->
+            <div id="portal-section-nav" style="display:flex;align-items:center;gap:3px;">
+                <a href="javascript:void(0)" onclick="scrollToPortalStep('step-services')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.opacity='0.8';this.style.background='transparent'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">1</span> Bookkeeping</a>
+                <a href="javascript:void(0)" onclick="scrollToPortalStep('step-report-catalog')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.opacity='0.8';this.style.background='transparent'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">2</span> Order Report</a>
+                <a href="javascript:void(0)" onclick="scrollToPortalStep('step-upload')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.opacity='0.8';this.style.background='transparent'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">3</span> Upload</a>
+                <a href="javascript:void(0)" onclick="scrollToPortalStep('platform-integrations')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.opacity='0.8';this.style.background='transparent'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">4</span> QuickBooks</a>
+                <a href="javascript:void(0)" onclick="scrollToPortalStep('step-call')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.opacity='0.8';this.style.background='transparent'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">5</span> Schedule Call</a>
             </div>
+            <!-- Hidden elements kept for JS compatibility -->
+            <div id="nav-connect-qb" style="display:none;"></div>
+            <div id="nav-meter" style="display:none;"><div id="nav-meter-fill"></div><span id="nav-meter-pct"></span></div>
             <!-- Hamburger for site pages -->
             <div class="contact-dropdown" style="position:relative;">
                 <button onclick="this.parentElement.classList.toggle('open')" style="background:none;border:1px solid rgba(30,58,95,0.2);color:#1e3a5f;padding:6px 10px;border-radius:6px;font-size:1rem;cursor:pointer;line-height:1;">☰</button>
@@ -7653,7 +7654,7 @@
                 <p style="font-size: 0.85rem; font-style: italic; color: #4a6a8a;">Zac Prizant (right) with twin brother, Max, Yale SOM</p>
             </div>
             <div class="about-text">
-                <h3>Zac Prizant</h3>
+                <h3 style="text-align:center;">Zac Prizant | Cornell MPS in Management</h3>
                 <p>I believe the best financial insights come from human expertise, paired with automation that makes analysis faster, clearer, and more repeatable. With experience across hospitality, private equity, and corporate FP&A, I deliver analysis that drives real decisions.</p>
                 <p>I've sat on every side of the table—closing over $500 million in deals on both the buy and sell side, managing portfolios of over $1 billion, transforming budgeting operations across 75-property portfolios, and launching a fractional CFO division from the ground up.</p>
                 <p>I know what works because I've built the systems myself—automating over 15,000 hours of manual work and turning 8-hour budget cycles into 7-minute ones. What I enjoy most is bringing clarity to businesses that need it.</p>
@@ -7979,11 +7980,11 @@
                 <input type="file" id="logo-input" accept=".png,.jpg,.jpeg,.svg,.webp" style="display: none;" onchange="handleLogoUpload(event)">
                 <img id="company-logo-img" src="" alt="Company Logo" style="display: none;">
 
-                <!-- STEP 1: Select Bookkeeping Services -->
+                <!-- STEP 1: Specify Bookkeeping Needs -->
                 <div class="portal-step-card" id="step-services">
                     <div class="portal-step-header">
                         <div class="portal-step-number">1</div>
-                        <h4>What Do You Need Help With?</h4>
+                        <h4>Specify Bookkeeping Needs</h4>
                     </div>
                     <div class="portal-step-body">
                         <p style="font-size:0.88rem;color:#666;margin-bottom:18px;">Select the services you need. I'll tailor your engagement and reporting to match.</p>
@@ -8033,7 +8034,7 @@
                 <div class="portal-step-card" id="step-report-catalog">
                     <div class="portal-step-header">
                         <div class="portal-step-number">2</div>
-                        <h4>Request a Report</h4>
+                        <h4>Order a Report</h4>
                         <div id="step6-token-badge" style="margin-left:auto;display:none;background:#f0f9ff;color:#1e3a5f;font-size:0.78rem;font-weight:700;padding:5px 12px;border-radius:20px;">⚡ <span id="step6-token-count">0</span> reports left</div>
                     </div>
                     <div class="portal-step-body">
@@ -8083,8 +8084,8 @@
                 <!-- STEP 4: Book a Discovery Call -->
                 <div class="portal-step-card" id="step-call">
                     <div class="portal-step-header">
-                        <div class="portal-step-number">4</div>
-                        <h4>Book a Discovery Call</h4>
+                        <div class="portal-step-number">5</div>
+                        <h4>Schedule a Call</h4>
                     </div>
                     <div class="portal-step-body">
                         <p style="margin-bottom:14px;font-size:0.88rem;color:#666;">Schedule a free 30-minute call with Zac to walk through your needs and see sample deliverables.</p>
@@ -8105,7 +8106,7 @@
                 <!-- STEP 5: Connect QuickBooks -->
                 <div class="portal-step-card" id="platform-integrations">
                     <div class="portal-step-header">
-                        <div class="portal-step-number">5</div>
+                        <div class="portal-step-number">4</div>
                         <h4>Connect QuickBooks</h4>
                     </div>
                     <div class="portal-step-body">
@@ -8127,8 +8128,8 @@
                 <!-- STEP 6: Upload Financial Statements -->
                 <div class="portal-step-card" id="step-upload">
                     <div class="portal-step-header">
-                        <div class="portal-step-number">6</div>
-                        <h4>Upload Financial Statements</h4>
+                        <div class="portal-step-number">3</div>
+                        <h4>Upload Financials</h4>
                     </div>
                     <div class="portal-step-body">
                         <p style="font-size:0.88rem;color:#666;margin-bottom:20px;">Upload monthly statements for as many years as you have available. Excel, CSV, and PDF all work.</p>
@@ -9712,6 +9713,15 @@
                     var cta = card?.querySelector('.portal-plan-cta');
                     if (cta) cta.style.display = 'inline-block';
                 });
+            }
+        }
+
+        function scrollToPortalStep(id) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                el.style.boxShadow = '0 0 0 4px rgba(30,58,95,0.2)';
+                setTimeout(function() { el.style.boxShadow = ''; }, 2000);
             }
         }
 
