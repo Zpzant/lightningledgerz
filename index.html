@@ -1224,6 +1224,7 @@
         /* Portal section - white gradient */
         section#portal {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.88) 100%) !important;
+            padding-top: 70px !important;
         }
 
         section#portal .section-header h2 {
@@ -9075,6 +9076,7 @@
                 loadUserFiles();
                 loadUserReports();
                 loadQBCredentials();
+                loadUserLogo();
                 loadDashboardLink();
                 updateTrialBanner();
                 checkSubscriptionStatusBanners();
@@ -10527,7 +10529,7 @@
                 if (avatarInitials) avatarInitials.style.display = 'none';
                 if (companyLogoImg) {
                     companyLogoImg.src = e.target.result;
-                    companyLogoImg.style.display = 'block';
+                    // Keep hidden — only used for meter check
                 }
                 setTimeout(updateLightningMeter, 300);
             };
@@ -10577,7 +10579,7 @@
                 if (avatarInitials) avatarInitials.style.display = 'none';
                 if (companyLogoImg) {
                     companyLogoImg.src = logoUrl;
-                    companyLogoImg.style.display = 'block';
+                    // Keep hidden — only used for meter check
                 }
             }
         }
@@ -12568,6 +12570,17 @@
             }, true);
 
             catalogCarousel.style.cursor = 'grab';
+        });
+
+        // ===========================================
+        // CLICK OUTSIDE TO CLOSE DROPDOWNS
+        // ===========================================
+        document.addEventListener('click', function(e) {
+            document.querySelectorAll('.contact-dropdown.open').forEach(function(dd) {
+                if (!dd.contains(e.target)) {
+                    dd.classList.remove('open');
+                }
+            });
         });
     </script>
 
