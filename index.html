@@ -7643,7 +7643,7 @@
                 <p style="font-size: 0.85rem; font-style: italic; color: #4a6a8a;">Zac Prizant (right) with twin brother, Max, Yale SOM</p>
             </div>
             <div class="about-text">
-                <h3>Zachary Prizant (Zac Prizant) | Cornell Master's in Management</h3>
+                <h3>Zac Prizant</h3>
                 <p>I believe the best financial insights come from human expertise, paired with automation that makes analysis faster, clearer, and more repeatable. With experience across hospitality, private equity, and corporate FP&A, I deliver analysis that drives real decisions.</p>
                 <p>I've sat on every side of the table—closing over $500 million in deals on both the buy and sell side, managing portfolios of over $1 billion, transforming budgeting operations across 75-property portfolios, and launching a fractional CFO division from the ground up.</p>
                 <p>I know what works because I've built the systems myself—automating over 15,000 hours of manual work and turning 8-hour budget cycles into 7-minute ones. What I enjoy most is bringing clarity to businesses that need it.</p>
@@ -7867,30 +7867,42 @@
                 <p class="payment-gate-fine">By subscribing you confirm you have signed the Client Services Agreement above. You may cancel anytime with no penalty.</p>
             </div>
 
-            <!-- Plan Status Bar — replaces old dashboard header -->
-            <div id="plan-status-bar" style="background:linear-gradient(135deg,#0d1b2a,#1e3a5f);border-radius:14px;padding:18px 28px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-                <div style="display:flex;align-items:center;gap:14px;">
-                    <span id="user-display-name" style="display:none;">there</span>
-                    <div id="plan-status-text" style="color:#fff;font-size:0.95rem;font-weight:600;">
-                        You don't have a plan yet
-                    </div>
-                    <div id="plan-status-badge" style="display:none;padding:4px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;"></div>
+            <!-- Inline Plan Cards -->
+            <div id="portal-plan-cards" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
+                <div class="portal-plan-card" id="portal-plan-basic" onclick="selectPlan('basic')" style="border:2px solid #e2e8f0;border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:all 0.25s;background:#fff;position:relative;">
+                    <div style="font-size:0.72rem;font-weight:800;color:#e8231a;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">⚡ Basic</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:#1e3a5f;">$799<span style="font-size:0.7rem;font-weight:400;color:#94a3b8">/mo</span></div>
+                    <div style="font-size:0.68rem;color:#94a3b8;margin:4px 0 8px;">2 reports/month</div>
+                    <div class="portal-plan-cta" style="background:#e8231a;color:#fff;padding:8px 16px;border-radius:8px;font-size:0.75rem;font-weight:700;display:inline-block;">Select Basic</div>
                 </div>
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <div id="token-display" style="display:none;color:#fff;font-size:0.85rem;font-weight:700;">
-                        ⚡ <span id="token-count">0</span> reports left
-                    </div>
-                    <a href="#pricing" id="plan-action-btn" onclick="showHomepage();setTimeout(function(){document.getElementById('pricing').scrollIntoView({behavior:'smooth'})},300)" style="background:#e8231a;color:#fff;padding:10px 22px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.88rem;cursor:pointer;white-space:nowrap;">Select a Plan →</a>
-                    <button id="admin-btn" class="btn-admin" onclick="openAdminDashboard()" style="display:none;background:rgba(255,255,255,0.15);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-weight:700;font-size:0.82rem;cursor:pointer;">Admin</button>
+                <div class="portal-plan-card" id="portal-plan-gold" onclick="selectPlan('gold')" style="border:2px solid #d4a017;border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:all 0.25s;background:#fff;position:relative;box-shadow:0 0 0 1px rgba(212,160,23,0.2);">
+                    <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#d4a017,#f5a623);color:#fff;font-size:0.6rem;font-weight:800;padding:3px 12px;border-radius:10px;letter-spacing:1px;text-transform:uppercase;">MOST POPULAR</div>
+                    <div style="font-size:0.72rem;font-weight:800;color:#d4a017;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;margin-top:4px;">✨ Gold</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:#1e3a5f;">$1,299<span style="font-size:0.7rem;font-weight:400;color:#94a3b8">/mo</span></div>
+                    <div style="font-size:0.68rem;color:#94a3b8;margin:4px 0 8px;">5 reports/month</div>
+                    <div class="portal-plan-cta" style="background:linear-gradient(135deg,#d4a017,#f5a623);color:#fff;padding:8px 16px;border-radius:8px;font-size:0.75rem;font-weight:700;display:inline-block;">Upgrade to Gold</div>
+                </div>
+                <div class="portal-plan-card" id="portal-plan-diamond" onclick="selectPlan('diamond')" style="border:2px solid #667eea;border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:all 0.25s;background:#fff;position:relative;">
+                    <div style="font-size:0.72rem;font-weight:800;color:#667eea;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">💎 Diamond</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:#1e3a5f;">$3,999<span style="font-size:0.7rem;font-weight:400;color:#94a3b8">/mo</span></div>
+                    <div style="font-size:0.68rem;color:#94a3b8;margin:4px 0 8px;">Unlimited reports</div>
+                    <div class="portal-plan-cta" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:8px 16px;border-radius:8px;font-size:0.75rem;font-weight:700;display:inline-block;">Go Diamond</div>
                 </div>
             </div>
             <!-- Hidden elements needed by JS -->
             <div style="display:none;">
+                <div id="plan-status-bar"></div>
+                <div id="plan-status-text"></div>
+                <div id="plan-status-badge"></div>
+                <div id="plan-action-btn"></div>
+                <div id="token-display"><span id="token-count">0</span></div>
                 <div id="tier-badge"></div>
+                <div id="user-display-name">there</div>
                 <div id="header-tier-group"></div>
                 <div id="header-countdown"><span id="countdown-display"></span><span class="countdown-label"></span></div>
                 <div id="demo-tier-selector"><select id="demo-tier-select" onchange="changeDemoTier(this.value)"><option value="basic">Basic</option><option value="gold">Gold</option><option value="diamond">Diamond</option></select></div>
                 <button id="upgrade-btn" style="display:none;"></button>
+                <button id="admin-btn" class="btn-admin" onclick="openAdminDashboard()" style="display:none;">Admin</button>
             </div>
 
             <!-- Early-Bird Discount Banner -->
@@ -9611,6 +9623,54 @@
             renderReportCatalog();
             applyServiceTierLocking();
             applyDiamondLogoSwap(tier);
+            updatePortalPlanCards(tier);
+        }
+
+        function updatePortalPlanCards(tier) {
+            var plans = ['basic', 'gold', 'diamond'];
+            var tierRank = TIER_ORDER[tier] || 0;
+            var upsellText = {
+                basic: { gold: 'Need more reports? Upgrade', diamond: 'Unlimited reporting — Go Diamond' },
+                gold: { diamond: 'Need unlimited reports? Go Diamond' },
+                diamond: {}
+            };
+            plans.forEach(function(plan) {
+                var card = document.getElementById('portal-plan-' + plan);
+                if (!card) return;
+                var planRank = TIER_ORDER[plan];
+                var cta = card.querySelector('.portal-plan-cta');
+                if (plan === tier) {
+                    card.style.border = '3px solid #22c55e';
+                    card.style.background = 'rgba(34,197,94,0.04)';
+                    card.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.15)';
+                    card.style.cursor = 'default';
+                    card.onclick = null;
+                    if (cta) { cta.textContent = '✓ Current Plan'; cta.style.background = '#22c55e'; }
+                } else if (planRank < tierRank) {
+                    card.style.opacity = '0.4';
+                    card.style.cursor = 'default';
+                    card.onclick = null;
+                    if (cta) { cta.style.display = 'none'; }
+                } else {
+                    card.style.border = ''; card.style.background = '#fff';
+                    card.style.boxShadow = ''; card.style.opacity = '1';
+                    card.style.cursor = 'pointer';
+                    if (cta) {
+                        var text = (upsellText[tier] && upsellText[tier][plan]) || ('Upgrade to ' + plan.charAt(0).toUpperCase() + plan.slice(1));
+                        cta.textContent = text;
+                        cta.style.display = 'inline-block';
+                    }
+                }
+            });
+            // If no plan, show "Select a Plan" header
+            if (tier === 'none') {
+                plans.forEach(function(plan) {
+                    var card = document.getElementById('portal-plan-' + plan);
+                    if (card) { card.style.opacity = '1'; card.style.cursor = 'pointer'; card.onclick = function() { selectPlan(plan); }; }
+                    var cta = card?.querySelector('.portal-plan-cta');
+                    if (cta) cta.style.display = 'inline-block';
+                });
+            }
         }
 
         function showHomepage() {
