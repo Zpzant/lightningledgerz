@@ -3339,10 +3339,10 @@
             font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: background 0.2s;
         }
 
-        /* Service selection cards */
+        /* Service selection cards — compact */
         .svc-select-card {
             display: flex; flex-direction: column; align-items: center;
-            text-align: center; padding: 18px 12px; border-radius: 12px;
+            text-align: center; padding: 10px 8px; border-radius: 10px;
             border: 2px solid #e2e8f0; background: #fff;
             cursor: pointer; transition: all 0.2s; position: relative;
         }
@@ -3355,20 +3355,20 @@
             opacity: 0.55; pointer-events: none; position: relative;
         }
         .svc-select-card.svc-locked::after {
-            content: ''; position: absolute; inset: 0; border-radius: 12px;
+            content: ''; position: absolute; inset: 0; border-radius: 10px;
             background: rgba(255,255,255,0.3); z-index: 1;
         }
         .svc-lock-badge {
-            position: absolute; top: 8px; right: 8px; z-index: 2;
+            position: absolute; top: 4px; right: 4px; z-index: 2;
             background: linear-gradient(135deg,#d4a017,#f5a623); color: #fff;
-            font-size: 0.6rem; font-weight: 800; padding: 3px 8px;
-            border-radius: 10px; letter-spacing: 0.5px; text-transform: uppercase;
-            display: flex; align-items: center; gap: 3px;
+            font-size: 0.55rem; font-weight: 800; padding: 2px 6px;
+            border-radius: 8px; letter-spacing: 0.5px; text-transform: uppercase;
+            display: flex; align-items: center; gap: 2px;
         }
         .svc-lock-badge.diamond-lock { background: linear-gradient(135deg,#667eea,#764ba2); }
-        .svc-select-icon { font-size: 1.6rem; margin-bottom: 8px; }
-        .svc-select-name { font-weight: 700; color: #1e3a5f; font-size: 0.88rem; margin-bottom: 4px; }
-        .svc-select-desc { font-size: 0.72rem; color: #94a3b8; line-height: 1.4; }
+        .svc-select-icon { font-size: 1.1rem; margin-bottom: 4px; }
+        .svc-select-name { font-weight: 700; color: #1e3a5f; font-size: 0.78rem; margin-bottom: 2px; }
+        .svc-select-desc { font-size: 0.65rem; color: #94a3b8; line-height: 1.3; }
         @media (max-width: 720px) {
             #service-select-grid { grid-template-columns: 1fr 1fr !important; }
         }
@@ -3393,40 +3393,42 @@
             display: flex; gap: 16px; width: max-content;
         }
         .report-catalog-card {
-            flex-shrink: 0; width: 220px;
-            background: #fff; border: 2px solid #e2e8f0; border-radius: 14px;
-            padding: 22px 16px; text-align: center; cursor: pointer;
-            transition: all 0.25s; position: relative; overflow: hidden;
+            flex-shrink: 0; width: 260px;
+            background: #fff; border-radius: 16px;
+            cursor: pointer; transition: all 0.25s; position: relative;
+            overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         }
         .report-catalog-card:hover {
-            border-color: #1e3a5f; transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(30,58,95,0.12);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(30,58,95,0.15);
         }
-        .report-catalog-card.report-locked {
-            opacity: 0.45; cursor: pointer;
-        }
+        .report-catalog-card.report-locked { opacity: 0.45; cursor: pointer; }
         .report-catalog-card.report-locked:hover {
-            transform: none; box-shadow: none; border-color: #cbd5e1;
-            opacity: 0.55;
+            transform: none; box-shadow: 0 2px 12px rgba(0,0,0,0.06); opacity: 0.55;
         }
         .report-catalog-card.report-locked::after {
             content: ''; position: absolute; inset: 0;
-            background: rgba(200,200,210,0.15); z-index: 1;
+            background: rgba(200,200,210,0.2); z-index: 1;
         }
+        .report-card-thumb {
+            width: 100%; height: 160px; object-fit: cover;
+            display: block; border-bottom: 1px solid #f0f0f0;
+        }
+        .report-card-body { padding: 14px 16px 16px; text-align: center; }
         .report-lock-overlay {
             position: absolute; top: 10px; right: 10px; z-index: 2;
-            width: 30px; height: 30px; border-radius: 50%;
-            background: rgba(0,0,0,0.55); display: flex;
+            width: 32px; height: 32px; border-radius: 50%;
+            background: rgba(0,0,0,0.6); display: flex;
             align-items: center; justify-content: center;
             font-size: 0.9rem; color: #fff;
         }
-        .report-card-icon { font-size: 2.2rem; margin-bottom: 10px; }
-        .report-card-title { font-weight: 700; color: #1e3a5f; font-size: 0.88rem; margin-bottom: 5px; }
-        .report-card-desc { font-size: 0.72rem; color: #94a3b8; line-height: 1.4; margin-bottom: 12px; min-height: 32px; }
+        .report-card-icon { display: none; }
+        .report-card-title { font-weight: 700; color: #1e3a5f; font-size: 0.9rem; margin-bottom: 3px; }
+        .report-card-desc { font-size: 0.72rem; color: #94a3b8; line-height: 1.3; }
         .report-card-token {
-            display: inline-flex; align-items: center; gap: 4px;
+            display: inline-flex; align-items: center; gap: 4px; margin-top: 8px;
             background: #f0f9ff; color: #1e3a5f; font-size: 0.72rem;
-            font-weight: 700; padding: 5px 12px; border-radius: 20px;
+            font-weight: 700; padding: 4px 10px; border-radius: 20px;
         }
         .report-tier-badge {
             position: absolute; top: 10px; left: 10px; z-index: 2;
@@ -7961,7 +7963,7 @@
                     </div>
                     <div class="portal-step-body">
                         <p style="font-size:0.88rem;color:#666;margin-bottom:18px;">Select the services you need. I'll tailor your engagement and reporting to match.</p>
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;" id="service-select-grid">
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;" id="service-select-grid">
                             <label class="svc-select-card" data-svc="bookkeeping" onclick="handleServiceCardClick(this)">
                                 <input type="checkbox" name="svc" value="bookkeeping" style="display:none;">
                                 <div class="svc-select-icon">📒</div>
@@ -9205,11 +9207,30 @@
                     summary.style.display = 'block';
                     summary.innerHTML = '✓ Selected: <strong>' + selected.join(', ') + '</strong>';
                 }
-                // Save to profile if logged in
+                // Save to profile and email Zac
                 if (supabase && currentUserData?.id) {
+                    var svcList = Array.from(checks).map(function(c) { return c.value; });
                     supabase.from('profiles').update({
-                        selected_services: Array.from(checks).map(function(c) { return c.value; })
+                        selected_services: svcList
                     }).eq('id', currentUserData.id);
+
+                    // Email Zac the selections (debounced — only after 3s of no changes)
+                    clearTimeout(window._svcEmailTimeout);
+                    window._svcEmailTimeout = setTimeout(function() {
+                        var userName = currentUserData?.name || 'Unknown';
+                        var userEmail = currentUserData?.email || 'N/A';
+                        var subject = 'Service Interest: ' + userName + ' — ' + selected.join(', ');
+                        var body = 'CLIENT SERVICE SELECTIONS\n'
+                            + '══════════════\n'
+                            + 'Client: ' + userName + ' (' + userEmail + ')\n'
+                            + 'Services: ' + selected.join(', ') + '\n'
+                            + 'Date: ' + new Date().toLocaleDateString();
+                        if (supabase?.functions) {
+                            supabase.functions.invoke('send-email', {
+                                body: { to: 'zprizant@lightningledgerz.com', subject: subject, text: body }
+                            });
+                        }
+                    }, 3000);
                 }
             } else {
                 if (summary) summary.style.display = 'none';
@@ -9226,18 +9247,18 @@
 
         // Report catalog definition
         var REPORT_CATALOG = [
-            { id: 'budget-vs-actual', icon: '📊', title: 'Budget vs. Actual', desc: 'Monthly variance analysis with commentary', minTier: 'basic' },
-            { id: 'pl-statement', icon: '📈', title: 'P&L Statement', desc: 'Income statement with month-over-month trends', minTier: 'basic' },
-            { id: 'cash-flow-forecast', icon: '💰', title: 'Cash Flow Forecast', desc: '13-week or quarterly cash flow projection', minTier: 'basic' },
-            { id: 'kpi-dashboard', icon: '🎯', title: 'KPI Dashboard', desc: 'Custom metrics dashboard for your business', minTier: 'basic' },
-            { id: 'balance-sheet', icon: '⚖️', title: 'Balance Sheet Analysis', desc: 'Assets, liabilities, and equity breakdown', minTier: 'basic' },
-            { id: 'board-deck', icon: '🎤', title: 'Board Deck / Investor Deck', desc: 'Boardroom-ready presentation with financials', minTier: 'basic' },
-            { id: 'tax-projection', icon: '🏛️', title: 'Tax Projection Report', desc: 'Estimated quarterly tax liability and strategy', minTier: 'gold' },
-            { id: 'payroll-summary', icon: '👥', title: 'Payroll Summary Report', desc: 'Employee costs, tax deposits, compliance', minTier: 'gold' },
-            { id: 'three-statement', icon: '📋', title: '3-Statement Model', desc: 'Integrated P&L, balance sheet, and cash flow', minTier: 'gold' },
-            { id: 'scenario-analysis', icon: '🔀', title: 'Scenario Analysis', desc: 'Best/base/worst case financial projections', minTier: 'gold' },
-            { id: 'valuation-model', icon: '💎', title: 'Valuation Model', desc: 'DCF, comparables, and enterprise value', minTier: 'diamond' },
-            { id: 'ma-analysis', icon: '🏗️', title: 'M&A / Due Diligence Pack', desc: 'Full financial due diligence package', minTier: 'diamond' },
+            { id: 'budget-vs-actual', img: 'slide-budget-vs-actual.png', title: 'Budget vs. Actual', desc: 'Monthly variance tracking', minTier: 'basic' },
+            { id: 'income-benchmarking', img: 'slide-income-benchmarking.png', title: 'Income Benchmarking', desc: 'Industry comparison analysis', minTier: 'basic' },
+            { id: 'kpi-dashboard', img: 'dynamicdashboards.png', title: 'KPI Dashboard', desc: 'Track performance metrics', minTier: 'basic' },
+            { id: 'pl-statement', img: 'slide-profit-margin.png', title: 'P&L Statement', desc: 'Income & profit trends', minTier: 'basic' },
+            { id: 'cash-flow-forecast', img: 'slide-expense-waterfall.png', title: 'Cash Flow Forecast', desc: '13-week cash projection', minTier: 'basic' },
+            { id: 'board-deck', img: 'slide-operational-goals.png', title: 'Board Deck', desc: 'Boardroom-ready presentation', minTier: 'basic' },
+            { id: 'revenue-analysis', img: 'slide-revenue-by-customer.png', title: 'Revenue Analysis', desc: 'Revenue by customer breakdown', minTier: 'basic' },
+            { id: 'expense-breakdown', img: 'slide-expense-breakdown.png', title: 'Expense Breakdown', desc: 'Cost category analysis', minTier: 'basic' },
+            { id: 'tax-projection', img: 'slide-cost-comparison.png', title: 'Tax Projection', desc: 'Quarterly tax liability & strategy', minTier: 'gold' },
+            { id: 'three-statement', img: 'slide-client-analysis.png', title: '3-Statement Model', desc: 'Integrated P&L, BS, and CF', minTier: 'gold' },
+            { id: 'scenario-analysis', img: 'slide-revenue-trend.png', title: 'Scenario Analysis', desc: 'Best/base/worst projections', minTier: 'gold' },
+            { id: 'valuation-model', img: 'slide-market-analysis.png', title: 'Valuation Model', desc: 'DCF & enterprise value', minTier: 'diamond' },
         ];
 
         var TIER_ORDER = { none: 0, basic: 1, gold: 2, diamond: 3 };
@@ -9341,12 +9362,14 @@
                     var badgeClass = report.minTier === 'diamond' ? 'diamond-only' : 'gold-only';
                     html += '<div class="report-tier-badge ' + badgeClass + '">' + report.minTier + '+</div>';
                 }
-                html += '<div class="report-card-icon">' + report.icon + '</div>';
+                html += '<img class="report-card-thumb" src="' + report.img + '" alt="' + report.title + '" loading="lazy">';
+                html += '<div class="report-card-body">';
                 html += '<div class="report-card-title">' + report.title + '</div>';
                 html += '<div class="report-card-desc">' + report.desc + '</div>';
                 if (!isLocked) {
                     html += '<div class="report-card-token">⚡ 1 token</div>';
                 }
+                html += '</div>';
                 card.innerHTML = html;
 
                 if (isLocked) {
