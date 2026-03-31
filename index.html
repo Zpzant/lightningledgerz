@@ -750,8 +750,9 @@
         .user-welcome {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-left: 15px;
+            gap: 8px;
+            margin-left: 6px;
+            margin-right: auto;
         }
 
         #nav-welcome-text {
@@ -6808,6 +6809,7 @@
             </div>
             <span id="nav-welcome-text">Hi, User!</span>
             <span id="nav-plan-badge" class="plan-badge badge-basic">Basic</span>
+            <span id="nav-token-badge" style="display:none;font-size:0.75rem;font-weight:700;color:#1e3a5f;background:#f0f9ff;padding:3px 10px;border-radius:12px;">⚡ <span id="nav-token-count-inline">0</span></span>
         </div>
         <ul class="nav-links" id="nav-links">
             <li class="mobile-only"><a href="#portal" onclick="closeMobileMenu()" class="mobile-cta">Get Started</a></li>
@@ -9272,6 +9274,14 @@
             // Report order modal remaining
             var ror = document.getElementById('report-order-remaining');
             if (ror) ror.textContent = displayVal;
+
+            // Inline nav token badge (next to "Hi, Name!")
+            var navTokenBadge = document.getElementById('nav-token-badge');
+            var navTokenCount = document.getElementById('nav-token-count-inline');
+            if (navTokenBadge) {
+                navTokenBadge.style.display = 'inline-block';
+                if (navTokenCount) navTokenCount.textContent = displayVal;
+            }
         }
 
         function animateTokenSpend() {
