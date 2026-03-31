@@ -6883,7 +6883,8 @@
                 <a href="javascript:void(0)" onclick="scrollToPortalStep('step-report-catalog')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.opacity='0.8';this.style.background='transparent'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">2</span> Order Report</a>
                 <a href="javascript:void(0)" onclick="scrollToPortalStep('step-upload')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.opacity='0.8';this.style.background='transparent'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">3</span> Upload</a>
                 <a href="javascript:void(0)" onclick="scrollToPortalStep('platform-integrations')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.opacity='0.8';this.style.background='transparent'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">4</span> QuickBooks</a>
-                <a href="javascript:void(0)" onclick="scrollToPortalStep('step-call')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.opacity='0.8';this.style.background='transparent'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">5</span> Schedule Call</a>
+                <a href="javascript:void(0)" onclick="scrollToPortalStep('step-my-reports')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.opacity='0.8';this.style.background='transparent'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">5</span> My Reports</a>
+                <a href="javascript:void(0)" onclick="scrollToPortalStep('step-call')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.opacity='0.8';this.style.background='transparent'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">6</span> Schedule Call</a>
             </div>
             <!-- Hidden elements kept for JS compatibility -->
             <div id="nav-connect-qb" style="display:none;"></div>
@@ -8057,81 +8058,7 @@
                     </div>
                 </div>
 
-                <!-- STEP 3: My Delivered Reports -->
-                <div class="portal-step-card">
-                    <div class="portal-step-header">
-                        <div class="portal-step-number">3</div>
-                        <h4>My Reports</h4>
-                    </div>
-                    <div class="portal-step-body">
-                        <div class="fathom-link-card" id="fathom-link-card" style="display: none;">
-                            <div class="fathom-link-header">
-                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 6-10"/></svg>
-                                <span>Live Financial Dashboard</span>
-                            </div>
-                            <p class="fathom-link-desc">Your advisor has linked a live reporting dashboard for your business.</p>
-                            <a href="#" id="fathom-link-url" target="_blank" class="fathom-link-btn">Open Dashboard</a>
-                        </div>
-                        <div class="carousel-search">
-                            <input type="text" id="reports-search" placeholder="Search by title or date..." oninput="filterReportsCarousel()">
-                        </div>
-                        <div class="portal-reports-carousel-container" id="reports-carousel-container">
-                            <div class="portal-reports-carousel" id="reports-carousel">
-                                <p class="carousel-empty" id="reports-empty">Your FP&amp;A reports will appear here.</p>
-                            </div>
-                        </div>
-                        <div class="portal-scroll-hint">
-                            <span>Drag to explore</span>
-                            <span>&#8594;</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- STEP 4: Book a Discovery Call -->
-                <div class="portal-step-card" id="step-call">
-                    <div class="portal-step-header">
-                        <div class="portal-step-number">5</div>
-                        <h4>Schedule a Call</h4>
-                    </div>
-                    <div class="portal-step-body">
-                        <p style="margin-bottom:14px;font-size:0.88rem;color:#666;">Schedule a free 30-minute call with Zac to walk through your needs and see sample deliverables.</p>
-                        <a href="mailto:zprizant@lightningledgerz.com?subject=Discovery%20Call%20Request" class="book-call-btn" id="book-call-btn" onclick="markCallBooked()">Schedule My Free Call &rarr;</a>
-                        <div id="call-booked-badge" style="display:none; margin-top:12px;">
-                            <div class="nda-signed-badge">
-                                <span class="nda-signed-check">&#128222;</span>
-                                <div>
-                                    <div class="nda-signed-title">Call Scheduled</div>
-                                    <div class="nda-signed-meta">Check your email for confirmation</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('call')">Skip</button></div>
-                    </div>
-                </div>
-
-                <!-- STEP 5: Connect QuickBooks -->
-                <div class="portal-step-card" id="platform-integrations">
-                    <div class="portal-step-header">
-                        <div class="portal-step-number">4</div>
-                        <h4>Connect QuickBooks</h4>
-                    </div>
-                    <div class="portal-step-body">
-                        <p style="font-size:0.88rem;color:#666;margin-bottom:16px;">Connect your QuickBooks account — I pull your financials directly, no manual uploads needed.</p>
-                        <a href="javascript:void(0)" onclick="connectQuickBooksOAuth()" id="qb-connect-btn-portal" style="display:inline-flex;align-items:center;gap:10px;background:#2CA01C;color:#fff;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-size:0.95rem;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 15px rgba(44,160,28,0.3);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
-                            <svg viewBox="0 0 40 40" width="24" height="24"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M13 12v16M13 12c0-2.2 1.8-4 4-4h2c2.2 0 4 1.8 4 4v8c0 2.2-1.8 4-4 4h-2" stroke="#2CA01C" stroke-width="2.5" fill="none"/><path d="M27 28V12M27 28c0 2.2-1.8 4-4 4h-2c-2.2 0-4-1.8-4-4v-8c0-2.2 1.8-4 4-4h2" stroke="#2CA01C" stroke-width="2.5" fill="none"/></svg>
-                            Connect QuickBooks
-                        </a>
-                        <div id="connected-platforms-badges" style="display:none; margin:14px 0 4px;">
-                            <div id="connected-badges-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
-                        </div>
-                        <div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-radius:8px;">
-                            <span style="font-size:0.78rem;color:#94a3b8;">&#128274; 256-bit encrypted &middot; Revoke anytime</span>
-                        </div>
-                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('db')">Skip</button></div>
-                    </div>
-                </div>
-
-                <!-- STEP 6: Upload Financial Statements -->
+                <!-- STEP 3: Upload Financials -->
                 <div class="portal-step-card" id="step-upload">
                     <div class="portal-step-header">
                         <div class="portal-step-number">3</div>
@@ -8169,6 +8096,80 @@
                     </div>
                 </div>
 
+                <!-- STEP 4: Connect QuickBooks -->
+                <div class="portal-step-card" id="platform-integrations">
+                    <div class="portal-step-header">
+                        <div class="portal-step-number">4</div>
+                        <h4>Connect QuickBooks</h4>
+                    </div>
+                    <div class="portal-step-body">
+                        <p style="font-size:0.88rem;color:#666;margin-bottom:16px;">Connect your QuickBooks account — I pull your financials directly, no manual uploads needed.</p>
+                        <a href="javascript:void(0)" onclick="connectQuickBooksOAuth()" id="qb-connect-btn-portal" style="display:inline-flex;align-items:center;gap:10px;background:#2CA01C;color:#fff;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-size:0.95rem;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 15px rgba(44,160,28,0.3);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+                            <svg viewBox="0 0 40 40" width="24" height="24"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M13 12v16M13 12c0-2.2 1.8-4 4-4h2c2.2 0 4 1.8 4 4v8c0 2.2-1.8 4-4 4h-2" stroke="#2CA01C" stroke-width="2.5" fill="none"/><path d="M27 28V12M27 28c0 2.2-1.8 4-4 4h-2c-2.2 0-4-1.8-4-4v-8c0-2.2 1.8-4 4-4h2" stroke="#2CA01C" stroke-width="2.5" fill="none"/></svg>
+                            Connect QuickBooks
+                        </a>
+                        <div id="connected-platforms-badges" style="display:none; margin:14px 0 4px;">
+                            <div id="connected-badges-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+                        </div>
+                        <div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-radius:8px;">
+                            <span style="font-size:0.78rem;color:#94a3b8;">&#128274; 256-bit encrypted &middot; Revoke anytime</span>
+                        </div>
+                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('db')">Skip</button></div>
+                    </div>
+                </div>
+
+                <!-- STEP 5: View My Reports -->
+                <div class="portal-step-card" id="step-my-reports">
+                    <div class="portal-step-header">
+                        <div class="portal-step-number">5</div>
+                        <h4>My Reports</h4>
+                    </div>
+                    <div class="portal-step-body">
+                        <div class="fathom-link-card" id="fathom-link-card" style="display: none;">
+                            <div class="fathom-link-header">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 6-10"/></svg>
+                                <span>Live Financial Dashboard</span>
+                            </div>
+                            <p class="fathom-link-desc">Your advisor has linked a live reporting dashboard for your business.</p>
+                            <a href="#" id="fathom-link-url" target="_blank" class="fathom-link-btn">Open Dashboard</a>
+                        </div>
+                        <div class="carousel-search">
+                            <input type="text" id="reports-search" placeholder="Search by title or date..." oninput="filterReportsCarousel()">
+                        </div>
+                        <div class="portal-reports-carousel-container" id="reports-carousel-container">
+                            <div class="portal-reports-carousel" id="reports-carousel">
+                                <p class="carousel-empty" id="reports-empty">Your FP&amp;A reports will appear here.</p>
+                            </div>
+                        </div>
+                        <div class="portal-scroll-hint">
+                            <span>Drag to explore</span>
+                            <span>&#8594;</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 6: Schedule a Call -->
+                <div class="portal-step-card" id="step-call">
+                    <div class="portal-step-header">
+                        <div class="portal-step-number">6</div>
+                        <h4>Schedule a Call</h4>
+                    </div>
+                    <div class="portal-step-body">
+                        <p style="margin-bottom:14px;font-size:0.88rem;color:#666;">Schedule a free 30-minute call with Zac to walk through your needs and see sample deliverables.</p>
+                        <a href="mailto:zprizant@lightningledgerz.com?subject=Discovery%20Call%20Request" class="book-call-btn" id="book-call-btn" onclick="markCallBooked()">Schedule My Free Call &rarr;</a>
+                        <div id="call-booked-badge" style="display:none; margin-top:12px;">
+                            <div class="nda-signed-badge">
+                                <span class="nda-signed-check">&#128222;</span>
+                                <div>
+                                    <div class="nda-signed-title">Call Scheduled</div>
+                                    <div class="nda-signed-meta">Check your email for confirmation</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('call')">Skip</button></div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Security Bar -->
@@ -8191,6 +8192,16 @@
                 <div class="report-order-field">
                     <label for="report-order-notes">Describe what you need</label>
                     <textarea id="report-order-notes" placeholder="E.g., I need a budget vs. actual for Q1 2026 with variance commentary for my board meeting next Tuesday..."></textarea>
+                </div>
+                <div style="margin:14px 0;">
+                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.85rem;color:#1e3a5f;font-weight:600;">
+                        <input type="checkbox" id="report-order-recurring" style="width:18px;height:18px;accent-color:#1e3a5f;">
+                        Make this a recurring monthly report
+                    </label>
+                </div>
+                <div class="report-order-field" style="margin-bottom:14px;">
+                    <label for="report-order-extra-notes">Additional notes for Zac</label>
+                    <textarea id="report-order-extra-notes" placeholder="Any other context, deadlines, preferences..." style="width:100%;border:2px solid #e2e8f0;border-radius:10px;padding:10px;font-family:inherit;font-size:0.85rem;resize:vertical;min-height:60px;"></textarea>
                 </div>
                 <div class="report-order-token-info">
                     <span>⚡</span>
@@ -9493,14 +9504,18 @@
             var userName = currentUserData?.name || currentUserData?.first_name || 'Unknown';
             var userEmail = currentUserData?.email || 'N/A';
             var tier = getUserTier();
-            var subject = 'Report Request: ' + report.title + ' — ' + userName;
+            var isRecurring = document.getElementById('report-order-recurring')?.checked || false;
+            var extraNotes = document.getElementById('report-order-extra-notes')?.value.trim() || '';
+            var subject = (isRecurring ? '[RECURRING] ' : '') + 'Report Request: ' + report.title + ' — ' + userName;
             var body = 'REPORT REQUEST\n'
                 + '══════════════\n'
                 + 'Report: ' + report.title + '\n'
                 + 'Client: ' + userName + ' (' + userEmail + ')\n'
                 + 'Tier: ' + tier.charAt(0).toUpperCase() + tier.slice(1) + '\n'
+                + 'Recurring: ' + (isRecurring ? 'YES — every month' : 'One-time') + '\n'
                 + 'Date: ' + new Date().toLocaleDateString() + '\n\n'
-                + 'DETAILS:\n' + notes;
+                + 'DETAILS:\n' + notes
+                + (extraNotes ? '\n\nADDITIONAL NOTES:\n' + extraNotes : '');
 
             // Send via Resend edge function (if available) or mailto fallback
             sendReportEmail(subject, body, report, userName);
@@ -9549,7 +9564,8 @@
                     user_id: currentUserData.id,
                     report_type: report.id,
                     report_title: report.title,
-                    notes: document.getElementById('report-order-notes')?.value || '',
+                    notes: (document.getElementById('report-order-notes')?.value || '') + (extraNotes ? '\n\n' + extraNotes : ''),
+                    recurring: isRecurring,
                     status: 'pending',
                     created_at: new Date().toISOString()
                 });
@@ -9723,11 +9739,25 @@
         }
 
         function scrollToPortalStep(id) {
-            var el = document.getElementById(id);
-            if (el) {
-                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                el.style.boxShadow = '0 0 0 4px rgba(30,58,95,0.2)';
-                setTimeout(function() { el.style.boxShadow = ''; }, 2000);
+            // If portal is hidden (user is on homepage), go back to portal first
+            var portal = document.getElementById('portal');
+            if (portal && portal.style.display === 'none') {
+                backToPortal();
+                setTimeout(function() {
+                    var el = document.getElementById(id);
+                    if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        el.style.boxShadow = '0 0 0 4px rgba(30,58,95,0.2)';
+                        setTimeout(function() { el.style.boxShadow = ''; }, 2000);
+                    }
+                }, 400);
+            } else {
+                var el = document.getElementById(id);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    el.style.boxShadow = '0 0 0 4px rgba(30,58,95,0.2)';
+                    setTimeout(function() { el.style.boxShadow = ''; }, 2000);
+                }
             }
         }
 
