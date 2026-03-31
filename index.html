@@ -6882,11 +6882,11 @@
                 <div class="contact-dropdown-menu" style="display:none;position:absolute;top:110%;right:0;background:#fff;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.15);padding:10px 0;min-width:200px;z-index:999;">
                     <a href="javascript:void(0)" onclick="showHomepage()" id="hamburger-homepage" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">← Back to Homepage</a>
                     <a href="javascript:void(0)" onclick="backToPortal()" id="hamburger-portal" style="display:none;padding:10px 20px;color:#e8231a;text-decoration:none;font-size:0.88rem;font-weight:700;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">⚡ Back to Portal</a>
-                    <a href="#pricing" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">Services</a>
-                    <a href="#work" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">Portfolio</a>
-                    <a href="#about" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">About</a>
-                    <a href="#schedule" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">Schedule</a>
-                    <div style="height:1px;background:#e2e8f0;margin:6px 0;"></div>
+                    <a href="#pricing" class="hamburger-page-link" style="display:none;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">Services</a>
+                    <a href="#work" class="hamburger-page-link" style="display:none;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">Portfolio</a>
+                    <a href="#about" class="hamburger-page-link" style="display:none;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">About</a>
+                    <a href="#schedule" class="hamburger-page-link" style="display:none;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">Schedule</a>
+                    <div class="hamburger-page-link" style="display:none;height:1px;background:#e2e8f0;margin:6px 0;"></div>
                     <a href="tel:+17025502513" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">☎ (702) 550-2513</a>
                     <a href="mailto:info@lightningledgerz.com" style="display:flex;align-items:center;gap:6px;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;white-space:nowrap;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">✉ info@lightningledgerz.com</a>
                 </div>
@@ -9637,6 +9637,8 @@
             var hPortal = document.getElementById('hamburger-portal');
             if (hHome) hHome.style.display = 'none';
             if (hPortal) hPortal.style.display = 'block';
+            // Show page links in hamburger when on homepage
+            document.querySelectorAll('.hamburger-page-link').forEach(function(l) { l.style.display = 'block'; });
             // Close dropdowns
             document.querySelectorAll('.contact-dropdown.open').forEach(function(d) { d.classList.remove('open'); });
         }
@@ -9660,6 +9662,8 @@
             var hPortal = document.getElementById('hamburger-portal');
             if (hHome) hHome.style.display = 'block';
             if (hPortal) hPortal.style.display = 'none';
+            // Hide page links in hamburger when in portal
+            document.querySelectorAll('.hamburger-page-link').forEach(function(l) { l.style.display = 'none'; });
             document.querySelectorAll('.contact-dropdown.open').forEach(function(d) { d.classList.remove('open'); });
         }
 
