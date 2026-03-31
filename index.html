@@ -3324,6 +3324,25 @@
             padding: 7px 16px; border-radius: 20px;
             font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: background 0.2s;
         }
+
+        /* Service selection cards */
+        .svc-select-card {
+            display: flex; flex-direction: column; align-items: center;
+            text-align: center; padding: 18px 12px; border-radius: 12px;
+            border: 2px solid #e2e8f0; background: #fff;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .svc-select-card:hover { border-color: #1e3a5f; background: #f8faff; }
+        .svc-select-card:has(input:checked) {
+            border-color: #22c55e; background: rgba(34,197,94,0.06);
+            box-shadow: 0 0 0 3px rgba(34,197,94,0.15);
+        }
+        .svc-select-icon { font-size: 1.6rem; margin-bottom: 8px; }
+        .svc-select-name { font-weight: 700; color: #1e3a5f; font-size: 0.88rem; margin-bottom: 4px; }
+        .svc-select-desc { font-size: 0.72rem; color: #94a3b8; line-height: 1.4; }
+        @media (max-width: 720px) {
+            #service-select-grid { grid-template-columns: 1fr 1fr !important; }
+        }
         .fin-upload-btn:hover { background: #0d2240; }
         .fin-slot-status { font-size: 0.75rem; color: #22c55e; margin-top: 8px; min-height: 18px; font-weight: 600; }
 
@@ -6623,7 +6642,7 @@
             <a href="#pricing" id="nav-choose-plan" style="background:#e8231a;color:#fff;padding:7px 14px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.8rem;white-space:nowrap;">Choose Plan</a>
             <a href="javascript:void(0)" onclick="connectQuickBooksOAuth()" id="nav-connect-qb" style="background:#2CA01C;color:#fff;padding:7px 14px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.8rem;white-space:nowrap;display:flex;align-items:center;gap:6px;cursor:pointer;">
                 <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:#fff;border-radius:50%;font-size:0.55rem;font-weight:900;color:#2CA01C;font-style:italic;letter-spacing:-0.5px;line-height:1;">qb</span>
-                Connect QB
+                Connect QuickBooks
             </a>
             <!-- Mini lightning meter -->
             <div id="nav-meter" style="display:flex;align-items:center;gap:4px;cursor:pointer;" onclick="document.getElementById('portal').scrollIntoView({behavior:'smooth'})" title="Profile completion">
@@ -7728,7 +7747,7 @@
                 <div class="portal-step-card" id="platform-integrations">
                     <div class="portal-step-header">
                         <div class="portal-step-number">3</div>
-                        <h4>Database Access</h4>
+                        <h4>Connect Your QuickBooks Account</h4>
                     </div>
                     <div class="portal-step-body">
                         <div class="trust-signals-bar">
@@ -7736,7 +7755,7 @@
                             <span>&#128737; SOC 2 Compliant</span>
                             <span>&#9989; Revoke Anytime</span>
                         </div>
-                        <p style="font-size:0.88rem;color:#666;margin-bottom:16px;">Select your accounting platform and share login credentials. I use read-only access to pull your financial data for reporting.</p>
+                        <p style="font-size:0.88rem;color:#666;margin-bottom:16px;">Connect your QuickBooks account for lightning fast reporting. I pull your financials directly — no manual uploads needed.</p>
 
                         <!-- Platform Dropdown -->
                         <div class="platform-dropdown-wrap">
@@ -7906,6 +7925,56 @@
                 <!-- Logo upload moved to nav avatar -->
                 <input type="file" id="logo-input" accept=".png,.jpg,.jpeg,.svg,.webp" style="display: none;" onchange="handleLogoUpload(event)">
                 <img id="company-logo-img" src="" alt="Company Logo" style="display: none;">
+
+                <!-- STEP 5: Select Bookkeeping Services -->
+                <div class="portal-step-card" id="step-services">
+                    <div class="portal-step-header">
+                        <div class="portal-step-number">5</div>
+                        <h4>What Do You Need Help With?</h4>
+                    </div>
+                    <div class="portal-step-body">
+                        <p style="font-size:0.88rem;color:#666;margin-bottom:18px;">Select the services you need. We'll tailor your engagement and reporting to match.</p>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;" id="service-select-grid">
+                            <label class="svc-select-card" onclick="this.querySelector('input').checked=!this.querySelector('input').checked;updateServiceSelections()">
+                                <input type="checkbox" name="svc" value="bookkeeping" style="display:none;">
+                                <div class="svc-select-icon">📒</div>
+                                <div class="svc-select-name">Bookkeeping</div>
+                                <div class="svc-select-desc">Accurate financial records, bank reconciliation, chart of accounts</div>
+                            </label>
+                            <label class="svc-select-card" onclick="this.querySelector('input').checked=!this.querySelector('input').checked;updateServiceSelections()">
+                                <input type="checkbox" name="svc" value="ar-ap" style="display:none;">
+                                <div class="svc-select-icon">💳</div>
+                                <div class="svc-select-name">AR & AP</div>
+                                <div class="svc-select-desc">Invoicing, bill pay, collections, vendor management</div>
+                            </label>
+                            <label class="svc-select-card" onclick="this.querySelector('input').checked=!this.querySelector('input').checked;updateServiceSelections()">
+                                <input type="checkbox" name="svc" value="tax" style="display:none;">
+                                <div class="svc-select-icon">🏛️</div>
+                                <div class="svc-select-name">Tax Preparation</div>
+                                <div class="svc-select-desc">Compliance, filing, strategy, quarterly estimates</div>
+                            </label>
+                            <label class="svc-select-card" onclick="this.querySelector('input').checked=!this.querySelector('input').checked;updateServiceSelections()">
+                                <input type="checkbox" name="svc" value="payroll" style="display:none;">
+                                <div class="svc-select-icon">👥</div>
+                                <div class="svc-select-name">Payroll</div>
+                                <div class="svc-select-desc">Processing, tax deposits, W-2s, 1099s, compliance</div>
+                            </label>
+                            <label class="svc-select-card" onclick="this.querySelector('input').checked=!this.querySelector('input').checked;updateServiceSelections()">
+                                <input type="checkbox" name="svc" value="cfo" style="display:none;">
+                                <div class="svc-select-icon">📊</div>
+                                <div class="svc-select-name">CFO Reporting</div>
+                                <div class="svc-select-desc">P&L, cash flow forecasting, KPI dashboards, board decks</div>
+                            </label>
+                            <label class="svc-select-card" onclick="this.querySelector('input').checked=!this.querySelector('input').checked;updateServiceSelections()">
+                                <input type="checkbox" name="svc" value="formation" style="display:none;">
+                                <div class="svc-select-icon">🏢</div>
+                                <div class="svc-select-name">Company Formation</div>
+                                <div class="svc-select-desc">LLC/Corp setup, EIN, registered agent, operating agreements</div>
+                            </label>
+                        </div>
+                        <div id="svc-selected-summary" style="display:none;margin-top:16px;padding:14px 18px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:10px;color:#166534;font-size:0.88rem;font-weight:600;"></div>
+                    </div>
+                </div>
 
                 <!-- STEP 6: My Reports -->
                 <div class="portal-step-card">
@@ -8957,6 +9026,27 @@
             }
 
             resetTheme();
+        }
+
+        function updateServiceSelections() {
+            var checks = document.querySelectorAll('#service-select-grid input[name="svc"]:checked');
+            var summary = document.getElementById('svc-selected-summary');
+            var names = { bookkeeping: 'Bookkeeping', 'ar-ap': 'AR & AP', tax: 'Tax Preparation', payroll: 'Payroll', cfo: 'CFO Reporting', formation: 'Company Formation' };
+            if (checks.length > 0) {
+                var selected = Array.from(checks).map(function(c) { return names[c.value] || c.value; });
+                if (summary) {
+                    summary.style.display = 'block';
+                    summary.innerHTML = '✓ Selected: <strong>' + selected.join(', ') + '</strong>';
+                }
+                // Save to profile if logged in
+                if (supabase && currentUserData?.id) {
+                    supabase.from('profiles').update({
+                        selected_services: Array.from(checks).map(function(c) { return c.value; })
+                    }).eq('id', currentUserData.id);
+                }
+            } else {
+                if (summary) summary.style.display = 'none';
+            }
         }
 
         function showHomepage() {
