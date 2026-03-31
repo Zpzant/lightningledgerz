@@ -8387,7 +8387,7 @@
 
                     const userName = profile?.first_name || user.email.split('@')[0];
                     const userTier = profile?.tier || profile?.package_tier || 'none';
-                    const isAdmin = user.email === ADMIN_EMAIL;
+                    const isAdmin = ADMIN_EMAILS.indexOf(user.email) !== -1 || profile?.is_admin === true;
 
                     currentUserData = {
                         id: user.id,
@@ -8518,6 +8518,7 @@
         const DEMO_EMAIL = 'demo@lightningledgerz.com';
         const DEMO_PASSWORD = 'demo123';
         const ADMIN_EMAIL = 'zprizant@lightningledgerz.com';
+        const ADMIN_EMAILS = ['zprizant@lightningledgerz.com', 'zpzant@gmail.com', 'team.elitecpapartners@gmail.com'];
         const CALENDLY_URL = 'https://calendly.com/zprizant'; // Update with your real Calendly link
         const ZAC_PHONE = '+17025502513';
 
@@ -8732,7 +8733,7 @@
 
                 const userName = profile?.first_name || data.user?.user_metadata?.full_name || email.split('@')[0];
                 const userTier = profile?.package_tier || profile?.tier || 'none';
-                const isAdmin = email.toLowerCase() === ADMIN_EMAIL || profile?.is_admin === true;
+                const isAdmin = ADMIN_EMAILS.indexOf(email.toLowerCase()) !== -1 || profile?.is_admin === true;
 
                 currentUserData = {
                     id: data.user.id,
