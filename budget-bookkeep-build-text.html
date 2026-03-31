@@ -3,49 +3,122 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Budget. Bookkeep. Build.</title>
+<title>Budget. Bookkeep. Build. — Download PNG</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
-
   body {
-    margin: 0; display: flex; align-items: center; justify-content: center;
-    min-height: 100vh; background: #0a0a0a;
+    margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; background: #111; font-family: 'Inter', sans-serif; color: #fff;
   }
-  .text-wrap {
-    text-align: center; padding: 60px 80px;
+  canvas { display: none; }
+  .preview {
+    margin-bottom: 30px; padding: 40px 60px;
+    background: repeating-conic-gradient(#222 0% 25%, #1a1a1a 0% 50%) 0 0 / 20px 20px;
+    border-radius: 16px; border: 1px solid #333;
   }
-  .tagline {
-    font-family: 'Inter', 'Arial Black', sans-serif;
-    font-weight: 900; font-size: 52px; letter-spacing: 8px;
-    text-transform: uppercase; line-height: 1.1;
-    color: #e8e8e8;
-    text-shadow:
-      0 1px 0 #ccc,
-      0 2px 0 #bbb,
-      0 3px 0 #aaa,
-      0 4px 0 #999,
-      0 5px 0 #888,
-      0 6px 3px rgba(0,0,0,0.4),
-      0 8px 10px rgba(0,0,0,0.3),
-      0 12px 20px rgba(0,0,0,0.2);
+  .preview img { max-width: 90vw; height: auto; }
+  .download-btn {
+    background: linear-gradient(135deg, #e8231a, #ff4a3d);
+    color: #fff; border: none; padding: 16px 40px; border-radius: 30px;
+    font-size: 1.1rem; font-weight: 700; cursor: pointer; font-family: inherit;
+    transition: all 0.2s; box-shadow: 0 4px 18px rgba(232,35,26,0.35);
   }
-  .tagline .red {
-    color: #e8231a;
-    text-shadow:
-      0 1px 0 #c01d15,
-      0 2px 0 #a8190f,
-      0 3px 0 #90150c,
-      0 4px 0 #781109,
-      0 5px 0 #600d06,
-      0 6px 3px rgba(0,0,0,0.4),
-      0 8px 10px rgba(0,0,0,0.3),
-      0 12px 20px rgba(0,0,0,0.2);
-  }
+  .download-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(232,35,26,0.45); }
+  .note { margin-top: 16px; color: #666; font-size: 0.8rem; }
 </style>
 </head>
 <body>
-  <div class="text-wrap">
-    <div class="tagline">BUDGET. <span class="red">BOOKKEEP.</span> BUILD.</div>
-  </div>
+  <div class="preview" id="preview"></div>
+  <button class="download-btn" onclick="downloadPNG()">Download Transparent PNG</button>
+  <div class="note">Transparent background — paste over any color or image</div>
+  <canvas id="canvas"></canvas>
+
+<script>
+  // Wait for font to load
+  document.fonts.ready.then(function() {
+    renderText();
+  });
+
+  function renderText() {
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var scale = 3; // high-res
+    var fontSize = 72 * scale;
+    var letterSpacing = 8 * scale;
+
+    ctx.font = '900 ' + fontSize + 'px Inter, Arial Black, sans-serif';
+
+    // Measure each segment
+    var segments = [
+      { text: 'BUDGET. ', color: '#e8e8e8' },
+      { text: 'BOOKKEEP.', color: '#e8231a' },
+      { text: ' BUILD.', color: '#e8e8e8' }
+    ];
+
+    var totalWidth = 0;
+    segments.forEach(function(seg) {
+      for (var i = 0; i < seg.text.length; i++) {
+        totalWidth += ctx.measureText(seg.text[i]).width + letterSpacing;
+      }
+    });
+    totalWidth -= letterSpacing; // remove last
+
+    var padding = 60 * scale;
+    canvas.width = totalWidth + padding * 2;
+    canvas.height = fontSize + padding * 2 + 30 * scale;
+
+    // Re-set font after resize
+    ctx.font = '900 ' + fontSize + 'px Inter, Arial Black, sans-serif';
+    ctx.textBaseline = 'top';
+
+    var x = padding;
+    var y = padding;
+
+    segments.forEach(function(seg) {
+      for (var i = 0; i < seg.text.length; i++) {
+        var ch = seg.text[i];
+
+        // 3D shadow layers
+        var shadowColors;
+        if (seg.color === '#e8231a') {
+          shadowColors = ['#c01d15','#a8190f','#90150c','#781109','#600d06'];
+        } else {
+          shadowColors = ['#cccccc','#bbbbbb','#aaaaaa','#999999','#888888'];
+        }
+        for (var s = shadowColors.length; s >= 1; s--) {
+          ctx.fillStyle = shadowColors[s-1];
+          ctx.fillText(ch, x, y + s * scale);
+        }
+
+        // Soft shadow
+        ctx.shadowColor = 'rgba(0,0,0,0.4)';
+        ctx.shadowBlur = 8 * scale;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 6 * scale;
+        ctx.fillStyle = seg.color;
+        ctx.fillText(ch, x, y);
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+
+        x += ctx.measureText(ch).width + letterSpacing;
+      }
+    });
+
+    // Show preview
+    var dataURL = canvas.toDataURL('image/png');
+    var img = document.createElement('img');
+    img.src = dataURL;
+    document.getElementById('preview').appendChild(img);
+  }
+
+  function downloadPNG() {
+    var canvas = document.getElementById('canvas');
+    var link = document.createElement('a');
+    link.download = 'budget-bookkeep-build.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+</script>
 </body>
 </html>
