@@ -2063,7 +2063,20 @@
         }
         .quiz-cta-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30,58,95,0.35); }
         .quiz-cta-divider { color: #bbb; font-size: 0.8rem; margin-bottom: 9px; }
-        .quiz-cta-secondary { background: none; border: none; color: #4a90d9; font-size: 0.86rem; cursor: pointer; text-decoration: underline; font-weight: 600; }
+        .quiz-cta-secondary {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(135deg,#667eea,#764ba2);
+            color: #fff; border: none; padding: 14px 32px;
+            border-radius: 30px; font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; transition: all 0.25s; text-decoration: none;
+            box-shadow: 0 4px 18px rgba(102,126,234,0.35);
+            font-family: inherit; letter-spacing: 0.3px;
+        }
+        .quiz-cta-secondary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102,126,234,0.45); }
+        .quiz-cta-secondary.plan-gold { background: linear-gradient(135deg,#d4a017,#f5a623); box-shadow: 0 4px 18px rgba(212,160,23,0.35); }
+        .quiz-cta-secondary.plan-gold:hover { box-shadow: 0 8px 25px rgba(212,160,23,0.45); }
+        .quiz-cta-secondary.plan-basic { background: linear-gradient(135deg,#e8231a,#ff4a3d); box-shadow: 0 4px 18px rgba(232,35,26,0.35); }
+        .quiz-cta-secondary.plan-basic:hover { box-shadow: 0 8px 25px rgba(232,35,26,0.45); }
         .quiz-cta-call-now {
             display: block; width: 100%;
             background: rgba(30,58,95,0.08);
@@ -7343,7 +7356,7 @@
                         <div class="quiz-cta-divider">want to move fast?</div>
                         <a class="quiz-cta-call-now" href="tel:+17025502513">📞 Call Now — (702) 550-2513</a>
                         <div class="quiz-cta-divider">or</div>
-                        <button class="quiz-cta-secondary" id="quiz-cta-trial" onclick="">Start my trial directly →</button>
+                        <button class="quiz-cta-secondary" id="quiz-cta-trial" onclick="">💎 Get Started with Diamond</button>
                     </div>
                 </div>
 
@@ -11383,17 +11396,17 @@
             if (hasDiamond) {
                 plan = 'diamond'; badge = '💎 Diamond'; planName = 'Diamond Package';
                 features = ['Fractional CFO — your financial co-pilot','Board & investor presentation support','Hourly & real-time reporting','Complete strategic financial planning','Direct phone access to Zac','Everything in Gold included'];
-                trialLabel = 'Start my Diamond trial →';
+                trialLabel = '💎 Get Started with Diamond';
                 trialAction = function() { closeQuizModal(); selectPlan('diamond'); };
             } else if (hasGold) {
                 plan = 'gold'; badge = '✨ Gold'; planName = 'Gold Package';
                 features = ['Weekly strategy calls','Advanced financial modeling','Cash flow optimization','Custom KPI dashboard','Priority support','Unlimited uploads'];
-                trialLabel = 'Start my Gold trial →';
+                trialLabel = '✨ Get Started with Gold';
                 trialAction = function() { closeQuizModal(); selectPlan('gold'); };
             } else {
                 plan = 'basic'; badge = '⚡ Basic'; planName = 'Basic Package';
                 features = ['Monthly financial reports','Budget vs. actual tracking','Variance analysis & commentary','Spreadsheet modeling','Email support'];
-                trialLabel = 'Start my Basic trial →';
+                trialLabel = '⚡ Get Started with Basic';
                 trialAction = function() { closeQuizModal(); selectPlan('basic'); };
             }
             document.getElementById('quiz-result-badge').textContent = badge;
@@ -11401,6 +11414,7 @@
             document.getElementById('quiz-result-features').innerHTML = features.map(function(f) { return '<li>' + f + '</li>'; }).join('');
             var trialBtn = document.getElementById('quiz-cta-trial');
             trialBtn.textContent = trialLabel;
+            trialBtn.className = 'quiz-cta-secondary plan-' + plan;
             trialBtn.onclick = trialAction;
             goToQuizStep('result');
         }
