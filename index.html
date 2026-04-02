@@ -611,10 +611,10 @@
         }
         #portal-hamburger:hover { color: #e8231a !important; border-color: #e8231a !important; }
         body.tier-gold #portal-hamburger:hover { color: #d4a017 !important; border-color: #d4a017 !important; }
-        body.tier-diamond #portal-hamburger:hover { color: #7c3aed !important; border-color: #7c3aed !important; }
+        body.tier-diamond #portal-hamburger:hover { color: #00bfff !important; border-color: #00bfff !important; }
         nav.nav-scrolled #portal-hamburger:hover { color: #e8231a !important; border-color: #e8231a !important; }
         nav.nav-scrolled body.tier-gold #portal-hamburger:hover, body.tier-gold nav.nav-scrolled #portal-hamburger:hover { color: #d4a017 !important; border-color: #d4a017 !important; }
-        body.tier-diamond nav.nav-scrolled #portal-hamburger:hover { color: #7c3aed !important; border-color: #7c3aed !important; }
+        body.tier-diamond nav.nav-scrolled #portal-hamburger:hover { color: #00bfff !important; border-color: #00bfff !important; }
 
         @media (max-width: 1100px) {
             .nav-contact-info a:last-child {
@@ -646,7 +646,7 @@
         }
         .nav-mobile-toggle:hover { color: var(--tier-hover, #e8231a) !important; }
         .tier-gold .nav-mobile-toggle:hover { color: #d4a017 !important; }
-        .tier-diamond .nav-mobile-toggle:hover { color: #7c3aed !important; }
+        .tier-diamond .nav-mobile-toggle:hover { color: #00bfff !important; }
         #portal-hamburger:hover { color: #e8231a !important; }
         .tier-gold #portal-hamburger:hover { color: #d4a017 !important; }
         .tier-diamond #portal-hamburger:hover { color: #7c3aed !important; }
@@ -9450,7 +9450,7 @@
             var dashboardLogo = document.getElementById('dashboard-logo');
 
             // Set global hover color based on tier
-            var tierHoverColors = { none: '#e8231a', basic: '#e8231a', gold: '#d4a017', diamond: '#7c3aed' };
+            var tierHoverColors = { none: '#e8231a', basic: '#e8231a', gold: '#d4a017', diamond: '#00bfff' };
             _tierHoverColor = tierHoverColors[tier] || '#e8231a';
             document.documentElement.style.setProperty('--tier-hover', _tierHoverColor);
 
@@ -9466,7 +9466,7 @@
             var logoMap = {
                 basic: 'Thelogo.png',
                 gold: 'thelogogold.png',
-                diamond: 'LightningLedgerzLogo-diamond.png'
+                diamond: 'DiamondLogo.png'
             };
 
             if (dashboardLogo) {
@@ -9595,7 +9595,7 @@
 
         // Report catalog definition
         var REPORT_CATALOG = [
-            { id: 'budget-creation', img: 'budgetpic.png', title: 'Budget Creation', desc: 'Custom budget build from scratch', minTier: 'basic', tokens: 2 },
+            { id: 'budget-creation', img: 'budget.png', title: 'Budget Creation', desc: 'Custom budget build from scratch', minTier: 'basic', tokens: 2 },
             { id: 'budget-vs-actual', img: 'slide-budget-vs-actual.png', title: 'Budget vs. Actual', desc: 'Monthly P&L variance tracking', minTier: 'basic' },
             { id: 'income-benchmarking', img: 'slide-income-benchmarking.png', title: 'Income Benchmarking', desc: 'Year-over-year income trends', minTier: 'basic' },
             { id: 'kpi-dashboard', img: 'dynamicdashboards.png', title: 'Dynamic Dashboards', desc: 'Multi-metric KPI overview', minTier: 'basic', tokens: 2 },
@@ -10067,7 +10067,7 @@
             var navLogo = document.querySelector('nav .logo img');
             if (!navLogo) return;
             if (tier === 'diamond') {
-                navLogo.src = 'LightningLedgerzLogo-diamond.png';
+                navLogo.src = 'DiamondLogo.png';
             } else if (tier === 'gold') {
                 navLogo.src = 'thelogogold.png';
             } else {
