@@ -8189,9 +8189,7 @@
                             <p class="fathom-link-desc">Your advisor has linked a live reporting dashboard for your business.</p>
                             <a href="#" id="fathom-link-url" target="_blank" class="fathom-link-btn">Open Dashboard</a>
                         </div>
-                        <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
-                            <button onclick="exportMyReports()" style="padding:6px 14px;background:#1e3a5f;color:#fff;border:none;border-radius:8px;font-size:0.72rem;font-weight:600;cursor:pointer;">Export CSV</button>
-                        </div>
+                        <!-- Export moved into column headers -->
                         <div id="reports-two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;min-height:120px;">
                             <!-- PENDING COLUMN -->
                             <div>
@@ -8199,6 +8197,8 @@
                                     <span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>
                                     <span style="font-size:0.8rem;font-weight:800;color:#f59e0b;text-transform:uppercase;letter-spacing:1.5px;">Pending</span>
                                     <span id="pending-count" style="font-size:0.7rem;color:#f59e0b;">(0)</span>
+                                    <span style="flex:1;"></span>
+                                    <button onclick="exportMyReports('pending')" style="padding:3px 8px;background:none;border:1px solid #d0d7e5;border-radius:5px;font-size:0.62rem;font-weight:600;color:#64748b;cursor:pointer;" onmouseover="this.style.borderColor='#f59e0b';this.style.color='#f59e0b'" onmouseout="this.style.borderColor='#d0d7e5';this.style.color='#64748b'">Export</button>
                                 </div>
                                 <input type="text" id="search-pending" placeholder="Search pending..." oninput="filterColumn('pending')" style="width:100%;padding:6px 12px;border:1px solid #d0d7e5;border-radius:6px;font-size:0.78rem;outline:none;margin-bottom:10px;">
                                 <div style="display:flex;align-items:center;gap:12px;">
@@ -8216,6 +8216,8 @@
                                     <span style="width:10px;height:10px;border-radius:50%;background:#22c55e;display:inline-block;"></span>
                                     <span style="font-size:0.8rem;font-weight:800;color:#22c55e;text-transform:uppercase;letter-spacing:1.5px;">Completed</span>
                                     <span id="completed-count" style="font-size:0.7rem;color:#22c55e;">(0)</span>
+                                    <span style="flex:1;"></span>
+                                    <button onclick="exportMyReports('completed')" style="padding:3px 8px;background:none;border:1px solid #d0d7e5;border-radius:5px;font-size:0.62rem;font-weight:600;color:#64748b;cursor:pointer;" onmouseover="this.style.borderColor='#22c55e';this.style.color='#22c55e'" onmouseout="this.style.borderColor='#d0d7e5';this.style.color='#64748b'">Export</button>
                                 </div>
                                 <input type="text" id="search-completed" placeholder="Search completed..." oninput="filterColumn('completed')" style="width:100%;padding:6px 12px;border:1px solid #d0d7e5;border-radius:6px;font-size:0.78rem;outline:none;margin-bottom:10px;">
                                 <div style="display:flex;align-items:center;gap:12px;">
@@ -11236,7 +11238,7 @@
             if (matchIdx >= 0) { data.index = matchIdx; renderReportColumn(type); }
         }
 
-        function exportMyReports() {
+        function exportMyReports(filterType) {
             if (!supabase || !currentUserData?.id) return;
             Promise.all([
                 supabase.from('report_requests').select('report_title, report_type, status, recurring, created_at, notes').eq('user_id', currentUserData.id).order('created_at', { ascending: false }),
@@ -11245,18 +11247,26 @@
                 var requests = results[0].data || [];
                 var reports = results[1].data || [];
                 var csv = 'Type,Title,Status,Recurring,Date,Notes,Download URL\n';
-                requests.forEach(function(r) {
-                    csv += 'Request,"' + (r.report_title || '').replace(/"/g, '""') + '",' + (r.status || '') + ',' + (r.recurring ? 'Yes' : 'No') + ',' + new Date(r.created_at).toLocaleDateString() + ',"' + (r.notes || '').replace(/"/g, '""').replace(/\n/g, ' ') + '",\n';
-                });
-                reports.forEach(function(r) {
-                    csv += 'Delivered,"' + (r.report_name || '').replace(/"/g, '""') + '",Completed,,' + new Date(r.created_at).toLocaleDateString() + ',,' + (r.file_url || '') + '\n';
-                });
+                if (filterType !== 'completed') {
+                    requests.filter(function(r) { return filterType === 'pending' ? (r.status === 'pending' || r.status === 'in_progress') : true; }).forEach(function(r) {
+                        csv += 'Request,"' + (r.report_title || '').replace(/"/g, '""') + '",' + (r.status || '') + ',' + (r.recurring ? 'Yes' : 'No') + ',' + new Date(r.created_at).toLocaleDateString() + ',"' + (r.notes || '').replace(/"/g, '""').replace(/\n/g, ' ') + '",\n';
+                    });
+                }
+                if (filterType !== 'pending') {
+                    requests.filter(function(r) { return r.status === 'completed'; }).forEach(function(r) {
+                        csv += 'Completed,"' + (r.report_title || '').replace(/"/g, '""') + '",Completed,' + (r.recurring ? 'Yes' : 'No') + ',' + new Date(r.created_at).toLocaleDateString() + ',"' + (r.notes || '').replace(/"/g, '""').replace(/\n/g, ' ') + '",\n';
+                    });
+                    reports.forEach(function(r) {
+                        csv += 'Delivered,"' + (r.report_name || '').replace(/"/g, '""') + '",Completed,,' + new Date(r.created_at).toLocaleDateString() + ',,' + (r.file_url || '') + '\n';
+                    });
+                }
+                var label = filterType || 'all';
                 var blob = new Blob([csv], { type: 'text/csv' });
                 var url = URL.createObjectURL(blob);
                 var a = document.createElement('a');
-                a.href = url; a.download = 'my-reports-' + new Date().toISOString().split('T')[0] + '.csv';
+                a.href = url; a.download = label + '-reports-' + new Date().toISOString().split('T')[0] + '.csv';
                 a.click(); URL.revokeObjectURL(url);
-                showToast('Reports exported!', 'success');
+                showToast(label.charAt(0).toUpperCase() + label.slice(1) + ' reports exported!', 'success');
             });
         }
 
