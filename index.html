@@ -9595,7 +9595,7 @@
 
         // Report catalog definition
         var REPORT_CATALOG = [
-            { id: 'budget-creation', img: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&h=300&fit=crop&crop=center', imgAlt: 'budget.png', title: 'Budget Creation', desc: 'Custom budget build from scratch', minTier: 'basic', tokens: 2 },
+            { id: 'budget-creation', img: 'lightningteam.png', imgCycle: ['lightningteam.png', 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&h=300&fit=crop&crop=center', 'budget.png'], title: 'Budget Creation', desc: 'Custom budget build from scratch', minTier: 'basic', tokens: 2 },
             { id: 'budget-vs-actual', img: 'slide-budget-vs-actual.png', title: 'Budget vs. Actual', desc: 'Monthly P&L variance tracking', minTier: 'basic' },
             { id: 'income-benchmarking', img: 'slide-income-benchmarking.png', title: 'Income Benchmarking', desc: 'Year-over-year income trends', minTier: 'basic' },
             { id: 'kpi-dashboard', img: 'dynamicdashboards.png', title: 'Dynamic Dashboards', desc: 'Multi-metric KPI overview', minTier: 'basic', tokens: 2 },
@@ -9824,10 +9824,9 @@
                 card.innerHTML = html;
 
                 // Cycling images with fade transition
-                if (report.imgAlt) {
-                    (function(cardEl, imgs) {
+                if (report.imgCycle || report.imgAlt) {
+                    (function(cardEl, imgArr) {
                         var idx = 0;
-                        var imgArr = [imgs[0], imgs[1]];
                         setInterval(function() {
                             var thumb = cardEl.querySelector('.report-card-thumb');
                             if (!thumb || thumb.offsetParent === null) return;
@@ -9838,7 +9837,7 @@
                                 thumb.style.opacity = '1';
                             }, 600);
                         }, 4000);
-                    })(card, [report.img, report.imgAlt]);
+                    })(card, report.imgCycle || [report.img, report.imgAlt]);
                 }
 
                 if (isLocked) {
