@@ -9456,47 +9456,49 @@
             _tokensInitialized = true;
 
             var profile = currentUserData?.profile;
-            var monthKey = new Date().getFullYear() + '_' + (new Date().getMonth() + 1);
 
             // Load balance from Supabase profile
             if (profile && profile.token_balance !== undefined && profile.token_balance !== null) {
                 userTokensRemaining = profile.token_balance;
             } else {
-                var userId = currentUserData?.id || 'anon';
-                var stored = localStorage.getItem('token_balance_' + userId);
-                userTokensRemaining = stored !== null ? parseInt(stored, 10) : 0;
+                userTokensRemaining = 0;
             }
 
-            // Check if this month's credits have been added
-            // Use the array from Supabase, or fallback to localStorage
-            var credited = null;
-            if (profile && Array.isArray(profile.tokens_credited_months)) {
-                credited = profile.tokens_credited_months;
-            } else {
-                var userId = currentUserData?.id || 'anon';
-                try { credited = JSON.parse(localStorage.getItem('tokens_credited_' + userId) || '[]'); }
-                catch(e) { credited = []; }
-            }
+            // Credit refill based on 30-day payment cycle (not calendar month)
+            // payment_start_date = when they first paid. Every 30 days from that date, credits refill.
+            if (tier !== 'none' && tier !== 'diamond' && supabase && currentUserData?.id) {
+                var paymentStart = profile?.payment_start_date || profile?.created_at;
+                if (!paymentStart) { updateAllTokenDisplays(); return; }
 
-            if (tier !== 'none' && tier !== 'diamond' && Array.isArray(credited) && credited.indexOf(monthKey) === -1) {
-                var monthlyAdd = TOKEN_LIMITS[tier] || 0;
-                userTokensRemaining += monthlyAdd;
-                credited.push(monthKey);
-                // Save to Supabase
-                if (supabase && currentUserData?.id) {
+                var startDate = new Date(paymentStart);
+                var now = new Date();
+                var daysSinceStart = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+                var currentCycleNumber = Math.floor(daysSinceStart / 30);
+
+                // tokens_credited_months stores which cycle numbers have been credited
+                var creditedCycles = [];
+                if (profile && Array.isArray(profile.tokens_credited_months)) {
+                    creditedCycles = profile.tokens_credited_months;
+                }
+
+                var cycleKey = 'cycle_' + currentCycleNumber;
+                if (creditedCycles.indexOf(cycleKey) === -1) {
+                    // New 30-day cycle — refill tokens (reset to tier limit, not add)
+                    var monthlyTokens = TOKEN_LIMITS[tier] || 0;
+                    userTokensRemaining = monthlyTokens;
+                    creditedCycles.push(cycleKey);
+
                     supabase.from('profiles').update({
                         token_balance: userTokensRemaining,
-                        tokens_credited_months: credited
+                        tokens_credited_months: creditedCycles,
+                        credits_used_month: 0
                     }).eq('id', currentUserData.id);
+
                     if (profile) {
                         profile.token_balance = userTokensRemaining;
-                        profile.tokens_credited_months = credited;
+                        profile.tokens_credited_months = creditedCycles;
                     }
                 }
-                // Fallback to localStorage
-                var userId2 = currentUserData?.id || 'anon';
-                localStorage.setItem('token_balance_' + userId2, userTokensRemaining);
-                localStorage.setItem('tokens_credited_' + userId2, JSON.stringify(credited));
             }
 
             updateAllTokenDisplays();
@@ -9508,16 +9510,21 @@
             if (tier === 'none') return false; // expired — tokens frozen
             if (userTokensRemaining <= 0) return false;
             userTokensRemaining--;
-            // Save to Supabase
+            // Save to Supabase — track balance AND usage
             if (supabase && currentUserData?.id) {
+                var usedMonth = (currentUserData.profile?.credits_used_month || 0) + 1;
+                var usedYear = (currentUserData.profile?.credits_used_year || 0) + 1;
                 supabase.from('profiles').update({
-                    token_balance: userTokensRemaining
+                    token_balance: userTokensRemaining,
+                    credits_used_month: usedMonth,
+                    credits_used_year: usedYear
                 }).eq('id', currentUserData.id);
-                if (currentUserData.profile) currentUserData.profile.token_balance = userTokensRemaining;
+                if (currentUserData.profile) {
+                    currentUserData.profile.token_balance = userTokensRemaining;
+                    currentUserData.profile.credits_used_month = usedMonth;
+                    currentUserData.profile.credits_used_year = usedYear;
+                }
             }
-            // Fallback to localStorage
-            var userId = currentUserData?.id || 'anon';
-            localStorage.setItem('token_balance_' + userId, userTokensRemaining);
             updateAllTokenDisplays();
             animateTokenSpend();
             return true;
