@@ -6849,7 +6849,7 @@
             </div>
             <span id="nav-welcome-text">Hi, User!</span>
             <span id="nav-plan-badge" class="plan-badge badge-basic">Basic</span>
-            <span id="nav-token-badge" style="display:none;font-size:0.75rem;font-weight:700;color:#1e3a5f;background:#f0f9ff;padding:3px 10px;border-radius:12px;cursor:pointer;" onclick="document.getElementById('portal-plan-cards')?.scrollIntoView({behavior:'smooth',block:'center'})">⚡ <span id="nav-token-count-inline">0</span><span id="nav-refill-countdown" style="font-size:0.6rem;font-weight:400;color:#94a3b8;margin-left:4px;"></span></span>
+            <span id="nav-token-badge" style="display:none;font-size:0.75rem;font-weight:700;color:#1e3a5f;background:#f0f9ff;padding:3px 10px;border-radius:12px;cursor:pointer;" onclick="document.getElementById('portal-plan-cards')?.scrollIntoView({behavior:'smooth',block:'center'})">⚡ <span id="nav-token-count-inline">0</span></span>
         </div>
         <ul class="nav-links" id="nav-links">
             <li class="mobile-only"><a href="#portal" onclick="closeMobileMenu()" class="mobile-cta">Get Started</a></li>
@@ -9716,13 +9716,6 @@
                     navTokenBadge.title = userTokensRemaining + ' coin' + (userTokensRemaining !== 1 ? 's' : '') + ' remaining' + refillText;
                     navTokenBadge.style.background = '#f0f9ff';
                     navTokenBadge.style.color = '#1e3a5f';
-                }
-                // Show refill countdown inline
-                var refillEl = document.getElementById('nav-refill-countdown');
-                if (refillEl && refillText && tier !== 'diamond') {
-                    refillEl.textContent = refillText.replace(' · ', '');
-                } else if (refillEl) {
-                    refillEl.textContent = '';
                 }
             }
         }
