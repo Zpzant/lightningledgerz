@@ -9162,7 +9162,7 @@
                     planBadge.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
                     planBadge.style.background = ''; planBadge.style.border = ''; planBadge.style.padding = '';
                 }
-                if (choosePlanBtn) { choosePlanBtn.textContent = 'Upgrade'; choosePlanBtn.style.display = tier === 'diamond' ? 'none' : 'inline-block'; }
+                if (choosePlanBtn) { choosePlanBtn.style.display = 'none'; }
             }
 
             // Update plan status bar in dashboard
@@ -9706,27 +9706,23 @@
         }
 
         function sendReportEmail(subject, body, report, userName) {
-            // Try Supabase edge function first
+            // Send to both admin emails
+            var adminEmails = ['zprizant@lightningledgerz.com', 'zpzant@gmail.com'];
             if (typeof supabase !== 'undefined' && supabase?.functions) {
                 supabase.functions.invoke('send-email', {
                     body: {
-                        to: 'zprizant@lightningledgerz.com',
+                        to: adminEmails,
                         subject: subject,
                         text: body
                     }
                 }).then(function(resp) {
-                    if (resp?.error) {
-                        console.warn('Email edge function error (report saved to DB anyway):', resp.error);
-                    }
-                    // Always show success — report is saved in Supabase regardless
+                    if (resp?.error) console.warn('Email edge function error:', resp.error);
                     reportOrderSuccess(report, userName);
                 }).catch(function(err) {
-                    console.warn('Email send failed (report saved to DB anyway):', err);
-                    // Still show success — the report request is in the database
+                    console.warn('Email send failed:', err);
                     reportOrderSuccess(report, userName);
                 });
             } else {
-                // No edge function available — still show success, report is in DB
                 reportOrderSuccess(report, userName);
             }
         }
@@ -11014,36 +11010,100 @@
             carousel.innerHTML = '';
 
             if (!supabase || !currentUserData?.id) {
-                // Demo mode
                 carousel.innerHTML = '<p class="carousel-empty">Your FP&A reports will appear here.</p>';
                 return;
             }
 
             try {
-                // Load reports that admin uploaded for this user
-                var { data, error } = await supabase
-                    .from('user_reports')
-                    .select('*')
-                    .eq('user_id', currentUserData.id)
-                    .order('created_at', { ascending: false });
+                // Load BOTH: pending requests AND delivered reports
+                var [requestsRes, reportsRes] = await Promise.all([
+                    supabase.from('report_requests').select('*').eq('user_id', currentUserData.id).order('created_at', { ascending: false }),
+                    supabase.from('user_reports').select('*').eq('user_id', currentUserData.id).order('created_at', { ascending: false })
+                ]);
 
-                if (error) throw error;
+                var requests = requestsRes.data || [];
+                var reports = reportsRes.data || [];
+                var hasContent = false;
 
-                if (data && data.length > 0) {
-                    data.forEach(function(report) {
-                        createReportCard({
-                            name: report.report_name,
-                            uploaded_at: report.created_at,
-                            url: report.file_url || null
-                        }, carousel);
-                    });
-                } else {
+                // Show pending/in-progress requests first
+                requests.forEach(function(req) {
+                    hasContent = true;
+                    var statusColors = { pending: '#f59e0b', in_progress: '#3b82f6', completed: '#22c55e', rejected: '#94a3b8' };
+                    var statusLabels = { pending: 'Pending', in_progress: 'In Progress', completed: 'Completed', rejected: 'Closed' };
+                    var statusColor = statusColors[req.status] || '#94a3b8';
+                    var statusLabel = statusLabels[req.status] || req.status;
+                    var reportImg = '';
+                    var catalogEntry = REPORT_CATALOG.find(function(r) { return r.id === req.report_type; });
+                    if (catalogEntry && catalogEntry.img) reportImg = catalogEntry.img;
+
+                    var card = document.createElement('div');
+                    card.className = 'report-card';
+                    card.style.minWidth = '220px';
+                    card.innerHTML =
+                        (reportImg ? '<div class="report-card-img"><img src="' + reportImg + '" alt="' + (req.report_title || '') + '" onerror="this.style.display=\'none\'"></div>' : '') +
+                        '<div class="report-card-info">' +
+                            '<div class="report-card-title">' + (req.report_title || req.report_type || 'Report') + '</div>' +
+                            '<div style="display:flex;align-items:center;gap:6px;margin:4px 0;">' +
+                                '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + statusColor + ';"></span>' +
+                                '<span style="font-size:0.72rem;font-weight:700;color:' + statusColor + ';">' + statusLabel + '</span>' +
+                                (req.recurring ? '<span style="font-size:0.65rem;color:#94a3b8;margin-left:4px;">Recurring</span>' : '') +
+                            '</div>' +
+                            '<div style="font-size:0.68rem;color:#94a3b8;">' + new Date(req.created_at).toLocaleDateString() + '</div>' +
+                            (req.status !== 'completed' ? '<button onclick="openFollowUp(\'' + req.id + '\', \'' + (req.report_title || '').replace(/'/g, "\\'") + '\')" style="margin-top:8px;background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:4px 10px;border-radius:6px;font-size:0.7rem;font-weight:600;cursor:pointer;">Need to follow up?</button>' : '') +
+                        '</div>';
+                    carousel.appendChild(card);
+                });
+
+                // Show delivered reports
+                reports.forEach(function(report) {
+                    hasContent = true;
+                    createReportCard({
+                        name: report.report_name,
+                        uploaded_at: report.created_at,
+                        url: report.file_url || null
+                    }, carousel);
+                });
+
+                if (!hasContent) {
                     carousel.innerHTML = '<p class="carousel-empty">Your FP&A reports will appear here.</p>';
                 }
             } catch (error) {
                 console.error('Error loading reports:', error);
                 carousel.innerHTML = '<p class="carousel-empty">Your FP&A reports will appear here.</p>';
             }
+        }
+
+        // Follow-up on a pending report request
+        function openFollowUp(requestId, reportTitle) {
+            var msg = prompt('Send a follow-up message about "' + reportTitle + '":');
+            if (!msg || !msg.trim()) return;
+
+            var userName = currentUserData?.name || currentUserData?.email || 'Client';
+            var userEmail = currentUserData?.email || '';
+            var subject = '[FOLLOW UP] ' + reportTitle + ' — ' + userName;
+            var body = 'FOLLOW-UP MESSAGE\n══════════════\nReport: ' + reportTitle
+                + '\nClient: ' + userName + ' (' + userEmail + ')'
+                + '\nDate: ' + new Date().toLocaleDateString()
+                + '\n\nMESSAGE:\n' + msg.trim();
+
+            // Send email to both admins
+            if (supabase?.functions) {
+                supabase.functions.invoke('send-email', {
+                    body: {
+                        to: ['zprizant@lightningledgerz.com', 'zpzant@gmail.com'],
+                        subject: subject,
+                        text: body
+                    }
+                });
+            }
+
+            // Also add admin notification
+            sendAdminNotification('report_followup', currentUserData?.id,
+                userName + ' followed up on: ' + reportTitle + ' — "' + msg.trim().substring(0, 80) + '"',
+                { report_request_id: requestId, message: msg.trim() }
+            );
+
+            showToast('Follow-up sent for ' + reportTitle, 'success');
         }
 
         function formatFileSize(bytes) {
