@@ -9445,11 +9445,20 @@
             return 'none';
         }
 
+        var _tokensInitialized = false;
+
         function initTokens(tier) {
+            // Prevent double-init (called from multiple places on login)
+            if (_tokensInitialized && currentUserData?.id) {
+                updateAllTokenDisplays();
+                return;
+            }
+            _tokensInitialized = true;
+
             var profile = currentUserData?.profile;
             var monthKey = new Date().getFullYear() + '_' + (new Date().getMonth() + 1);
 
-            // Load balance from Supabase profile (fallback to localStorage for backwards compat)
+            // Load balance from Supabase profile
             if (profile && profile.token_balance !== undefined && profile.token_balance !== null) {
                 userTokensRemaining = profile.token_balance;
             } else {
@@ -9459,8 +9468,17 @@
             }
 
             // Check if this month's credits have been added
-            var credited = profile?.tokens_credited_months || [];
-            if (tier !== 'none' && tier !== 'diamond' && credited.indexOf(monthKey) === -1) {
+            // Use the array from Supabase, or fallback to localStorage
+            var credited = null;
+            if (profile && Array.isArray(profile.tokens_credited_months)) {
+                credited = profile.tokens_credited_months;
+            } else {
+                var userId = currentUserData?.id || 'anon';
+                try { credited = JSON.parse(localStorage.getItem('tokens_credited_' + userId) || '[]'); }
+                catch(e) { credited = []; }
+            }
+
+            if (tier !== 'none' && tier !== 'diamond' && Array.isArray(credited) && credited.indexOf(monthKey) === -1) {
                 var monthlyAdd = TOKEN_LIMITS[tier] || 0;
                 userTokensRemaining += monthlyAdd;
                 credited.push(monthKey);
@@ -9476,9 +9494,9 @@
                     }
                 }
                 // Fallback to localStorage
-                var userId = currentUserData?.id || 'anon';
-                localStorage.setItem('token_balance_' + userId, userTokensRemaining);
-                localStorage.setItem('tokens_credited_' + userId, JSON.stringify(credited));
+                var userId2 = currentUserData?.id || 'anon';
+                localStorage.setItem('token_balance_' + userId2, userTokensRemaining);
+                localStorage.setItem('tokens_credited_' + userId2, JSON.stringify(credited));
             }
 
             updateAllTokenDisplays();
@@ -9861,10 +9879,17 @@
             var tierRank = TIER_ORDER[tier] || 0;
             var upsellText = {
                 none: { basic: 'Get Started', gold: 'Upgrade to Gold', diamond: 'Go Diamond' },
-                basic: { gold: 'Want payroll + more reports? Upgrade', diamond: 'Need unlimited + tax prep? Go Diamond' },
-                gold: { diamond: 'Need unlimited reports + tax? Go Diamond' },
+                basic: { gold: 'Want payroll + more reports? Upgrade', diamond: '' },
+                gold: { diamond: '' },
                 diamond: {}
             };
+            var diamondRotatingPhrases = [
+                'Need unlimited + tax prep? Go Diamond',
+                'Want complex financial modeling? Go Diamond',
+                'Need M&A advisory? Go Diamond',
+                'Want LBO analysis + board decks? Go Diamond',
+                'Need company formation? Go Diamond'
+            ];
             plans.forEach(function(plan) {
                 var card = document.getElementById('portal-plan-' + plan);
                 if (!card) return;
@@ -9888,8 +9913,25 @@
                     card.style.cursor = 'pointer';
                     if (cta) {
                         var text = (upsellText[tier] && upsellText[tier][plan]) || ('Upgrade to ' + plan.charAt(0).toUpperCase() + plan.slice(1));
-                        cta.textContent = text;
-                        cta.style.display = 'inline-block';
+                        if (plan === 'diamond' && (!text || text === '')) {
+                            // Rotating phrases for diamond upsell
+                            cta.style.display = 'inline-block';
+                            cta.style.transition = 'opacity 0.4s';
+                            cta.textContent = diamondRotatingPhrases[0];
+                            var phraseIdx = 0;
+                            clearInterval(window._diamondRotateInterval);
+                            window._diamondRotateInterval = setInterval(function() {
+                                cta.style.opacity = '0';
+                                setTimeout(function() {
+                                    phraseIdx = (phraseIdx + 1) % diamondRotatingPhrases.length;
+                                    cta.textContent = diamondRotatingPhrases[phraseIdx];
+                                    cta.style.opacity = '1';
+                                }, 400);
+                            }, 3500);
+                        } else {
+                            cta.textContent = text;
+                            cta.style.display = 'inline-block';
+                        }
                     }
                 }
             });
@@ -9983,6 +10025,7 @@
                 await supabase.auth.signOut();
             }
             currentUserData = null;
+            _tokensInitialized = false;
             showLoginForm();
             showToast('Signed out successfully', 'success');
 
