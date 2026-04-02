@@ -61,11 +61,22 @@ serve(async (req) => {
         const subscriptionId = session.subscription as string
         const email = session.customer_details?.email || session.customer_email
 
+        // Determine tier from the price/product metadata or amount
+        let tier = 'basic'
+        if (session.amount_total) {
+          const amount = session.amount_total / 100
+          if (amount >= 3000) tier = 'diamond'
+          else if (amount >= 1000) tier = 'gold'
+          else tier = 'basic'
+        }
+
         if (userId) {
           await supabase.from('profiles').update({
             stripe_customer_id: customerId,
             stripe_subscription_id: subscriptionId,
-            subscription_status: 'trialing',
+            subscription_status: 'active',
+            package_tier: tier,
+            payment_start_date: new Date().toISOString(),
             trial_started_at: new Date().toISOString(),
           }).eq('id', userId)
 

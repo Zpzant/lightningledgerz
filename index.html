@@ -8240,7 +8240,7 @@
                 </div>
                 <div class="report-order-token-info">
                     <span>⚡</span>
-                    <span>This request uses <strong>1 report token</strong>. You have <strong id="report-order-remaining">0</strong> remaining.</span>
+                    <span>This request uses <strong id="report-order-cost">1</strong> <strong>report token(s)</strong>. You have <strong id="report-order-remaining">0</strong> remaining.</span>
                 </div>
                 <button class="report-order-submit" id="report-order-submit" onclick="submitReportOrder()">Submit Report Request</button>
             </div>
@@ -8709,8 +8709,37 @@
             }
 
             if (currentUserData && !currentUserData.isDemo) {
-                // User is logged in, go directly to Stripe
-                window.open(stripeUrl, '_blank');
+                // User is logged in, go directly to Stripe with client_reference_id
+                var sep = stripeUrl.includes('?') ? '&' : '?';
+                var fullUrl = stripeUrl + sep + 'client_reference_id=' + encodeURIComponent(currentUserData.id)
+                    + '&prefilled_email=' + encodeURIComponent(currentUserData.email || '');
+                window.open(fullUrl, '_blank');
+
+                // Also store the plan locally so we can activate it on return
+                sessionStorage.setItem('pendingStripePlan', plan);
+
+                // Listen for tab focus return from Stripe
+                window.addEventListener('focus', function stripeFocusHandler() {
+                    window.removeEventListener('focus', stripeFocusHandler);
+                    var pending = sessionStorage.getItem('pendingStripePlan');
+                    if (pending) {
+                        sessionStorage.removeItem('pendingStripePlan');
+                        // Give Stripe webhook a moment to fire, then check
+                        setTimeout(async function() {
+                            if (supabase && currentUserData?.id) {
+                                var { data: profile } = await supabase.from('profiles').select('package_tier, subscription_status').eq('id', currentUserData.id).single();
+                                if (profile && (profile.subscription_status === 'active' || profile.subscription_status === 'trialing')) {
+                                    var newTier = profile.package_tier || pending;
+                                    currentUserData.tier = newTier;
+                                    currentUserData.package_tier = newTier;
+                                    if (currentUserData.profile) currentUserData.profile.package_tier = newTier;
+                                    showLoggedInDashboard(currentUserData.name || 'User', newTier, false, currentUserData.isAdmin);
+                                    showToast('Plan upgraded to ' + newTier.charAt(0).toUpperCase() + newTier.slice(1) + '!', 'success');
+                                }
+                            }
+                        }, 3000);
+                    }
+                });
             } else {
                 // Store selected plan and billing period for after signup
                 sessionStorage.setItem('pendingPlan', plan);
@@ -9394,7 +9423,7 @@
         var REPORT_CATALOG = [
             { id: 'budget-vs-actual', img: 'slide-budget-vs-actual.png', title: 'Budget vs. Actual', desc: 'Monthly P&L variance tracking', minTier: 'basic' },
             { id: 'income-benchmarking', img: 'slide-income-benchmarking.png', title: 'Income Benchmarking', desc: 'Year-over-year income trends', minTier: 'basic' },
-            { id: 'kpi-dashboard', img: 'dynamicdashboards.png', title: 'Dynamic Dashboards', desc: 'Multi-metric KPI overview', minTier: 'basic' },
+            { id: 'kpi-dashboard', img: 'dynamicdashboards.png', title: 'Dynamic Dashboards', desc: 'Multi-metric KPI overview', minTier: 'basic', tokens: 2 },
             { id: 'profit-margin', img: 'slide-profit-margin.png', title: 'Profit Margin vs. Sales', desc: 'Margin & sales trend analysis', minTier: 'basic' },
             { id: 'expense-waterfall', img: 'slide-expense-waterfall.png', title: 'Expense Waterfall', desc: 'Operating expense breakdown', minTier: 'basic' },
             { id: 'operational-goals', img: 'slide-operational-goals.png', title: 'Operational Goals', desc: 'Digital ROI & savings targets', minTier: 'basic' },
@@ -9404,6 +9433,7 @@
             { id: 'client-analysis', img: 'slide-client-analysis.png', title: 'Client Analysis', desc: 'Client map & service overview', minTier: 'gold' },
             { id: 'revenue-trend', img: 'slide-revenue-trend.png', title: 'Revenue Trend Analysis', desc: 'Revenue by client & period', minTier: 'gold' },
             { id: 'market-analysis', img: 'slide-market-analysis.png', title: 'Market Analysis', desc: 'Sector growth & opportunity', minTier: 'diamond' },
+            { id: 'lbo-financial-model', img: 'slide-market-analysis.png', title: 'LBO / Financial Modeling', desc: 'Leveraged buyout & 3-statement model', minTier: 'diamond', tokens: 4 },
         ];
 
         var TIER_ORDER = { none: 0, basic: 1, gold: 2, diamond: 3 };
@@ -9557,7 +9587,8 @@
                 html += '<div class="report-card-title">' + report.title + '</div>';
                 html += '<div class="report-card-desc">' + report.desc + '</div>';
                 if (!isLocked) {
-                    html += '<div class="report-card-token">⚡ 1 token</div>';
+                    var tokenCost = report.tokens || 1;
+                    html += '<div class="report-card-token">⚡ ' + tokenCost + ' token' + (tokenCost > 1 ? 's' : '') + '</div>';
                 }
                 html += '</div>';
                 card.innerHTML = html;
@@ -9573,11 +9604,12 @@
 
         function openReportOrder(report) {
             var tier = getUserTier();
+            var tokenCost = report.tokens || 1;
             if (tier === 'none') {
                 showUpgradePrompt('basic', 'report requests');
                 return;
             }
-            if (userTokensRemaining <= 0 && tier !== 'diamond') {
+            if (userTokensRemaining < tokenCost && tier !== 'diamond') {
                 showUpgradePrompt(tier === 'basic' ? 'gold' : 'diamond', 'more report tokens');
                 return;
             }
@@ -9586,6 +9618,8 @@
             document.getElementById('report-order-title').textContent = 'Request: ' + report.title;
             document.getElementById('report-order-desc').textContent = report.desc;
             document.getElementById('report-order-notes').value = '';
+            var costEl = document.getElementById('report-order-cost');
+            if (costEl) costEl.textContent = tokenCost;
             updateAllTokenDisplays();
             var btn = document.getElementById('report-order-submit');
             btn.disabled = false;
@@ -9608,12 +9642,16 @@
             var report = REPORT_CATALOG.find(function(r) { return r.id === pendingReportId; });
             if (!report) return;
 
-            // Spend token
+            // Spend tokens (some reports cost more than 1)
+            var tokenCost = report.tokens || 1;
             if (getUserTier() !== 'diamond') {
-                if (!spendToken()) {
+                if (userTokensRemaining < tokenCost) {
                     showUpgradePrompt('gold', 'more report tokens');
                     closeReportOrder();
                     return;
+                }
+                for (var t = 0; t < tokenCost; t++) {
+                    if (!spendToken()) break;
                 }
             }
 
@@ -9652,21 +9690,20 @@
                         text: body
                     }
                 }).then(function(resp) {
+                    if (resp?.error) {
+                        console.warn('Email edge function error (report saved to DB anyway):', resp.error);
+                    }
+                    // Always show success — report is saved in Supabase regardless
                     reportOrderSuccess(report, userName);
-                }).catch(function() {
-                    // Fallback to mailto
-                    reportOrderMailtoFallback(subject, body, report, userName);
+                }).catch(function(err) {
+                    console.warn('Email send failed (report saved to DB anyway):', err);
+                    // Still show success — the report request is in the database
+                    reportOrderSuccess(report, userName);
                 });
             } else {
-                reportOrderMailtoFallback(subject, body, report, userName);
+                // No edge function available — still show success, report is in DB
+                reportOrderSuccess(report, userName);
             }
-        }
-
-        function reportOrderMailtoFallback(subject, body, report, userName) {
-            var mailtoLink = 'mailto:zprizant@lightningledgerz.com?subject='
-                + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-            window.open(mailtoLink, '_blank');
-            reportOrderSuccess(report, userName);
         }
 
         function reportOrderSuccess(report, userName) {
