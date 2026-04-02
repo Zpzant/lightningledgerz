@@ -6865,7 +6865,7 @@
             <li class="mobile-only"><a href="#diamond-card" onclick="highlightPackageCard('diamond-card'); closeMobileMenu(); return false;" class="nav-package-link diamond">💎 Diamond</a></li>
         </ul>
         <div class="nav-contact-info" id="nav-contact-info" style="display:flex;align-items:center;gap:10px;">
-            <a href="#portal" class="nav-cta" id="nav-cta-rotate" style="background:#e8231a;color:#fff;border:2px solid #e8231a;min-width:120px;text-align:center;display:inline-block;"><span id="nav-cta-text" style="transition:opacity 0.3s;display:inline-block;">Get Started</span></a>
+            <a href="#portal" class="nav-cta" id="nav-cta-rotate" style="background:#e8231a;color:#fff;border:2px solid #e8231a;min-width:120px;text-align:center;display:inline-flex;align-items:center;justify-content:center;"><span id="nav-cta-text" style="transition:opacity 0.3s;">Get Started</span></a>
             <script>
             (function() {
                 var phrases = ['Get Started', 'Sign Up', 'Log In'];
@@ -8189,31 +8189,45 @@
                             <p class="fathom-link-desc">Your advisor has linked a live reporting dashboard for your business.</p>
                             <a href="#" id="fathom-link-url" target="_blank" class="fathom-link-btn">Open Dashboard</a>
                         </div>
-                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
-                            <input type="text" id="reports-search" placeholder="Search by report name, type, or date..." oninput="filterMyReports()" style="flex:1;min-width:200px;padding:8px 14px;border:1px solid #d0d7e5;border-radius:8px;font-size:0.82rem;outline:none;">
-                            <select id="reports-filter-status" onchange="filterMyReports()" style="padding:8px 12px;border:1px solid #d0d7e5;border-radius:8px;font-size:0.82rem;color:#1e3a5f;outline:none;">
-                                <option value="all">All Status</option>
-                                <option value="pending">Pending</option>
-                                <option value="in_progress">In Progress</option>
-                                <option value="completed">Completed</option>
-                            </select>
-                            <button onclick="exportMyReports()" style="padding:8px 14px;background:#1e3a5f;color:#fff;border:none;border-radius:8px;font-size:0.75rem;font-weight:600;cursor:pointer;">Export CSV</button>
+                        <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+                            <button onclick="exportMyReports()" style="padding:6px 14px;background:#1e3a5f;color:#fff;border:none;border-radius:8px;font-size:0.72rem;font-weight:600;cursor:pointer;">Export CSV</button>
                         </div>
-                        <div id="reports-two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;min-height:120px;">
+                        <div id="reports-two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;min-height:120px;">
+                            <!-- PENDING COLUMN -->
                             <div>
-                                <div style="font-size:0.8rem;font-weight:800;color:#f59e0b;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block;"></span> Pending</div>
-                                <div id="reports-pending-col" style="display:flex;flex-direction:column;gap:10px;">
-                                    <p class="carousel-empty" style="font-size:0.82rem;color:#94a3b8;font-style:italic;">No pending reports</p>
+                                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                                    <span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>
+                                    <span style="font-size:0.8rem;font-weight:800;color:#f59e0b;text-transform:uppercase;letter-spacing:1.5px;">Pending</span>
+                                    <span id="pending-count" style="font-size:0.7rem;color:#f59e0b;">(0)</span>
                                 </div>
+                                <input type="text" id="search-pending" placeholder="Search pending..." oninput="filterColumn('pending')" style="width:100%;padding:6px 12px;border:1px solid #d0d7e5;border-radius:6px;font-size:0.78rem;outline:none;margin-bottom:10px;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <button onclick="navReport('pending',-1)" style="background:none;border:1px solid #d0d7e5;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:0.8rem;color:#1e3a5f;display:flex;align-items:center;justify-content:center;">&larr;</button>
+                                    <div id="reports-pending-col" style="flex:1;position:relative;height:280px;overflow:hidden;">
+                                        <p style="font-size:0.82rem;color:#94a3b8;font-style:italic;">No pending reports</p>
+                                    </div>
+                                    <button onclick="navReport('pending',1)" style="background:none;border:1px solid #d0d7e5;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:0.8rem;color:#1e3a5f;display:flex;align-items:center;justify-content:center;">&rarr;</button>
+                                </div>
+                                <div id="pending-page-indicator" style="text-align:center;font-size:0.68rem;color:#94a3b8;margin-top:6px;"></div>
                             </div>
+                            <!-- COMPLETED COLUMN -->
                             <div>
-                                <div style="font-size:0.8rem;font-weight:800;color:#22c55e;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#22c55e;display:inline-block;"></span> Completed</div>
-                                <div id="reports-completed-col" style="display:flex;flex-direction:column;gap:10px;">
-                                    <p class="carousel-empty" style="font-size:0.82rem;color:#94a3b8;font-style:italic;">No completed reports yet</p>
+                                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                                    <span style="width:10px;height:10px;border-radius:50%;background:#22c55e;display:inline-block;"></span>
+                                    <span style="font-size:0.8rem;font-weight:800;color:#22c55e;text-transform:uppercase;letter-spacing:1.5px;">Completed</span>
+                                    <span id="completed-count" style="font-size:0.7rem;color:#22c55e;">(0)</span>
                                 </div>
+                                <input type="text" id="search-completed" placeholder="Search completed..." oninput="filterColumn('completed')" style="width:100%;padding:6px 12px;border:1px solid #d0d7e5;border-radius:6px;font-size:0.78rem;outline:none;margin-bottom:10px;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <button onclick="navReport('completed',-1)" style="background:none;border:1px solid #d0d7e5;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:0.8rem;color:#1e3a5f;display:flex;align-items:center;justify-content:center;">&larr;</button>
+                                    <div id="reports-completed-col" style="flex:1;position:relative;height:280px;overflow:hidden;">
+                                        <p style="font-size:0.82rem;color:#94a3b8;font-style:italic;">No completed reports yet</p>
+                                    </div>
+                                    <button onclick="navReport('completed',1)" style="background:none;border:1px solid #d0d7e5;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:0.8rem;color:#1e3a5f;display:flex;align-items:center;justify-content:center;">&rarr;</button>
+                                </div>
+                                <div id="completed-page-indicator" style="text-align:center;font-size:0.68rem;color:#94a3b8;margin-top:6px;"></div>
                             </div>
                         </div>
-                        <!-- Keep hidden carousel for JS compat -->
                         <div id="reports-carousel" style="display:none;"></div>
                     </div>
                 </div>
@@ -11046,6 +11060,9 @@
             }
         }
 
+        // Report navigation state
+        var _reportNav = { pending: { items: [], index: 0 }, completed: { items: [], index: 0 } };
+
         async function loadUserReports() {
             var pendingCol = document.getElementById('reports-pending-col');
             var completedCol = document.getElementById('reports-completed-col');
@@ -11071,80 +11088,49 @@
                 var pending = requests.filter(function(r) { return r.status === 'pending' || r.status === 'in_progress'; });
                 var completedReqs = requests.filter(function(r) { return r.status === 'completed'; });
 
-                // ── PENDING COLUMN ──
-                if (pending.length > 0) {
-                    pendingCol.innerHTML = '';
-                    var stack = document.createElement('div');
-                    stack.style.cssText = 'position:relative;min-height:280px;width:210px;';
-                    pending.forEach(function(req, i) {
-                        var catalogEntry = REPORT_CATALOG.find(function(r) { return r.id === req.report_type; });
-                        var reportImg = catalogEntry?.img || '';
-                        var statusColors = { pending: '#f59e0b', in_progress: '#3b82f6' };
-                        var statusLabels = { pending: 'Pending', in_progress: 'In Progress' };
-                        var card = document.createElement('div');
-                        card.className = 'report-card';
-                        card.setAttribute('data-report-name', (req.report_title || '').toLowerCase());
-                        card.style.cssText = 'position:absolute;top:' + (i * 8) + 'px;left:' + (i * 3) + 'px;width:200px;z-index:' + (100 - i) + ';box-shadow:0 2px 10px rgba(0,0,0,0.1);border:2px solid #f59e0b;transition:transform 0.25s,z-index 0.1s;cursor:pointer;background:#fff;border-radius:12px;overflow:hidden;';
-                        card.onmouseenter = function() { this.style.transform = 'translateY(-10px) scale(1.02)'; this.style.zIndex = '200'; };
-                        card.onmouseleave = function() { this.style.transform = ''; this.style.zIndex = (100 - i); };
-                        card.innerHTML =
-                            (reportImg ? '<div class="report-card-img" style="height:100px;overflow:hidden;"><img src="' + reportImg + '" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'"></div>' : '') +
-                            '<div class="report-card-info">' +
-                                '<div class="report-card-title">' + (req.report_title || 'Report') + '</div>' +
-                                '<div style="display:flex;align-items:center;gap:6px;margin:4px 0;">' +
-                                    '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + (statusColors[req.status] || '#f59e0b') + ';"></span>' +
-                                    '<span style="font-size:0.72rem;font-weight:700;color:' + (statusColors[req.status] || '#f59e0b') + ';">' + (statusLabels[req.status] || 'Pending') + '</span>' +
-                                    (req.recurring ? '<span style="font-size:0.65rem;color:#94a3b8;">Recurring</span>' : '') +
-                                '</div>' +
-                                '<div style="font-size:0.68rem;color:#94a3b8;">' + new Date(req.created_at).toLocaleDateString() + '</div>' +
-                                '<button onclick="event.stopPropagation();openFollowUp(\'' + req.id + '\', \'' + (req.report_title || '').replace(/'/g, "\\'") + '\')" style="margin-top:6px;background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:3px 8px;border-radius:5px;font-size:0.65rem;font-weight:600;cursor:pointer;">Forgot something? Follow up</button>' +
-                            '</div>';
-                        stack.appendChild(card);
-                    });
-                    pendingCol.appendChild(stack);
-                } else {
-                    pendingCol.innerHTML = '<p style="font-size:0.82rem;color:#94a3b8;font-style:italic;">No pending reports</p>';
+                // Build card HTML helper
+                function buildReportCardHTML(title, img, statusColor, statusLabel, date, recurring, followUpId, downloadUrl) {
+                    return '<div style="border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,0.1);border:2px solid ' + statusColor + ';">' +
+                        (img ? '<div style="height:110px;overflow:hidden;"><img src="' + img + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.display=\'none\'"></div>' : '') +
+                        '<div style="padding:10px 12px;">' +
+                            '<div style="font-weight:700;color:#1e3a5f;font-size:0.85rem;margin-bottom:4px;">' + title + '</div>' +
+                            '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">' +
+                                '<span style="width:8px;height:8px;border-radius:50%;background:' + statusColor + ';display:inline-block;"></span>' +
+                                '<span style="font-size:0.72rem;font-weight:700;color:' + statusColor + ';">' + statusLabel + '</span>' +
+                                (recurring ? '<span style="font-size:0.62rem;color:#94a3b8;">Recurring</span>' : '') +
+                            '</div>' +
+                            '<div style="font-size:0.68rem;color:#94a3b8;margin-bottom:6px;">' + date + '</div>' +
+                            (downloadUrl ? '<a href="' + downloadUrl + '" target="_blank" style="display:inline-block;background:#1e3a5f;color:#fff;padding:3px 10px;border-radius:5px;font-size:0.65rem;font-weight:600;text-decoration:none;margin-right:4px;">Download</a>' : '') +
+                            (followUpId ? '<button onclick="openFollowUp(\'' + followUpId + '\', \'' + title.replace(/'/g, "\\'") + '\')" style="background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:3px 8px;border-radius:5px;font-size:0.65rem;font-weight:600;cursor:pointer;">' + (downloadUrl ? 'Comment' : 'Follow up') + '</button>' : '') +
+                        '</div></div>';
                 }
 
-                // ── COMPLETED COLUMN ──
+                // Build pending items
+                var statusColors = { pending: '#f59e0b', in_progress: '#3b82f6' };
+                var statusLabels = { pending: 'Pending', in_progress: 'In Progress' };
+                _reportNav.pending.items = pending.map(function(req) {
+                    var catalogEntry = REPORT_CATALOG.find(function(r) { return r.id === req.report_type; });
+                    return { html: buildReportCardHTML(req.report_title || 'Report', catalogEntry?.img || '', statusColors[req.status] || '#f59e0b', statusLabels[req.status] || 'Pending', new Date(req.created_at).toLocaleDateString(), req.recurring, req.id, null), title: req.report_title || '' };
+                });
+                _reportNav.pending.index = 0;
+                document.getElementById('pending-count').textContent = '(' + pending.length + ')';
+
+                // Build completed items
                 var allCompleted = [];
                 completedReqs.forEach(function(req) {
                     var catalogEntry = REPORT_CATALOG.find(function(r) { return r.id === req.report_type; });
-                    allCompleted.push({ title: req.report_title || 'Report', img: catalogEntry?.img || '', date: req.created_at, url: null, requestId: req.id });
+                    allCompleted.push({ html: buildReportCardHTML(req.report_title || 'Report', catalogEntry?.img || '', '#22c55e', 'Completed', new Date(req.created_at).toLocaleDateString(), false, req.id, null), title: req.report_title || '' });
                 });
                 reports.forEach(function(rep) {
-                    allCompleted.push({ title: rep.report_name, img: rep.thumbnail_url || '', date: rep.created_at, url: rep.file_url, requestId: null });
+                    allCompleted.push({ html: buildReportCardHTML(rep.report_name || 'Report', rep.thumbnail_url || '', '#22c55e', 'Completed', new Date(rep.created_at).toLocaleDateString(), false, null, rep.file_url), title: rep.report_name || '' });
                 });
+                _reportNav.completed.items = allCompleted;
+                _reportNav.completed.index = 0;
+                document.getElementById('completed-count').textContent = '(' + allCompleted.length + ')';
 
-                if (allCompleted.length > 0) {
-                    completedCol.innerHTML = '';
-                    var cStack = document.createElement('div');
-                    cStack.style.cssText = 'position:relative;min-height:280px;width:210px;';
-                    allCompleted.forEach(function(item, i) {
-                        var card = document.createElement('div');
-                        card.className = 'report-card';
-                        card.setAttribute('data-report-name', (item.title || '').toLowerCase());
-                        card.style.cssText = 'position:absolute;top:' + (i * 8) + 'px;left:' + (i * 3) + 'px;width:200px;z-index:' + (100 - i) + ';box-shadow:0 2px 10px rgba(0,0,0,0.1);border:2px solid #22c55e;transition:transform 0.25s,z-index 0.1s;cursor:pointer;background:#fff;border-radius:12px;overflow:hidden;';
-                        card.onmouseenter = function() { this.style.transform = 'translateY(-10px) scale(1.02)'; this.style.zIndex = '200'; };
-                        card.onmouseleave = function() { this.style.transform = ''; this.style.zIndex = (100 - i); };
-                        card.innerHTML =
-                            (item.img ? '<div class="report-card-img" style="height:100px;overflow:hidden;"><img src="' + item.img + '" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'"></div>' : '') +
-                            '<div class="report-card-info">' +
-                                '<div class="report-card-title">' + item.title + '</div>' +
-                                '<div style="display:flex;align-items:center;gap:6px;margin:4px 0;">' +
-                                    '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;"></span>' +
-                                    '<span style="font-size:0.72rem;font-weight:700;color:#22c55e;">Completed</span>' +
-                                '</div>' +
-                                '<div style="font-size:0.68rem;color:#94a3b8;">' + new Date(item.date).toLocaleDateString() + '</div>' +
-                                (item.url ? '<a href="' + item.url + '" target="_blank" onclick="event.stopPropagation()" style="margin-top:6px;display:inline-block;background:#1e3a5f;color:#fff;padding:3px 10px;border-radius:5px;font-size:0.65rem;font-weight:600;text-decoration:none;">Download</a>' : '') +
-                                (item.requestId ? '<button onclick="event.stopPropagation();openFollowUp(\'' + item.requestId + '\', \'' + item.title.replace(/'/g, "\\'") + '\')" style="margin-top:6px;background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:3px 8px;border-radius:5px;font-size:0.65rem;font-weight:600;cursor:pointer;">Leave a comment</button>' : '') +
-                            '</div>';
-                        cStack.appendChild(card);
-                    });
-                    completedCol.appendChild(cStack);
-                } else {
-                    completedCol.innerHTML = '<p style="font-size:0.82rem;color:#94a3b8;font-style:italic;">No completed reports yet</p>';
-                }
+                // Render current cards
+                renderReportColumn('pending');
+                renderReportColumn('completed');
 
             } catch (error) {
                 console.error('Error loading reports:', error);
@@ -11189,26 +11175,65 @@
         // Store report data for filtering
         var _myReportsData = { pending: [], completed: [] };
 
-        function filterMyReports() {
-            var q = (document.getElementById('reports-search')?.value || '').toLowerCase();
-            var statusFilter = document.getElementById('reports-filter-status')?.value || 'all';
+        function renderReportColumn(type) {
+            var col = document.getElementById('reports-' + type + '-col');
+            var indicator = document.getElementById(type + '-page-indicator');
+            var data = _reportNav[type];
+            if (!col || !data) return;
 
-            // Filter pending column
-            var pendingParent = document.getElementById('reports-pending-col');
-            var completedParent = document.getElementById('reports-completed-col');
+            if (data.items.length === 0) {
+                col.innerHTML = '<p style="font-size:0.82rem;color:#94a3b8;font-style:italic;">No ' + type + ' reports' + (type === 'completed' ? ' yet' : '') + '</p>';
+                if (indicator) indicator.textContent = '';
+                return;
+            }
 
-            if (pendingParent) {
-                pendingParent.closest('div').style.display = (statusFilter === 'completed') ? 'none' : '';
-                pendingParent.querySelectorAll('.report-card').forEach(function(card) {
-                    card.style.visibility = (!q || card.textContent.toLowerCase().includes(q)) ? 'visible' : 'hidden';
-                });
+            // Clamp index
+            if (data.index >= data.items.length) data.index = data.items.length - 1;
+            if (data.index < 0) data.index = 0;
+
+            // Show current card on top, with up to 2 behind it peeking out
+            var html = '<div style="position:relative;height:260px;">';
+            for (var i = Math.min(data.items.length - 1, data.index + 2); i >= data.index; i--) {
+                var offset = i - data.index;
+                var zIndex = 100 - offset;
+                var topPx = offset * 6;
+                var scale = 1 - offset * 0.02;
+                var opacity = offset === 0 ? 1 : 0.7 - offset * 0.15;
+                html += '<div style="position:absolute;top:' + topPx + 'px;left:' + (offset * 2) + 'px;right:' + (offset * 2) + 'px;z-index:' + zIndex + ';transform:scale(' + scale + ');opacity:' + opacity + ';transition:all 0.3s;">';
+                html += data.items[i].html;
+                html += '</div>';
             }
-            if (completedParent) {
-                completedParent.closest('div').style.display = (statusFilter === 'pending' || statusFilter === 'in_progress') ? 'none' : '';
-                completedParent.querySelectorAll('.report-card').forEach(function(card) {
-                    card.style.visibility = (!q || card.textContent.toLowerCase().includes(q)) ? 'visible' : 'hidden';
-                });
+            html += '</div>';
+            col.innerHTML = html;
+
+            if (indicator) indicator.textContent = (data.index + 1) + ' of ' + data.items.length;
+        }
+
+        function navReport(type, dir) {
+            var data = _reportNav[type];
+            if (!data) return;
+            data.index += dir;
+            if (data.index < 0) data.index = 0;
+            if (data.index >= data.items.length) data.index = data.items.length - 1;
+            renderReportColumn(type);
+        }
+
+        function filterColumn(type) {
+            var q = (document.getElementById('search-' + type)?.value || '').toLowerCase();
+            var data = _reportNav[type];
+            if (!data || !data.items) return;
+            // Filter: temporarily hide non-matching, show matching
+            var col = document.getElementById('reports-' + type + '-col');
+            if (!col) return;
+            if (!q) { renderReportColumn(type); return; }
+            // Find first matching item
+            var matchIdx = -1;
+            for (var i = 0; i < data.items.length; i++) {
+                if (data.items[i].title.toLowerCase().includes(q) || data.items[i].html.toLowerCase().includes(q)) {
+                    matchIdx = i; break;
+                }
             }
+            if (matchIdx >= 0) { data.index = matchIdx; renderReportColumn(type); }
         }
 
         function exportMyReports() {
