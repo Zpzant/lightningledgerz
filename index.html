@@ -8107,6 +8107,7 @@
                             </label>
                         </div>
                         <div id="svc-selected-summary" style="display:none;margin-top:16px;padding:14px 18px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:10px;color:#166534;font-size:0.88rem;font-weight:600;"></div>
+                        <button id="svc-submit-btn" style="display:none;margin-top:12px;background:#1e3a5f;color:#fff;border:none;padding:10px 28px;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='#2a4f7a'" onmouseout="this.style.background='#1e3a5f'" onclick="submitServiceSelections()">Submit Answers</button>
                     </div>
                 </div>
 
@@ -9513,6 +9514,7 @@
         function updateServiceSelections() {
             var checks = document.querySelectorAll('#service-select-grid input[name="svc"]:checked');
             var summary = document.getElementById('svc-selected-summary');
+            var submitBtn = document.getElementById('svc-submit-btn');
             var names = { bookkeeping: 'Bookkeeping', 'ar-ap': 'AR & AP', tax: 'Tax Preparation', payroll: 'Payroll', cfo: 'CFO Reporting', formation: 'Company Formation' };
             if (checks.length > 0) {
                 var selected = Array.from(checks).map(function(c) { return names[c.value] || c.value; });
@@ -9520,50 +9522,67 @@
                     summary.style.display = 'block';
                     summary.innerHTML = '✓ Selected: <strong>' + selected.join(', ') + '</strong>';
                 }
-                // Save to profile and email Zac
+                if (submitBtn) submitBtn.style.display = 'inline-block';
+
+                // Save selections to profile silently (no email yet — wait for Submit)
                 if (supabase && currentUserData?.id) {
                     var svcList = Array.from(checks).map(function(c) { return c.value; });
-                    supabase.from('profiles').update({
-                        selected_services: svcList
-                    }).eq('id', currentUserData.id);
-
-                    // Email Zac + admin notification (debounced — only after 3s of no changes)
-                    clearTimeout(window._svcEmailTimeout);
-                    window._svcEmailTimeout = setTimeout(function() {
-                        var userName = currentUserData?.name || 'Unknown';
-                        var userEmail = currentUserData?.email || 'N/A';
-                        var userCompany = currentUserData?.company || currentUserData?.company_name || '';
-                        var userPhone = currentUserData?.phone || '';
-                        var userTier = currentUserData?.tier || currentUserData?.package_tier || 'basic';
-                        var hasBookkeeping = svcList.indexOf('bookkeeping') !== -1;
-
-                        var subject = (hasBookkeeping ? '[BOOKKEEPING] ' : '') + 'Service Interest: ' + userName + ' — ' + selected.join(', ');
-                        var body = 'CLIENT SERVICE SELECTIONS\n'
-                            + '══════════════\n'
-                            + 'Client: ' + userName + ' (' + userEmail + ')\n'
-                            + (userPhone ? 'Phone: ' + userPhone + '\n' : '')
-                            + (userCompany ? 'Company: ' + userCompany + '\n' : '')
-                            + 'Tier: ' + userTier.toUpperCase() + '\n'
-                            + 'Services: ' + selected.join(', ') + '\n'
-                            + 'Date: ' + new Date().toLocaleDateString();
-                        if (supabase?.functions) {
-                            supabase.functions.invoke('send-email', {
-                                body: { to: 'zprizant@lightningledgerz.com', subject: subject, text: body }
-                            });
-                        }
-
-                        // Admin notification in database
-                        sendAdminNotification(
-                            hasBookkeeping ? 'bookkeeping_selected' : 'service_selected',
-                            currentUserData.id,
-                            userName + ' selected: ' + selected.join(', ') + (userCompany ? ' (' + userCompany + ')' : ''),
-                            { services: svcList, email: userEmail, phone: userPhone, company: userCompany, tier: userTier }
-                        );
-                    }, 3000);
+                    supabase.from('profiles').update({ selected_services: svcList }).eq('id', currentUserData.id);
                 }
             } else {
                 if (summary) summary.style.display = 'none';
+                if (submitBtn) submitBtn.style.display = 'none';
             }
+        }
+
+        function submitServiceSelections() {
+            var checks = document.querySelectorAll('#service-select-grid input[name="svc"]:checked');
+            if (checks.length === 0) return;
+            var names = { bookkeeping: 'Bookkeeping', 'ar-ap': 'AR & AP', tax: 'Tax Preparation', payroll: 'Payroll', cfo: 'CFO Reporting', formation: 'Company Formation' };
+            var selected = Array.from(checks).map(function(c) { return names[c.value] || c.value; });
+            var svcList = Array.from(checks).map(function(c) { return c.value; });
+
+            var userName = currentUserData?.name || 'Unknown';
+            var userEmail = currentUserData?.email || 'N/A';
+            var userCompany = currentUserData?.company || currentUserData?.company_name || '';
+            var userPhone = currentUserData?.phone || '';
+            var userTier = currentUserData?.tier || currentUserData?.package_tier || 'none';
+            var hasBookkeeping = svcList.indexOf('bookkeeping') !== -1;
+
+            var subject = (hasBookkeeping ? '[BOOKKEEPING] ' : '') + 'Service Selections: ' + userName + ' — ' + selected.join(', ');
+            var body = 'CLIENT SERVICE SELECTIONS\n'
+                + '══════════════\n'
+                + 'Client: ' + userName + ' (' + userEmail + ')\n'
+                + (userPhone ? 'Phone: ' + userPhone + '\n' : '')
+                + (userCompany ? 'Company: ' + userCompany + '\n' : '')
+                + 'Tier: ' + userTier.toUpperCase() + '\n'
+                + 'Services: ' + selected.join(', ') + '\n'
+                + 'Date: ' + new Date().toLocaleDateString();
+
+            // Send email to both admins
+            if (supabase?.functions) {
+                supabase.functions.invoke('send-email', {
+                    body: { to: ['zprizant@lightningledgerz.com', 'zpzant@gmail.com'], subject: subject, text: body }
+                });
+            }
+
+            // Admin notification
+            sendAdminNotification(
+                hasBookkeeping ? 'bookkeeping_selected' : 'service_selected',
+                currentUserData?.id,
+                userName + ' selected: ' + selected.join(', ') + (userCompany ? ' (' + userCompany + ')' : ''),
+                { services: svcList, email: userEmail, phone: userPhone, company: userCompany, tier: userTier }
+            );
+
+            // Update button to show success
+            var btn = document.getElementById('svc-submit-btn');
+            if (btn) {
+                btn.textContent = '✓ Submitted!';
+                btn.style.background = '#22c55e';
+                setTimeout(function() { btn.textContent = 'Submit Answers'; btn.style.background = '#1e3a5f'; }, 3000);
+            }
+
+            showToast('Service selections submitted!', 'success');
         }
 
         // ===========================================
