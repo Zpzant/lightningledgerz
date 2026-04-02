@@ -6911,7 +6911,7 @@
             <div id="nav-meter" style="display:none;"><div id="nav-meter-fill"></div><span id="nav-meter-pct"></span></div>
             <!-- Hamburger for site pages -->
             <div class="contact-dropdown" style="position:relative;">
-                <button onclick="this.parentElement.classList.toggle('open')" style="background:none;border:1px solid rgba(30,58,95,0.2);color:#1e3a5f;padding:6px 10px;border-radius:6px;font-size:1rem;cursor:pointer;line-height:1;">☰</button>
+                <button onclick="this.parentElement.classList.toggle('open')" style="background:none;border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 10px;border-radius:6px;font-size:1rem;cursor:pointer;line-height:1;transition:color 0.2s;" onmouseover="this.style.color=getTierHoverColor()" onmouseout="this.style.color='#fff'">☰</button>
                 <div class="contact-dropdown-menu" style="display:none;position:absolute;top:110%;right:0;background:#fff;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.15);padding:10px 0;min-width:200px;z-index:999;">
                     <a href="javascript:void(0)" onclick="showHomepage()" id="hamburger-homepage" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">← Back to Homepage</a>
                     <a href="javascript:void(0)" onclick="backToPortal()" id="hamburger-portal" style="display:none;padding:10px 20px;color:#e8231a;text-decoration:none;font-size:0.88rem;font-weight:700;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">⚡ Back to Portal</a>
