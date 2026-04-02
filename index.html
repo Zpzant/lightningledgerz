@@ -6865,7 +6865,23 @@
             <li class="mobile-only"><a href="#diamond-card" onclick="highlightPackageCard('diamond-card'); closeMobileMenu(); return false;" class="nav-package-link diamond">💎 Diamond</a></li>
         </ul>
         <div class="nav-contact-info" id="nav-contact-info" style="display:flex;align-items:center;gap:10px;">
-            <a href="#portal" class="nav-cta" style="background:#e8231a;color:#fff;border:2px solid #e8231a;">Get Started</a>
+            <a href="#portal" class="nav-cta" id="nav-cta-rotate" style="background:#e8231a;color:#fff;border:2px solid #e8231a;transition:opacity 0.3s;">Get Started</a>
+            <script>
+            (function() {
+                var phrases = ['Get Started', 'Sign Up', 'Log In', 'Get Started'];
+                var idx = 0;
+                setInterval(function() {
+                    var btn = document.getElementById('nav-cta-rotate');
+                    if (!btn || btn.offsetParent === null) return;
+                    btn.style.opacity = '0';
+                    setTimeout(function() {
+                        idx = (idx + 1) % phrases.length;
+                        btn.textContent = phrases[idx];
+                        btn.style.opacity = '1';
+                    }, 300);
+                }, 3000);
+            })();
+            </script>
             <div class="contact-dropdown" style="position:relative;">
                 <button onclick="this.parentElement.classList.toggle('open')" style="background:transparent;color:#fff;padding:8px 18px;border-radius:8px;border:2px solid rgba(255,255,255,0.4);font-family:inherit;font-weight:700;font-size:0.85rem;letter-spacing:0.3px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#fff';this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.4)';this.style.background='transparent'">Contact Us ▾</button>
                 <div class="contact-dropdown-menu" style="display:none;position:absolute;top:110%;right:0;background:#fff;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.15);padding:10px 0;min-width:260px;z-index:999;">
@@ -7759,7 +7775,7 @@
                 <p style="color: #fff; margin-bottom: 30px; font-size: 1.1rem;">
                     Get personalized FP&A guidance from an expert. Your first consultation is <strong style="color: var(--red);">free</strong>.
                 </p>
-                <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/zpzant/30min'});return false;"
+                <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/zpzant/30min' + (currentUserData?.email ? '?email=' + encodeURIComponent(currentUserData.email) + '&name=' + encodeURIComponent(currentUserData?.name || '') : '')});return false;"
                         style="background: linear-gradient(45deg, var(--red), var(--red-light)); color: white; border: none; padding: 18px 40px; font-size: 1.2rem; font-weight: 700; border-radius: 50px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 20px rgba(255, 51, 51, 0.4);">
                     Book Your Free Call
                 </button>
@@ -8191,7 +8207,7 @@
                     </div>
                     <div class="portal-step-body">
                         <p style="margin-bottom:14px;font-size:0.88rem;color:#666;">Schedule a free 30-minute call with Zac to walk through your needs and see sample deliverables.</p>
-                        <a href="javascript:void(0)" class="book-call-btn" id="book-call-btn" onclick="Calendly.initPopupWidget({url:'https://calendly.com/zpzant/30min'});markCallBooked();return false;">Schedule My Free Call &rarr;</a>
+                        <a href="javascript:void(0)" class="book-call-btn" id="book-call-btn" onclick="Calendly.initPopupWidget({url:'https://calendly.com/zpzant/30min' + (currentUserData?.email ? '?email=' + encodeURIComponent(currentUserData.email) + '&name=' + encodeURIComponent(currentUserData?.name || '') : '')});markCallBooked();return false;">Schedule My Free Call &rarr;</a>
                         <div id="call-booked-badge" style="display:none; margin-top:12px;">
                             <div class="nda-signed-badge">
                                 <span class="nda-signed-check">&#128222;</span>
@@ -9448,7 +9464,7 @@
         var _tokensInitialized = false;
 
         function initTokens(tier) {
-            // Prevent double-init (called from multiple places on login)
+            // Prevent double-init per session
             if (_tokensInitialized && currentUserData?.id) {
                 updateAllTokenDisplays();
                 return;
@@ -9457,33 +9473,38 @@
 
             var profile = currentUserData?.profile;
 
-            // Load balance from Supabase profile
+            // Step 1: Load balance from Supabase (the source of truth)
             if (profile && profile.token_balance !== undefined && profile.token_balance !== null) {
                 userTokensRemaining = profile.token_balance;
             } else {
                 userTokensRemaining = 0;
             }
 
-            // Credit refill based on 30-day payment cycle (not calendar month)
-            // payment_start_date = when they first paid. Every 30 days from that date, credits refill.
+            // Step 2: Check if a new 30-day billing cycle has started
             if (tier !== 'none' && tier !== 'diamond' && supabase && currentUserData?.id) {
-                var paymentStart = profile?.payment_start_date || profile?.created_at;
-                if (!paymentStart) { updateAllTokenDisplays(); return; }
+                var paymentStart = profile?.payment_start_date;
+                if (!paymentStart) {
+                    // No payment date yet — if they have a tier, set it now
+                    if (tier === 'basic' || tier === 'gold') {
+                        paymentStart = new Date().toISOString();
+                        supabase.from('profiles').update({ payment_start_date: paymentStart }).eq('id', currentUserData.id);
+                        if (profile) profile.payment_start_date = paymentStart;
+                    } else {
+                        updateAllTokenDisplays();
+                        return;
+                    }
+                }
 
                 var startDate = new Date(paymentStart);
                 var now = new Date();
                 var daysSinceStart = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
                 var currentCycleNumber = Math.floor(daysSinceStart / 30);
-
-                // tokens_credited_months stores which cycle numbers have been credited
-                var creditedCycles = [];
-                if (profile && Array.isArray(profile.tokens_credited_months)) {
-                    creditedCycles = profile.tokens_credited_months;
-                }
-
                 var cycleKey = 'cycle_' + currentCycleNumber;
+
+                var creditedCycles = (profile && Array.isArray(profile.tokens_credited_months)) ? profile.tokens_credited_months : [];
+
                 if (creditedCycles.indexOf(cycleKey) === -1) {
-                    // New 30-day cycle — refill tokens (reset to tier limit, not add)
+                    // Genuinely new 30-day cycle — reset tokens to tier limit
                     var monthlyTokens = TOKEN_LIMITS[tier] || 0;
                     userTokensRemaining = monthlyTokens;
                     creditedCycles.push(cycleKey);
@@ -9499,6 +9520,7 @@
                         profile.tokens_credited_months = creditedCycles;
                     }
                 }
+                // If cycleKey already exists — do nothing, just use the DB balance as-is
             }
 
             updateAllTokenDisplays();
