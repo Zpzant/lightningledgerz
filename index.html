@@ -7568,6 +7568,11 @@
                             <label>Report File:</label>
                             <input type="file" id="report-file" accept=".pdf,.xlsx,.xls,.csv,.docx,.pptx">
                         </div>
+                        <div class="admin-form-row">
+                            <label>Thumbnail/Screenshot (optional):</label>
+                            <input type="file" id="report-thumbnail" accept=".png,.jpg,.jpeg,.webp">
+                            <span style="font-size:0.72rem;color:#94a3b8;">Screenshot of the first page — shows on the client's report card</span>
+                        </div>
                         <button class="btn-primary" onclick="uploadUserReport()">Upload Report</button>
                     </div>
                     <div class="admin-section-header" style="margin-top: 30px;">
@@ -8184,8 +8189,15 @@
                             <p class="fathom-link-desc">Your advisor has linked a live reporting dashboard for your business.</p>
                             <a href="#" id="fathom-link-url" target="_blank" class="fathom-link-btn">Open Dashboard</a>
                         </div>
-                        <div class="carousel-search">
-                            <input type="text" id="reports-search" placeholder="Search by title or date..." oninput="filterReportsCarousel()">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+                            <input type="text" id="reports-search" placeholder="Search by report name, type, or date..." oninput="filterMyReports()" style="flex:1;min-width:200px;padding:8px 14px;border:1px solid #d0d7e5;border-radius:8px;font-size:0.82rem;outline:none;">
+                            <select id="reports-filter-status" onchange="filterMyReports()" style="padding:8px 12px;border:1px solid #d0d7e5;border-radius:8px;font-size:0.82rem;color:#1e3a5f;outline:none;">
+                                <option value="all">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                            <button onclick="exportMyReports()" style="padding:8px 14px;background:#1e3a5f;color:#fff;border:none;border-radius:8px;font-size:0.75rem;font-weight:600;cursor:pointer;">Export CSV</button>
                         </div>
                         <div class="portal-reports-carousel-container" id="reports-carousel-container">
                             <div class="portal-reports-carousel" id="reports-carousel">
@@ -11061,6 +11073,7 @@
                 // ── PENDING SECTION ──
                 if (pending.length > 0) {
                     var pendingSection = document.createElement('div');
+                    pendingSection.setAttribute('data-report-section', 'pending');
                     pendingSection.style.cssText = 'min-width:260px;margin-right:20px;';
                     pendingSection.innerHTML = '<div style="font-size:0.75rem;font-weight:800;color:#f59e0b;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;">Pending (' + pending.length + ')</div>';
                     var stack = document.createElement('div');
@@ -11100,11 +11113,12 @@
                     allCompleted.push({ title: req.report_title || 'Report', img: catalogEntry?.img || '', date: req.created_at, url: null, requestId: req.id, type: 'request' });
                 });
                 reports.forEach(function(rep) {
-                    allCompleted.push({ title: rep.report_name, img: '', date: rep.created_at, url: rep.file_url, requestId: null, type: 'delivered' });
+                    allCompleted.push({ title: rep.report_name, img: rep.thumbnail_url || '', date: rep.created_at, url: rep.file_url, requestId: null, type: 'delivered' });
                 });
 
                 if (allCompleted.length > 0) {
                     var completedSection = document.createElement('div');
+                    completedSection.setAttribute('data-report-section', 'completed');
                     completedSection.style.cssText = 'min-width:260px;';
                     completedSection.innerHTML = '<div style="font-size:0.75rem;font-weight:800;color:#22c55e;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;">Completed (' + allCompleted.length + ')</div>';
                     var cStack = document.createElement('div');
@@ -11170,6 +11184,60 @@
             );
 
             showToast('Follow-up sent for ' + reportTitle, 'success');
+        }
+
+        // Store report data for filtering
+        var _myReportsData = { pending: [], completed: [] };
+
+        function filterMyReports() {
+            var q = (document.getElementById('reports-search')?.value || '').toLowerCase();
+            var statusFilter = document.getElementById('reports-filter-status')?.value || 'all';
+            var carousel = document.getElementById('reports-carousel');
+            if (!carousel) return;
+
+            // Get all cards in carousel
+            var sections = carousel.querySelectorAll('[data-report-section]');
+            sections.forEach(function(section) {
+                var sectionType = section.getAttribute('data-report-section');
+                if (statusFilter !== 'all') {
+                    if (statusFilter === 'completed' && sectionType === 'pending') { section.style.display = 'none'; return; }
+                    if (statusFilter !== 'completed' && sectionType === 'completed') { section.style.display = 'none'; return; }
+                    section.style.display = '';
+                } else {
+                    section.style.display = '';
+                }
+
+                // Filter cards within section by search query
+                var cards = section.querySelectorAll('.report-card');
+                cards.forEach(function(card) {
+                    var text = card.textContent.toLowerCase();
+                    card.style.display = (!q || text.includes(q)) ? '' : 'none';
+                });
+            });
+        }
+
+        function exportMyReports() {
+            if (!supabase || !currentUserData?.id) return;
+            Promise.all([
+                supabase.from('report_requests').select('report_title, report_type, status, recurring, created_at, notes').eq('user_id', currentUserData.id).order('created_at', { ascending: false }),
+                supabase.from('user_reports').select('report_name, created_at, file_url').eq('user_id', currentUserData.id).order('created_at', { ascending: false })
+            ]).then(function(results) {
+                var requests = results[0].data || [];
+                var reports = results[1].data || [];
+                var csv = 'Type,Title,Status,Recurring,Date,Notes,Download URL\n';
+                requests.forEach(function(r) {
+                    csv += 'Request,"' + (r.report_title || '').replace(/"/g, '""') + '",' + (r.status || '') + ',' + (r.recurring ? 'Yes' : 'No') + ',' + new Date(r.created_at).toLocaleDateString() + ',"' + (r.notes || '').replace(/"/g, '""').replace(/\n/g, ' ') + '",\n';
+                });
+                reports.forEach(function(r) {
+                    csv += 'Delivered,"' + (r.report_name || '').replace(/"/g, '""') + '",Completed,,' + new Date(r.created_at).toLocaleDateString() + ',,' + (r.file_url || '') + '\n';
+                });
+                var blob = new Blob([csv], { type: 'text/csv' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url; a.download = 'my-reports-' + new Date().toISOString().split('T')[0] + '.csv';
+                a.click(); URL.revokeObjectURL(url);
+                showToast('Reports exported!', 'success');
+            });
         }
 
         function formatFileSize(bytes) {
@@ -12620,18 +12688,35 @@
             try {
                 showToast('Uploading report...', 'info');
 
-                // Upload file to storage
+                // Upload report file to storage
                 var filePath = `reports/${userId}/${Date.now()}_${file.name}`;
-                var { data: uploadData, error: uploadError } = await supabase.storage
+                var { error: uploadError } = await supabase.storage
                     .from('user-documents')
                     .upload(filePath, file);
-
                 if (uploadError) throw uploadError;
 
-                // Get public URL
-                var { data: urlData } = supabase.storage
+                // Get signed URL (bucket is private)
+                var { data: signedData } = await supabase.storage
                     .from('user-documents')
-                    .getPublicUrl(filePath);
+                    .createSignedUrl(filePath, 60 * 60 * 24 * 365);
+                var fileUrl = signedData?.signedUrl || '';
+
+                // Upload thumbnail if provided
+                var thumbnailUrl = '';
+                var thumbInput = document.getElementById('report-thumbnail');
+                var thumbFile = thumbInput?.files?.[0];
+                if (thumbFile) {
+                    var thumbPath = `reports/${userId}/thumb_${Date.now()}_${thumbFile.name}`;
+                    var { error: thumbErr } = await supabase.storage
+                        .from('Avatars')
+                        .upload(thumbPath, thumbFile, { upsert: true });
+                    if (!thumbErr) {
+                        var { data: thumbUrlData } = supabase.storage
+                            .from('Avatars')
+                            .getPublicUrl(thumbPath);
+                        thumbnailUrl = thumbUrlData?.publicUrl || '';
+                    }
+                }
 
                 // Insert report record
                 var { error: insertError } = await supabase
@@ -12641,8 +12726,9 @@
                         report_name: reportName,
                         report_description: reportDesc,
                         file_path: filePath,
-                        file_url: urlData?.publicUrl || null,
-                        file_size: file.size
+                        file_url: fileUrl,
+                        file_size: file.size,
+                        thumbnail_url: thumbnailUrl || null
                     }]);
 
                 if (insertError) throw insertError;
@@ -12654,6 +12740,7 @@
                 document.getElementById('report-name').value = '';
                 document.getElementById('report-description').value = '';
                 fileInput.value = '';
+                if (thumbInput) thumbInput.value = '';
 
                 loadAdminReports();
             } catch (error) {
