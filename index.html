@@ -126,7 +126,7 @@
         "url": "https://lightningledgerz.com",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://lightningledgerz.com/LightningLedgerzLogo-gold.png",
+          "url": "https://lightningledgerz.com/thelogogold.png",
           "width": 400,
           "height": 400
         },
@@ -8749,10 +8749,27 @@
                         // Increment promo usage
                         await supabase.from('promo_codes').update({ current_uses: (promoData.current_uses || 0) + 1 }).eq('id', promoData.id);
 
-                        // Update local state
+                        // Update local state with fresh data
+                        var now = new Date().toISOString();
+                        var monthlyTokens = TOKEN_LIMITS[plan] || 0;
                         currentUserData.tier = plan;
                         currentUserData.package_tier = plan;
-                        if (currentUserData.profile) currentUserData.profile.package_tier = plan;
+                        if (currentUserData.profile) {
+                            currentUserData.profile.package_tier = plan;
+                            currentUserData.profile.payment_start_date = now;
+                            currentUserData.profile.token_balance = monthlyTokens;
+                            currentUserData.profile.tokens_credited_months = ['cycle_0'];
+                        }
+
+                        // Also write the initial tokens to DB
+                        await supabase.from('profiles').update({
+                            token_balance: monthlyTokens,
+                            tokens_credited_months: ['cycle_0']
+                        }).eq('id', currentUserData.id);
+
+                        // Set token state directly
+                        userTokensRemaining = monthlyTokens;
+                        _tokensInitialized = false;
 
                         // Re-init credits for the new tier
                         initTokens(plan);
@@ -9411,7 +9428,7 @@
             // Update dashboard logo based on tier
             var logoMap = {
                 basic: 'Thelogo.png',
-                gold: 'LightningLedgerzLogo-gold.png',
+                gold: 'thelogogold.png',
                 diamond: 'LightningLedgerzLogo-diamond.png'
             };
 
@@ -10002,7 +10019,7 @@
             if (tier === 'diamond') {
                 navLogo.src = 'LightningLedgerzLogo-diamond.png';
             } else if (tier === 'gold') {
-                navLogo.src = 'LightningLedgerzLogo-gold.png';
+                navLogo.src = 'thelogogold.png';
             } else {
                 navLogo.src = 'Thelogo.png';
             }
