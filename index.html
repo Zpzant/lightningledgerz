@@ -11075,7 +11075,7 @@
                 if (pending.length > 0) {
                     pendingCol.innerHTML = '';
                     var stack = document.createElement('div');
-                    stack.style.cssText = 'position:relative;min-height:' + (220 + (pending.length - 1) * 14) + 'px;';
+                    stack.style.cssText = 'position:relative;min-height:280px;width:210px;';
                     pending.forEach(function(req, i) {
                         var catalogEntry = REPORT_CATALOG.find(function(r) { return r.id === req.report_type; });
                         var reportImg = catalogEntry?.img || '';
@@ -11084,11 +11084,11 @@
                         var card = document.createElement('div');
                         card.className = 'report-card';
                         card.setAttribute('data-report-name', (req.report_title || '').toLowerCase());
-                        card.style.cssText = 'position:absolute;top:' + (i * 14) + 'px;left:' + (i * 3) + 'px;right:' + (i * 3) + 'px;z-index:' + (100 - i) + ';box-shadow:0 4px 16px rgba(0,0,0,0.12);border:2px solid #f59e0b;transition:transform 0.25s,z-index 0.1s;cursor:pointer;background:#fff;';
+                        card.style.cssText = 'position:absolute;top:' + (i * 8) + 'px;left:' + (i * 3) + 'px;width:200px;z-index:' + (100 - i) + ';box-shadow:0 2px 10px rgba(0,0,0,0.1);border:2px solid #f59e0b;transition:transform 0.25s,z-index 0.1s;cursor:pointer;background:#fff;border-radius:12px;overflow:hidden;';
                         card.onmouseenter = function() { this.style.transform = 'translateY(-10px) scale(1.02)'; this.style.zIndex = '200'; };
                         card.onmouseleave = function() { this.style.transform = ''; this.style.zIndex = (100 - i); };
                         card.innerHTML =
-                            (reportImg ? '<div class="report-card-img"><img src="' + reportImg + '" alt="" onerror="this.style.display=\'none\'"></div>' : '') +
+                            (reportImg ? '<div class="report-card-img" style="height:100px;overflow:hidden;"><img src="' + reportImg + '" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'"></div>' : '') +
                             '<div class="report-card-info">' +
                                 '<div class="report-card-title">' + (req.report_title || 'Report') + '</div>' +
                                 '<div style="display:flex;align-items:center;gap:6px;margin:4px 0;">' +
@@ -11119,16 +11119,16 @@
                 if (allCompleted.length > 0) {
                     completedCol.innerHTML = '';
                     var cStack = document.createElement('div');
-                    cStack.style.cssText = 'position:relative;min-height:' + (220 + (allCompleted.length - 1) * 14) + 'px;';
+                    cStack.style.cssText = 'position:relative;min-height:280px;width:210px;';
                     allCompleted.forEach(function(item, i) {
                         var card = document.createElement('div');
                         card.className = 'report-card';
                         card.setAttribute('data-report-name', (item.title || '').toLowerCase());
-                        card.style.cssText = 'position:absolute;top:' + (i * 14) + 'px;left:' + (i * 3) + 'px;right:' + (i * 3) + 'px;z-index:' + (100 - i) + ';box-shadow:0 4px 16px rgba(0,0,0,0.08);border:2px solid #22c55e;transition:transform 0.25s,z-index 0.1s;cursor:pointer;background:#fff;';
+                        card.style.cssText = 'position:absolute;top:' + (i * 8) + 'px;left:' + (i * 3) + 'px;width:200px;z-index:' + (100 - i) + ';box-shadow:0 2px 10px rgba(0,0,0,0.1);border:2px solid #22c55e;transition:transform 0.25s,z-index 0.1s;cursor:pointer;background:#fff;border-radius:12px;overflow:hidden;';
                         card.onmouseenter = function() { this.style.transform = 'translateY(-10px) scale(1.02)'; this.style.zIndex = '200'; };
                         card.onmouseleave = function() { this.style.transform = ''; this.style.zIndex = (100 - i); };
                         card.innerHTML =
-                            (item.img ? '<div class="report-card-img"><img src="' + item.img + '" alt="" onerror="this.style.display=\'none\'"></div>' : '') +
+                            (item.img ? '<div class="report-card-img" style="height:100px;overflow:hidden;"><img src="' + item.img + '" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'"></div>' : '') +
                             '<div class="report-card-info">' +
                                 '<div class="report-card-title">' + item.title + '</div>' +
                                 '<div style="display:flex;align-items:center;gap:6px;margin:4px 0;">' +
