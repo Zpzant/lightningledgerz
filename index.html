@@ -6865,19 +6865,19 @@
             <li class="mobile-only"><a href="#diamond-card" onclick="highlightPackageCard('diamond-card'); closeMobileMenu(); return false;" class="nav-package-link diamond">💎 Diamond</a></li>
         </ul>
         <div class="nav-contact-info" id="nav-contact-info" style="display:flex;align-items:center;gap:10px;">
-            <a href="#portal" class="nav-cta" id="nav-cta-rotate" style="background:#e8231a;color:#fff;border:2px solid #e8231a;transition:opacity 0.3s;">Get Started</a>
+            <a href="#portal" class="nav-cta" id="nav-cta-rotate" style="background:#e8231a;color:#fff;border:2px solid #e8231a;min-width:120px;text-align:center;display:inline-block;"><span id="nav-cta-text" style="transition:opacity 0.3s;display:inline-block;">Get Started</span></a>
             <script>
             (function() {
-                var phrases = ['Get Started', 'Sign Up', 'Log In', 'Get Started'];
+                var phrases = ['Get Started', 'Sign Up', 'Log In'];
                 var idx = 0;
                 setInterval(function() {
-                    var btn = document.getElementById('nav-cta-rotate');
-                    if (!btn || btn.offsetParent === null) return;
-                    btn.style.opacity = '0';
+                    var txt = document.getElementById('nav-cta-text');
+                    if (!txt || txt.offsetParent === null) return;
+                    txt.style.opacity = '0';
                     setTimeout(function() {
                         idx = (idx + 1) % phrases.length;
-                        btn.textContent = phrases[idx];
-                        btn.style.opacity = '1';
+                        txt.textContent = phrases[idx];
+                        txt.style.opacity = '1';
                     }, 300);
                 }, 3000);
             })();
