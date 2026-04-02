@@ -6860,7 +6860,8 @@
             </div>
             <span id="nav-welcome-text">Hi, User!</span>
             <span id="nav-plan-badge" class="plan-badge badge-basic">Basic</span>
-            <span id="nav-token-badge" style="display:none;font-size:0.75rem;font-weight:700;color:#1e3a5f;background:#f0f9ff;padding:3px 10px;border-radius:12px;cursor:pointer;" onclick="document.getElementById('portal-plan-cards')?.scrollIntoView({behavior:'smooth',block:'center'})">⚡ <span id="nav-token-count-inline">0</span></span>
+            <span id="nav-token-badge" style="display:none;font-size:0.75rem;font-weight:700;color:#1e3a5f;background:#f0f9ff;padding:3px 10px;border-radius:12px;cursor:pointer;position:relative;" onclick="document.getElementById('portal-plan-cards')?.scrollIntoView({behavior:'smooth',block:'center'})">⚡ <span id="nav-token-count-inline">0</span></span>
+            <span id="nav-refill-text" style="display:none;font-size:0.6rem;color:#94a3b8;font-weight:600;white-space:nowrap;"></span>
         </div>
         <ul class="nav-links" id="nav-links">
             <li class="mobile-only"><a href="#portal" onclick="closeMobileMenu()" class="mobile-cta">Get Started</a></li>
@@ -9676,7 +9677,10 @@
                         token_balance: userTokensRemaining,
                         tokens_credited_months: creditedCycles,
                         credits_used_month: 0
-                    }).eq('id', currentUserData.id);
+                    }).eq('id', currentUserData.id).then(function(res) {
+                        if (res.error) console.error('Token credit save error:', res.error);
+                        else console.log('Cycle credited: balance=' + userTokensRemaining);
+                    });
 
                     if (profile) {
                         profile.token_balance = userTokensRemaining;
@@ -9703,7 +9707,10 @@
                     token_balance: userTokensRemaining,
                     credits_used_month: usedMonth,
                     credits_used_year: usedYear
-                }).eq('id', currentUserData.id);
+                }).eq('id', currentUserData.id).then(function(res) {
+                    if (res.error) console.error('Token spend save error:', res.error);
+                    else console.log('Token saved: balance=' + userTokensRemaining);
+                });
                 if (currentUserData.profile) {
                     currentUserData.profile.token_balance = userTokensRemaining;
                     currentUserData.profile.credits_used_month = usedMonth;
@@ -9763,19 +9770,28 @@
                     refillText = ' · Refills in ' + daysUntilRefill + 'd';
                 }
 
-                // Dynamic tooltip
+                // Dynamic tooltip — click to upgrade
                 if (tier === 'none') {
                     navTokenBadge.title = 'No plan yet — select a plan to start';
                 } else if (isUnlimited) {
                     navTokenBadge.title = 'Unlimited report coins — Diamond plan';
                 } else if (userTokensRemaining <= 0) {
-                    navTokenBadge.title = 'Out of coins' + refillText;
+                    navTokenBadge.title = 'Need more coins? Click to upgrade';
                     navTokenBadge.style.background = '#fff0f0';
                     navTokenBadge.style.color = '#e8231a';
                 } else {
-                    navTokenBadge.title = userTokensRemaining + ' coin' + (userTokensRemaining !== 1 ? 's' : '') + ' remaining' + refillText;
+                    navTokenBadge.title = 'Need more coins? Click to upgrade';
                     navTokenBadge.style.background = '#f0f9ff';
                     navTokenBadge.style.color = '#1e3a5f';
+                }
+
+                // Show refill countdown next to badge
+                var refillEl = document.getElementById('nav-refill-text');
+                if (refillEl && tier !== 'none' && tier !== 'diamond' && refillText) {
+                    refillEl.style.display = 'inline';
+                    refillEl.textContent = 'Refills in ' + (refillText.match(/\d+/) || ['30'])[0] + 'd';
+                } else if (refillEl) {
+                    refillEl.style.display = 'none';
                 }
             }
         }
