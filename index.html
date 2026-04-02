@@ -12379,13 +12379,43 @@
 
         function markCallBooked() {
             localStorage.setItem('call_booked_' + (currentUserData?.id || 'demo'), '1');
+            var userName = currentUserData?.name || 'Unknown';
+            var userEmail = currentUserData?.email || 'N/A';
+            var userCompany = currentUserData?.company || currentUserData?.company_name || '';
+            var userPhone = currentUserData?.phone || '';
+
             // Persist to Supabase
             if (supabase && currentUserData?.id) {
                 supabase.from('profiles').update({
                     call_booked_at: new Date().toISOString()
-                }).eq('id', currentUserData.id);
+                }).eq('id', currentUserData.id).then(function(res) {
+                    if (res.error) console.error('Call booked save error:', res.error);
+                });
                 if (currentUserData.profile) currentUserData.profile.call_booked_at = new Date().toISOString();
+
+                // Email both admins
+                if (supabase.functions) {
+                    supabase.functions.invoke('send-email', {
+                        body: {
+                            to: ['zprizant@lightningledgerz.com', 'zpzant@gmail.com'],
+                            subject: '[CALL BOOKED] ' + userName + ' scheduled a free call',
+                            text: 'CALL SCHEDULED\n══════════════\nClient: ' + userName + ' (' + userEmail + ')\n'
+                                + (userPhone ? 'Phone: ' + userPhone + '\n' : '')
+                                + (userCompany ? 'Company: ' + userCompany + '\n' : '')
+                                + 'Tier: ' + (getUserTier() || 'none').toUpperCase() + '\n'
+                                + 'Date: ' + new Date().toLocaleDateString() + '\n\n'
+                                + 'Check your Calendly for the time slot.'
+                        }
+                    });
+                }
+
+                // Admin notification
+                sendAdminNotification('call_booked', currentUserData.id,
+                    userName + ' scheduled a free call' + (userCompany ? ' (' + userCompany + ')' : ''),
+                    { email: userEmail, phone: userPhone, company: userCompany }
+                );
             }
+
             var badge = document.getElementById('call-booked-badge');
             var btn = document.getElementById('book-call-btn');
             if (badge) badge.style.display = 'block';
