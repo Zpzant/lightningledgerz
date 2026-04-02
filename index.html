@@ -7463,34 +7463,69 @@
                 <button class="admin-modal-close" onclick="closeAdminDashboard()">&times;</button>
             </div>
             <div class="admin-tabs">
-                <button class="admin-tab active" onclick="switchAdminTab('users')">Users</button>
+                <button class="admin-tab active" onclick="switchAdminTab('users')">Clients</button>
                 <button class="admin-tab" onclick="switchAdminTab('reports')">Reports</button>
+                <button class="admin-tab" onclick="switchAdminTab('notifications')">Notifications <span id="admin-notif-badge" style="background:#e53935;color:#fff;font-size:0.65rem;padding:1px 6px;border-radius:10px;margin-left:4px;display:none;">0</span></button>
                 <button class="admin-tab" onclick="switchAdminTab('quickbooks')">Platforms</button>
                 <button class="admin-tab" onclick="switchAdminTab('promo')">Promo Codes</button>
             </div>
             <div class="admin-tab-content">
-                <!-- Users Tab -->
+                <!-- Users Tab (Airtable-style) -->
                 <div id="admin-tab-users" class="admin-tab-pane active">
-                    <div class="admin-section-header">
-                        <h3>Manage Users</h3>
+                    <div class="admin-section-header" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                        <h3 style="margin:0;">Client Overview</h3>
+                        <input type="text" id="admin-user-search" placeholder="Search name, email, company..." oninput="filterAdminUsers()" style="flex:1;min-width:200px;max-width:340px;padding:7px 14px;border:1px solid #d0d7e5;border-radius:8px;font-size:0.82rem;outline:none;">
                         <button class="btn-refresh" onclick="loadAdminUsers()">Refresh</button>
                     </div>
-                    <div class="admin-table-container">
-                        <table class="admin-table" id="admin-users-table">
+                    <!-- Summary cards -->
+                    <div id="admin-summary-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:14px 0 18px;"></div>
+                    <div class="admin-table-container" style="overflow-x:auto;max-height:65vh;">
+                        <table class="admin-table" id="admin-users-table" style="min-width:1400px;font-size:0.78rem;">
                             <thead>
                                 <tr>
-                                    <th>Email</th>
-                                    <th>Name</th>
-                                    <th>Company</th>
-                                    <th>Tier</th>
-                                    <th>Joined</th>
-                                    <th>Actions</th>
+                                    <th style="position:sticky;left:0;z-index:2;background:#1e3a5f;min-width:140px;">Name</th>
+                                    <th style="min-width:80px;">Phone</th>
+                                    <th style="min-width:170px;">Email</th>
+                                    <th style="min-width:120px;">Company</th>
+                                    <th style="min-width:90px;">Tier</th>
+                                    <th style="min-width:160px;">Services</th>
+                                    <th style="min-width:60px;">Reports Ordered</th>
+                                    <th style="min-width:140px;">Report Status</th>
+                                    <th style="min-width:60px;">Coins/Mo</th>
+                                    <th style="min-width:50px;">QB</th>
+                                    <th style="min-width:50px;">Files</th>
+                                    <th style="min-width:80px;">Start Date</th>
+                                    <th style="min-width:70px;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="admin-users-body">
-                                <tr><td colspan="6" class="loading-row">Loading users...</td></tr>
+                                <tr><td colspan="13" class="loading-row">Loading clients...</td></tr>
                             </tbody>
                         </table>
+                    </div>
+                    <!-- Expandable client detail panel -->
+                    <div id="admin-client-detail" style="display:none;margin-top:16px;background:#f8faff;border:1px solid #d0d7e5;border-radius:12px;padding:20px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                            <h4 id="admin-detail-name" style="margin:0;color:#1e3a5f;">Client Detail</h4>
+                            <button onclick="document.getElementById('admin-client-detail').style.display='none'" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#94a3b8;">&times;</button>
+                        </div>
+                        <div id="admin-detail-content" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                            <div id="admin-detail-files"><h5 style="color:#1e3a5f;margin-bottom:8px;">Uploaded Files</h5><div id="admin-detail-files-list">No files</div></div>
+                            <div id="admin-detail-reports"><h5 style="color:#1e3a5f;margin-bottom:8px;">Report Requests</h5><div id="admin-detail-reports-list">No reports</div></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Notifications Tab -->
+                <div id="admin-tab-notifications" class="admin-tab-pane">
+                    <div class="admin-section-header">
+                        <h3>Recent Notifications</h3>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn-refresh" onclick="markAllNotificationsRead()">Mark All Read</button>
+                            <button class="btn-refresh" onclick="loadAdminNotifications()">Refresh</button>
+                        </div>
+                    </div>
+                    <div id="admin-notif-list" style="display:flex;flex-direction:column;gap:8px;max-height:60vh;overflow-y:auto;">
+                        <div style="color:#94a3b8;text-align:center;padding:40px;">Loading notifications...</div>
                     </div>
                 </div>
                 <!-- Reports Tab -->
@@ -7881,7 +7916,7 @@
             <!-- Quiz + Inline Plan Cards -->
             <div style="text-align:center;margin-bottom:8px;">
                 <div style="font-size:1.4rem;font-weight:800;color:#3B82F6;margin-bottom:8px;">Select a Plan to Get Started</div>
-                <a href="javascript:void(0)" onclick="openQuizModal()" style="display:inline-flex;align-items:center;gap:6px;color:#1e3a5f;font-size:0.82rem;font-weight:700;text-decoration:none;padding:6px 16px;border:1.5px solid #d0d7e5;border-radius:20px;transition:all 0.2s;" onmouseover="this.style.borderColor='#1e3a5f';this.style.background='#f8faff'" onmouseout="this.style.borderColor='#d0d7e5';this.style.background='transparent'">🎯 Not sure which plan? Take our 1-minute quiz</a>
+                <a href="javascript:void(0)" onclick="openQuizModal()" style="display:inline-flex;align-items:center;gap:6px;color:#ffffff;font-size:0.82rem;font-weight:700;text-decoration:none;padding:6px 16px;border:1.5px solid rgba(255,255,255,0.4);border-radius:20px;transition:all 0.2s;" onmouseover="this.style.borderColor='#fff';this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.4)';this.style.background='transparent'">🎯 Not sure which plan? Take our 1-minute quiz</a>
             </div>
             <div id="portal-plan-cards" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
                 <div class="portal-plan-card" id="portal-plan-basic" onclick="selectPlan('basic')" style="border:2px solid #e2e8f0;border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:all 0.25s;background:#fff;position:relative;">
@@ -8000,13 +8035,13 @@
                                 <input type="checkbox" name="svc" value="bookkeeping" style="display:none;">
                                 <div class="svc-select-icon">📒</div>
                                 <div class="svc-select-name">Bookkeeping</div>
-                                <div class="svc-select-desc">Accurate financial records, bank reconciliation, chart of accounts</div>
+                                <div class="svc-select-desc">Transaction categorization, bank & credit card reconciliation, month-end closing journal entries</div>
                             </label>
                             <label class="svc-select-card" data-svc="ar-ap" onclick="handleServiceCardClick(this)">
                                 <input type="checkbox" name="svc" value="ar-ap" style="display:none;">
                                 <div class="svc-select-icon">💳</div>
                                 <div class="svc-select-name">AR & AP</div>
-                                <div class="svc-select-desc">Invoicing, bill pay, collections, vendor management</div>
+                                <div class="svc-select-desc">Accounts payable, accounts receivable, invoicing, bill pay, collections</div>
                             </label>
                             <label class="svc-select-card" data-svc="tax" data-min-tier="diamond" onclick="handleServiceCardClick(this)">
                                 <input type="checkbox" name="svc" value="tax" style="display:none;">
@@ -8024,7 +8059,7 @@
                                 <input type="checkbox" name="svc" value="cfo" style="display:none;">
                                 <div class="svc-select-icon">📊</div>
                                 <div class="svc-select-name">CFO Reporting</div>
-                                <div class="svc-select-desc">P&L, cash flow forecasting, KPI dashboards, board decks</div>
+                                <div class="svc-select-desc">Preparing monthly P&L and balance sheet, cash flow forecasting, KPI dashboards, board decks</div>
                             </label>
                             <label class="svc-select-card" data-svc="formation" data-min-tier="diamond" onclick="handleServiceCardClick(this)">
                                 <input type="checkbox" name="svc" value="formation" style="display:none;">
@@ -8092,7 +8127,7 @@
                                 <div class="fin-slot-status" id="fin-cf-status"></div>
                             </div>
                         </div>
-                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('files')">Skip</button></div>
+                        <!-- skip removed -->
                     </div>
                 </div>
 
@@ -8114,7 +8149,7 @@
                         <div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-radius:8px;">
                             <span style="font-size:0.78rem;color:#94a3b8;">&#128274; 256-bit encrypted &middot; Revoke anytime</span>
                         </div>
-                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('db')">Skip</button></div>
+                        <!-- skip removed -->
                     </div>
                 </div>
 
@@ -8156,7 +8191,7 @@
                     </div>
                     <div class="portal-step-body">
                         <p style="margin-bottom:14px;font-size:0.88rem;color:#666;">Schedule a free 30-minute call with Zac to walk through your needs and see sample deliverables.</p>
-                        <a href="mailto:zprizant@lightningledgerz.com?subject=Discovery%20Call%20Request" class="book-call-btn" id="book-call-btn" onclick="markCallBooked()">Schedule My Free Call &rarr;</a>
+                        <a href="javascript:void(0)" class="book-call-btn" id="book-call-btn" onclick="Calendly.initPopupWidget({url:'https://calendly.com/zpzant/30min'});markCallBooked();return false;">Schedule My Free Call &rarr;</a>
                         <div id="call-booked-badge" style="display:none; margin-top:12px;">
                             <div class="nda-signed-badge">
                                 <span class="nda-signed-check">&#128222;</span>
@@ -8166,7 +8201,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="step-skip-row"><button class="step-skip-btn" onclick="skipStep('call')">Skip</button></div>
+                        <!-- skip removed -->
                     </div>
                 </div>
 
@@ -8386,7 +8421,7 @@
                     }
 
                     const userName = profile?.first_name || user.email.split('@')[0];
-                    const userTier = profile?.tier || profile?.package_tier || 'none';
+                    const userTier = profile?.package_tier || profile?.tier || 'none';
                     const isAdmin = ADMIN_EMAILS.indexOf(user.email) !== -1 || profile?.is_admin === true;
 
                     currentUserData = {
@@ -8394,6 +8429,7 @@
                         email: user.email,
                         name: userName,
                         tier: userTier,
+                        package_tier: userTier,
                         created_at: profile?.trial_started_at || user.created_at,
                         profile: profile,
                         isDemo: false,
@@ -8560,18 +8596,22 @@
             }
 
             try {
-                var { data, error } = await supabase
+                var { data: rows, error } = await supabase
                     .from('promo_codes')
                     .select('*')
                     .eq('code', code)
                     .eq('is_active', true)
-                    .single();
+                    .limit(1);
 
-                if (error || !data) {
+                console.log('Promo lookup result:', { rows, error, code });
+
+                if (error || !rows || rows.length === 0) {
                     window.activePromoCode = null;
-                    if (resultDiv) resultDiv.innerHTML = '<span style="color:#ff6b6b;">✗ Invalid or expired promo code</span>';
+                    if (resultDiv) resultDiv.innerHTML = '<span style="color:#ff6b6b;">✗ Invalid or expired promo code' + (error ? ' (' + error.message + ')' : '') + '</span>';
                     return;
                 }
+
+                var data = rows[0];
 
                 // Check expiry
                 if (data.expiry_date && new Date(data.expiry_date) < new Date()) {
@@ -8595,9 +8635,55 @@
             }
         }
 
-        function selectPlan(plan) {
+        async function selectPlan(plan) {
             const billingPeriod = isYearlyPricing ? 'yearly' : 'monthly';
             let stripeUrl = STRIPE_URLS[billingPeriod][plan];
+
+            // 100% promo code = bypass Stripe, activate tier directly
+            if (window.activePromoCode && currentUserData && !currentUserData.isDemo && supabase) {
+                try {
+                    var { data: promoData } = await supabase.from('promo_codes').select('*').eq('code', window.activePromoCode).eq('is_active', true).single();
+                    if (promoData && promoData.discount_percent === 100) {
+                        // Activate tier directly in Supabase
+                        var { error } = await supabase.from('profiles').update({
+                            package_tier: plan,
+                            payment_start_date: new Date().toISOString(),
+                            updated_at: new Date().toISOString()
+                        }).eq('id', currentUserData.id);
+
+                        if (error) throw error;
+
+                        // Increment promo usage
+                        await supabase.from('promo_codes').update({ current_uses: (promoData.current_uses || 0) + 1 }).eq('id', promoData.id);
+
+                        // Update local state
+                        currentUserData.tier = plan;
+                        currentUserData.package_tier = plan;
+                        if (currentUserData.profile) currentUserData.profile.package_tier = plan;
+
+                        // Re-init credits for the new tier
+                        initTokens(plan);
+                        initCreditSystem(plan);
+
+                        // Refresh dashboard display
+                        showLoggedInDashboard(currentUserData.name || 'User', plan, false, currentUserData.isAdmin);
+
+                        showToast('100% promo applied! You are now on the ' + plan.charAt(0).toUpperCase() + plan.slice(1) + ' plan.', 'success');
+                        window.activePromoCode = null;
+
+                        // Notify admin
+                        sendAdminNotification('signup', currentUserData.id,
+                            (currentUserData.name || currentUserData.email) + ' activated ' + plan.toUpperCase() + ' via promo code ' + promoData.code,
+                            { plan: plan, promo: promoData.code }
+                        );
+
+                        return;
+                    }
+                } catch (err) {
+                    console.error('Promo activation error:', err);
+                    // Fall through to normal Stripe flow
+                }
+            }
 
             // Append promo code if one is active
             if (window.activePromoCode) {
@@ -9257,15 +9343,23 @@
                         selected_services: svcList
                     }).eq('id', currentUserData.id);
 
-                    // Email Zac the selections (debounced — only after 3s of no changes)
+                    // Email Zac + admin notification (debounced — only after 3s of no changes)
                     clearTimeout(window._svcEmailTimeout);
                     window._svcEmailTimeout = setTimeout(function() {
                         var userName = currentUserData?.name || 'Unknown';
                         var userEmail = currentUserData?.email || 'N/A';
-                        var subject = 'Service Interest: ' + userName + ' — ' + selected.join(', ');
+                        var userCompany = currentUserData?.company || currentUserData?.company_name || '';
+                        var userPhone = currentUserData?.phone || '';
+                        var userTier = currentUserData?.tier || currentUserData?.package_tier || 'basic';
+                        var hasBookkeeping = svcList.indexOf('bookkeeping') !== -1;
+
+                        var subject = (hasBookkeeping ? '[BOOKKEEPING] ' : '') + 'Service Interest: ' + userName + ' — ' + selected.join(', ');
                         var body = 'CLIENT SERVICE SELECTIONS\n'
                             + '══════════════\n'
                             + 'Client: ' + userName + ' (' + userEmail + ')\n'
+                            + (userPhone ? 'Phone: ' + userPhone + '\n' : '')
+                            + (userCompany ? 'Company: ' + userCompany + '\n' : '')
+                            + 'Tier: ' + userTier.toUpperCase() + '\n'
                             + 'Services: ' + selected.join(', ') + '\n'
                             + 'Date: ' + new Date().toLocaleDateString();
                         if (supabase?.functions) {
@@ -9273,6 +9367,14 @@
                                 body: { to: 'zprizant@lightningledgerz.com', subject: subject, text: body }
                             });
                         }
+
+                        // Admin notification in database
+                        sendAdminNotification(
+                            hasBookkeeping ? 'bookkeeping_selected' : 'service_selected',
+                            currentUserData.id,
+                            userName + ' selected: ' + selected.join(', ') + (userCompany ? ' (' + userCompany + ')' : ''),
+                            { services: svcList, email: userEmail, phone: userPhone, company: userCompany, tier: userTier }
+                        );
                     }, 3000);
                 }
             } else {
@@ -9588,6 +9690,14 @@
                     status: 'pending',
                     created_at: new Date().toISOString()
                 });
+
+                // Admin notification for new report order
+                sendAdminNotification(
+                    'report_ordered',
+                    currentUserData.id,
+                    (currentUserData.name || currentUserData.email || 'Client') + ' ordered: ' + report.title + (isRecurring ? ' (recurring)' : ''),
+                    { report_type: report.id, report_title: report.title, recurring: isRecurring }
+                );
             }
 
             // Update meter
@@ -10614,28 +10724,45 @@
             };
             reader.readAsDataURL(file);
 
-            // Upload to Supabase storage and save URL to profile
+            // Upload to Supabase Avatars bucket (public) and save URL to profile
             if (supabase && currentUserData?.id) {
                 try {
                     var ext = file.name.split('.').pop().toLowerCase();
                     var filePath = currentUserData.id + '/company-logo.' + ext;
+
+                    // Upload to Avatars bucket (public) so URL works without auth
                     var { error } = await supabase.storage
-                        .from('user-documents')
+                        .from('Avatars')
                         .upload(filePath, file, { upsert: true });
                     if (!error) {
-                        // Get public URL
                         var { data: urlData } = supabase.storage
-                            .from('user-documents')
+                            .from('Avatars')
                             .getPublicUrl(filePath);
                         var logoUrl = urlData?.publicUrl || '';
                         // Save to profiles table
                         await supabase.from('profiles')
                             .update({ company_logo: logoUrl })
                             .eq('id', currentUserData.id);
-                        currentUserData.profile.company_logo = logoUrl;
+                        if (currentUserData.profile) currentUserData.profile.company_logo = logoUrl;
                         showToast('Logo uploaded!', 'success');
                     } else {
-                        showToast('Upload failed: ' + error.message, 'error');
+                        // Fallback: try user-documents bucket with signed URL
+                        var { error: err2 } = await supabase.storage
+                            .from('user-documents')
+                            .upload(filePath, file, { upsert: true });
+                        if (!err2) {
+                            var { data: signedData } = await supabase.storage
+                                .from('user-documents')
+                                .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year
+                            var logoUrl = signedData?.signedUrl || '';
+                            await supabase.from('profiles')
+                                .update({ company_logo: logoUrl })
+                                .eq('id', currentUserData.id);
+                            if (currentUserData.profile) currentUserData.profile.company_logo = logoUrl;
+                            showToast('Logo uploaded!', 'success');
+                        } else {
+                            showToast('Upload failed: ' + (err2.message || 'Unknown error'), 'error');
+                        }
                     }
                 } catch (err) {
                     console.error('Logo upload error:', err);
@@ -11877,6 +12004,7 @@
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
             loadAdminUsers();
+            loadAdminNotifications();
         }
 
         function closeAdminDashboard() {
@@ -11901,60 +12029,276 @@
             // Load data for the tab
             if (tabName === 'users') loadAdminUsers();
             if (tabName === 'reports') loadAdminReports();
+            if (tabName === 'notifications') loadAdminNotifications();
             if (tabName === 'promo') loadAdminPromoCodes();
         }
 
-        // Users Tab Functions
+        // ====== ADMIN: Global data cache ======
+        var _adminUsersData = [];
+
+        // Users Tab Functions (Airtable-style)
         async function loadAdminUsers() {
             var tbody = document.getElementById('admin-users-body');
-            tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Loading users...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="13" class="loading-row">Loading clients...</td></tr>';
 
             if (!supabase) {
-                tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Database not available</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="13" class="loading-row">Database not available</td></tr>';
                 return;
             }
 
             try {
-                var { data, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .order('created_at', { ascending: false });
+                // Parallel queries for all data
+                var [profilesRes, reportsRes, filesRes] = await Promise.all([
+                    supabase.from('profiles').select('*').order('created_at', { ascending: false }),
+                    supabase.from('report_requests').select('user_id, status'),
+                    supabase.from('user_files').select('user_id')
+                ]);
 
-                if (error) throw error;
+                var profiles = profilesRes.data || [];
+                var reports = reportsRes.data || [];
+                var files = filesRes.data || [];
 
-                if (data && data.length > 0) {
-                    tbody.innerHTML = data.map(user => `
-                        <tr>
-                            <td>${user.email || '-'}</td>
-                            <td>${user.first_name || ''} ${user.last_name || ''}</td>
-                            <td>${user.company || user.company_name || '-'}</td>
-                            <td>
-                                <select class="tier-select" onchange="updateUserTier('${user.id}', this.value)">
-                                    <option value="basic" ${user.package_tier === 'basic' ? 'selected' : ''}>Basic</option>
-                                    <option value="gold" ${user.package_tier === 'gold' ? 'selected' : ''}>Gold</option>
-                                    <option value="diamond" ${user.package_tier === 'diamond' ? 'selected' : ''}>Diamond</option>
-                                </select>
-                            </td>
-                            <td>${user.created_at ? new Date(user.created_at).toLocaleDateString() : '-'}</td>
-                            <td>
-                                <button class="btn-delete" onclick="toggleAdminStatus('${user.id}', ${!user.is_admin})">
-                                    ${user.is_admin ? 'Remove Admin' : 'Make Admin'}
-                                </button>
-                            </td>
-                        </tr>
-                    `).join('');
+                // Build lookup maps
+                var reportsByUser = {};
+                reports.forEach(function(r) {
+                    if (!reportsByUser[r.user_id]) reportsByUser[r.user_id] = { total: 0, pending: 0, in_progress: 0, completed: 0 };
+                    reportsByUser[r.user_id].total++;
+                    reportsByUser[r.user_id][r.status] = (reportsByUser[r.user_id][r.status] || 0) + 1;
+                });
 
-                    // Also populate the reports user dropdown
-                    var userSelect = document.getElementById('report-user-select');
+                var filesByUser = {};
+                files.forEach(function(f) {
+                    filesByUser[f.user_id] = (filesByUser[f.user_id] || 0) + 1;
+                });
+
+                _adminUsersData = profiles;
+
+                // Summary cards
+                var totalClients = profiles.filter(function(u) { return !u.is_admin; }).length;
+                var basicCount = profiles.filter(function(u) { return u.package_tier === 'basic'; }).length;
+                var goldCount = profiles.filter(function(u) { return u.package_tier === 'gold'; }).length;
+                var diamondCount = profiles.filter(function(u) { return u.package_tier === 'diamond'; }).length;
+                var pendingReports = reports.filter(function(r) { return r.status === 'pending' || r.status === 'in_progress'; }).length;
+
+                document.getElementById('admin-summary-cards').innerHTML =
+                    '<div style="background:#fff;border:1px solid #e2e7ef;border-radius:10px;padding:12px 16px;text-align:center;"><div style="font-size:1.4rem;font-weight:800;color:#1e3a5f;">' + totalClients + '</div><div style="font-size:0.7rem;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Total Clients</div></div>' +
+                    '<div style="background:#fff;border:1px solid #e2e7ef;border-radius:10px;padding:12px 16px;text-align:center;"><div style="font-size:1.4rem;font-weight:800;color:#e8231a;">' + basicCount + '</div><div style="font-size:0.7rem;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Basic</div></div>' +
+                    '<div style="background:#fff;border:1px solid #e2e7ef;border-radius:10px;padding:12px 16px;text-align:center;"><div style="font-size:1.4rem;font-weight:800;color:#d4a017;">' + goldCount + '</div><div style="font-size:0.7rem;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Gold</div></div>' +
+                    '<div style="background:#fff;border:1px solid #e2e7ef;border-radius:10px;padding:12px 16px;text-align:center;"><div style="font-size:1.4rem;font-weight:800;color:#7c3aed;">' + diamondCount + '</div><div style="font-size:0.7rem;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Diamond</div></div>' +
+                    '<div style="background:#fff;border:1px solid #e2e7ef;border-radius:10px;padding:12px 16px;text-align:center;"><div style="font-size:1.4rem;font-weight:800;color:' + (pendingReports > 0 ? '#e53935' : '#2e7d32') + ';">' + pendingReports + '</div><div style="font-size:0.7rem;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Reports Due</div></div>';
+
+                // Render rows
+                renderAdminUserRows(profiles, reportsByUser, filesByUser);
+
+                // Populate report user dropdown
+                var userSelect = document.getElementById('report-user-select');
+                if (userSelect) {
                     userSelect.innerHTML = '<option value="">-- Select a user --</option>' +
-                        data.map(user => `<option value="${user.id}">${user.email} (${user.first_name || 'No name'})</option>`).join('');
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="6" class="loading-row">No users found</td></tr>';
+                        profiles.map(function(u) { return '<option value="' + u.id + '">' + (u.email || '') + ' (' + (u.first_name || 'No name') + ')</option>'; }).join('');
                 }
+                // Also populate fathom dropdown
+                var fathomSelect = document.getElementById('fathom-user-select');
+                if (fathomSelect) {
+                    fathomSelect.innerHTML = '<option value="">-- Select a user --</option>' +
+                        profiles.map(function(u) { return '<option value="' + u.id + '">' + (u.email || '') + ' (' + (u.first_name || 'No name') + ')</option>'; }).join('');
+                }
+
             } catch (error) {
                 console.error('Error loading users:', error);
-                tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Error loading users</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="13" class="loading-row">Error loading users</td></tr>';
             }
+        }
+
+        function renderAdminUserRows(profiles, reportsByUser, filesByUser) {
+            var tbody = document.getElementById('admin-users-body');
+            var tierColors = { basic: '#e8231a', gold: '#d4a017', diamond: '#7c3aed' };
+            var tierBg = { basic: '#fef2f2', gold: '#fefce8', diamond: '#f5f3ff' };
+            var tokenLimits = { none: 0, basic: 2, gold: 5, diamond: 999 };
+            var svcLabels = { bookkeeping: 'BK', 'ar-ap': 'AR/AP', tax: 'Tax', payroll: 'Pay', cfo: 'CFO', formation: 'Form' };
+            var svcColors = { bookkeeping: '#2563eb', 'ar-ap': '#059669', tax: '#dc2626', payroll: '#d97706', cfo: '#7c3aed', formation: '#0891b2' };
+
+            if (!profiles || profiles.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="13" class="loading-row">No clients found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = profiles.map(function(u) {
+                var name = (u.first_name || '') + ' ' + (u.last_name || '');
+                if (name.trim() === '') name = u.email ? u.email.split('@')[0] : '-';
+                var tier = u.package_tier || 'basic';
+                var rData = reportsByUser[u.id] || { total: 0, pending: 0, in_progress: 0, completed: 0 };
+                var fCount = filesByUser[u.id] || 0;
+                var services = u.selected_services || [];
+                var qbConnected = u.qb_connected || false;
+                var tokensUsed = u.credits_used_month || 0;
+
+                // Service tags
+                var svcHTML = '';
+                if (Array.isArray(services) && services.length > 0) {
+                    svcHTML = services.map(function(s) {
+                        return '<span style="display:inline-block;padding:1px 6px;border-radius:4px;font-size:0.65rem;font-weight:700;color:#fff;background:' + (svcColors[s] || '#6b7280') + ';margin:1px;">' + (svcLabels[s] || s) + '</span>';
+                    }).join('');
+                } else {
+                    svcHTML = '<span style="color:#ccc;font-size:0.7rem;">None</span>';
+                }
+
+                // Report status badges
+                var reportHTML = '';
+                if (rData.total > 0) {
+                    if (rData.pending > 0) reportHTML += '<span style="display:inline-block;padding:1px 6px;border-radius:4px;font-size:0.65rem;font-weight:700;color:#fff;background:#e53935;margin:1px;">' + rData.pending + ' pending</span>';
+                    if (rData.in_progress > 0) reportHTML += '<span style="display:inline-block;padding:1px 6px;border-radius:4px;font-size:0.65rem;font-weight:700;color:#fff;background:#f59e0b;margin:1px;">' + rData.in_progress + ' in prog</span>';
+                    if (rData.completed > 0) reportHTML += '<span style="display:inline-block;padding:1px 6px;border-radius:4px;font-size:0.65rem;font-weight:700;color:#fff;background:#2e7d32;margin:1px;">' + rData.completed + ' done</span>';
+                } else {
+                    reportHTML = '<span style="color:#ccc;font-size:0.7rem;">-</span>';
+                }
+
+                return '<tr onclick="showClientDetail(\'' + u.id + '\')" style="cursor:pointer;">' +
+                    '<td style="position:sticky;left:0;z-index:1;background:#fff;font-weight:600;white-space:nowrap;">' + name + (u.is_admin ? ' <span style="font-size:0.6rem;background:#1e3a5f;color:#fff;padding:1px 5px;border-radius:3px;">ADMIN</span>' : '') + '</td>' +
+                    '<td>' + (u.phone || '-') + '</td>' +
+                    '<td style="font-size:0.72rem;">' + (u.email || '-') + '</td>' +
+                    '<td>' + (u.company || u.company_name || '-') + '</td>' +
+                    '<td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:0.7rem;font-weight:700;color:' + (tierColors[tier] || '#666') + ';background:' + (tierBg[tier] || '#f5f5f5') + ';text-transform:uppercase;">' + tier + '</span></td>' +
+                    '<td>' + svcHTML + '</td>' +
+                    '<td style="text-align:center;font-weight:600;">' + rData.total + '</td>' +
+                    '<td>' + reportHTML + '</td>' +
+                    '<td style="text-align:center;">' + tokensUsed + '/' + (tokenLimits[tier] === 999 ? '&infin;' : tokenLimits[tier]) + '</td>' +
+                    '<td style="text-align:center;">' + (qbConnected ? '<span style="color:#2e7d32;font-weight:700;">&#10003;</span>' : '<span style="color:#ccc;">&#10007;</span>') + '</td>' +
+                    '<td style="text-align:center;font-weight:600;">' + fCount + '</td>' +
+                    '<td style="font-size:0.72rem;">' + (u.created_at ? new Date(u.created_at).toLocaleDateString() : '-') + '</td>' +
+                    '<td><select class="tier-select" style="font-size:0.7rem;padding:2px 4px;" onclick="event.stopPropagation()" onchange="updateUserTier(\'' + u.id + '\', this.value)"><option value="basic"' + (tier === 'basic' ? ' selected' : '') + '>Basic</option><option value="gold"' + (tier === 'gold' ? ' selected' : '') + '>Gold</option><option value="diamond"' + (tier === 'diamond' ? ' selected' : '') + '>Diamond</option></select></td>' +
+                    '</tr>';
+            }).join('');
+        }
+
+        function filterAdminUsers() {
+            var q = document.getElementById('admin-user-search').value.toLowerCase();
+            var rows = document.querySelectorAll('#admin-users-body tr');
+            rows.forEach(function(row) {
+                row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        }
+
+        async function showClientDetail(userId) {
+            var panel = document.getElementById('admin-client-detail');
+            panel.style.display = 'block';
+            var user = _adminUsersData.find(function(u) { return u.id === userId; });
+            var name = user ? ((user.first_name || '') + ' ' + (user.last_name || '')).trim() || user.email : userId;
+            document.getElementById('admin-detail-name').textContent = 'Client: ' + name;
+            document.getElementById('admin-detail-files-list').innerHTML = 'Loading...';
+            document.getElementById('admin-detail-reports-list').innerHTML = 'Loading...';
+
+            if (!supabase) return;
+
+            try {
+                var [filesRes, reportsRes] = await Promise.all([
+                    supabase.from('user_files').select('*').eq('user_id', userId).order('uploaded_at', { ascending: false }),
+                    supabase.from('report_requests').select('*').eq('user_id', userId).order('created_at', { ascending: false })
+                ]);
+
+                var files = filesRes.data || [];
+                var reports = reportsRes.data || [];
+
+                // Files
+                if (files.length > 0) {
+                    document.getElementById('admin-detail-files-list').innerHTML = files.map(function(f) {
+                        var icon = f.file_type === 'PL' ? '📊' : f.file_type === 'Balance Sheet' ? '📋' : f.file_type === 'Cash Flow' ? '💰' : '📄';
+                        return '<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:#fff;border:1px solid #e2e7ef;border-radius:6px;margin-bottom:4px;">' +
+                            '<span>' + icon + '</span>' +
+                            '<div style="flex:1;"><div style="font-weight:600;font-size:0.8rem;">' + (f.file_name || 'File') + '</div><div style="font-size:0.7rem;color:#94a3b8;">' + (f.file_type || '') + ' &middot; ' + (f.uploaded_at ? new Date(f.uploaded_at).toLocaleDateString() : '') + '</div></div>' +
+                            (f.file_url ? '<a href="' + f.file_url + '" target="_blank" style="font-size:0.75rem;color:#1a73e8;">Download</a>' : '') +
+                            '</div>';
+                    }).join('');
+                } else {
+                    document.getElementById('admin-detail-files-list').innerHTML = '<span style="color:#94a3b8;font-size:0.82rem;">No files uploaded yet</span>';
+                }
+
+                // Reports
+                if (reports.length > 0) {
+                    var statusColors = { pending: '#e53935', in_progress: '#f59e0b', completed: '#2e7d32', rejected: '#6b7280' };
+                    document.getElementById('admin-detail-reports-list').innerHTML = reports.map(function(r) {
+                        return '<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:#fff;border:1px solid #e2e7ef;border-radius:6px;margin-bottom:4px;">' +
+                            '<div style="flex:1;"><div style="font-weight:600;font-size:0.8rem;">' + (r.report_title || r.report_type || 'Report') + '</div><div style="font-size:0.7rem;color:#94a3b8;">' + (r.created_at ? new Date(r.created_at).toLocaleDateString() : '') + (r.recurring ? ' &middot; Recurring' : '') + '</div></div>' +
+                            '<select style="font-size:0.7rem;padding:2px 6px;border:1px solid #d0d7e5;border-radius:4px;" onchange="updateReportStatus(\'' + r.id + '\', this.value)">' +
+                            '<option value="pending"' + (r.status === 'pending' ? ' selected' : '') + '>Pending</option>' +
+                            '<option value="in_progress"' + (r.status === 'in_progress' ? ' selected' : '') + '>In Progress</option>' +
+                            '<option value="completed"' + (r.status === 'completed' ? ' selected' : '') + '>Completed</option>' +
+                            '</select></div>';
+                    }).join('');
+                } else {
+                    document.getElementById('admin-detail-reports-list').innerHTML = '<span style="color:#94a3b8;font-size:0.82rem;">No report requests yet</span>';
+                }
+
+                panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } catch (error) {
+                console.error('Error loading client detail:', error);
+            }
+        }
+
+        async function updateReportStatus(reportId, newStatus) {
+            if (!supabase) return;
+            try {
+                var { error } = await supabase.from('report_requests').update({ status: newStatus }).eq('id', reportId);
+                if (error) throw error;
+                showToast('Report status updated to ' + newStatus, 'success');
+            } catch (e) {
+                console.error('Error updating report status:', e);
+                showToast('Error updating status', 'error');
+            }
+        }
+
+        // ====== ADMIN: Notifications ======
+        async function loadAdminNotifications() {
+            var container = document.getElementById('admin-notif-list');
+            if (!supabase) { container.innerHTML = '<div style="color:#94a3b8;text-align:center;padding:40px;">Database not available</div>'; return; }
+
+            try {
+                var { data, error } = await supabase.from('admin_notifications').select('*').order('created_at', { ascending: false }).limit(100);
+                if (error) throw error;
+
+                var unread = (data || []).filter(function(n) { return !n.read; }).length;
+                var badge = document.getElementById('admin-notif-badge');
+                if (unread > 0) { badge.textContent = unread; badge.style.display = 'inline'; }
+                else { badge.style.display = 'none'; }
+
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<div style="color:#94a3b8;text-align:center;padding:40px;">No notifications yet</div>';
+                    return;
+                }
+
+                var eventIcons = { signup: '👤', bookkeeping_selected: '📒', qb_connected: '🔗', report_ordered: '📊', file_uploaded: '📁', service_selected: '🎯' };
+                container.innerHTML = data.map(function(n) {
+                    return '<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 16px;background:' + (n.read ? '#fff' : '#f0f7ff') + ';border:1px solid ' + (n.read ? '#e2e7ef' : '#bfdbfe') + ';border-radius:8px;">' +
+                        '<span style="font-size:1.2rem;">' + (eventIcons[n.event_type] || '🔔') + '</span>' +
+                        '<div style="flex:1;"><div style="font-size:0.85rem;font-weight:' + (n.read ? '400' : '600') + ';color:#1e3a5f;">' + (n.message || n.event_type) + '</div>' +
+                        '<div style="font-size:0.72rem;color:#94a3b8;margin-top:2px;">' + (n.created_at ? new Date(n.created_at).toLocaleString() : '') + '</div></div>' +
+                        '</div>';
+                }).join('');
+            } catch (e) {
+                console.error('Error loading notifications:', e);
+                container.innerHTML = '<div style="color:#e53935;text-align:center;padding:40px;">Error loading notifications</div>';
+            }
+        }
+
+        async function markAllNotificationsRead() {
+            if (!supabase) return;
+            try {
+                await supabase.from('admin_notifications').update({ read: true }).eq('read', false);
+                showToast('All notifications marked as read', 'success');
+                loadAdminNotifications();
+            } catch (e) { console.error(e); }
+        }
+
+        // ====== ADMIN: Send notification helper ======
+        async function sendAdminNotification(eventType, userId, message, metadata) {
+            if (!supabase) return;
+            try {
+                await supabase.from('admin_notifications').insert([{
+                    event_type: eventType,
+                    user_id: userId,
+                    message: message,
+                    metadata: metadata || {}
+                }]);
+            } catch (e) { console.error('Notification insert error:', e); }
         }
 
         async function updateUserTier(userId, newTier) {
