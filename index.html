@@ -11039,7 +11039,6 @@
             }
 
             try {
-                // Load BOTH: pending requests AND delivered reports
                 var [requestsRes, reportsRes] = await Promise.all([
                     supabase.from('report_requests').select('*').eq('user_id', currentUserData.id).order('created_at', { ascending: false }),
                     supabase.from('user_reports').select('*').eq('user_id', currentUserData.id).order('created_at', { ascending: false })
@@ -11047,50 +11046,93 @@
 
                 var requests = requestsRes.data || [];
                 var reports = reportsRes.data || [];
-                var hasContent = false;
 
-                // Show pending/in-progress requests first
-                requests.forEach(function(req) {
-                    hasContent = true;
-                    var statusColors = { pending: '#f59e0b', in_progress: '#3b82f6', completed: '#22c55e', rejected: '#94a3b8' };
-                    var statusLabels = { pending: 'Pending', in_progress: 'In Progress', completed: 'Completed', rejected: 'Closed' };
-                    var statusColor = statusColors[req.status] || '#94a3b8';
-                    var statusLabel = statusLabels[req.status] || req.status;
-                    var reportImg = '';
-                    var catalogEntry = REPORT_CATALOG.find(function(r) { return r.id === req.report_type; });
-                    if (catalogEntry && catalogEntry.img) reportImg = catalogEntry.img;
+                // Split requests into pending and completed
+                var pending = requests.filter(function(r) { return r.status === 'pending' || r.status === 'in_progress'; });
+                var completedReqs = requests.filter(function(r) { return r.status === 'completed'; });
 
-                    var card = document.createElement('div');
-                    card.className = 'report-card';
-                    card.style.minWidth = '220px';
-                    card.innerHTML =
-                        (reportImg ? '<div class="report-card-img"><img src="' + reportImg + '" alt="' + (req.report_title || '') + '" onerror="this.style.display=\'none\'"></div>' : '') +
-                        '<div class="report-card-info">' +
-                            '<div class="report-card-title">' + (req.report_title || req.report_type || 'Report') + '</div>' +
-                            '<div style="display:flex;align-items:center;gap:6px;margin:4px 0;">' +
-                                '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + statusColor + ';"></span>' +
-                                '<span style="font-size:0.72rem;font-weight:700;color:' + statusColor + ';">' + statusLabel + '</span>' +
-                                (req.recurring ? '<span style="font-size:0.65rem;color:#94a3b8;margin-left:4px;">Recurring</span>' : '') +
-                            '</div>' +
-                            '<div style="font-size:0.68rem;color:#94a3b8;">' + new Date(req.created_at).toLocaleDateString() + '</div>' +
-                            '<button onclick="openFollowUp(\'' + req.id + '\', \'' + (req.report_title || '').replace(/'/g, "\\'") + '\')" style="margin-top:8px;background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:4px 10px;border-radius:6px;font-size:0.7rem;font-weight:600;cursor:pointer;">' + (req.status === 'completed' ? 'Leave a comment' : 'Forgot something? Follow up') + '</button>' +
-                        '</div>';
-                    carousel.appendChild(card);
-                });
-
-                // Show delivered reports
-                reports.forEach(function(report) {
-                    hasContent = true;
-                    createReportCard({
-                        name: report.report_name,
-                        uploaded_at: report.created_at,
-                        url: report.file_url || null
-                    }, carousel);
-                });
-
-                if (!hasContent) {
+                if (pending.length === 0 && completedReqs.length === 0 && reports.length === 0) {
                     carousel.innerHTML = '<p class="carousel-empty">Your FP&A reports will appear here.</p>';
+                    return;
                 }
+
+                carousel.innerHTML = '';
+
+                // ── PENDING SECTION ──
+                if (pending.length > 0) {
+                    var pendingSection = document.createElement('div');
+                    pendingSection.style.cssText = 'min-width:260px;margin-right:20px;';
+                    pendingSection.innerHTML = '<div style="font-size:0.75rem;font-weight:800;color:#f59e0b;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;">Pending (' + pending.length + ')</div>';
+                    var stack = document.createElement('div');
+                    stack.style.cssText = 'position:relative;height:' + (200 + (pending.length - 1) * 12) + 'px;width:240px;';
+                    pending.forEach(function(req, i) {
+                        var catalogEntry = REPORT_CATALOG.find(function(r) { return r.id === req.report_type; });
+                        var reportImg = catalogEntry?.img || '';
+                        var card = document.createElement('div');
+                        card.className = 'report-card';
+                        card.style.cssText = 'position:absolute;top:' + (i * 12) + 'px;left:' + (i * 4) + 'px;width:230px;z-index:' + (100 - i) + ';box-shadow:0 4px 16px rgba(0,0,0,0.12);border:2px solid #f59e0b;transition:transform 0.2s,z-index 0.2s;cursor:pointer;';
+                        card.onmouseenter = function() { this.style.transform = 'translateY(-8px) scale(1.02)'; this.style.zIndex = '200'; };
+                        card.onmouseleave = function() { this.style.transform = ''; this.style.zIndex = (100 - i); };
+                        var statusColors = { pending: '#f59e0b', in_progress: '#3b82f6' };
+                        var statusLabels = { pending: 'Pending', in_progress: 'In Progress' };
+                        card.innerHTML =
+                            (reportImg ? '<div class="report-card-img"><img src="' + reportImg + '" alt="" onerror="this.style.display=\'none\'"></div>' : '') +
+                            '<div class="report-card-info">' +
+                                '<div class="report-card-title">' + (req.report_title || 'Report') + '</div>' +
+                                '<div style="display:flex;align-items:center;gap:6px;margin:4px 0;">' +
+                                    '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + (statusColors[req.status] || '#f59e0b') + ';"></span>' +
+                                    '<span style="font-size:0.72rem;font-weight:700;color:' + (statusColors[req.status] || '#f59e0b') + ';">' + (statusLabels[req.status] || 'Pending') + '</span>' +
+                                    (req.recurring ? '<span style="font-size:0.65rem;color:#94a3b8;">Recurring</span>' : '') +
+                                '</div>' +
+                                '<div style="font-size:0.68rem;color:#94a3b8;">' + new Date(req.created_at).toLocaleDateString() + '</div>' +
+                                '<button onclick="event.stopPropagation();openFollowUp(\'' + req.id + '\', \'' + (req.report_title || '').replace(/'/g, "\\'") + '\')" style="margin-top:6px;background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:3px 8px;border-radius:5px;font-size:0.65rem;font-weight:600;cursor:pointer;">Forgot something? Follow up</button>' +
+                            '</div>';
+                        stack.appendChild(card);
+                    });
+                    pendingSection.appendChild(stack);
+                    carousel.appendChild(pendingSection);
+                }
+
+                // ── COMPLETED SECTION (delivered reports + completed requests) ──
+                var allCompleted = [];
+                completedReqs.forEach(function(req) {
+                    var catalogEntry = REPORT_CATALOG.find(function(r) { return r.id === req.report_type; });
+                    allCompleted.push({ title: req.report_title || 'Report', img: catalogEntry?.img || '', date: req.created_at, url: null, requestId: req.id, type: 'request' });
+                });
+                reports.forEach(function(rep) {
+                    allCompleted.push({ title: rep.report_name, img: '', date: rep.created_at, url: rep.file_url, requestId: null, type: 'delivered' });
+                });
+
+                if (allCompleted.length > 0) {
+                    var completedSection = document.createElement('div');
+                    completedSection.style.cssText = 'min-width:260px;';
+                    completedSection.innerHTML = '<div style="font-size:0.75rem;font-weight:800;color:#22c55e;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;">Completed (' + allCompleted.length + ')</div>';
+                    var cStack = document.createElement('div');
+                    cStack.style.cssText = 'position:relative;height:' + (200 + (allCompleted.length - 1) * 12) + 'px;width:240px;';
+                    allCompleted.forEach(function(item, i) {
+                        var card = document.createElement('div');
+                        card.className = 'report-card';
+                        card.style.cssText = 'position:absolute;top:' + (i * 12) + 'px;left:' + (i * 4) + 'px;width:230px;z-index:' + (100 - i) + ';box-shadow:0 4px 16px rgba(0,0,0,0.08);border:2px solid #22c55e;transition:transform 0.2s,z-index 0.2s;cursor:pointer;';
+                        card.onmouseenter = function() { this.style.transform = 'translateY(-8px) scale(1.02)'; this.style.zIndex = '200'; };
+                        card.onmouseleave = function() { this.style.transform = ''; this.style.zIndex = (100 - i); };
+                        card.innerHTML =
+                            (item.img ? '<div class="report-card-img"><img src="' + item.img + '" alt="" onerror="this.style.display=\'none\'"></div>' : '') +
+                            '<div class="report-card-info">' +
+                                '<div class="report-card-title">' + item.title + '</div>' +
+                                '<div style="display:flex;align-items:center;gap:6px;margin:4px 0;">' +
+                                    '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;"></span>' +
+                                    '<span style="font-size:0.72rem;font-weight:700;color:#22c55e;">Completed</span>' +
+                                '</div>' +
+                                '<div style="font-size:0.68rem;color:#94a3b8;">' + new Date(item.date).toLocaleDateString() + '</div>' +
+                                (item.url ? '<a href="' + item.url + '" target="_blank" style="margin-top:6px;display:inline-block;background:#1e3a5f;color:#fff;padding:3px 10px;border-radius:5px;font-size:0.65rem;font-weight:600;text-decoration:none;">Download</a>' : '') +
+                                (item.requestId ? '<button onclick="event.stopPropagation();openFollowUp(\'' + item.requestId + '\', \'' + item.title.replace(/'/g, "\\'") + '\')" style="margin-top:6px;background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:3px 8px;border-radius:5px;font-size:0.65rem;font-weight:600;cursor:pointer;">Leave a comment</button>' : '') +
+                            '</div>';
+                        cStack.appendChild(card);
+                    });
+                    completedSection.appendChild(cStack);
+                    carousel.appendChild(completedSection);
+                }
+
             } catch (error) {
                 console.error('Error loading reports:', error);
                 carousel.innerHTML = '<p class="carousel-empty">Your FP&A reports will appear here.</p>';
