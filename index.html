@@ -9723,7 +9723,30 @@
                 + 'DETAILS:\n' + notes
                 + (extraNotes ? '\n\nADDITIONAL NOTES:\n' + extraNotes : '');
 
-            // Send via Resend edge function (if available) or mailto fallback
+            // Save to Supabase FIRST (before closing modal destroys DOM)
+            if (typeof supabase !== 'undefined' && currentUserData?.id) {
+                supabase.from('report_requests').insert({
+                    user_id: currentUserData.id,
+                    report_type: report.id,
+                    report_title: report.title,
+                    notes: notes + (extraNotes ? '\n\n' + extraNotes : ''),
+                    recurring: isRecurring,
+                    status: 'pending',
+                    created_at: new Date().toISOString()
+                }).then(function(res) {
+                    if (res.error) console.error('Report request insert error:', res.error);
+                    // Reload My Reports to show the new pending request
+                    setTimeout(loadUserReports, 500);
+                });
+
+                // Admin notification
+                sendAdminNotification('report_ordered', currentUserData.id,
+                    userName + ' ordered: ' + report.title + (isRecurring ? ' (recurring)' : ''),
+                    { report_type: report.id, report_title: report.title, recurring: isRecurring }
+                );
+            }
+
+            // Send email notification
             sendReportEmail(subject, body, report, userName);
         }
 
@@ -9759,28 +9782,7 @@
             setTimeout(function() { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; }, 3000);
             setTimeout(function() { toast.remove(); }, 3500);
 
-            // Save to Supabase report_requests table
-            if (typeof supabase !== 'undefined' && currentUserData?.id) {
-                supabase.from('report_requests').insert({
-                    user_id: currentUserData.id,
-                    report_type: report.id,
-                    report_title: report.title,
-                    notes: (document.getElementById('report-order-notes')?.value || '') + (extraNotes ? '\n\n' + extraNotes : ''),
-                    recurring: isRecurring,
-                    status: 'pending',
-                    created_at: new Date().toISOString()
-                });
-
-                // Admin notification for new report order
-                sendAdminNotification(
-                    'report_ordered',
-                    currentUserData.id,
-                    (currentUserData.name || currentUserData.email || 'Client') + ' ordered: ' + report.title + (isRecurring ? ' (recurring)' : ''),
-                    { report_type: report.id, report_title: report.title, recurring: isRecurring }
-                );
-            }
-
-            // Update meter
+            // DB insert already happened in submitReportOrder — just update meter
             setTimeout(updateLightningMeter, 300);
         }
 
@@ -11071,7 +11073,7 @@
                                 (req.recurring ? '<span style="font-size:0.65rem;color:#94a3b8;margin-left:4px;">Recurring</span>' : '') +
                             '</div>' +
                             '<div style="font-size:0.68rem;color:#94a3b8;">' + new Date(req.created_at).toLocaleDateString() + '</div>' +
-                            (req.status !== 'completed' ? '<button onclick="openFollowUp(\'' + req.id + '\', \'' + (req.report_title || '').replace(/'/g, "\\'") + '\')" style="margin-top:8px;background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:4px 10px;border-radius:6px;font-size:0.7rem;font-weight:600;cursor:pointer;">Need to follow up?</button>' : '') +
+                            '<button onclick="openFollowUp(\'' + req.id + '\', \'' + (req.report_title || '').replace(/'/g, "\\'") + '\')" style="margin-top:8px;background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:4px 10px;border-radius:6px;font-size:0.7rem;font-weight:600;cursor:pointer;">' + (req.status === 'completed' ? 'Leave a comment' : 'Forgot something? Follow up') + '</button>' +
                         '</div>';
                     carousel.appendChild(card);
                 });
