@@ -8147,46 +8147,72 @@
                             <span style="font-size:0.78rem;font-weight:700;color:#166534;">Don't want to upload manually? Connect QuickBooks &rarr;</span>
                         </a>
                         <p style="font-size:0.88rem;color:#666;margin-bottom:20px;">Upload monthly statements for as many years as you have available. Excel, CSV, and PDF all work.</p>
-                        <div class="fin-upload-grid">
-                            <div class="fin-upload-slot">
-                                <div class="fin-slot-icon">📊</div>
-                                <div class="fin-slot-label">P&amp;L / Income Statement</div>
-                                <div class="fin-slot-sub">Monthly &middot; All available years</div>
-                                <label class="fin-upload-btn" for="fin-pl-input">+ Upload Files</label>
-                                <input type="file" id="fin-pl-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('PL', this)">
-                                <div class="fin-slot-status" id="fin-pl-status"></div>
+                        <input type="text" id="upload-search" placeholder="Search uploaded files by name or date..." oninput="filterUploadedFiles()" style="width:100%;padding:8px 14px;border:1px solid #d0d7e5;border-radius:8px;font-size:0.82rem;outline:none;margin-bottom:16px;">
+                        <div style="display:flex;flex-direction:column;gap:16px;">
+                            <!-- P&L -->
+                            <div class="fin-upload-row" style="background:#f8fafc;border:1px solid #e2e7ef;border-radius:10px;padding:14px;">
+                                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                                    <span style="font-size:1.2rem;">📊</span>
+                                    <strong style="color:#1e3a5f;font-size:0.88rem;">P&L / Income Statement</strong>
+                                    <span style="color:#94a3b8;font-size:0.72rem;">Monthly &middot; All available years</span>
+                                    <span style="flex:1;"></span>
+                                    <label for="fin-pl-input" style="background:#1e3a5f;color:#fff;padding:4px 12px;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;">+ Upload</label>
+                                    <input type="file" id="fin-pl-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('PL', this)">
+                                    <span class="fin-slot-status" id="fin-pl-status" style="font-size:0.72rem;"></span>
+                                </div>
+                                <div id="upload-files-pl" style="min-height:30px;"></div>
                             </div>
-                            <div class="fin-upload-slot">
-                                <div class="fin-slot-icon">⚖️</div>
-                                <div class="fin-slot-label">Balance Sheet</div>
-                                <div class="fin-slot-sub">Monthly &middot; All available years</div>
-                                <label class="fin-upload-btn" for="fin-bs-input">+ Upload Files</label>
-                                <input type="file" id="fin-bs-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('Balance Sheet', this)">
-                                <div class="fin-slot-status" id="fin-bs-status"></div>
+                            <!-- Balance Sheet -->
+                            <div class="fin-upload-row" style="background:#f8fafc;border:1px solid #e2e7ef;border-radius:10px;padding:14px;">
+                                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                                    <span style="font-size:1.2rem;">⚖️</span>
+                                    <strong style="color:#1e3a5f;font-size:0.88rem;">Balance Sheet</strong>
+                                    <span style="color:#94a3b8;font-size:0.72rem;">Monthly &middot; All available years</span>
+                                    <span style="flex:1;"></span>
+                                    <label for="fin-bs-input" style="background:#1e3a5f;color:#fff;padding:4px 12px;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;">+ Upload</label>
+                                    <input type="file" id="fin-bs-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('Balance Sheet', this)">
+                                    <span class="fin-slot-status" id="fin-bs-status" style="font-size:0.72rem;"></span>
+                                </div>
+                                <div id="upload-files-bs" style="min-height:30px;"></div>
                             </div>
-                            <div class="fin-upload-slot">
-                                <div class="fin-slot-icon">💸</div>
-                                <div class="fin-slot-label">Cash Flow Statement</div>
-                                <div class="fin-slot-sub">Monthly &middot; All available years</div>
-                                <label class="fin-upload-btn" for="fin-cf-input">+ Upload Files</label>
-                                <input type="file" id="fin-cf-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('Cash Flow', this)">
-                                <div class="fin-slot-status" id="fin-cf-status"></div>
+                            <!-- Cash Flow -->
+                            <div class="fin-upload-row" style="background:#f8fafc;border:1px solid #e2e7ef;border-radius:10px;padding:14px;">
+                                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                                    <span style="font-size:1.2rem;">💸</span>
+                                    <strong style="color:#1e3a5f;font-size:0.88rem;">Cash Flow Statement</strong>
+                                    <span style="color:#94a3b8;font-size:0.72rem;">Monthly &middot; All available years</span>
+                                    <span style="flex:1;"></span>
+                                    <label for="fin-cf-input" style="background:#1e3a5f;color:#fff;padding:4px 12px;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;">+ Upload</label>
+                                    <input type="file" id="fin-cf-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('Cash Flow', this)">
+                                    <span class="fin-slot-status" id="fin-cf-status" style="font-size:0.72rem;"></span>
+                                </div>
+                                <div id="upload-files-cf" style="min-height:30px;"></div>
                             </div>
-                            <div class="fin-upload-slot">
-                                <div class="fin-slot-icon">📋</div>
-                                <div class="fin-slot-label">Budget</div>
-                                <div class="fin-slot-sub">Annual or monthly budget</div>
-                                <label class="fin-upload-btn" for="fin-budget-input">+ Upload Files</label>
-                                <input type="file" id="fin-budget-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('Budget', this)">
-                                <div class="fin-slot-status" id="fin-budget-status"></div>
+                            <!-- Budget -->
+                            <div class="fin-upload-row" style="background:#f8fafc;border:1px solid #e2e7ef;border-radius:10px;padding:14px;">
+                                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                                    <span style="font-size:1.2rem;">📋</span>
+                                    <strong style="color:#1e3a5f;font-size:0.88rem;">Budget</strong>
+                                    <span style="color:#94a3b8;font-size:0.72rem;">Annual or monthly budget</span>
+                                    <span style="flex:1;"></span>
+                                    <label for="fin-budget-input" style="background:#1e3a5f;color:#fff;padding:4px 12px;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;">+ Upload</label>
+                                    <input type="file" id="fin-budget-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx" style="display:none;" onchange="handleFinUpload('Budget', this)">
+                                    <span class="fin-slot-status" id="fin-budget-status" style="font-size:0.72rem;"></span>
+                                </div>
+                                <div id="upload-files-budget" style="min-height:30px;"></div>
                             </div>
-                            <div class="fin-upload-slot">
-                                <div class="fin-slot-icon">📎</div>
-                                <div class="fin-slot-label">Other / Miscellaneous</div>
-                                <div class="fin-slot-sub">Any supporting documents</div>
-                                <label class="fin-upload-btn" for="fin-misc-input">+ Upload Files</label>
-                                <input type="file" id="fin-misc-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.pptx,.png,.jpg,.jpeg,.zip" style="display:none;" onchange="handleFinUpload('Miscellaneous', this)">
-                                <div class="fin-slot-status" id="fin-misc-status"></div>
+                            <!-- Miscellaneous -->
+                            <div class="fin-upload-row" style="background:#f8fafc;border:1px solid #e2e7ef;border-radius:10px;padding:14px;">
+                                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                                    <span style="font-size:1.2rem;">📎</span>
+                                    <strong style="color:#1e3a5f;font-size:0.88rem;">Other / Miscellaneous</strong>
+                                    <span style="color:#94a3b8;font-size:0.72rem;">Any supporting documents</span>
+                                    <span style="flex:1;"></span>
+                                    <label for="fin-misc-input" style="background:#1e3a5f;color:#fff;padding:4px 12px;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;">+ Upload</label>
+                                    <input type="file" id="fin-misc-input" multiple accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.pptx,.png,.jpg,.jpeg,.zip" style="display:none;" onchange="handleFinUpload('Miscellaneous', this)">
+                                    <span class="fin-slot-status" id="fin-misc-status" style="font-size:0.72rem;"></span>
+                                </div>
+                                <div id="upload-files-misc" style="min-height:30px;"></div>
                             </div>
                         </div>
                         <!-- skip removed -->
@@ -9330,6 +9356,7 @@
             // Load user's uploaded files and reports (skip for demo)
             if (!isDemo) {
                 loadUserFiles();
+                loadUploadedFiles();
                 loadUserReports();
                 loadQBCredentials();
                 loadUserLogo();
@@ -11372,6 +11399,20 @@
             });
         }
 
+        function filterUploadedFiles() {
+            var q = (document.getElementById('upload-search')?.value || '').toLowerCase();
+            document.querySelectorAll('.fin-upload-row').forEach(function(row) {
+                var files = row.querySelectorAll('[style*="display:flex"][style*="gap:8px"]');
+                var anyVisible = false;
+                files.forEach(function(f) {
+                    var match = !q || f.textContent.toLowerCase().includes(q);
+                    f.style.display = match ? 'flex' : 'none';
+                    if (match) anyVisible = true;
+                });
+                // Always show the row header, just hide/show files
+            });
+        }
+
         function formatFileSize(bytes) {
             if (!bytes) return '';
             if (bytes < 1024) return bytes + ' B';
@@ -12361,40 +12402,141 @@
         // ===========================================
         async function handleFinUpload(type, input) {
             if (!input.files || input.files.length === 0) return;
-            var statusId = { 'PL': 'fin-pl-status', 'Balance Sheet': 'fin-bs-status', 'Cash Flow': 'fin-cf-status' }[type] || null;
-            var statusEl = statusId ? document.getElementById(statusId) : null;
-            if (statusEl) statusEl.textContent = 'Uploading…';
+            if (!supabase || !currentUserData?.id) { showToast('Please log in first', 'error'); return; }
+
+            var statusEl = document.getElementById('fin-' + type.toLowerCase().replace(/[^a-z]/g,'').substring(0,10) + '-status')
+                || document.getElementById('fin-pl-status');
+            // Try to find the right status element
+            var statusMap = { 'PL': 'fin-pl-status', 'Balance Sheet': 'fin-bs-status', 'Cash Flow': 'fin-cf-status', 'Budget': 'fin-budget-status', 'Miscellaneous': 'fin-misc-status' };
+            statusEl = document.getElementById(statusMap[type] || '');
+            if (statusEl) statusEl.innerHTML = '<span style="color:#3b82f6;">Uploading...</span>';
 
             var files = Array.from(input.files);
             var uploaded = 0;
+            var uploadedNames = [];
+
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
-                var prefixedName = '[' + type + '] ' + file.name;
-                // Reuse the existing file upload pipeline by creating a synthetic event-like object
-                if (supabase && currentUserData?.id) {
-                    try {
-                        var path = currentUserData.id + '/' + Date.now() + '_' + prefixedName;
-                        var { error: upErr } = await supabase.storage.from('client-files').upload(path, file, { upsert: true });
-                        if (!upErr) {
-                            var { data: urlData } = supabase.storage.from('client-files').getPublicUrl(path);
-                            await supabase.from('user_files').insert([{
-                                user_id: currentUserData.id,
-                                file_name: prefixedName,
-                                file_url: urlData?.publicUrl || '',
-                                file_type: file.name.split('.').pop().toLowerCase(),
-                                file_size: file.size,
-                                uploaded_at: new Date().toISOString()
-                            }]);
-                            uploaded++;
+                try {
+                    var path = currentUserData.id + '/' + type + '/' + Date.now() + '_' + file.name;
+
+                    // Try user-documents bucket first, then Avatars as fallback (public)
+                    var uploadResult = await supabase.storage.from('user-documents').upload(path, file, { upsert: true });
+                    var bucket = 'user-documents';
+
+                    if (uploadResult.error) {
+                        // Fallback to Avatars bucket (public, we know it works)
+                        path = currentUserData.id + '/uploads/' + type + '/' + Date.now() + '_' + file.name;
+                        uploadResult = await supabase.storage.from('Avatars').upload(path, file, { upsert: true });
+                        bucket = 'Avatars';
+                    }
+
+                    if (!uploadResult.error) {
+                        // Get URL
+                        var fileUrl = '';
+                        if (bucket === 'Avatars') {
+                            var { data: urlData } = supabase.storage.from('Avatars').getPublicUrl(path);
+                            fileUrl = urlData?.publicUrl || '';
+                        } else {
+                            var { data: signedData } = await supabase.storage.from('user-documents').createSignedUrl(path, 60*60*24*365);
+                            fileUrl = signedData?.signedUrl || '';
                         }
-                    } catch(e) { console.error('fin upload error', e); }
-                }
+
+                        // Save to user_files with category
+                        var { error: insertErr } = await supabase.from('user_files').insert([{
+                            user_id: currentUserData.id,
+                            file_name: file.name,
+                            file_url: fileUrl,
+                            file_type: type,
+                            file_size: file.size,
+                            uploaded_at: new Date().toISOString()
+                        }]);
+
+                        if (!insertErr) {
+                            uploaded++;
+                            uploadedNames.push(file.name);
+                        }
+                    } else {
+                        console.error('Upload error:', uploadResult.error);
+                    }
+                } catch(e) { console.error('fin upload error', e); }
             }
 
             input.value = '';
-            if (statusEl) {
-                statusEl.textContent = uploaded > 0 ? uploaded + ' file' + (uploaded > 1 ? 's' : '') + ' uploaded ✓' : 'Upload failed — try again';
-                if (uploaded > 0) { showToast(type + ' files uploaded successfully', 'success'); loadUserFiles(); updateLightningMeter(); }
+
+            if (uploaded > 0) {
+                if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;">' + uploaded + ' file' + (uploaded > 1 ? 's' : '') + ' uploaded ✓</span>';
+                showToast(type + ': ' + uploaded + ' file' + (uploaded > 1 ? 's' : '') + ' uploaded', 'success');
+
+                // Reload the upload display
+                loadUploadedFiles();
+                updateLightningMeter();
+
+                // Email admin
+                var userName = currentUserData?.name || currentUserData?.email || 'Client';
+                var userEmail = currentUserData?.email || '';
+                if (supabase?.functions) {
+                    supabase.functions.invoke('send-email', {
+                        body: {
+                            to: ['zprizant@lightningledgerz.com', 'zpzant@gmail.com'],
+                            subject: '[UPLOAD] ' + type + ' — ' + userName,
+                            text: 'FILE UPLOAD NOTIFICATION\n══════════════\nClient: ' + userName + ' (' + userEmail + ')\nCategory: ' + type + '\nFiles: ' + uploadedNames.join(', ') + '\nDate: ' + new Date().toLocaleDateString()
+                        }
+                    });
+                }
+
+                // Admin notification
+                sendAdminNotification('file_uploaded', currentUserData.id,
+                    userName + ' uploaded ' + uploaded + ' ' + type + ' file' + (uploaded > 1 ? 's' : '') + ': ' + uploadedNames.join(', '),
+                    { category: type, files: uploadedNames }
+                );
+            } else {
+                if (statusEl) statusEl.innerHTML = '<span style="color:#e53935;">Upload failed — try again</span>';
+                showToast('Upload failed — please try again', 'error');
+            }
+        }
+
+        // Load and display uploaded files per category
+        async function loadUploadedFiles() {
+            if (!supabase || !currentUserData?.id) return;
+
+            try {
+                var { data: files, error } = await supabase.from('user_files')
+                    .select('*')
+                    .eq('user_id', currentUserData.id)
+                    .order('uploaded_at', { ascending: false });
+
+                if (error) throw error;
+
+                var categories = ['PL', 'Balance Sheet', 'Cash Flow', 'Budget', 'Miscellaneous'];
+                var containerIds = { 'PL': 'upload-files-pl', 'Balance Sheet': 'upload-files-bs', 'Cash Flow': 'upload-files-cf', 'Budget': 'upload-files-budget', 'Miscellaneous': 'upload-files-misc' };
+
+                categories.forEach(function(cat) {
+                    var container = document.getElementById(containerIds[cat]);
+                    if (!container) return;
+
+                    var catFiles = (files || []).filter(function(f) { return f.file_type === cat; });
+
+                    if (catFiles.length === 0) {
+                        container.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:0.75rem;padding:10px;">No files yet</div>';
+                        return;
+                    }
+
+                    var html = '<div style="display:flex;flex-direction:column;gap:6px;">';
+                    catFiles.forEach(function(f) {
+                        var ext = f.file_name.split('.').pop().toLowerCase();
+                        var icon = { pdf: '📕', xlsx: '📊', xls: '📊', csv: '📊', doc: '📄', docx: '📄' }[ext] || '📎';
+                        html += '<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#f8fafc;border:1px solid #e2e7ef;border-radius:6px;font-size:0.72rem;">' +
+                            '<span>' + icon + '</span>' +
+                            '<div style="flex:1;min-width:0;"><div style="font-weight:600;color:#1e3a5f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + f.file_name + '</div><div style="color:#94a3b8;font-size:0.65rem;">' + new Date(f.uploaded_at).toLocaleDateString() + '</div></div>' +
+                            (f.file_url ? '<a href="' + f.file_url + '" target="_blank" style="color:#1a73e8;font-size:0.65rem;font-weight:600;text-decoration:none;white-space:nowrap;">View</a>' : '') +
+                            '</div>';
+                    });
+                    html += '</div>';
+                    container.innerHTML = html;
+                });
+            } catch (e) {
+                console.error('Error loading uploaded files:', e);
             }
         }
 
