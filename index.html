@@ -8390,7 +8390,21 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- skip removed -->
+                        <!-- Upcoming Meeting Card -->
+                        <div id="upcoming-meeting" style="display:none;margin-top:16px;background:#f0f9ff;border:1px solid #bfdbfe;border-radius:10px;padding:16px;">
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                                <span style="font-size:1.5rem;">📅</span>
+                                <div>
+                                    <div style="font-weight:700;color:#1e3a5f;font-size:0.9rem;">Upcoming Meeting</div>
+                                    <div id="upcoming-meeting-date" style="font-size:0.8rem;color:#64748b;"></div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:8px;">
+                                <a href="javascript:void(0)" onclick="Calendly.initPopupWidget({url:'https://calendly.com/zpzant/30min'});return false;" style="font-size:0.75rem;color:#1a73e8;text-decoration:none;font-weight:600;">Reschedule</a>
+                                <span style="color:#d0d7e5;">|</span>
+                                <a href="javascript:void(0)" onclick="Calendly.initPopupWidget({url:'https://calendly.com/zpzant/30min'});return false;" style="font-size:0.75rem;color:#1a73e8;text-decoration:none;font-weight:600;">Book Another</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -9456,6 +9470,7 @@
                 loadQBCredentials();
                 loadUserLogo();
                 loadDashboardLink();
+                checkUpcomingMeeting();
                 updateTrialBanner();
                 checkSubscriptionStatusBanners();
                 // Check if user selected a plan before signing up
@@ -12510,7 +12525,32 @@
             var btn = document.getElementById('book-call-btn');
             if (badge) badge.style.display = 'block';
             if (btn) btn.style.display = 'none';
+
+            // Show upcoming meeting card
+            var meetingCard = document.getElementById('upcoming-meeting');
+            var meetingDate = document.getElementById('upcoming-meeting-date');
+            if (meetingCard) meetingCard.style.display = 'block';
+            if (meetingDate) meetingDate.textContent = 'Booked on ' + new Date().toLocaleDateString() + ' — check your email for the exact time';
+
             setTimeout(updateLightningMeter, 300);
+        }
+
+        // Show upcoming meeting on page load if call was previously booked
+        function checkUpcomingMeeting() {
+            var userId = currentUserData?.id || 'demo';
+            var booked = localStorage.getItem('call_booked_' + userId) === '1' || currentUserData?.profile?.call_booked_at;
+            if (booked) {
+                var meetingCard = document.getElementById('upcoming-meeting');
+                var meetingDate = document.getElementById('upcoming-meeting-date');
+                var badge = document.getElementById('call-booked-badge');
+                var btn = document.getElementById('book-call-btn');
+                if (meetingCard) meetingCard.style.display = 'block';
+                if (badge) badge.style.display = 'block';
+                if (btn) btn.style.display = 'none';
+                if (meetingDate && currentUserData?.profile?.call_booked_at) {
+                    meetingDate.textContent = 'Booked ' + new Date(currentUserData.profile.call_booked_at).toLocaleDateString() + ' — check your email for details';
+                }
+            }
         }
 
         function skipStep(step) {
