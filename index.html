@@ -9894,7 +9894,7 @@
                 var refillText = '';
                 var profile = currentUserData?.profile;
                 var payStart = profile?.payment_start_date;
-                if (payStart && tier !== 'none' && tier !== 'diamond') {
+                if (payStart && tier !== 'none') {
                     var startDate = new Date(payStart);
                     var now = new Date();
                     var daysSinceStart = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
@@ -9907,21 +9907,19 @@
                 // Dynamic tooltip — click to upgrade
                 if (tier === 'none') {
                     navTokenBadge.title = 'No plan yet — select a plan to start';
-                } else if (isUnlimited) {
-                    navTokenBadge.title = '10 report coins/month — Diamond plan';
                 } else if (userTokensRemaining <= 0) {
-                    navTokenBadge.title = 'Need more coins? Click to upgrade';
+                    navTokenBadge.title = 'Out of coins' + refillText + ' — click to upgrade';
                     navTokenBadge.style.background = '#fff0f0';
                     navTokenBadge.style.color = '#e8231a';
                 } else {
-                    navTokenBadge.title = 'Need more coins? Click to upgrade';
+                    navTokenBadge.title = userTokensRemaining + ' coin' + (userTokensRemaining !== 1 ? 's' : '') + ' remaining' + refillText;
                     navTokenBadge.style.background = '#f0f9ff';
                     navTokenBadge.style.color = '#1e3a5f';
                 }
 
                 // Show refill countdown next to badge
                 var refillEl = document.getElementById('nav-refill-text');
-                if (refillEl && tier !== 'none' && tier !== 'diamond' && refillText) {
+                if (refillEl && tier !== 'none' && refillText) {
                     refillEl.style.display = 'inline';
                     refillEl.textContent = 'Refills in ' + (refillText.match(/\d+/) || ['30'])[0] + 'd';
                 } else if (refillEl) {
