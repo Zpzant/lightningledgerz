@@ -822,8 +822,8 @@
         }
 
         .badge-diamond {
-            background: linear-gradient(45deg, #fff, #e0e0e0);
-            color: #000;
+            background: linear-gradient(135deg, #00bfff, #0080ff);
+            color: #fff;
         }
 
         @media (max-width: 900px) {
@@ -2213,7 +2213,7 @@
         }
 
         .badge-gold { background: linear-gradient(135deg, #f5a623, #f0c040); color: #1e3a5f; }
-        .badge-diamond { background: linear-gradient(135deg, #1e3a5f, #2d5a9e); color: #fff; }
+        .badge-diamond { background: linear-gradient(135deg, #00bfff, #0080ff); color: #fff; }
 
         .upgrade-plan-card h3 {
             font-size: 1.3rem;
@@ -6855,9 +6855,22 @@
             /* My Reports two columns → single column */
             #reports-two-col { grid-template-columns: 1fr !important; }
 
-            /* Portal nav steps: two rows of 3 on mobile */
-            #portal-section-nav { flex-wrap: wrap !important; justify-content: center; gap: 2px !important; }
-            #portal-section-nav a { font-size: 0.55rem !important; padding: 2px 4px !important; flex: 0 0 30%; text-align: center; justify-content: center; }
+            /* Portal nav steps: 3 across per row on mobile */
+            #portal-section-nav {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 2px !important;
+                width: 100%;
+            }
+            #portal-section-nav a {
+                font-size: 0.55rem !important;
+                padding: 3px 4px !important;
+                justify-content: flex-start !important;
+                white-space: nowrap;
+            }
+
+            /* Hide homepage mobile hamburger when portal nav is visible */
+            nav.nav-logged-in .nav-mobile-toggle { display: none !important; }
 
             /* Hide redundant phone number on mobile nav */
             .nav-mobile-phone { display: none !important; }
