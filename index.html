@@ -6853,12 +6853,17 @@
             /* My Reports two columns → single column */
             #reports-two-col { grid-template-columns: 1fr !important; }
 
-            /* Nav portal links scroll horizontally */
-            #portal-section-nav { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap !important; }
-            #portal-section-nav a { font-size: 0.6rem !important; padding: 3px 5px !important; }
+            /* Hide portal nav steps on mobile — they go in hamburger */
+            #portal-section-nav { display: none !important; }
 
             /* Hide redundant phone number on mobile nav */
             .nav-mobile-phone { display: none !important; }
+
+            /* Show mobile portal nav inside hamburger */
+            .mobile-portal-nav-items { display: block !important; }
+
+            /* Hide desktop sign out on mobile (it's in hamburger now) */
+            .desktop-sign-out { display: none !important; }
 
             /* Portal dashboard header compact */
             #portal-dashboard-header { flex-wrap: wrap !important; gap: 8px !important; }
@@ -6980,11 +6985,22 @@
                     <a href="#about" class="hamburger-page-link" style="display:none;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">About</a>
                     <a href="#schedule" class="hamburger-page-link" style="display:none;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">Schedule</a>
                     <div class="hamburger-page-link" style="display:none;height:1px;background:#e2e8f0;margin:6px 0;"></div>
+                    <!-- Portal nav steps (shown on mobile inside hamburger) -->
+                    <div class="mobile-portal-nav-items" style="display:none;border-top:1px solid #e2e8f0;margin-top:6px;padding-top:6px;">
+                        <a href="javascript:void(0)" onclick="scrollToPortalStep('step-services');this.closest('.contact-dropdown').classList.remove('open')" style="display:block;padding:8px 20px;color:#1e3a5f;text-decoration:none;font-size:0.82rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">① Bookkeeping</a>
+                        <a href="javascript:void(0)" onclick="scrollToPortalStep('step-report-catalog');this.closest('.contact-dropdown').classList.remove('open')" style="display:block;padding:8px 20px;color:#1e3a5f;text-decoration:none;font-size:0.82rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">② Order Report</a>
+                        <a href="javascript:void(0)" onclick="scrollToPortalStep('step-upload');this.closest('.contact-dropdown').classList.remove('open')" style="display:block;padding:8px 20px;color:#1e3a5f;text-decoration:none;font-size:0.82rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">③ Upload</a>
+                        <a href="javascript:void(0)" onclick="scrollToPortalStep('platform-integrations');this.closest('.contact-dropdown').classList.remove('open')" style="display:block;padding:8px 20px;color:#1e3a5f;text-decoration:none;font-size:0.82rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">④ QuickBooks</a>
+                        <a href="javascript:void(0)" onclick="scrollToPortalStep('step-my-reports');this.closest('.contact-dropdown').classList.remove('open')" style="display:block;padding:8px 20px;color:#1e3a5f;text-decoration:none;font-size:0.82rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">⑤ My Reports</a>
+                        <a href="javascript:void(0)" onclick="scrollToPortalStep('step-call');this.closest('.contact-dropdown').classList.remove('open')" style="display:block;padding:8px 20px;color:#1e3a5f;text-decoration:none;font-size:0.82rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">⑥ Schedule Call</a>
+                    </div>
+                    <div style="height:1px;background:#e2e8f0;margin:6px 0;"></div>
+                    <a href="javascript:void(0)" onclick="handleLogout();this.closest('.contact-dropdown').classList.remove('open')" style="display:block;padding:10px 20px;color:#e8231a;text-decoration:none;font-size:0.88rem;font-weight:700;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='none'">Sign Out</a>
                     <a href="tel:+17025502513" style="display:block;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">☎ (702) 550-2513</a>
                     <a href="mailto:info@lightningledgerz.com" style="display:flex;align-items:center;gap:6px;padding:10px 20px;color:#1e3a5f;text-decoration:none;font-size:0.88rem;font-weight:600;white-space:nowrap;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">✉ info@lightningledgerz.com</a>
                 </div>
             </div>
-            <a href="javascript:void(0)" onclick="handleLogout()" style="color:#64748b;text-decoration:none;font-size:0.78rem;font-weight:600;white-space:nowrap;transition:color 0.2s;" onmouseover="this.style.setProperty('color',getTierHoverColor(),'important')" onmouseout="this.style.setProperty('color','#64748b','important')">Sign Out</a>
+            <a href="javascript:void(0)" onclick="handleLogout()" class="desktop-sign-out" style="color:#64748b;text-decoration:none;font-size:0.78rem;font-weight:600;white-space:nowrap;transition:color 0.2s;" onmouseover="this.style.setProperty('color',getTierHoverColor(),'important')" onmouseout="this.style.setProperty('color','#64748b','important')">Sign Out</a>
         </div>
         <a href="tel:+17025502513" class="nav-mobile-phone">&#9742; (702) 550-2513</a>
         <button class="nav-mobile-toggle" id="hamburger-btn" onclick="toggleMobileMenu()" style="transition:color 0.2s;" onmouseover="this.style.setProperty('color','#e8231a','important')" onmouseout="this.style.setProperty('color','','important')">☰</button>
