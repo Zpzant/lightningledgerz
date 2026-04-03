@@ -500,8 +500,7 @@
         nav.nav-scrolled .logo img {
             background: rgba(30, 58, 95, 0.9);
         }
-        .tier-gold .logo img { height: 72px; }
-        .tier-diamond .logo img { height: 68px; }
+        /* All tier logos same size */
 
         .nav-links {
             display: flex;
@@ -6833,6 +6832,55 @@
             color: var(--red) !important;
         }
 
+        /* ══════════════════════════════════════════
+           PORTAL MOBILE OPTIMIZATION
+           ══════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            /* Plan cards stack vertically */
+            #portal-plan-cards { grid-template-columns: 1fr !important; gap: 10px !important; }
+
+            /* Report catalog cards smaller */
+            .report-catalog-card { min-width: 160px !important; }
+            .report-card-thumb { height: 100px !important; }
+
+            /* Service grid 2 columns on mobile */
+            #service-select-grid { grid-template-columns: 1fr 1fr !important; }
+
+            /* Upload rows compact */
+            .fin-upload-row { padding: 10px !important; }
+            .fin-upload-row > div:first-child { flex-wrap: wrap !important; }
+
+            /* My Reports two columns → single column */
+            #reports-two-col { grid-template-columns: 1fr !important; }
+
+            /* Nav portal links scroll horizontally */
+            #portal-section-nav { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap !important; }
+            #portal-section-nav a { font-size: 0.6rem !important; padding: 3px 5px !important; }
+
+            /* Hide redundant phone number on mobile nav */
+            .nav-mobile-phone { display: none !important; }
+
+            /* Portal dashboard header compact */
+            #portal-dashboard-header { flex-wrap: wrap !important; gap: 8px !important; }
+
+            /* Admin modal full screen on mobile */
+            .admin-modal-content { width: 98% !important; max-width: none !important; margin: 10px auto !important; max-height: 90vh !important; }
+            .admin-table { font-size: 0.7rem !important; }
+        }
+
+        @media (max-width: 480px) {
+            /* Service grid single column on small phones */
+            #service-select-grid { grid-template-columns: 1fr !important; }
+
+            /* Compact plan cards */
+            .portal-plan-card { padding: 10px !important; }
+
+            /* Report catalog even smaller */
+            .report-catalog-card { min-width: 140px !important; }
+
+            /* Smaller text */
+            .portal-step-card h4 { font-size: 0.9rem !important; }
+        }
     </style>
 </head>
 <body>
@@ -7955,6 +8003,14 @@
                 <div style="font-size:1.4rem;font-weight:800;color:#3B82F6;margin-bottom:8px;">Select a Plan to Get Started</div>
                 <a href="javascript:void(0)" onclick="openQuizModal()" style="display:inline-flex;align-items:center;gap:6px;color:#ffffff;font-size:0.82rem;font-weight:700;text-decoration:none;padding:6px 16px;border:1.5px solid rgba(255,255,255,0.4);border-radius:20px;transition:all 0.2s;" onmouseover="this.style.borderColor='#fff';this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.4)';this.style.background='transparent'">🎯 Not sure which plan? Take our 1-minute quiz</a>
             </div>
+            <div style="display:flex;justify-content:center;margin-bottom:12px;">
+                <div style="background:rgba(30,58,95,0.06);border:1px solid rgba(30,58,95,0.15);border-radius:50px;padding:6px 6px 6px 16px;display:flex;align-items:center;gap:8px;max-width:340px;width:100%;">
+                    <span style="color:#94a3b8;font-size:0.8rem;white-space:nowrap;">Promo code</span>
+                    <input type="text" id="portal-promo-input" placeholder="Enter code" maxlength="30" style="flex:1;background:none;border:none;outline:none;color:#fff;font-size:0.85rem;min-width:0;" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')applyPortalPromo()">
+                    <button onclick="applyPortalPromo()" style="background:var(--gold);color:#1e3a5f;border:none;padding:6px 14px;border-radius:30px;font-weight:700;font-size:0.78rem;cursor:pointer;white-space:nowrap;">Apply</button>
+                </div>
+            </div>
+            <div id="portal-promo-result" style="text-align:center;font-size:0.8rem;margin-bottom:8px;"></div>
             <div id="portal-plan-cards" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
                 <div class="portal-plan-card" id="portal-plan-basic" onclick="selectPlan('basic')" style="border:2px solid #e2e8f0;border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:all 0.25s;background:#fff;position:relative;">
                     <div style="font-size:0.72rem;font-weight:800;color:#e8231a;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">⚡ Basic</div>
@@ -8717,6 +8773,40 @@
         // Select a plan - if logged in go to Stripe, else prompt signup
         // Active promo code (set by applyPromoCode)
         window.activePromoCode = null;
+
+        async function applyPortalPromo() {
+            var input = document.getElementById('portal-promo-input');
+            var code = (input?.value || '').trim().toUpperCase();
+            // Copy to homepage input too so selectPlan picks it up
+            var homeInput = document.getElementById('promo-code-input');
+            if (homeInput) homeInput.value = code;
+            // Run the same logic
+            window.activePromoCode = null;
+            var resultDiv = document.getElementById('portal-promo-result');
+            if (!code) { if (resultDiv) resultDiv.innerHTML = ''; return; }
+            if (!supabase) { if (resultDiv) resultDiv.innerHTML = '<span style="color:#f5a623;">Database loading...</span>'; return; }
+            try {
+                var { data: rows, error } = await supabase.from('promo_codes').select('*').eq('code', code).eq('is_active', true).limit(1);
+                if (error || !rows || rows.length === 0) {
+                    if (resultDiv) resultDiv.innerHTML = '<span style="color:#ff6b6b;">Invalid or expired code</span>';
+                    return;
+                }
+                var data = rows[0];
+                if (data.expiry_date && new Date(data.expiry_date) < new Date()) {
+                    if (resultDiv) resultDiv.innerHTML = '<span style="color:#ff6b6b;">Code expired</span>';
+                    return;
+                }
+                if (data.max_uses && data.current_uses >= data.max_uses) {
+                    if (resultDiv) resultDiv.innerHTML = '<span style="color:#ff6b6b;">Code limit reached</span>';
+                    return;
+                }
+                window.activePromoCode = code;
+                if (resultDiv) resultDiv.innerHTML = '<span style="color:#22c55e;font-weight:700;">✓ ' + data.discount_percent + '% discount applied!</span>';
+                showToast(data.discount_percent + '% discount applied!', 'success');
+            } catch(e) {
+                if (resultDiv) resultDiv.innerHTML = '<span style="color:#ff6b6b;">Error validating code</span>';
+            }
+        }
 
         async function applyPromoCode() {
             var code = (document.getElementById('promo-code-input')?.value || '').trim().toUpperCase();
