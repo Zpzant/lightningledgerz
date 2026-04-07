@@ -6914,8 +6914,43 @@
             allow="autoplay; fullscreen"
             allowfullscreen>
         </iframe>
+        <!-- iOS play button — only shows on iPhone/iPad where autoplay fails -->
+        <div id="ios-play-btn" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5;cursor:pointer;text-align:center;" onclick="iosPlayVideo()">
+            <div style="width:80px;height:80px;border-radius:50%;background:rgba(232,35,26,0.9);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 4px 30px rgba(0,0,0,0.4);backdrop-filter:blur(4px);">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <div style="color:#fff;font-size:0.85rem;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Tap to Play</div>
+        </div>
     </div>
     <div class="video-overlay"></div>
+    <script>
+    // iOS detection — show play button only on iPhone/iPad
+    (function() {
+        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        if (isIOS) {
+            var playBtn = document.getElementById('ios-play-btn');
+            var iframe = document.getElementById('bg-video');
+            if (playBtn) playBtn.style.display = 'block';
+            // Don't load the iframe src until user taps (saves bandwidth + avoids stall)
+            if (iframe) {
+                iframe.dataset.src = iframe.src;
+                iframe.src = '';
+            }
+        }
+    })();
+    function iosPlayVideo() {
+        var iframe = document.getElementById('bg-video');
+        var playBtn = document.getElementById('ios-play-btn');
+        if (iframe && iframe.dataset.src) {
+            iframe.src = iframe.dataset.src;
+        }
+        if (playBtn) {
+            playBtn.style.opacity = '0';
+            playBtn.style.transition = 'opacity 0.5s';
+            setTimeout(function() { playBtn.style.display = 'none'; }, 500);
+        }
+    }
+    </script>
 
     <!-- Navigation -->
     <nav>
