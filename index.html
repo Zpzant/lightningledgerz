@@ -12586,6 +12586,23 @@
                 );
             }
 
+            // FALLBACK: Send email via FormSubmit (free, no signup needed, works immediately)
+            // This guarantees Zac gets an email even without Supabase edge functions
+            fetch('https://formsubmit.co/ajax/zpzant@gmail.com', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({
+                    _subject: '[CALL BOOKED] ' + (currentUserData?.name || 'Someone') + ' — Lightning Ledgerz',
+                    name: currentUserData?.name || 'Unknown',
+                    email: currentUserData?.email || 'N/A',
+                    phone: currentUserData?.phone || 'N/A',
+                    company: currentUserData?.company || 'N/A',
+                    plan: (getUserTier() || 'none').toUpperCase(),
+                    message: 'New call booked on Lightning Ledgerz portal at ' + new Date().toLocaleString() + '. Check Calendly for the time slot.',
+                    _template: 'table'
+                })
+            }).catch(function(err) { console.log('FormSubmit fallback error:', err); });
+
             var badge = document.getElementById('call-booked-badge');
             var btn = document.getElementById('book-call-btn');
             if (badge) badge.style.display = 'block';
@@ -13125,15 +13142,35 @@
 
         // ====== ADMIN: Send notification helper ======
         async function sendAdminNotification(eventType, userId, message, metadata) {
-            if (!supabase) return;
+            // Try Supabase insert
+            if (supabase) {
+                try {
+                    await supabase.from('admin_notifications').insert([{
+                        event_type: eventType,
+                        user_id: userId,
+                        message: message,
+                        metadata: metadata || {}
+                    }]);
+                } catch (e) { console.error('Notification insert error:', e); }
+            }
+
+            // Always email Zac via FormSubmit (works without any backend setup)
             try {
-                await supabase.from('admin_notifications').insert([{
-                    event_type: eventType,
-                    user_id: userId,
-                    message: message,
-                    metadata: metadata || {}
-                }]);
-            } catch (e) { console.error('Notification insert error:', e); }
+                fetch('https://formsubmit.co/ajax/zpzant@gmail.com', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({
+                        _subject: '[' + eventType.toUpperCase().replace('_', ' ') + '] Lightning Ledgerz — ' + (message || '').substring(0, 80),
+                        event: eventType,
+                        message: message || '',
+                        client_email: metadata?.email || 'N/A',
+                        client_phone: metadata?.phone || '',
+                        client_company: metadata?.company || '',
+                        time: new Date().toLocaleString(),
+                        _template: 'table'
+                    })
+                });
+            } catch (e) { console.log('FormSubmit error:', e); }
         }
 
         async function updateUserTier(userId, newTier) {
