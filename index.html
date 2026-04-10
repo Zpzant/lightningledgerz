@@ -12586,21 +12586,24 @@
                 );
             }
 
-            // FALLBACK: Send email via FormSubmit (free, no signup needed, works immediately)
-            // This guarantees Zac gets an email even without Supabase edge functions
+            // FALLBACK: Send email via FormSubmit to BOTH addresses
+            var callPayload = {
+                _subject: '[CALL BOOKED] ' + (currentUserData?.name || 'Someone') + ' — Lightning Ledgerz',
+                name: currentUserData?.name || 'Unknown',
+                email: currentUserData?.email || 'N/A',
+                phone: currentUserData?.phone || 'N/A',
+                company: currentUserData?.company || 'N/A',
+                plan: (getUserTier() || 'none').toUpperCase(),
+                message: 'New call booked on Lightning Ledgerz portal at ' + new Date().toLocaleString() + '. Check Calendly for the time slot.',
+                _template: 'table'
+            };
             fetch('https://formsubmit.co/ajax/zpzant@gmail.com', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({
-                    _subject: '[CALL BOOKED] ' + (currentUserData?.name || 'Someone') + ' — Lightning Ledgerz',
-                    name: currentUserData?.name || 'Unknown',
-                    email: currentUserData?.email || 'N/A',
-                    phone: currentUserData?.phone || 'N/A',
-                    company: currentUserData?.company || 'N/A',
-                    plan: (getUserTier() || 'none').toUpperCase(),
-                    message: 'New call booked on Lightning Ledgerz portal at ' + new Date().toLocaleString() + '. Check Calendly for the time slot.',
-                    _template: 'table'
-                })
+                method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(callPayload)
+            }).catch(function(err) { console.log('FormSubmit fallback error:', err); });
+            fetch('https://formsubmit.co/ajax/zprizant@lightningledgerz.com', {
+                method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(callPayload)
             }).catch(function(err) { console.log('FormSubmit fallback error:', err); });
 
             var badge = document.getElementById('call-booked-badge');
@@ -13155,20 +13158,26 @@
             }
 
             // Always email Zac via FormSubmit (works without any backend setup)
+            var emailPayload = {
+                _subject: '[' + eventType.toUpperCase().replace('_', ' ') + '] Lightning Ledgerz — ' + (message || '').substring(0, 80),
+                event: eventType,
+                message: message || '',
+                client_email: metadata?.email || 'N/A',
+                client_phone: metadata?.phone || '',
+                client_company: metadata?.company || '',
+                time: new Date().toLocaleString(),
+                _template: 'table'
+            };
             try {
                 fetch('https://formsubmit.co/ajax/zpzant@gmail.com', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({
-                        _subject: '[' + eventType.toUpperCase().replace('_', ' ') + '] Lightning Ledgerz — ' + (message || '').substring(0, 80),
-                        event: eventType,
-                        message: message || '',
-                        client_email: metadata?.email || 'N/A',
-                        client_phone: metadata?.phone || '',
-                        client_company: metadata?.company || '',
-                        time: new Date().toLocaleString(),
-                        _template: 'table'
-                    })
+                    body: JSON.stringify(emailPayload)
+                });
+                fetch('https://formsubmit.co/ajax/zprizant@lightningledgerz.com', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify(emailPayload)
                 });
             } catch (e) { console.log('FormSubmit error:', e); }
         }
