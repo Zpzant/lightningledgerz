@@ -1,84 +1,69 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="3.75in" height="2.25in" viewBox="0 0 1125 675">
-  <!-- 3.5x2" business card + 0.125" bleed on all sides = 3.75x2.25" at 300dpi = 1125x675px -->
-  <!-- Trim area: 37.5px in from each edge (0.125" x 300dpi) -->
+     width="3.75in" height="2.25in" viewBox="0 0 1125 675"
+     preserveAspectRatio="xMidYMid meet">
+  <!-- ════════════════════════════════════════════════════════════════════ -->
+  <!-- Lightning Ledgerz Business Card — FRONT                              -->
+  <!-- Trim: 3.5" x 2"  |  Bleed: 0.125" all sides  |  Final: 3.75" x 2.25" -->
+  <!-- 300 DPI: 1125 × 675 px                                                -->
+  <!-- All black text uses #000000 (CMYK 100K when converted)                -->
+  <!-- All artwork extends to bleed edges — NO rounded corners                -->
+  <!-- ════════════════════════════════════════════════════════════════════ -->
 
   <defs>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&amp;family=Cinzel:wght@400;600;700;900&amp;display=swap');
+      .black-text { fill: #000000; }
+      .red-text { fill: #e8231a; }
+      .gold-text { fill: #8a6a1f; }
     </style>
-    <!-- Clip for photo area -->
-    <clipPath id="photo-clip">
-      <rect x="18" y="0" width="340" height="675"/>
-    </clipPath>
   </defs>
 
-  <!-- Background -->
-  <rect width="1125" height="675" fill="#fffcf8"/>
+  <!-- ── FULL BLEED BACKGROUND (extends to all 4 edges) ── -->
+  <rect x="0" y="0" width="1125" height="675" fill="#fffcf8"/>
 
-  <!-- Golden Gate Bridge background (faded) — placeholder rect, printer replaces with high-res image -->
-  <rect width="1125" height="675" fill="#e8ddd0" opacity="0.15"/>
+  <!-- ── Red left bar (bleeds to top, bottom, and left edges) ── -->
+  <rect x="0" y="0" width="55" height="675" fill="#e8231a"/>
 
-  <!-- Red left bar -->
-  <rect x="0" y="0" width="18" height="675" fill="#e8231a"/>
+  <!-- ── Photo area (1.3" wide = 390px) — printer places high-res zacredtiebest.png ── -->
+  <image xlink:href="zacredtiebest.png" x="55" y="0" width="390" height="675"
+         preserveAspectRatio="xMidYMid slice"/>
 
-  <!-- Photo area (printer places high-res zacredtiebest.png here) -->
-  <rect x="18" y="0" width="340" height="675" fill="#f0ebe5" opacity="0.5"/>
-  <text x="188" y="350" font-family="Montserrat,sans-serif" font-size="14" fill="#999" text-anchor="middle" font-weight="700">
-    [PLACE PHOTO]
-  </text>
-  <text x="188" y="370" font-family="Montserrat,sans-serif" font-size="10" fill="#bbb" text-anchor="middle">
-    zacredtiebest.png
-  </text>
+  <!-- ── LIGHTNING LEDGERZ wordmark ── -->
+  <text x="475" y="115" font-family="Montserrat,sans-serif" font-size="56" font-weight="900" letter-spacing="3" class="red-text">LIGHTNING</text>
+  <text x="475" y="175" font-family="Montserrat,sans-serif" font-size="56" font-weight="900" letter-spacing="3" class="black-text">LEDGER</text>
+  <image xlink:href="lightningz.png" x="755" y="125" width="55" height="55"/>
 
-  <!-- Info column — starts at x=370 -->
+  <!-- ── Tagline ── -->
+  <text x="475" y="208" font-family="Montserrat,sans-serif" font-size="22" font-weight="700" letter-spacing="6" class="red-text">BUDGET · BOOKKEEP · BUILD</text>
 
-  <!-- LIGHTNING LEDGERZ logo text -->
-  <text x="390" y="75" font-family="Montserrat,sans-serif" font-size="48" font-weight="900" letter-spacing="2" fill="#e8231a">LIGHTNING</text>
-  <text x="695" y="75" font-family="Montserrat,sans-serif" font-size="48" font-weight="900" letter-spacing="2" fill="#0a1628">LEDGER</text>
-  <!-- Z logo placeholder -->
-  <text x="1000" y="80" font-family="Montserrat,sans-serif" font-size="12" fill="#999">[Z LOGO]</text>
+  <!-- ── Red divider ── -->
+  <rect x="475" y="220" width="120" height="6" fill="#e8231a"/>
 
-  <!-- Tagline -->
-  <text x="390" y="100" font-family="Montserrat,sans-serif" font-size="21" font-weight="700" letter-spacing="5" fill="#e8231a">BUDGET  ·  BOOKKEEP  ·  BUILD</text>
+  <!-- ── Name ── -->
+  <text x="475" y="320" font-family="Cinzel,serif" font-size="48" font-weight="700" letter-spacing="3" class="black-text">Zac Prizant</text>
 
-  <!-- Red divider -->
-  <line x1="390" y1="120" x2="490" y2="120" stroke="#e8231a" stroke-width="4"/>
+  <!-- ── Title ── -->
+  <text x="475" y="358" font-family="Cinzel,serif" font-size="20" font-weight="600" letter-spacing="4" class="gold-text">PRESIDENT &amp; FP&amp;A ADVISOR</text>
 
-  <!-- Name -->
-  <text x="390" y="235" font-family="Cinzel,serif" font-size="42" font-weight="700" letter-spacing="2" fill="#0a1628">Zac Prizant</text>
+  <!-- ── Cornell line ── -->
+  <text x="475" y="392" font-family="Cinzel,serif" font-size="20" font-weight="400" letter-spacing="4" class="gold-text">CORNELL MASTERS OF MANAGEMENT</text>
+  <image xlink:href="cornred.png" x="950" y="372" width="32" height="32"/>
 
-  <!-- Title — gold gradient approximated -->
-  <text x="390" y="270" font-family="Cinzel,serif" font-size="18" font-weight="600" letter-spacing="3.5" fill="#9A7B2E">PRESIDENT &amp; FP&amp;A ADVISOR</text>
+  <!-- ── Horizontal divider ── -->
+  <line x1="475" y1="430" x2="1075" y2="430" stroke="#000000" stroke-width="1.5" opacity="0.3"/>
 
-  <!-- Cornell line -->
-  <text x="390" y="300" font-family="Cinzel,serif" font-size="18" font-weight="400" letter-spacing="3.5" fill="#9A7B2E">CORNELL MASTERS OF MANAGEMENT</text>
-  <!-- Cornell logo placeholder -->
-  <circle cx="820" cy="294" r="14" fill="none" stroke="#b22222" stroke-width="1.5"/>
-  <text x="820" y="298" font-family="serif" font-size="10" fill="#b22222" text-anchor="middle" font-weight="700">C</text>
+  <!-- ── Contact info ── -->
+  <text x="475" y="478" font-family="Cinzel,serif" font-size="20" font-weight="700" letter-spacing="2" class="red-text">✉</text>
+  <text x="510" y="478" font-family="Cinzel,serif" font-size="20" font-weight="700" letter-spacing="2" class="black-text">ZPRIZANT@LIGHTNINGLEDGERZ.COM</text>
 
-  <!-- Divider line -->
-  <line x1="390" y1="370" x2="1050" y2="370" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="475" y="520" font-family="Cinzel,serif" font-size="20" font-weight="700" letter-spacing="2" class="red-text">☎</text>
+  <text x="510" y="520" font-family="Cinzel,serif" font-size="20" font-weight="700" letter-spacing="2" class="black-text">(702) 550-2513</text>
 
-  <!-- Contact info -->
-  <!-- Email -->
-  <text x="410" y="420" font-family="Cinzel,serif" font-size="17" font-weight="700" letter-spacing="1.5" fill="#e8231a">✉</text>
-  <text x="440" y="420" font-family="Cinzel,serif" font-size="17" font-weight="700" letter-spacing="1.5" fill="#0a1628">ZPRIZANT@LIGHTNINGLEDGERZ.COM</text>
+  <text x="475" y="562" font-family="Cinzel,serif" font-size="20" font-weight="700" letter-spacing="2" class="red-text">⊕</text>
+  <text x="510" y="562" font-family="Cinzel,serif" font-size="20" font-weight="700" letter-spacing="2" class="black-text">LIGHTNINGLEDGERZ.COM</text>
 
-  <!-- Phone -->
-  <text x="410" y="460" font-family="Cinzel,serif" font-size="17" font-weight="700" letter-spacing="1.5" fill="#e8231a">☎</text>
-  <text x="440" y="460" font-family="Cinzel,serif" font-size="17" font-weight="700" letter-spacing="1.5" fill="#0a1628">(702) 550-2513</text>
-
-  <!-- Website -->
-  <text x="410" y="500" font-family="Cinzel,serif" font-size="17" font-weight="700" letter-spacing="1.5" fill="#e8231a">⊕</text>
-  <text x="440" y="500" font-family="Cinzel,serif" font-size="17" font-weight="700" letter-spacing="1.5" fill="#0a1628">LIGHTNINGLEDGERZ.COM</text>
-
-  <!-- QR Code placeholder (printer places generated QR here) -->
-  <rect x="930" y="390" width="130" height="130" fill="#f5f5f5" stroke="#ddd" stroke-width="1" rx="4"/>
-  <text x="995" y="455" font-family="Montserrat,sans-serif" font-size="11" fill="#999" text-anchor="middle" font-weight="700">[QR CODE]</text>
-  <text x="995" y="475" font-family="Montserrat,sans-serif" font-size="9" fill="#bbb" text-anchor="middle">qrcode-monkey.com</text>
-  <text x="995" y="535" font-family="Montserrat,sans-serif" font-size="9" fill="#e8231a" text-anchor="middle" font-weight="700">SCAN HERE</text>
-
-  <!-- Trim guide (dashed line showing cut area) -->
-  <rect x="37.5" y="37.5" width="1050" height="600" fill="none" stroke="#ccc" stroke-width="0.5" stroke-dasharray="8,4"/>
+  <!-- ── QR CODE — placeholder for SVG file you generate at qrcode-monkey.com ── -->
+  <!-- Save the downloaded SVG as "business-card-qr.svg" in this folder. -->
+  <!-- Then this xlink:href will reference it automatically. -->
+  <image xlink:href="business-card-qr.svg" x="940" y="450" width="135" height="135"/>
 </svg>
