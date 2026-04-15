@@ -6170,6 +6170,57 @@
         }
 
         /* ============================================
+           AUTO-SCROLLING SKILLS BANNER
+        ============================================ */
+        .scroll-banner-section {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1e3a5f 100%);
+            overflow: hidden;
+            padding: 16px 0;
+            position: relative;
+            z-index: 2;
+        }
+        .scroll-banner-track {
+            display: flex;
+            width: max-content;
+            animation: scrollBanner 35s linear infinite;
+        }
+        .scroll-banner-track:hover {
+            animation-play-state: paused;
+        }
+        .scroll-banner-inner {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            flex-shrink: 0;
+        }
+        .sb-item {
+            color: #fff;
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            white-space: nowrap;
+            padding: 0 16px;
+            letter-spacing: 0.3px;
+        }
+        .sb-item.sb-tool {
+            color: #e8231a;
+            font-weight: 800;
+        }
+        .sb-dot {
+            color: rgba(255,255,255,0.25);
+            font-size: 1.2rem;
+            padding: 0 4px;
+        }
+        @keyframes scrollBanner {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @media (max-width: 768px) {
+            .scroll-banner-section { padding: 12px 0; }
+            .sb-item { font-size: 0.78rem; padding: 0 12px; }
+        }
+
+        /* ============================================
            WORK PRODUCTS CAROUSEL (McKinsey/Bain Style)
         ============================================ */
         .work-carousel-section {
@@ -7086,6 +7137,80 @@
             </div>
         </div>
     </section>
+
+    <!-- Auto-scrolling skills/tools banner -->
+    <div class="scroll-banner-section">
+        <div class="scroll-banner-track">
+            <div class="scroll-banner-inner">
+                <span class="sb-item">⚡ Budget vs. Actual</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">📊 Financial Modeling</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">💰 Cash Flow Forecasting</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">📈 KPI Dashboards</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item sb-tool">QuickBooks</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item sb-tool">Fathom</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item sb-tool">Excel</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item sb-tool">Python</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item sb-tool">Tableau</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">🎤 Boardroom Decks</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">📋 Variance Analysis</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">🏢 Fractional CFO</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item sb-tool">Power BI</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item sb-tool">Airtable</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">📒 Bookkeeping</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">💳 AR & AP</span>
+                <span class="sb-dot">·</span>
+            </div>
+            <div class="scroll-banner-inner" aria-hidden="true">
+                <span class="sb-item">⚡ Budget vs. Actual</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">📊 Financial Modeling</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">💰 Cash Flow Forecasting</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">📈 KPI Dashboards</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item sb-tool">QuickBooks</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item sb-tool">Fathom</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item sb-tool">Excel</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item sb-tool">Python</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item sb-tool">Tableau</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">🎤 Boardroom Decks</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">📋 Variance Analysis</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">🏢 Fractional CFO</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item sb-tool">Power BI</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item sb-tool">Airtable</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">📒 Bookkeeping</span>
+                <span class="sb-dot">·</span>
+                <span class="sb-item">💳 AR & AP</span>
+                <span class="sb-dot">·</span>
+            </div>
+        </div>
+    </div>
 
     <!-- Work Products Carousel (McKinsey/Bain Style) -->
     <section class="work-carousel-section" id="work">
