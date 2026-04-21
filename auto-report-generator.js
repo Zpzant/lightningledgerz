@@ -1,7 +1,7 @@
 // =====================================================
 // LIGHTNING LEDGERZ - AUTO REPORT GENERATOR
 // Automatic report generation on month finalization
-// Fathom-style periodic financial reporting
+// Periodic financial reporting
 // =====================================================
 
 class AutoReportGenerator {

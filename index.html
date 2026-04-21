@@ -4256,8 +4256,8 @@
             accent-color: var(--mckinsey-blue);
         }
 
-        /* Fathom Live Dashboard Link */
-        .fathom-link-card {
+        /* Client Live Dashboard Link */
+        .dashlink-link-card {
             background: linear-gradient(135deg, #f0f4ff, #e8f0fe);
             border: 2px solid var(--mckinsey-blue);
             border-radius: 10px;
@@ -4266,7 +4266,7 @@
             text-align: center;
         }
 
-        .fathom-link-header {
+        .dashlink-link-header {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -4277,13 +4277,13 @@
             font-size: 0.95rem;
         }
 
-        .fathom-link-desc {
+        .dashlink-link-desc {
             color: #555;
             font-size: 0.85rem;
             margin: 0 0 12px;
         }
 
-        .fathom-link-btn {
+        .dashlink-link-btn {
             display: inline-block;
             background: var(--mckinsey-blue);
             color: #fff;
@@ -4295,7 +4295,7 @@
             transition: all 0.3s;
         }
 
-        .fathom-link-btn:hover {
+        .dashlink-link-btn:hover {
             background: #153050;
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(30, 58, 95, 0.3);
@@ -6170,54 +6170,465 @@
         }
 
         /* ============================================
-           AUTO-SCROLLING SKILLS BANNER
+           EDITORIAL BILLBOARD BANNER — tight & classy
         ============================================ */
         .scroll-banner-section {
-            background: linear-gradient(135deg, #0d1b2a 0%, #1e3a5f 100%);
+            background: #05080f;
             overflow: hidden;
-            padding: 16px 0;
+            padding: 0;
             position: relative;
             z-index: 2;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            height: 110px;
         }
+        /* Soft fade at edges — stops hard crop on scrolling content */
+        .scroll-banner-section::before,
+        .scroll-banner-section::after {
+            content: "";
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 90px;
+            z-index: 4;
+            pointer-events: none;
+        }
+        .scroll-banner-section::before { left: 0;  background: linear-gradient(90deg, #05080f, transparent); }
+        .scroll-banner-section::after  { right: 0; background: linear-gradient(270deg, #05080f, transparent); }
+
         .scroll-banner-track {
             display: flex;
             width: max-content;
-            animation: scrollBanner 35s linear infinite;
+            height: 100%;
+            animation: scrollBanner 80s linear infinite;
+            will-change: transform;
         }
-        .scroll-banner-track:hover {
-            animation-play-state: paused;
-        }
+        .scroll-banner-track:hover { animation-play-state: paused; }
+
         .scroll-banner-inner {
             display: flex;
-            align-items: center;
-            gap: 0;
+            align-items: stretch;
+            gap: 1px;                      /* hair-thin dividers */
+            padding: 0;
             flex-shrink: 0;
+            background: rgba(255,255,255,0.06);
         }
-        .sb-item {
-            color: #fff;
+
+        /* ---- Base block: uniform height, consistent rhythm ---- */
+        .sb-block {
+            position: relative;
+            height: 110px;
+            background: #05080f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-family: 'Inter', -apple-system, sans-serif;
-            font-size: 0.88rem;
-            font-weight: 700;
+            overflow: hidden;
+        }
+
+        /* ---- Logo tiles — restrained, centered, brand-colored glow ---- */
+        .sb-logo {
+            padding: 0 36px;
+            gap: 14px;
+            min-width: 200px;
+        }
+        .sb-logo::after {
+            content: "";
+            position: absolute;
+            bottom: -20px; left: 50%;
+            width: 140px; height: 30px;
+            transform: translateX(-50%);
+            background: radial-gradient(ellipse, var(--brand, transparent) 0%, transparent 70%);
+            opacity: 0.35;
+            pointer-events: none;
+            filter: blur(6px);
+        }
+        .sb-logo-img {
+            width: 32px; height: 32px;
+            flex-shrink: 0;
+            opacity: 0.95;
+        }
+        .sb-logo-name {
+            color: #f5f5f7;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.2px;
             white-space: nowrap;
-            padding: 0 16px;
+        }
+
+        /* ---- Service tiles — thin line icons, minimal type ---- */
+        .sb-service {
+            padding: 0 32px;
+            gap: 14px;
+            min-width: 220px;
+        }
+        .sb-service-icon {
+            width: 30px; height: 30px;
+            flex-shrink: 0;
+            opacity: 0.9;
+        }
+        .sb-service-name {
+            color: #f5f5f7;
+            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+
+        /* ---- Divider pill label — like a magazine section marker ---- */
+        .sb-mark {
+            padding: 0 28px;
+            min-width: 180px;
+            background: #05080f;
+        }
+        .sb-mark-label {
+            display: inline-block;
+            padding: 6px 14px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 100px;
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 3.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.85);
+            white-space: nowrap;
+        }
+
+        /* ---- Video / scene blocks — cinematic mini-windows ---- */
+        .sb-scene {
+            min-width: 200px;
+            padding: 0;
+            background: #000;
+        }
+        .sb-scene-video {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: brightness(0.72) contrast(1.05) saturate(0.85);
+            z-index: 1;
+        }
+        .sb-scene-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.75) 100%);
+            z-index: 2;
+        }
+        .sb-scene-label {
+            position: absolute;
+            bottom: 10px; left: 14px;
+            font-size: 0.58rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: rgba(255,255,255,0.92);
+            z-index: 3;
+        }
+        .sb-scene-stage { position: absolute; inset: 0; z-index: 1; }
+
+        /* ---- CSS motion-graphic fallback (when no video file) ---- */
+        /* Handshake — two refined silhouettes */
+        .sb-handshake-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 70%, #1a1f2e 0%, #05080f 75%); }
+        .sb-hand {
+            position: absolute; top: 55%;
+            width: 38%; height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+            border-radius: 2px;
+            transform: translateY(-50%);
+        }
+        .sb-hand.left  { left: 6%;  animation: sbHandInL 4.5s ease-in-out infinite; }
+        .sb-hand.right { right: 6%; animation: sbHandInR 4.5s ease-in-out infinite; }
+        .sb-hand::after {
+            content: "";
+            position: absolute; top: -8px; width: 16px; height: 18px;
+            background: rgba(255,255,255,0.85);
+            border-radius: 3px 3px 2px 2px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+        .sb-hand.left::after  { right: 0; }
+        .sb-hand.right::after { left: 0;  }
+        .sb-hand-spark {
+            position: absolute; top: 55%; left: 50%;
+            width: 6px; height: 6px;
+            transform: translate(-50%,-50%) scale(0);
+            background: #fff; border-radius: 50%;
+            box-shadow: 0 0 14px 4px rgba(255,255,255,0.85);
+            animation: sbSpark 4.5s ease-in-out infinite;
+        }
+        @keyframes sbHandInL {
+            0%,15% { transform: translate(-130%,-50%); }
+            50%,72%{ transform: translate(-3%,-50%); }
+            88%,100%{ transform: translate(-130%,-50%); opacity: 0.2; }
+        }
+        @keyframes sbHandInR {
+            0%,15% { transform: translate(130%,-50%); }
+            50%,72%{ transform: translate(3%,-50%); }
+            88%,100%{ transform: translate(130%,-50%); opacity: 0.2; }
+        }
+        @keyframes sbSpark {
+            0%,48% { transform: translate(-50%,-50%) scale(0); opacity: 0; }
+            55%    { transform: translate(-50%,-50%) scale(1.4); opacity: 1; }
+            68%,100%{ transform: translate(-50%,-50%) scale(0); opacity: 0; }
+        }
+
+        /* Growth / data line — minimal sparkline */
+        .sb-growth-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 70%, #0f1724 0%, #05080f 80%); }
+        .sb-deal-line { position: absolute; left: 12%; right: 12%; top: 45%; height: 30%; overflow: visible; }
+        .sb-deal-line path {
+            fill: none;
+            stroke: rgba(255,255,255,0.9);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-dasharray: 260;
+            stroke-dashoffset: 260;
+            animation: sbDraw 5s ease-in-out infinite;
+        }
+        @keyframes sbDraw {
+            0%,8%   { stroke-dashoffset: 260; }
+            62%,100%{ stroke-dashoffset: 0; }
+        }
+        .sb-deal-dot {
+            position: absolute;
+            right: 10%; top: 38%;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(255,255,255,0.9), 0 0 24px rgba(255,255,255,0.4);
+            opacity: 0;
+            animation: sbDotPulse 5s ease-out infinite;
+        }
+        @keyframes sbDotPulse {
+            0%,62% { opacity: 0; transform: scale(0.4); }
+            72%    { opacity: 1; transform: scale(1.4); }
+            82%,95%{ opacity: 1; transform: scale(1); }
+            100%   { opacity: 0; }
+        }
+
+        /* Ledger / bookkeeping — minimal rows counting up */
+        .sb-ledger-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, #0f1724 0%, #05080f 85%); }
+        .sb-ledger-rows {
+            position: absolute;
+            left: 16%; right: 16%; top: 30%;
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .sb-ledger-row {
+            display: flex; justify-content: space-between;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.68rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.75);
             letter-spacing: 0.3px;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+            padding-bottom: 3px;
+            opacity: 0;
         }
-        .sb-item.sb-tool {
-            color: #e8231a;
+        .sb-ledger-row .amt { font-variant-numeric: tabular-nums; color: #f5f5f7; }
+        .sb-ledger-row.r1 { animation: sbRowIn 5s ease-out infinite; }
+        .sb-ledger-row.r2 { animation: sbRowIn 5s ease-out 0.5s infinite; }
+        .sb-ledger-row.r3 { animation: sbRowIn 5s ease-out 1.0s infinite; }
+        @keyframes sbRowIn {
+            0%,10%  { opacity: 0; transform: translateY(8px); }
+            25%,75% { opacity: 1; transform: translateY(0); }
+            92%,100%{ opacity: 0; transform: translateY(-4px); }
+        }
+
+        /* Service SVG strokes — hair-thin editorial line work */
+        .sb-ico-stroke { stroke: #f5f5f7; stroke-width: 1.3; fill: none; stroke-linecap: round; stroke-linejoin: round; opacity: 0.92; }
+        .sb-ico-accent { stroke: #c98740; stroke-width: 1.3; fill: none; stroke-linecap: round; opacity: 0.9; }
+        .sb-ico-dot    { fill: #c98740; }
+
+        .sb-ico-bar1, .sb-ico-bar2, .sb-ico-bar3 { fill: #f5f5f7; transform-origin: bottom; opacity: 0.9; }
+        .sb-ico-bar1 { animation: sbBarGrow 3.5s ease-out infinite; }
+        .sb-ico-bar2 { animation: sbBarGrow 3.5s ease-out 0.3s infinite; }
+        .sb-ico-bar3 { animation: sbBarGrow 3.5s ease-out 0.6s infinite; }
+        @keyframes sbBarGrow {
+            0%, 10% { transform: scaleY(0.2); }
+            60%,85% { transform: scaleY(1); }
+            95%,100%{ transform: scaleY(0.2); }
+        }
+
+        /* ---- FINALE: Times Square LED-style reveal ---- */
+        .sb-finale {
+            min-width: 420px;
+            padding: 0;
+            background:
+              radial-gradient(ellipse at 50% 50%, rgba(232,35,26,0.22) 0%, #05080f 75%),
+              #05080f;
+        }
+        /* LED pixel grid — subtle, like the face of a Times Square jumbotron */
+        .sb-finale::before {
+            content: "";
+            position: absolute; inset: 0;
+            background-image:
+              radial-gradient(circle, rgba(255,255,255,0.08) 0.6px, transparent 0.8px);
+            background-size: 4px 4px;
+            opacity: 0.55;
+            pointer-events: none;
+            z-index: 1;
+            mix-blend-mode: overlay;
+        }
+        /* Scan-line texture */
+        .sb-finale::after {
+            content: "";
+            position: absolute; inset: 0;
+            background: repeating-linear-gradient(0deg,
+                rgba(0,0,0,0.15) 0 1px,
+                transparent 1px 3px);
+            pointer-events: none;
+            z-index: 2;
+        }
+        .sb-finale-stage { position: absolute; inset: 0; z-index: 3; }
+
+        /* Horizontal beam sweep — passes across once per cycle */
+        .sb-finale-beam {
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 40%;
+            background: linear-gradient(90deg, transparent, rgba(255,220,140,0.18), transparent);
+            transform: translateX(-120%) skewX(-18deg);
+            animation: sbBeamSweep 7s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 4;
+        }
+        @keyframes sbBeamSweep {
+            0%, 12%  { transform: translateX(-120%) skewX(-18deg); }
+            28%      { transform: translateX(280%) skewX(-18deg); }
+            100%     { transform: translateX(280%) skewX(-18deg); }
+        }
+
+        .sb-flash {
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at 68% 32%, #fff 0%, transparent 42%);
+            opacity: 0;
+            animation: sbFlash 7s ease-out infinite;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            z-index: 5;
+        }
+        @keyframes sbFlash {
+            0%,30% { opacity: 0; }
+            33%    { opacity: 0.95; }
+            40%    { opacity: 0.2; }
+            43%    { opacity: 0.7; }    /* double-strike */
+            48%    { opacity: 0; }
+            100%   { opacity: 0; }
+        }
+
+        .sb-bolt {
+            position: absolute;
+            top: 8%;
+            right: -40px;
+            width: 58px; height: 80px;
+            opacity: 0;
+            animation: sbBoltStrike 7s ease-out infinite;
+            filter: drop-shadow(0 0 18px rgba(255,220,120,0.9));
+            z-index: 6;
+        }
+        .sb-bolt-2 {
+            top: auto; bottom: 10%; left: -20px; right: auto;
+            width: 38px; height: 52px;
+            animation: sbBoltStrike2 7s ease-out infinite;
+            filter: drop-shadow(0 0 12px rgba(255,80,60,0.85));
+        }
+        @keyframes sbBoltStrike {
+            0%,22%  { opacity: 0; transform: translateX(160%) translateY(-40px) rotate(32deg) scale(0.5); }
+            32%     { opacity: 1; transform: translateX(0) translateY(0) rotate(0) scale(1.05); }
+            36%     { opacity: 1; transform: translateX(-3px) translateY(1px) rotate(-1deg) scale(1); }
+            48%     { opacity: 1; transform: translateX(0) translateY(0) rotate(0) scale(1); }
+            64%     { opacity: 0.5; transform: translateX(-12px) scale(0.96); }
+            85%,100%{ opacity: 0; transform: translateX(-26px) scale(0.9); }
+        }
+        @keyframes sbBoltStrike2 {
+            0%,40%  { opacity: 0; transform: translateX(-140%) translateY(20px) rotate(-28deg) scale(0.4); }
+            50%     { opacity: 1; transform: translateX(0) translateY(0) rotate(0) scale(1); }
+            58%     { opacity: 0.8; }
+            68%     { opacity: 0; transform: translateX(20px) scale(0.85); }
+            100%    { opacity: 0; }
+        }
+
+        .sb-finale-z {
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+            gap: 16px;
+            width: 100%;
+            height: 100%;
+            z-index: 7;
+        }
+        .sb-finale-z img {
+            width: 68px; height: 68px;
+            object-fit: contain;
+            opacity: 0;
+            transform: scale(0.3) rotate(-20deg);
+            animation: sbZLand 7s cubic-bezier(.2,1.6,.3,1) infinite;
+            filter: drop-shadow(0 0 16px rgba(232,35,26,0.75));
+        }
+        @keyframes sbZLand {
+            0%,30% { opacity: 0; transform: scale(0.3) rotate(-20deg); }
+            36%    { opacity: 1; transform: scale(1.25) rotate(0); }
+            40%    { opacity: 1; transform: scale(0.96) rotate(0); }
+            46%    { opacity: 1; transform: scale(1.04) rotate(0); }    /* landing shake */
+            52%    { opacity: 1; transform: scale(1) rotate(0); }
+            85%    { opacity: 1; transform: scale(1) rotate(0); }
+            95%,100%{ opacity: 0; transform: scale(0.94) rotate(0); }
+        }
+        .sb-finale-text {
+            display: flex; flex-direction: column; gap: 3px;
+            z-index: 7;
+        }
+        .sb-finale-title {
             font-weight: 800;
+            font-size: 1.05rem;
+            letter-spacing: 2px;
+            color: #f5f5f7;
+            text-transform: uppercase;
+            line-height: 1;
+            opacity: 0;
+            transform: translateY(-8px);
+            animation: sbTitleDrop 7s ease-out infinite;
+            text-shadow: 0 0 18px rgba(255,255,255,0.15);
         }
-        .sb-dot {
-            color: rgba(255,255,255,0.25);
-            font-size: 1.2rem;
-            padding: 0 4px;
+        .sb-finale-title .red {
+            color: #ff3b2f;
+            text-shadow: 0 0 12px rgba(255,59,47,0.6);
         }
+        @keyframes sbTitleDrop {
+            0%,44% { opacity: 0; transform: translateY(-10px); letter-spacing: 6px; }
+            56%    { opacity: 1; transform: translateY(0);     letter-spacing: 2px; }
+            85%    { opacity: 1; }
+            95%,100%{ opacity: 0; transform: translateY(-4px); }
+        }
+        .sb-finale-tag {
+            font-weight: 500;
+            font-size: 0.6rem;
+            letter-spacing: 3.5px;
+            color: rgba(255,210,140,0.72);
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateY(8px);
+            animation: sbTagRise 7s ease-out infinite;
+        }
+        @keyframes sbTagRise {
+            0%,52% { opacity: 0; transform: translateY(8px); }
+            62%    { opacity: 1; transform: translateY(0); }
+            85%    { opacity: 1; }
+            95%,100%{ opacity: 0; transform: translateY(-2px); }
+        }
+
         @keyframes scrollBanner {
-            0% { transform: translateX(0); }
+            0%   { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
+
         @media (max-width: 768px) {
-            .scroll-banner-section { padding: 12px 0; }
-            .sb-item { font-size: 0.78rem; padding: 0 12px; }
+            .scroll-banner-section { height: 86px; }
+            .sb-block { height: 86px; }
+            .sb-logo { padding: 0 22px; min-width: 160px; }
+            .sb-logo-img { width: 24px; height: 24px; }
+            .sb-logo-name, .sb-service-name { font-size: 0.82rem; }
+            .sb-service { padding: 0 22px; min-width: 170px; }
+            .sb-service-icon { width: 24px; height: 24px; }
+            .sb-scene { min-width: 160px; }
+            .sb-mark { padding: 0 18px; min-width: 140px; }
+            .sb-mark-label { font-size: 0.54rem; letter-spacing: 2.5px; padding: 5px 10px; }
+            .sb-finale { min-width: 280px; }
+            .sb-finale-z img { width: 46px; height: 46px; }
+            .sb-finale-title { font-size: 0.82rem; }
         }
 
         /* ============================================
@@ -7138,76 +7549,373 @@
         </div>
     </section>
 
-    <!-- Auto-scrolling skills/tools banner -->
+    <!-- Editorial billboard banner — tight, classy -->
+    <!-- VIDEOS: drop MP4s at /videos/handshake.mp4, /videos/boardroom.mp4, /videos/bookkeeping.mp4
+         and they auto-activate. 1920x1080 or 1280x720 works; muted, looping, short (6–12s). Free sources:
+         pexels.com/videos, mixkit.co/free-stock-video, coverr.co — search: handshake, boardroom,
+         meeting, accountant, bookkeeping. If a file isn't present, the polished CSS scene shows instead. -->
     <div class="scroll-banner-section">
         <div class="scroll-banner-track">
+            <!-- ============ PASS 1 ============ -->
             <div class="scroll-banner-inner">
-                <span class="sb-item">⚡ Budget vs. Actual</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">📊 Financial Modeling</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">💰 Cash Flow Forecasting</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">📈 KPI Dashboards</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item sb-tool">QuickBooks</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item sb-tool">Fathom</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item sb-tool">Excel</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item sb-tool">Python</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item sb-tool">Tableau</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">🎤 Boardroom Decks</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">📋 Variance Analysis</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">🏢 Fractional CFO</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item sb-tool">Power BI</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item sb-tool">Airtable</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">📒 Bookkeeping</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">💳 AR & AP</span>
-                <span class="sb-dot">·</span>
+
+                <div class="sb-block sb-mark"><span class="sb-mark-label">Capabilities</span></div>
+
+                <div class="sb-block sb-logo" style="--brand:#2CA01C">
+                    <img class="sb-logo-img" alt="" src="https://cdn.simpleicons.org/intuitquickbooks/2CA01C" onerror="this.remove()">
+                    <span class="sb-logo-name">QuickBooks</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#217346">
+                    <img class="sb-logo-img" alt="" src="https://cdn.simpleicons.org/microsoftexcel/217346" onerror="this.remove()">
+                    <span class="sb-logo-name">Excel</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#E97627">
+                    <img class="sb-logo-img" alt="" src="https://cdn.simpleicons.org/tableau/E97627" onerror="this.remove()">
+                    <span class="sb-logo-name">Tableau</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#18BFFF">
+                    <img class="sb-logo-img" alt="" src="https://cdn.simpleicons.org/airtable/18BFFF" onerror="this.remove()">
+                    <span class="sb-logo-name">Airtable</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#F2C811">
+                    <img class="sb-logo-img" alt="" src="https://cdn.simpleicons.org/powerbi/F2C811" onerror="this.remove()">
+                    <span class="sb-logo-name">Power BI</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#B7472A">
+                    <img class="sb-logo-img" alt="" src="https://cdn.simpleicons.org/microsoftpowerpoint/B7472A" onerror="this.remove()">
+                    <span class="sb-logo-name">PowerPoint</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#3776AB">
+                    <img class="sb-logo-img" alt="" src="https://cdn.simpleicons.org/python/3776AB" onerror="this.remove()">
+                    <span class="sb-logo-name">Python</span>
+                </div>
+
+                <div class="sb-block sb-mark"><span class="sb-mark-label">— Practice —</span></div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <path class="sb-ico-stroke" d="M6 7 H26 V25 H6 Z M16 7 V25"/>
+                        <path class="sb-ico-accent" d="M9 12 H13 M9 16 H13 M9 20 H13 M19 12 H23 M19 16 H23 M19 20 H23"/>
+                    </svg>
+                    <span class="sb-service-name">Bookkeeping</span>
+                </div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <rect class="sb-ico-bar1" x="6" y="14" width="4" height="14"/>
+                        <rect class="sb-ico-bar2" x="14" y="8" width="4" height="20"/>
+                        <rect class="sb-ico-bar3" x="22" y="18" width="4" height="10"/>
+                    </svg>
+                    <span class="sb-service-name">KPI Dashboards</span>
+                </div>
+
+                <div class="sb-block sb-scene">
+                    <div class="sb-scene-stage">
+                        <div class="sb-handshake-bg"></div>
+                        <div class="sb-hand left"></div>
+                        <div class="sb-hand right"></div>
+                        <div class="sb-hand-spark"></div>
+                    </div>
+                    <video class="sb-scene-video" autoplay loop muted playsinline preload="auto" src="videos/handshake.mp4" onerror="this.style.display='none'"></video>
+                    <div class="sb-scene-overlay"></div>
+                    <div class="sb-scene-label">Closing</div>
+                </div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <rect class="sb-ico-stroke" x="4" y="7" width="24" height="15"/>
+                        <path class="sb-ico-stroke" d="M16 22 V27 M11 27 H21"/>
+                        <path class="sb-ico-accent" d="M8 18 L13 13 L17 16 L24 9"/>
+                        <path class="sb-ico-accent" d="M20 9 H24 V13"/>
+                    </svg>
+                    <span class="sb-service-name">Boardroom Decks</span>
+                </div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <path class="sb-ico-stroke" d="M4 26 H28" opacity="0.35"/>
+                        <rect x="6" y="18" width="3" height="8" class="sb-ico-dot"/>
+                        <rect x="12" y="12" width="3" height="14" class="sb-ico-dot" opacity="0.75"/>
+                        <rect x="18" y="15" width="3" height="11" class="sb-ico-dot" opacity="0.55"/>
+                        <rect x="24" y="8"  width="3" height="18" class="sb-ico-dot"/>
+                    </svg>
+                    <span class="sb-service-name">Variance Analysis</span>
+                </div>
+
+                <div class="sb-block sb-scene">
+                    <div class="sb-scene-stage">
+                        <div class="sb-growth-bg"></div>
+                        <svg class="sb-deal-line" viewBox="0 0 240 40" preserveAspectRatio="none">
+                            <path d="M0 34 L40 28 L80 30 L120 18 L160 14 L200 6 L240 2"/>
+                        </svg>
+                        <div class="sb-deal-dot"></div>
+                    </div>
+                    <video class="sb-scene-video" autoplay loop muted playsinline preload="auto" src="videos/boardroom.mp4" onerror="this.style.display='none'"></video>
+                    <div class="sb-scene-overlay"></div>
+                    <div class="sb-scene-label">Growth</div>
+                </div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <rect class="sb-ico-stroke" x="6" y="11" width="20" height="14" rx="1"/>
+                        <path class="sb-ico-stroke" d="M12 11 V8 H20 V11"/>
+                        <path class="sb-ico-accent" d="M15 14 L14 19 L16 19 L14 24 L19 17 L16 17 L18 14 Z" fill="#c98740" stroke="none"/>
+                    </svg>
+                    <span class="sb-service-name">Fractional CFO</span>
+                </div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <path class="sb-ico-accent" d="M3 20 C8 13 12 24 16 17 C20 10 24 22 29 14"/>
+                        <circle cx="16" cy="17" r="1.6" class="sb-ico-dot"/>
+                    </svg>
+                    <span class="sb-service-name">Cash Flow Forecast</span>
+                </div>
+
+                <div class="sb-block sb-scene">
+                    <div class="sb-scene-stage">
+                        <div class="sb-ledger-bg"></div>
+                        <div class="sb-ledger-rows">
+                            <div class="sb-ledger-row r1"><span>Invoices</span><span class="amt">$12,480</span></div>
+                            <div class="sb-ledger-row r2"><span>Reconciled</span><span class="amt">$8,120</span></div>
+                            <div class="sb-ledger-row r3"><span>Net Posted</span><span class="amt">$3,940</span></div>
+                        </div>
+                    </div>
+                    <video class="sb-scene-video" autoplay loop muted playsinline preload="auto" src="videos/bookkeeping.mp4" onerror="this.style.display='none'"></video>
+                    <div class="sb-scene-overlay"></div>
+                    <div class="sb-scene-label">Reconciled</div>
+                </div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <path class="sb-ico-stroke" d="M4 26 H28" opacity="0.35"/>
+                        <rect x="6" y="12" width="6" height="14" class="sb-ico-dot" opacity="0.6"/>
+                        <rect x="14" y="8" width="6" height="18" class="sb-ico-dot"/>
+                        <rect x="22" y="15" width="6" height="11" class="sb-ico-dot" opacity="0.5"/>
+                    </svg>
+                    <span class="sb-service-name">Budget vs Actual</span>
+                </div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <rect class="sb-ico-stroke" x="5" y="6" width="22" height="20"/>
+                        <path class="sb-ico-stroke" d="M5 12 H27 M5 18 H27 M12 6 V26 M19 6 V26" opacity="0.7"/>
+                        <path class="sb-ico-accent" d="M7 9 L10 9 M14 9 L17 9 M21 9 L24 9" opacity="0.8"/>
+                    </svg>
+                    <span class="sb-service-name">Financial Modeling</span>
+                </div>
+
+                <div class="sb-block sb-mark"><span class="sb-mark-label">— Lightning Ledgerz —</span></div>
+
+                <div class="sb-block sb-finale">
+                    <div class="sb-finale-beam"></div>
+                    <div class="sb-finale-stage">
+                        <div class="sb-flash"></div>
+                        <svg class="sb-bolt" viewBox="0 0 70 90" aria-hidden="true">
+                            <path d="M42 0 L8 50 L30 50 L20 90 L62 34 L38 34 L50 0 Z"
+                                  fill="#fff7d4" stroke="#ffdb7a" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                        <svg class="sb-bolt sb-bolt-2" viewBox="0 0 70 90" aria-hidden="true">
+                            <path d="M42 0 L8 50 L30 50 L20 90 L62 34 L38 34 L50 0 Z"
+                                  fill="#ffd7c8" stroke="#ff5040" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="sb-finale-z">
+                        <img src="lightningz.png" alt="" onerror="this.src='LightningLedgerzLogo.png'">
+                        <div class="sb-finale-text">
+                            <div class="sb-finale-title">Lightning <span class="red">Ledgerz</span></div>
+                            <div class="sb-finale-tag">Strike · Settle · Scale</div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
+            <!-- ============ PASS 2 (seamless loop) ============ -->
             <div class="scroll-banner-inner" aria-hidden="true">
-                <span class="sb-item">⚡ Budget vs. Actual</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">📊 Financial Modeling</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">💰 Cash Flow Forecasting</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">📈 KPI Dashboards</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item sb-tool">QuickBooks</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item sb-tool">Fathom</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item sb-tool">Excel</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item sb-tool">Python</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item sb-tool">Tableau</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">🎤 Boardroom Decks</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">📋 Variance Analysis</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">🏢 Fractional CFO</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item sb-tool">Power BI</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item sb-tool">Airtable</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">📒 Bookkeeping</span>
-                <span class="sb-dot">·</span>
-                <span class="sb-item">💳 AR & AP</span>
-                <span class="sb-dot">·</span>
+
+                <div class="sb-block sb-mark"><span class="sb-mark-label">Capabilities</span></div>
+
+                <div class="sb-block sb-logo" style="--brand:#2CA01C">
+                    <img class="sb-logo-img" alt="" src="https://cdn.simpleicons.org/intuitquickbooks/2CA01C" onerror="this.remove()">
+                    <span class="sb-logo-name">QuickBooks</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#217346">
+                    <img class="sb-logo-img" alt="" src="https://cdn.simpleicons.org/microsoftexcel/217346" onerror="this.remove()">
+                    <span class="sb-logo-name">Excel</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#E97627">
+                    <img class="sb-logo-img" alt="" src="https://cdn.simpleicons.org/tableau/E97627" onerror="this.remove()">
+                    <span class="sb-logo-name">Tableau</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#18BFFF">
+                    <img class="sb-logo-img" alt="" src="https://cdn.simpleicons.org/airtable/18BFFF" onerror="this.remove()">
+                    <span class="sb-logo-name">Airtable</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#F2C811">
+                    <img class="sb-logo-img" alt="" src="https://cdn.simpleicons.org/powerbi/F2C811" onerror="this.remove()">
+                    <span class="sb-logo-name">Power BI</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#B7472A">
+                    <img class="sb-logo-img" alt="" src="https://cdn.simpleicons.org/microsoftpowerpoint/B7472A" onerror="this.remove()">
+                    <span class="sb-logo-name">PowerPoint</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#3776AB">
+                    <img class="sb-logo-img" alt="" src="https://cdn.simpleicons.org/python/3776AB" onerror="this.remove()">
+                    <span class="sb-logo-name">Python</span>
+                </div>
+
+                <div class="sb-block sb-mark"><span class="sb-mark-label">— Practice —</span></div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <path class="sb-ico-stroke" d="M6 7 H26 V25 H6 Z M16 7 V25"/>
+                        <path class="sb-ico-accent" d="M9 12 H13 M9 16 H13 M9 20 H13 M19 12 H23 M19 16 H23 M19 20 H23"/>
+                    </svg>
+                    <span class="sb-service-name">Bookkeeping</span>
+                </div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <rect class="sb-ico-bar1" x="6" y="14" width="4" height="14"/>
+                        <rect class="sb-ico-bar2" x="14" y="8" width="4" height="20"/>
+                        <rect class="sb-ico-bar3" x="22" y="18" width="4" height="10"/>
+                    </svg>
+                    <span class="sb-service-name">KPI Dashboards</span>
+                </div>
+
+                <div class="sb-block sb-scene">
+                    <div class="sb-scene-stage">
+                        <div class="sb-handshake-bg"></div>
+                        <div class="sb-hand left"></div>
+                        <div class="sb-hand right"></div>
+                        <div class="sb-hand-spark"></div>
+                    </div>
+                    <video class="sb-scene-video" autoplay loop muted playsinline preload="auto" src="videos/handshake.mp4" onerror="this.style.display='none'"></video>
+                    <div class="sb-scene-overlay"></div>
+                    <div class="sb-scene-label">Closing</div>
+                </div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <rect class="sb-ico-stroke" x="4" y="7" width="24" height="15"/>
+                        <path class="sb-ico-stroke" d="M16 22 V27 M11 27 H21"/>
+                        <path class="sb-ico-accent" d="M8 18 L13 13 L17 16 L24 9"/>
+                        <path class="sb-ico-accent" d="M20 9 H24 V13"/>
+                    </svg>
+                    <span class="sb-service-name">Boardroom Decks</span>
+                </div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <path class="sb-ico-stroke" d="M4 26 H28" opacity="0.35"/>
+                        <rect x="6" y="18" width="3" height="8" class="sb-ico-dot"/>
+                        <rect x="12" y="12" width="3" height="14" class="sb-ico-dot" opacity="0.75"/>
+                        <rect x="18" y="15" width="3" height="11" class="sb-ico-dot" opacity="0.55"/>
+                        <rect x="24" y="8"  width="3" height="18" class="sb-ico-dot"/>
+                    </svg>
+                    <span class="sb-service-name">Variance Analysis</span>
+                </div>
+
+                <div class="sb-block sb-scene">
+                    <div class="sb-scene-stage">
+                        <div class="sb-growth-bg"></div>
+                        <svg class="sb-deal-line" viewBox="0 0 240 40" preserveAspectRatio="none">
+                            <path d="M0 34 L40 28 L80 30 L120 18 L160 14 L200 6 L240 2"/>
+                        </svg>
+                        <div class="sb-deal-dot"></div>
+                    </div>
+                    <video class="sb-scene-video" autoplay loop muted playsinline preload="auto" src="videos/boardroom.mp4" onerror="this.style.display='none'"></video>
+                    <div class="sb-scene-overlay"></div>
+                    <div class="sb-scene-label">Growth</div>
+                </div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <rect class="sb-ico-stroke" x="6" y="11" width="20" height="14" rx="1"/>
+                        <path class="sb-ico-stroke" d="M12 11 V8 H20 V11"/>
+                        <path class="sb-ico-accent" d="M15 14 L14 19 L16 19 L14 24 L19 17 L16 17 L18 14 Z" fill="#c98740" stroke="none"/>
+                    </svg>
+                    <span class="sb-service-name">Fractional CFO</span>
+                </div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <path class="sb-ico-accent" d="M3 20 C8 13 12 24 16 17 C20 10 24 22 29 14"/>
+                        <circle cx="16" cy="17" r="1.6" class="sb-ico-dot"/>
+                    </svg>
+                    <span class="sb-service-name">Cash Flow Forecast</span>
+                </div>
+
+                <div class="sb-block sb-scene">
+                    <div class="sb-scene-stage">
+                        <div class="sb-ledger-bg"></div>
+                        <div class="sb-ledger-rows">
+                            <div class="sb-ledger-row r1"><span>Invoices</span><span class="amt">$12,480</span></div>
+                            <div class="sb-ledger-row r2"><span>Reconciled</span><span class="amt">$8,120</span></div>
+                            <div class="sb-ledger-row r3"><span>Net Posted</span><span class="amt">$3,940</span></div>
+                        </div>
+                    </div>
+                    <video class="sb-scene-video" autoplay loop muted playsinline preload="auto" src="videos/bookkeeping.mp4" onerror="this.style.display='none'"></video>
+                    <div class="sb-scene-overlay"></div>
+                    <div class="sb-scene-label">Reconciled</div>
+                </div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <path class="sb-ico-stroke" d="M4 26 H28" opacity="0.35"/>
+                        <rect x="6" y="12" width="6" height="14" class="sb-ico-dot" opacity="0.6"/>
+                        <rect x="14" y="8" width="6" height="18" class="sb-ico-dot"/>
+                        <rect x="22" y="15" width="6" height="11" class="sb-ico-dot" opacity="0.5"/>
+                    </svg>
+                    <span class="sb-service-name">Budget vs Actual</span>
+                </div>
+
+                <div class="sb-block sb-service">
+                    <svg class="sb-service-icon" viewBox="0 0 32 32" aria-hidden="true">
+                        <rect class="sb-ico-stroke" x="5" y="6" width="22" height="20"/>
+                        <path class="sb-ico-stroke" d="M5 12 H27 M5 18 H27 M12 6 V26 M19 6 V26" opacity="0.7"/>
+                        <path class="sb-ico-accent" d="M7 9 L10 9 M14 9 L17 9 M21 9 L24 9" opacity="0.8"/>
+                    </svg>
+                    <span class="sb-service-name">Financial Modeling</span>
+                </div>
+
+                <div class="sb-block sb-mark"><span class="sb-mark-label">— Lightning Ledgerz —</span></div>
+
+                <div class="sb-block sb-finale">
+                    <div class="sb-finale-beam"></div>
+                    <div class="sb-finale-stage">
+                        <div class="sb-flash"></div>
+                        <svg class="sb-bolt" viewBox="0 0 70 90" aria-hidden="true">
+                            <path d="M42 0 L8 50 L30 50 L20 90 L62 34 L38 34 L50 0 Z"
+                                  fill="#fff7d4" stroke="#ffdb7a" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                        <svg class="sb-bolt sb-bolt-2" viewBox="0 0 70 90" aria-hidden="true">
+                            <path d="M42 0 L8 50 L30 50 L20 90 L62 34 L38 34 L50 0 Z"
+                                  fill="#ffd7c8" stroke="#ff5040" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="sb-finale-z">
+                        <img src="lightningz.png" alt="" onerror="this.src='LightningLedgerzLogo.png'">
+                        <div class="sb-finale-text">
+                            <div class="sb-finale-title">Lightning <span class="red">Ledgerz</span></div>
+                            <div class="sb-finale-tag">Strike · Settle · Scale</div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -7883,13 +8591,13 @@
                     <div class="admin-form">
                         <div class="admin-form-row">
                             <label>Select User:</label>
-                            <select id="fathom-user-select">
+                            <select id="dashlink-user-select">
                                 <option value="">-- Select a user --</option>
                             </select>
                         </div>
                         <div class="admin-form-row">
-                            <label>Dashboard URL (Fathom, etc.):</label>
-                            <input type="url" id="fathom-url" placeholder="Paste the live dashboard link here...">
+                            <label>Live Dashboard URL:</label>
+                            <input type="url" id="dashlink-url" placeholder="Paste the live dashboard link here...">
                         </div>
                         <button class="btn-primary" onclick="saveDashboardLink()">Save Dashboard Link</button>
                     </div>
@@ -8499,13 +9207,13 @@
                         <h4>My Reports</h4>
                     </div>
                     <div class="portal-step-body">
-                        <div class="fathom-link-card" id="fathom-link-card" style="display: none;">
-                            <div class="fathom-link-header">
+                        <div class="dashlink-link-card" id="dashlink-link-card" style="display: none;">
+                            <div class="dashlink-link-header">
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 6-10"/></svg>
                                 <span>Live Financial Dashboard</span>
                             </div>
-                            <p class="fathom-link-desc">Your advisor has linked a live reporting dashboard for your business.</p>
-                            <a href="#" id="fathom-link-url" target="_blank" class="fathom-link-btn">Open Dashboard</a>
+                            <p class="dashlink-link-desc">Your advisor has linked a live reporting dashboard for your business.</p>
+                            <a href="#" id="dashlink-link-url" target="_blank" class="dashlink-link-btn">Open Dashboard</a>
                         </div>
                         <!-- Export moved into column headers -->
                         <div id="reports-two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;min-height:120px;">
@@ -13076,10 +13784,10 @@
                     userSelect.innerHTML = '<option value="">-- Select a user --</option>' +
                         profiles.map(function(u) { return '<option value="' + u.id + '">' + (u.email || '') + ' (' + (u.first_name || 'No name') + ')</option>'; }).join('');
                 }
-                // Also populate fathom dropdown
-                var fathomSelect = document.getElementById('fathom-user-select');
-                if (fathomSelect) {
-                    fathomSelect.innerHTML = '<option value="">-- Select a user --</option>' +
+                // Also populate dashboard-link dropdown
+                var dashlinkSelect = document.getElementById('dashlink-user-select');
+                if (dashlinkSelect) {
+                    dashlinkSelect.innerHTML = '<option value="">-- Select a user --</option>' +
                         profiles.map(function(u) { return '<option value="' + u.id + '">' + (u.email || '') + ' (' + (u.first_name || 'No name') + ')</option>'; }).join('');
                 }
 
@@ -13499,8 +14207,8 @@
             var tbody = document.getElementById('admin-qb-body');
             tbody.innerHTML = '<tr><td colspan="7" class="loading-row">Loading...</td></tr>';
 
-            // Also populate the Fathom user select
-            var fathomSelect = document.getElementById('fathom-user-select');
+            // Also populate the dashboard-link user select
+            var dashlinkSelect = document.getElementById('dashlink-user-select');
 
             try {
                 var { data, error } = await supabase
@@ -13522,12 +14230,12 @@
                     var userEmail = cred.profiles?.email || '';
 
                     // Build user dropdown for dashboard links
-                    if (!seenUsers[cred.user_id] && fathomSelect) {
+                    if (!seenUsers[cred.user_id] && dashlinkSelect) {
                         seenUsers[cred.user_id] = true;
                         var opt = document.createElement('option');
                         opt.value = cred.user_id;
                         opt.textContent = userName + (userEmail ? ' (' + userEmail + ')' : '');
-                        fathomSelect.appendChild(opt);
+                        dashlinkSelect.appendChild(opt);
                     }
 
                     var tr = document.createElement('tr');
@@ -13560,11 +14268,11 @@
             }
         }
 
-        // Dashboard Link Management (Fathom etc.)
+        // Dashboard Link Management
         async function saveDashboardLink() {
             if (!supabase) return;
-            var userId = document.getElementById('fathom-user-select').value;
-            var url = document.getElementById('fathom-url').value.trim();
+            var userId = document.getElementById('dashlink-user-select').value;
+            var url = document.getElementById('dashlink-url').value.trim();
 
             if (!userId || !url) {
                 showToast('Select a user and enter a dashboard URL.', 'error');
@@ -13592,7 +14300,7 @@
                 }
 
                 showToast('Dashboard link saved for user.', 'success');
-                document.getElementById('fathom-url').value = '';
+                document.getElementById('dashlink-url').value = '';
             } catch (err) {
                 console.error('Error saving dashboard link:', err);
                 showToast('Error saving link.', 'error');
@@ -13611,8 +14319,8 @@
                     .single();
 
                 if (data?.dashboard_url) {
-                    var card = document.getElementById('fathom-link-card');
-                    var link = document.getElementById('fathom-link-url');
+                    var card = document.getElementById('dashlink-link-card');
+                    var link = document.getElementById('dashlink-link-url');
                     if (card && link) {
                         link.href = data.dashboard_url;
                         card.style.display = 'block';

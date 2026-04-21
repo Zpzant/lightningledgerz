@@ -1,6 +1,6 @@
 // =====================================================
 // LIGHTNING LEDGERZ - QUICKBOOKS INTEGRATION
-// Fathom-style seamless QuickBooks Online connectivity
+// Seamless QuickBooks Online connectivity
 // Real-time financial data sync and analysis
 // =====================================================
 
@@ -318,7 +318,7 @@ class QuickBooksIntegration {
         this.showStatus('Syncing financial data...', 'loading');
 
         try {
-            // Fetch all data in parallel for speed (like Fathom)
+            // Fetch all data in parallel for speed
             const [profitLoss, balanceSheet, cashFlow, accounts, customers, vendors] = await Promise.all([
                 this.fetchProfitAndLoss(),
                 this.fetchBalanceSheet(),
@@ -719,7 +719,7 @@ class QuickBooksIntegration {
     }
 
     // =====================================================
-    // AUTO-SYNC (Like Fathom)
+    // AUTO-SYNC
     // =====================================================
 
     startAutoSync(intervalMinutes = 15) {
@@ -891,7 +891,7 @@ class QuickBooksIntegration {
     }
 
     // =====================================================
-    // FINANCIAL ANALYSIS (Fathom-style)
+    // FINANCIAL ANALYSIS
     // =====================================================
 
     calculateKPIs() {

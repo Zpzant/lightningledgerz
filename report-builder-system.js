@@ -1,5 +1,5 @@
 // =====================================================
-// LIGHTNING LEDGERZ - FATHOM-STYLE REPORT BUILDER
+// LIGHTNING LEDGERZ - PROFESSIONAL REPORT BUILDER
 // Drag-drop, resize, and move financial report elements
 // McKinsey/Bain/Deloitte quality presentations
 // =====================================================
@@ -2655,7 +2655,7 @@ class ReportBuilder {
     }
 
     // =====================================================
-    // PROFESSIONAL REPORT TEMPLATES (Based on Fathom/CFO Best Practices)
+    // PROFESSIONAL REPORT TEMPLATES (Based on CFO Best Practices)
     // =====================================================
 
     loadProfessionalTemplate(templateType) {
