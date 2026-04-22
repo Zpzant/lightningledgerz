@@ -6482,7 +6482,7 @@
             width: 40%;
             background: linear-gradient(90deg, transparent, rgba(255,220,140,0.18), transparent);
             transform: translateX(-120%) skewX(-18deg);
-            animation: sbBeamSweep 7s ease-in-out infinite;
+            animation: sbBeamSweep 10s ease-in-out infinite;
             pointer-events: none;
             z-index: 4;
         }
@@ -6496,7 +6496,7 @@
             position: absolute; inset: 0;
             background: radial-gradient(circle at 68% 32%, #fff 0%, transparent 42%);
             opacity: 0;
-            animation: sbFlash 7s ease-out infinite;
+            animation: sbFlash 10s ease-out infinite;
             pointer-events: none;
             mix-blend-mode: screen;
             z-index: 5;
@@ -6516,14 +6516,14 @@
             right: -40px;
             width: 58px; height: 80px;
             opacity: 0;
-            animation: sbBoltStrike 7s ease-out infinite;
+            animation: sbBoltStrike 10s ease-out infinite;
             filter: drop-shadow(0 0 18px rgba(255,220,120,0.9));
             z-index: 6;
         }
         .sb-bolt-2 {
             top: auto; bottom: 10%; left: -20px; right: auto;
             width: 38px; height: 52px;
-            animation: sbBoltStrike2 7s ease-out infinite;
+            animation: sbBoltStrike2 10s ease-out infinite;
             filter: drop-shadow(0 0 12px rgba(255,80,60,0.85));
         }
         @keyframes sbBoltStrike {
@@ -6555,7 +6555,7 @@
             object-fit: contain;
             opacity: 0;
             transform: scale(0.3) rotate(-20deg);
-            animation: sbZLand 7s cubic-bezier(.2,1.6,.3,1) infinite;
+            animation: sbZLand 10s cubic-bezier(.2,1.6,.3,1) infinite;
             filter: drop-shadow(0 0 16px rgba(232,35,26,0.75));
         }
         @keyframes sbZLand {
@@ -6580,7 +6580,7 @@
             line-height: 1;
             opacity: 0;
             transform: translateY(-8px);
-            animation: sbTitleDrop 7s ease-out infinite;
+            animation: sbTitleDrop 10s ease-out infinite;
             text-shadow: 0 0 18px rgba(255,255,255,0.15);
         }
         .sb-finale-title .red {
@@ -6593,21 +6593,54 @@
             85%    { opacity: 1; }
             95%,100%{ opacity: 0; transform: translateY(-4px); }
         }
-        .sb-finale-tag {
-            font-weight: 500;
-            font-size: 0.6rem;
-            letter-spacing: 3.5px;
-            color: rgba(255,210,140,0.72);
-            text-transform: uppercase;
-            opacity: 0;
-            transform: translateY(8px);
-            animation: sbTagRise 7s ease-out infinite;
+        /* Stack container for 3 cycling taglines */
+        .sb-finale-tags {
+            position: relative;
+            height: 14px;
+            width: 100%;
         }
-        @keyframes sbTagRise {
-            0%,52% { opacity: 0; transform: translateY(8px); }
-            62%    { opacity: 1; transform: translateY(0); }
-            85%    { opacity: 1; }
-            95%,100%{ opacity: 0; transform: translateY(-2px); }
+        .sb-finale-tag {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            font-weight: 600;
+            font-size: 0.62rem;
+            letter-spacing: 3.5px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            opacity: 0;
+        }
+        /* Tag 1: BUDGET · BOOKKEEP · BUILD — the brand tagline, flashes first */
+        .sb-finale-tag.tag1 {
+            color: #ffd480;
+            animation: sbTagSlot1 10s ease-out infinite;
+        }
+        /* Tag 2: STRIKE · SETTLE · SCALE — action beat */
+        .sb-finale-tag.tag2 {
+            color: #f5f5f7;
+            animation: sbTagSlot2 10s ease-out infinite;
+        }
+        /* Tag 3: SAVE · SCALE · SUCCEED — close/reward */
+        .sb-finale-tag.tag3 {
+            color: #ff9a7a;
+            animation: sbTagSlot3 10s ease-out infinite;
+        }
+        @keyframes sbTagSlot1 {
+            0%,46%   { opacity: 0; transform: translateY(6px); letter-spacing: 5px; }
+            52%      { opacity: 1; transform: translateY(0); letter-spacing: 3.5px; }
+            62%      { opacity: 1; }
+            66%,100% { opacity: 0; transform: translateY(-4px); }
+        }
+        @keyframes sbTagSlot2 {
+            0%,65%   { opacity: 0; transform: translateY(6px); letter-spacing: 5px; }
+            70%      { opacity: 1; transform: translateY(0); letter-spacing: 3.5px; }
+            76%      { opacity: 1; }
+            80%,100% { opacity: 0; transform: translateY(-4px); }
+        }
+        @keyframes sbTagSlot3 {
+            0%,79%   { opacity: 0; transform: translateY(6px); letter-spacing: 5px; }
+            83%      { opacity: 1; transform: translateY(0); letter-spacing: 3.5px; }
+            90%      { opacity: 1; }
+            94%,100% { opacity: 0; transform: translateY(-4px); }
         }
 
         @keyframes scrollBanner {
@@ -7572,7 +7605,7 @@
                 </div>
 
                 <div class="sb-block sb-logo" style="--brand:#E97627">
-                    <img class="sb-logo-img" alt="" src="https://api.iconify.design/logos/tableau.svg" onerror="this.remove()">
+                    <img class="sb-logo-img" alt="" src="https://api.iconify.design/logos/tableau-icon.svg" onerror="this.remove()" style="width:44px;height:44px">
                     <span class="sb-logo-name">Tableau</span>
                 </div>
 
@@ -7594,6 +7627,32 @@
                 <div class="sb-block sb-logo" style="--brand:#3776AB">
                     <img class="sb-logo-img" alt="" src="https://api.iconify.design/logos/python.svg" onerror="this.remove()">
                     <span class="sb-logo-name">Python</span>
+                </div>
+
+                <div class="sb-block sb-finale">
+                    <div class="sb-finale-beam"></div>
+                    <div class="sb-finale-stage">
+                        <div class="sb-flash"></div>
+                        <svg class="sb-bolt" viewBox="0 0 70 90" aria-hidden="true">
+                            <path d="M42 0 L8 50 L30 50 L20 90 L62 34 L38 34 L50 0 Z"
+                                  fill="#fff7d4" stroke="#ffdb7a" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                        <svg class="sb-bolt sb-bolt-2" viewBox="0 0 70 90" aria-hidden="true">
+                            <path d="M42 0 L8 50 L30 50 L20 90 L62 34 L38 34 L50 0 Z"
+                                  fill="#ffd7c8" stroke="#ff5040" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="sb-finale-z">
+                        <img src="lightningz.png" alt="" onerror="this.src='LightningLedgerzLogo.png'">
+                        <div class="sb-finale-text">
+                            <div class="sb-finale-title">Lightning <span class="red">Ledgerz</span></div>
+                            <div class="sb-finale-tags">
+                                <div class="sb-finale-tag tag1">Budget · Bookkeep · Build</div>
+                                <div class="sb-finale-tag tag2">Strike · Settle · Scale</div>
+                                <div class="sb-finale-tag tag3">Save · Scale · Succeed</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="sb-block sb-mark"><span class="sb-mark-label">— Practice —</span></div>
@@ -7646,6 +7705,32 @@
                         <rect x="24" y="8"  width="3" height="18" class="sb-ico-dot"/>
                     </svg>
                     <span class="sb-service-name">Variance Analysis</span>
+                </div>
+
+                <div class="sb-block sb-finale">
+                    <div class="sb-finale-beam"></div>
+                    <div class="sb-finale-stage">
+                        <div class="sb-flash"></div>
+                        <svg class="sb-bolt" viewBox="0 0 70 90" aria-hidden="true">
+                            <path d="M42 0 L8 50 L30 50 L20 90 L62 34 L38 34 L50 0 Z"
+                                  fill="#fff7d4" stroke="#ffdb7a" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                        <svg class="sb-bolt sb-bolt-2" viewBox="0 0 70 90" aria-hidden="true">
+                            <path d="M42 0 L8 50 L30 50 L20 90 L62 34 L38 34 L50 0 Z"
+                                  fill="#ffd7c8" stroke="#ff5040" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="sb-finale-z">
+                        <img src="lightningz.png" alt="" onerror="this.src='LightningLedgerzLogo.png'">
+                        <div class="sb-finale-text">
+                            <div class="sb-finale-title">Lightning <span class="red">Ledgerz</span></div>
+                            <div class="sb-finale-tags">
+                                <div class="sb-finale-tag tag1">Budget · Bookkeep · Build</div>
+                                <div class="sb-finale-tag tag2">Strike · Settle · Scale</div>
+                                <div class="sb-finale-tag tag3">Save · Scale · Succeed</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="sb-block sb-scene">
@@ -7730,7 +7815,11 @@
                         <img src="lightningz.png" alt="" onerror="this.src='LightningLedgerzLogo.png'">
                         <div class="sb-finale-text">
                             <div class="sb-finale-title">Lightning <span class="red">Ledgerz</span></div>
-                            <div class="sb-finale-tag">Strike · Settle · Scale</div>
+                            <div class="sb-finale-tags">
+                                <div class="sb-finale-tag tag1">Budget · Bookkeep · Build</div>
+                                <div class="sb-finale-tag tag2">Strike · Settle · Scale</div>
+                                <div class="sb-finale-tag tag3">Save · Scale · Succeed</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -7753,7 +7842,7 @@
                 </div>
 
                 <div class="sb-block sb-logo" style="--brand:#E97627">
-                    <img class="sb-logo-img" alt="" src="https://api.iconify.design/logos/tableau.svg" onerror="this.remove()">
+                    <img class="sb-logo-img" alt="" src="https://api.iconify.design/logos/tableau-icon.svg" onerror="this.remove()" style="width:44px;height:44px">
                     <span class="sb-logo-name">Tableau</span>
                 </div>
 
@@ -7775,6 +7864,32 @@
                 <div class="sb-block sb-logo" style="--brand:#3776AB">
                     <img class="sb-logo-img" alt="" src="https://api.iconify.design/logos/python.svg" onerror="this.remove()">
                     <span class="sb-logo-name">Python</span>
+                </div>
+
+                <div class="sb-block sb-finale">
+                    <div class="sb-finale-beam"></div>
+                    <div class="sb-finale-stage">
+                        <div class="sb-flash"></div>
+                        <svg class="sb-bolt" viewBox="0 0 70 90" aria-hidden="true">
+                            <path d="M42 0 L8 50 L30 50 L20 90 L62 34 L38 34 L50 0 Z"
+                                  fill="#fff7d4" stroke="#ffdb7a" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                        <svg class="sb-bolt sb-bolt-2" viewBox="0 0 70 90" aria-hidden="true">
+                            <path d="M42 0 L8 50 L30 50 L20 90 L62 34 L38 34 L50 0 Z"
+                                  fill="#ffd7c8" stroke="#ff5040" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="sb-finale-z">
+                        <img src="lightningz.png" alt="" onerror="this.src='LightningLedgerzLogo.png'">
+                        <div class="sb-finale-text">
+                            <div class="sb-finale-title">Lightning <span class="red">Ledgerz</span></div>
+                            <div class="sb-finale-tags">
+                                <div class="sb-finale-tag tag1">Budget · Bookkeep · Build</div>
+                                <div class="sb-finale-tag tag2">Strike · Settle · Scale</div>
+                                <div class="sb-finale-tag tag3">Save · Scale · Succeed</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="sb-block sb-mark"><span class="sb-mark-label">— Practice —</span></div>
@@ -7827,6 +7942,32 @@
                         <rect x="24" y="8"  width="3" height="18" class="sb-ico-dot"/>
                     </svg>
                     <span class="sb-service-name">Variance Analysis</span>
+                </div>
+
+                <div class="sb-block sb-finale">
+                    <div class="sb-finale-beam"></div>
+                    <div class="sb-finale-stage">
+                        <div class="sb-flash"></div>
+                        <svg class="sb-bolt" viewBox="0 0 70 90" aria-hidden="true">
+                            <path d="M42 0 L8 50 L30 50 L20 90 L62 34 L38 34 L50 0 Z"
+                                  fill="#fff7d4" stroke="#ffdb7a" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                        <svg class="sb-bolt sb-bolt-2" viewBox="0 0 70 90" aria-hidden="true">
+                            <path d="M42 0 L8 50 L30 50 L20 90 L62 34 L38 34 L50 0 Z"
+                                  fill="#ffd7c8" stroke="#ff5040" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="sb-finale-z">
+                        <img src="lightningz.png" alt="" onerror="this.src='LightningLedgerzLogo.png'">
+                        <div class="sb-finale-text">
+                            <div class="sb-finale-title">Lightning <span class="red">Ledgerz</span></div>
+                            <div class="sb-finale-tags">
+                                <div class="sb-finale-tag tag1">Budget · Bookkeep · Build</div>
+                                <div class="sb-finale-tag tag2">Strike · Settle · Scale</div>
+                                <div class="sb-finale-tag tag3">Save · Scale · Succeed</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="sb-block sb-scene">
@@ -7911,7 +8052,11 @@
                         <img src="lightningz.png" alt="" onerror="this.src='LightningLedgerzLogo.png'">
                         <div class="sb-finale-text">
                             <div class="sb-finale-title">Lightning <span class="red">Ledgerz</span></div>
-                            <div class="sb-finale-tag">Strike · Settle · Scale</div>
+                            <div class="sb-finale-tags">
+                                <div class="sb-finale-tag tag1">Budget · Bookkeep · Build</div>
+                                <div class="sb-finale-tag tag2">Strike · Settle · Scale</div>
+                                <div class="sb-finale-tag tag3">Save · Scale · Succeed</div>
+                            </div>
                         </div>
                     </div>
                 </div>
