@@ -1,0 +1,13 @@
+# Lightning Ledgerz — robots.txt
+# Everything public, crawlers welcome.
+
+User-agent: *
+Allow: /
+
+# Be explicit about not crawling build/backup artifacts
+Disallow: /OLD_AVATAR_CODE_BACKUP/
+Disallow: /supabase/
+Disallow: /scripts/
+
+# Sitemap
+Sitemap: https://lightningledgerz.com/sitemap.xml

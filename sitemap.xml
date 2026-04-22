@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <url>
+    <loc>https://lightningledgerz.com/</loc>
+    <lastmod>2026-04-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/og-image.png</image:loc>
+      <image:title>Lightning Ledgerz — Budget. Bookkeep. Build.</image:title>
+      <image:caption>Lightning Ledgerz brand mark — FP&amp;A advisory, bookkeeping, fractional CFO services in Las Vegas</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/dynamicdashboards.png</image:loc>
+      <image:title>KPI Dashboard Sample</image:title>
+      <image:caption>Dynamic KPI dashboard built by Lightning Ledgerz for a mid-market client</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/slide-budget-vs-actual.png</image:loc>
+      <image:title>Budget vs. Actual Variance Report</image:title>
+      <image:caption>Monthly budget vs. actual variance analysis — sample deliverable from Lightning Ledgerz</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/slide-revenue-trend.png</image:loc>
+      <image:title>Revenue Trend Analysis</image:title>
+      <image:caption>Revenue trend reporting — sample FP&amp;A deliverable</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/slide-expense-waterfall.png</image:loc>
+      <image:title>Expense Waterfall Variance</image:title>
+      <image:caption>Expense waterfall variance chart from a Lightning Ledgerz boardroom deck</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/slide-profit-margin.png</image:loc>
+      <image:title>Profit Margin Analysis</image:title>
+      <image:caption>Profit margin analysis for an SMB client</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/slide-cost-comparison.png</image:loc>
+      <image:title>Cost Comparison Report</image:title>
+      <image:caption>Year-over-year cost comparison by category</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/slide-client-analysis.png</image:loc>
+      <image:title>Client Revenue Analysis</image:title>
+      <image:caption>Revenue breakdown by client / customer cohort</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/slide-income-benchmarking.png</image:loc>
+      <image:title>Industry Income Benchmarking</image:title>
+      <image:caption>Peer benchmarking against industry income ranges</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/slide-expense-breakdown.png</image:loc>
+      <image:title>Monthly Expense Breakdown</image:title>
+      <image:caption>Monthly expense breakdown by category</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/slide-revenue-by-customer.png</image:loc>
+      <image:title>Revenue by Customer</image:title>
+      <image:caption>Revenue concentration analysis by customer</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/slide-services.png</image:loc>
+      <image:title>FP&amp;A Services Overview</image:title>
+      <image:caption>Overview of Lightning Ledgerz FP&amp;A and bookkeeping services</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/slide-operational-goals.png</image:loc>
+      <image:title>Operational Goals Dashboard</image:title>
+      <image:caption>Operational KPI goal-tracking from a Lightning Ledgerz engagement</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/slide-market-analysis.png</image:loc>
+      <image:title>Market Analysis</image:title>
+      <image:caption>Market sizing and positioning analysis slide</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/lightningteam.png</image:loc>
+      <image:title>Lightning Ledgerz Team</image:title>
+      <image:caption>The Lightning Ledgerz team</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/zac_mps.jpg</image:loc>
+      <image:title>Zac Prizant, Founder &amp; CEO</image:title>
+      <image:caption>Zachary Prizant, Founder and CEO of Lightning Ledgerz</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://lightningledgerz.com/favicon-512x512.png</image:loc>
+      <image:title>Lightning Ledgerz Icon</image:title>
+      <image:caption>Lightning Ledgerz brand icon</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://lightningledgerz.com/lightning-ledgerz-logo-black.html</loc>
+    <lastmod>2026-04-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+</urlset>
