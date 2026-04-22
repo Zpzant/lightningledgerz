@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Lightning Ledgerz — Black Text Logo Variant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@700;800;900&display=swap');
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: linear-gradient(135deg, #0b1220 0%, #1a2744 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: #e5e7eb;
+  }
+  h1 {
+    font-weight: 800; font-size: 1.4rem; letter-spacing: 0.3px;
+    margin: 0 0 6px 0; color: #f3f4f6;
+  }
+  .lede {
+    color: #94a3b8; font-size: 0.9rem; margin: 0 0 30px 0; text-align: center;
+    max-width: 620px;
+  }
+  .preview-wrapper {
+    display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 28px;
+  }
+  .preview {
+    width: 360px; padding: 34px 28px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+  }
+  .preview.light { background: #ffffff; }
+  .preview.dark  { background: #05080f; }
+  .preview.mid   { background: #f3f4f6; }
+  .preview-label {
+    position: absolute; top: -10px; left: 16px;
+    background: #0b1220; padding: 2px 10px; border-radius: 100px;
+    font-size: 0.62rem; font-weight: 700; letter-spacing: 2px;
+    color: #e5e7eb; text-transform: uppercase;
+  }
+  .preview-card { position: relative; }
+  .preview svg { width: 100%; height: auto; display: block; }
+
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+    max-width: 720px;
+  }
+  button {
+    background: linear-gradient(135deg, #e8231a, #ff4a3d);
+    color: #fff; border: none; padding: 13px 22px; border-radius: 100px;
+    font-weight: 700; font-size: 0.88rem; cursor: pointer;
+    font-family: inherit; letter-spacing: 0.3px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 6px 18px rgba(232,35,26,0.35);
+  }
+  button:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(232,35,26,0.5); }
+  button.secondary {
+    background: transparent; border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: none; color: #e5e7eb;
+  }
+  button.secondary:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+
+  .note {
+    margin-top: 22px; color: #64748b; font-size: 0.76rem; max-width: 620px;
+    text-align: center; line-height: 1.55;
+  }
+  canvas { display: none; }
+</style>
+</head>
+<body>
+
+<h1>Lightning Ledgerz — Black Text Logo</h1>
+<p class="lede">The same word-mark as your homepage, with black text instead of white so it's legible on light backgrounds (Google result cards, YouTube channel banner, business card, letterhead). Red icon, red <em>Z</em>, and red <em>BOOKKEEP</em> are preserved.</p>
+
+<div class="preview-wrapper">
+  <div class="preview-card">
+    <span class="preview-label">On White</span>
+    <div class="preview light" id="preview-light">
+      <!-- SVG template — will be cloned into both previews -->
+    </div>
+  </div>
+  <div class="preview-card">
+    <span class="preview-label">On Light Gray</span>
+    <div class="preview mid" id="preview-mid"></div>
+  </div>
+  <div class="preview-card">
+    <span class="preview-label">On Dark (for reference)</span>
+    <div class="preview dark" id="preview-dark"></div>
+  </div>
+</div>
+
+<div class="controls">
+  <button onclick="downloadPNG(512)">Download 512px PNG</button>
+  <button onclick="downloadPNG(1024)">Download 1024px PNG</button>
+  <button onclick="downloadPNG(2048)">Download 2048px PNG</button>
+  <button onclick="downloadPNG(4096)">Download 4096px PNG</button>
+  <button class="secondary" onclick="downloadSVG()">Download SVG</button>
+</div>
+
+<p class="note">
+  PNG exports have a transparent background — drop on any color.<br>
+  For a YouTube channel banner, use the 2048px size. For a business card, use 1024px or the SVG.<br>
+  For a social share / OG image, use the 1024px size.
+</p>
+
+<canvas id="canvas"></canvas>
+
+<!-- SVG source — the black-text word-mark -->
+<template id="logo-template">
+<svg viewBox="0 0 800 940" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="textShadow" x="-5%" y="-5%" width="110%" height="120%">
+      <feOffset dx="0" dy="4" in="SourceAlpha" result="offset"/>
+      <feGaussianBlur in="offset" stdDeviation="3" result="blur"/>
+      <feComponentTransfer in="blur" result="shadow"><feFuncA type="linear" slope="0.35"/></feComponentTransfer>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="redGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#ff3025"/>
+      <stop offset="100%" stop-color="#c21a12"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ICON: stacked book frames + lightning bolt -->
+  <g id="ll-icon" transform="translate(400, 260)">
+    <!-- 3 concentric rounded-square frames, red outlines -->
+    <rect x="-170" y="-170" width="340" height="340" rx="22" ry="22"
+          fill="none" stroke="url(#redGrad)" stroke-width="14"/>
+    <rect x="-150" y="-150" width="300" height="300" rx="18" ry="18"
+          fill="none" stroke="url(#redGrad)" stroke-width="10" opacity="0.82"/>
+    <rect x="-130" y="-130" width="260" height="260" rx="14" ry="14"
+          fill="none" stroke="url(#redGrad)" stroke-width="8" opacity="0.6"/>
+
+    <!-- Open book (two splayed pages meeting at a center spine) -->
+    <path d="M -110 80
+             C -100 40, -40 20, 0 32
+             C 40 20, 100 40, 110 80
+             L 110 100
+             C 100 82, 40 62, 0 74
+             C -40 62, -100 82, -110 100 Z"
+          fill="url(#redGrad)" opacity="0.95"/>
+
+    <!-- Lightning bolt (classic Z-bolt) -->
+    <path d="M 20 -150
+             L -70 10
+             L -15 10
+             L -55 160
+             L 85 -20
+             L 25 -20
+             L 75 -150 Z"
+          fill="url(#redGrad)"
+          stroke="#8a0f0a" stroke-width="3" stroke-linejoin="round"/>
+  </g>
+
+  <!-- WORD-MARK: "LIGHTNING" over "LEDGERZ" -->
+  <g font-family="Inter, -apple-system, sans-serif" font-weight="900" filter="url(#textShadow)">
+    <text x="400" y="610" text-anchor="middle" font-size="120" fill="#0a0a0a" letter-spacing="-2">
+      LIGHTNING
+    </text>
+    <text x="400" y="740" text-anchor="middle" font-size="130" fill="#0a0a0a" letter-spacing="-3">
+      <tspan>LEDGER</tspan><tspan fill="url(#redGrad)">Z</tspan>
+    </text>
+  </g>
+
+  <!-- TAGLINE: BUDGET · BOOKKEEP · BUILD -->
+  <g font-family="Inter, -apple-system, sans-serif" font-weight="800" font-size="42" letter-spacing="2">
+    <text x="400" y="870" text-anchor="middle">
+      <tspan fill="#0a0a0a">BUDGET</tspan>
+      <tspan fill="#0a0a0a" dx="4">·</tspan>
+      <tspan fill="url(#redGrad)" dx="10">BOOKKEEP</tspan>
+      <tspan fill="#0a0a0a" dx="4">·</tspan>
+      <tspan fill="#0a0a0a" dx="10">BUILD</tspan>
+    </text>
+  </g>
+</svg>
+</template>
+
+<script>
+  // Clone template SVG into each preview container
+  (function mount() {
+    var tpl = document.getElementById('logo-template').innerHTML;
+    document.getElementById('preview-light').innerHTML = tpl;
+    document.getElementById('preview-mid').innerHTML = tpl;
+    document.getElementById('preview-dark').innerHTML = tpl;
+  })();
+
+  function currentSVG() {
+    // Serialize the first rendered SVG (same source for all three previews)
+    return document.getElementById('preview-light').querySelector('svg');
+  }
+
+  function serializeSVG(svg) {
+    var clone = svg.cloneNode(true);
+    // Ensure xmlns so standalone file is valid
+    clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    clone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+    return new XMLSerializer().serializeToString(clone);
+  }
+
+  function downloadSVG() {
+    var svgStr = serializeSVG(currentSVG());
+    var blob = new Blob([svgStr], { type: 'image/svg+xml' });
+    var url = URL.createObjectURL(blob);
+    triggerDownload(url, 'lightning-ledgerz-black.svg');
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadPNG(targetWidth) {
+    var svgStr = serializeSVG(currentSVG());
+    var svgBlob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+    var url = URL.createObjectURL(svgBlob);
+
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.getElementById('canvas');
+      var aspect = 940 / 800;   // height / width from viewBox
+      canvas.width  = targetWidth;
+      canvas.height = Math.round(targetWidth * aspect);
+      var ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(function(blob) {
+        var pngUrl = URL.createObjectURL(blob);
+        triggerDownload(pngUrl, 'lightning-ledgerz-black-' + targetWidth + '.png');
+        URL.revokeObjectURL(pngUrl);
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    };
+    img.onerror = function() {
+      alert('Could not render SVG to PNG. Try a different browser (Chrome / Edge / Firefox).');
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+  }
+
+  function triggerDownload(url, filename) {
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+</script>
+
+</body>
+</html>
