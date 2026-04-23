@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Pay Invoice — Lightning Ledgerz</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #05080f;
+    --panel: #0d1424;
+    --panel-light: #131b30;
+    --border: rgba(255,255,255,0.08);
+    --text: #f5f5f7;
+    --text-dim: #8a97ad;
+    --red: #e8231a;
+    --red-glow: rgba(232,35,26,0.35);
+    --green: #22c55e;
+    --amber: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: linear-gradient(180deg, #05080f 0%, #0b1428 100%);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    width: 100%;
+    max-width: 540px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 12px;
+    padding: 22px 28px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #0f1628 0%, #0c1324 100%);
+  }
+  .brand img { width: 32px; height: 32px; }
+  .brand-name {
+    font-weight: 800; font-size: 0.98rem; letter-spacing: 0.4px;
+  }
+  .brand-name .z { color: var(--red); }
+  .brand-tag { display: block; font-weight: 500; font-size: 0.66rem; letter-spacing: 2.5px; color: var(--text-dim); text-transform: uppercase; margin-top: 2px; }
+
+  .body { padding: 28px; }
+
+  .invoice-summary {
+    background: var(--panel-light);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin-bottom: 22px;
+  }
+  .invoice-summary .row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 4px 0;
+  }
+  .invoice-summary .row.amount { padding-top: 12px; margin-top: 10px; border-top: 1px solid var(--border); }
+  .invoice-summary .label { color: var(--text-dim); font-size: 0.82rem; }
+  .invoice-summary .value { font-weight: 600; font-size: 0.94rem; }
+  .invoice-summary .amount .value {
+    font-size: 1.6rem; font-weight: 800; color: #ffd480;
+  }
+  .invoice-summary .desc {
+    margin-top: 10px; color: var(--text-dim); font-size: 0.82rem; line-height: 1.5;
+  }
+
+  .method-tabs {
+    display: flex; gap: 6px; margin-bottom: 18px;
+    background: var(--panel-light); padding: 6px; border-radius: 100px; border: 1px solid var(--border);
+  }
+  .method-tabs button {
+    flex: 1; padding: 10px 14px; border-radius: 100px; border: none;
+    background: transparent; color: var(--text-dim); font-family: inherit; font-weight: 600; font-size: 0.88rem;
+    cursor: pointer; transition: 0.15s;
+  }
+  .method-tabs button.active {
+    background: var(--red); color: #fff; box-shadow: 0 4px 16px var(--red-glow);
+  }
+
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block; font-size: 0.74rem; font-weight: 600;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 6px;
+  }
+  .field input,
+  .microform-container {
+    width: 100%;
+    min-height: 44px;
+    background: var(--panel-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .field input:focus,
+  .microform-container:focus-within {
+    outline: none;
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px var(--red-glow);
+  }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  button.pay-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #e8231a, #ff4a3d);
+    color: #fff;
+    border: none;
+    padding: 16px;
+    border-radius: 10px;
+    font-family: inherit; font-weight: 800; font-size: 1rem; letter-spacing: 0.4px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px var(--red-glow);
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-top: 8px;
+  }
+  button.pay-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px var(--red-glow); }
+  button.pay-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .footer-note {
+    margin-top: 18px; text-align: center; color: var(--text-dim); font-size: 0.72rem; line-height: 1.6;
+  }
+  .lock { margin-right: 6px; }
+
+  .alert {
+    padding: 14px 16px; border-radius: 10px; margin-bottom: 18px;
+    font-size: 0.88rem; line-height: 1.5;
+  }
+  .alert.error { background: rgba(232,35,26,0.12); border: 1px solid rgba(232,35,26,0.4); color: #ffb1ab; }
+  .alert.info  { background: rgba(245,158,11,0.10); border: 1px solid rgba(245,158,11,0.35); color: #ffd480; }
+  .alert.success { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.35); color: #86efac; }
+
+  .state-loading, .state-empty, .state-done { text-align: center; padding: 40px 20px; }
+  .spinner {
+    display: inline-block; width: 36px; height: 36px;
+    border: 3px solid rgba(255,255,255,0.15);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .big-check {
+    width: 60px; height: 60px; margin: 0 auto 16px;
+    border-radius: 50%; background: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 2rem; font-weight: 900;
+    box-shadow: 0 0 30px rgba(34,197,94,0.4);
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="brand">
+    <img src="favicon-192x192.png" alt="">
+    <div>
+      <div class="brand-name">Lightning <span class="z">Ledgerz</span></div>
+      <span class="brand-tag">Secure Invoice Payment</span>
+    </div>
+  </div>
+
+  <div class="body" id="body">
+    <!-- States: loading, form, done, error. Swapped in by JS. -->
+    <div class="state-loading" id="state-loading">
+      <div class="spinner"></div>
+      <p style="margin-top:16px;color:var(--text-dim);font-size:0.88rem">Loading invoice…</p>
+    </div>
+  </div>
+</div>
+
+<!-- Form template shown once invoice loads -->
+<template id="tpl-form">
+  <div class="invoice-summary">
+    <div class="row"><span class="label">Invoice</span><span class="value" id="f-number"></span></div>
+    <div class="row"><span class="label">Billed to</span><span class="value" id="f-client"></span></div>
+    <div class="row amount"><span class="label">Amount due</span><span class="value" id="f-amount"></span></div>
+    <div class="desc" id="f-desc"></div>
+  </div>
+
+  <div class="method-tabs" id="method-tabs">
+    <button type="button" data-method="card" class="active">Card</button>
+    <button type="button" data-method="ach">Bank (ACH)</button>
+  </div>
+
+  <form id="pay-form">
+    <div class="field">
+      <label>Card number</label>
+      <div id="microform-card-number" class="microform-container" data-mf-field="number">
+        <!-- Microform injects a tokenizing iframe here. Placeholder text shows while loading. -->
+        <span style="color:var(--text-dim);font-size:0.88rem">Loading secure card field…</span>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Expiry</label>
+        <div id="microform-expiry" class="microform-container" data-mf-field="expiry"></div>
+      </div>
+      <div class="field">
+        <label>CVV</label>
+        <div id="microform-cvv" class="microform-container" data-mf-field="cvv"></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Name on card</label>
+      <input type="text" id="bill-name" required autocomplete="cc-name">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="bill-email" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label>ZIP</label>
+        <input type="text" id="bill-zip" required autocomplete="postal-code" maxlength="10">
+      </div>
+    </div>
+
+    <div id="submit-error" class="alert error" style="display:none"></div>
+
+    <button type="submit" class="pay-btn" id="pay-btn">Pay <span id="pay-btn-amount"></span></button>
+
+    <div class="footer-note">
+      <span class="lock">🔒</span>
+      Card details are tokenized by Bank of America / Worldpay — Lightning Ledgerz never sees your card number. PCI-DSS compliant.
+    </div>
+  </form>
+</template>
+
+<script>
+(() => {
+  const SUPABASE_URL = 'https://uxicgilvxcqpoxavilxp.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4aWNnaWx2eGNxcG94YXZpbHhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzYwNzYsImV4cCI6MjA3NjY1MjA3Nn0.W6_iO15HAxjzvNfp_FHWSS0HYOpaJb7-oC-Z3_KaZaw';
+  const FN_BASE = `${SUPABASE_URL}/functions/v1`;
+
+  const body = document.getElementById('body');
+  const urlToken = new URLSearchParams(location.search).get('token');
+  let microform = null;
+  let currentMethod = 'card';
+  let invoiceData = null;
+
+  function showError(msg) {
+    body.innerHTML = `
+      <div class="alert error">${escapeHtml(msg)}</div>
+      <p class="footer-note">If you think this is a mistake, email <a href="mailto:zprizant@lightningledgerz.com" style="color:#ffd480">zprizant@lightningledgerz.com</a>.</p>
+    `;
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function formatMoney(cents, currency) {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'USD' }).format(cents / 100);
+  }
+
+  if (!urlToken) {
+    showError('This payment link is missing its token. Ask your advisor to resend the correct link.');
+    return;
+  }
+
+  // ── Step 1: ask the Edge Function for a session + invoice summary ──────
+  fetch(`${FN_BASE}/create-payment-session`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+    },
+    body: JSON.stringify({ payment_token: urlToken }),
+  })
+    .then(async (r) => ({ ok: r.ok, body: await r.json() }))
+    .then(({ ok, body: b }) => {
+      if (!ok) throw new Error(b.error || 'Unable to load invoice.');
+      invoiceData = b;
+      renderForm(b);
+      return b;
+    })
+    .then((b) => loadMicroform(b))
+    .catch((e) => showError(e.message || String(e)));
+
+  function renderForm(b) {
+    const tpl = document.getElementById('tpl-form').content.cloneNode(true);
+    body.innerHTML = '';
+    body.appendChild(tpl);
+    document.getElementById('f-number').textContent = b.invoice.number;
+    document.getElementById('f-client').textContent = b.invoice.client_name;
+    document.getElementById('f-amount').textContent = formatMoney(b.invoice.amount_cents, b.invoice.currency);
+    document.getElementById('f-desc').textContent = b.invoice.description || '';
+    document.getElementById('pay-btn-amount').textContent = formatMoney(b.invoice.amount_cents, b.invoice.currency);
+    document.getElementById('bill-email').value = b.invoice.client_email || '';
+    document.getElementById('bill-name').value  = b.invoice.client_name || '';
+
+    document.querySelectorAll('#method-tabs button').forEach((btn) => {
+      btn.addEventListener('click', () => switchMethod(btn.dataset.method));
+    });
+
+    document.getElementById('pay-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      submitPayment();
+    });
+  }
+
+  function switchMethod(m) {
+    currentMethod = m;
+    document.querySelectorAll('#method-tabs button').forEach((b) => {
+      b.classList.toggle('active', b.dataset.method === m);
+    });
+    // TODO: when user switches to ACH, swap Microform to ACH field set.
+    // Worldpay has a separate tokenizer config for ACH — wire up when credentials arrive.
+  }
+
+  function loadMicroform(b) {
+    if (!b.microform_script_url) {
+      // No real Microform URL yet — show a stub card entry disabled banner.
+      const alert = document.createElement('div');
+      alert.className = 'alert info';
+      alert.innerHTML = '⚠️ Payment processor is in test mode. Live card processing activates once BoA Microform credentials are configured.';
+      body.prepend(alert);
+      // Still allow a "test" payment path that sends a stub token.
+      return;
+    }
+
+    const s = document.createElement('script');
+    s.src = b.microform_script_url;
+    s.onload = () => initMicroform(b);
+    s.onerror = () => showError('Could not load secure card tokenizer. Please try again shortly.');
+    document.head.appendChild(s);
+  }
+
+  function initMicroform(b) {
+    // Shape of the Microform bootstrap call depends on the processor:
+    //   Worldpay Access:  new Worldpay(sessionState).createForm(...)
+    //   Cybersource:      Flex.microform({ keyId: sessionKey }).createField(...)
+    //   Fiserv:           CardPointe.embed(...)
+    // This code assumes Worldpay's form-library shape; adapt when BoA confirms.
+    try {
+      if (typeof Worldpay !== 'undefined') {
+        const wp = new Worldpay(b.session_key);
+        microform = wp.createForm({
+          target: '#pay-form',
+          fields: {
+            number: { target: '#microform-card-number' },
+            expiry: { target: '#microform-expiry' },
+            cvv:    { target: '#microform-cvv' },
+          },
+          styles: {
+            base: { color: '#f5f5f7', 'font-family': 'Inter, sans-serif', 'font-size': '16px' },
+            invalid: { color: '#ff6158' },
+          },
+        });
+      } else if (typeof Flex !== 'undefined') {
+        const flex = new Flex(b.client_token);
+        microform = flex.microform({ styles: {
+          input: { color: '#f5f5f7', 'font-family': 'Inter, sans-serif', 'font-size': '16px' },
+        } });
+        microform.createField('number').load('#microform-card-number');
+        microform.createField('securityCode').load('#microform-cvv');
+      }
+    } catch (e) {
+      console.error('Microform init failed:', e);
+      showError('Could not initialize the secure card form. Try refreshing.');
+    }
+  }
+
+  async function submitPayment() {
+    const btn = document.getElementById('pay-btn');
+    const err = document.getElementById('submit-error');
+    err.style.display = 'none';
+    btn.disabled = true;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border-width:2px;vertical-align:middle"></span> Processing…';
+
+    try {
+      const transientToken = await tokenize();
+      const resp = await fetch(`${FN_BASE}/process-payment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          payment_token: urlToken,
+          transient_token: transientToken,
+          method: currentMethod,
+          billing_name: document.getElementById('bill-name').value,
+          billing_email: document.getElementById('bill-email').value,
+          billing_zip: document.getElementById('bill-zip').value,
+        }),
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.ok) throw new Error(data.message || 'Payment could not be processed.');
+
+      renderDone(data.pending_settlement);
+    } catch (e) {
+      err.textContent = e.message || String(e);
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  }
+
+  function tokenize() {
+    return new Promise((resolve, reject) => {
+      if (!microform) {
+        // Dev / stub mode — return a fake token the Edge Function stub accepts.
+        return resolve('stub_token_' + Date.now());
+      }
+      // Worldpay form returns token via callback/promise
+      if (typeof microform.submit === 'function') {
+        try {
+          const p = microform.submit();
+          if (p && typeof p.then === 'function') return p.then(resolve).catch(reject);
+        } catch (e) { return reject(e); }
+      }
+      // Cybersource Flex microform: microform.createToken(options, cb)
+      if (typeof microform.createToken === 'function') {
+        microform.createToken({}, (err, resp) => {
+          if (err) return reject(err);
+          resolve(resp);
+        });
+        return;
+      }
+      reject(new Error('Tokenizer not configured.'));
+    });
+  }
+
+  function renderDone(pending) {
+    body.innerHTML = `
+      <div class="state-done">
+        <div class="big-check">✓</div>
+        <h2 style="margin:0 0 10px 0; font-size:1.4rem; font-weight:800">${pending ? 'ACH Payment Authorized' : 'Payment Received'}</h2>
+        <p style="color:var(--text-dim); line-height:1.55; margin:0 auto; max-width:380px">
+          ${pending
+            ? 'Your ACH transaction is authorized and will settle in 2–3 business days. You\\'ll receive an email confirmation once settled.'
+            : 'Thank you. A receipt has been emailed to ' + escapeHtml(invoiceData.invoice.client_email) + '.'}
+        </p>
+        <p style="margin-top:26px">
+          <a href="https://www.lightningledgerz.com" style="color:#ffd480; text-decoration:none; font-weight:600">← Back to lightningledgerz.com</a>
+        </p>
+      </div>
+    `;
+  }
+})();
+</script>
+
+</body>
+</html>

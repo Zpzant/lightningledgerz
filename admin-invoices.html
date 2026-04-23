@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Invoices — Lightning Ledgerz Admin</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --bg: #05080f;
+    --panel: #0d1424;
+    --panel-light: #131b30;
+    --border: rgba(255,255,255,0.08);
+    --text: #f5f5f7;
+    --text-dim: #8a97ad;
+    --red: #e8231a;
+    --green: #22c55e;
+    --amber: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: linear-gradient(180deg, #05080f 0%, #0a1021 100%);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  header {
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand img { width: 32px; height: 32px; }
+  .brand-name { font-weight: 800; letter-spacing: 0.3px; }
+  .brand-name .z { color: var(--red); }
+  .admin-tag {
+    font-size: 0.62rem; letter-spacing: 2.5px; font-weight: 700;
+    padding: 4px 10px; border-radius: 100px; background: rgba(232,35,26,0.15);
+    color: #ffb1ab; border: 1px solid rgba(232,35,26,0.3);
+    text-transform: uppercase; margin-left: 10px;
+  }
+  .logout {
+    background: transparent; border: 1px solid var(--border); color: var(--text-dim);
+    padding: 8px 16px; border-radius: 100px; cursor: pointer;
+    font-family: inherit; font-size: 0.82rem;
+  }
+  .logout:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 32px; }
+  h1 { font-weight: 800; font-size: 1.8rem; margin: 0 0 24px 0; }
+
+  .grid { display: grid; grid-template-columns: 380px 1fr; gap: 24px; }
+  @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  .panel h2 {
+    margin: 0 0 18px 0; font-size: 1rem; font-weight: 700;
+    letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-dim);
+  }
+
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block; font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .field input, .field textarea {
+    width: 100%;
+    background: var(--panel-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-family: inherit; font-size: 0.9rem;
+  }
+  .field input:focus, .field textarea:focus {
+    outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(232,35,26,0.2);
+  }
+  .field textarea { min-height: 70px; resize: vertical; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  button.primary {
+    width: 100%;
+    background: linear-gradient(135deg, #e8231a, #ff4a3d);
+    color: #fff; border: none; padding: 13px; border-radius: 10px;
+    font-family: inherit; font-weight: 700; font-size: 0.95rem;
+    cursor: pointer; letter-spacing: 0.3px;
+    box-shadow: 0 4px 14px rgba(232,35,26,0.35);
+    transition: transform 0.15s;
+  }
+  button.primary:hover:not(:disabled) { transform: translateY(-1px); }
+  button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.86rem;
+  }
+  th, td {
+    text-align: left; padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  th { color: var(--text-dim); font-weight: 600; font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; }
+  tbody tr:hover { background: rgba(255,255,255,0.025); }
+  .amt { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+  .status {
+    display: inline-block; padding: 3px 10px; border-radius: 100px;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  }
+  .status-draft   { background: rgba(138,151,173,0.15); color: #b4bfd0; }
+  .status-sent    { background: rgba(245,158,11,0.15); color: #ffd480; }
+  .status-paid    { background: rgba(34,197,94,0.15); color: #86efac; }
+  .status-failed  { background: rgba(232,35,26,0.15); color: #ffb1ab; }
+  .status-voided  { background: rgba(138,151,173,0.08); color: var(--text-dim); }
+  .status-partial { background: rgba(245,158,11,0.15); color: #ffd480; }
+
+  .actions { display: flex; gap: 6px; }
+  .actions button {
+    background: var(--panel-light);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 5px 10px; border-radius: 6px;
+    cursor: pointer; font-size: 0.76rem; font-family: inherit;
+  }
+  .actions button:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+  .actions button.copied { color: #86efac; border-color: rgba(34,197,94,0.4); }
+
+  .empty { text-align: center; padding: 40px 20px; color: var(--text-dim); }
+
+  .alert {
+    padding: 12px 14px; border-radius: 8px; font-size: 0.86rem; margin-bottom: 16px;
+  }
+  .alert.error { background: rgba(232,35,26,0.12); border: 1px solid rgba(232,35,26,0.35); color: #ffb1ab; }
+  .alert.success { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.35); color: #86efac; }
+
+  .gate { max-width: 420px; margin: 120px auto; text-align: center; padding: 40px 30px; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; }
+  .gate h1 { margin: 0 0 10px 0; font-size: 1.3rem; }
+  .gate p { color: var(--text-dim); font-size: 0.9rem; }
+  .gate a { color: #ffd480; }
+</style>
+</head>
+<body>
+
+<div id="app-root">
+  <!-- swapped in by JS: gate, or admin UI -->
+  <div class="gate">
+    <h1>Checking access…</h1>
+  </div>
+</div>
+
+<template id="tpl-admin">
+  <header>
+    <div class="brand">
+      <img src="favicon-192x192.png" alt="">
+      <div>
+        <div class="brand-name">Lightning <span class="z">Ledgerz</span></div>
+      </div>
+      <span class="admin-tag">Admin</span>
+    </div>
+    <button class="logout" id="btn-logout">Sign out</button>
+  </header>
+
+  <main>
+    <h1>Invoices</h1>
+    <div id="alerts"></div>
+    <div class="grid">
+      <section class="panel">
+        <h2>Create Invoice</h2>
+        <form id="create-form">
+          <div class="field">
+            <label>Client name</label>
+            <input type="text" name="client_name" required>
+          </div>
+          <div class="field">
+            <label>Client email</label>
+            <input type="email" name="client_email" required>
+          </div>
+          <div class="field">
+            <label>Company (optional)</label>
+            <input type="text" name="client_company">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Amount (USD)</label>
+              <input type="number" name="amount" step="0.01" min="1" required placeholder="2500.00">
+            </div>
+            <div class="field">
+              <label>Due date</label>
+              <input type="date" name="due_date">
+            </div>
+          </div>
+          <div class="field">
+            <label>Description</label>
+            <textarea name="description" placeholder="April FP&amp;A retainer — board deck, variance analysis, cash forecast"></textarea>
+          </div>
+          <div class="field">
+            <label>Internal notes (not shown to client)</label>
+            <textarea name="notes" placeholder="Keep these for your records"></textarea>
+          </div>
+          <button type="submit" class="primary" id="btn-create">Create & Generate Link</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>All Invoices</h2>
+        <div id="invoices-list"><div class="empty">Loading…</div></div>
+      </section>
+    </div>
+  </main>
+</template>
+
+<script>
+(async () => {
+  const SUPABASE_URL = 'https://uxicgilvxcqpoxavilxp.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4aWNnaWx2eGNxcG94YXZpbHhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzYwNzYsImV4cCI6MjA3NjY1MjA3Nn0.W6_iO15HAxjzvNfp_FHWSS0HYOpaJb7-oC-Z3_KaZaw';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const root = document.getElementById('app-root');
+
+  // ── Gate: admin-only ──
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    root.innerHTML = `<div class="gate"><h1>Sign in required</h1><p>This page is for Lightning Ledgerz admins. <a href="/#client-portal">Sign in</a>, then return here.</p></div>`;
+    return;
+  }
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('is_admin, first_name')
+    .eq('id', session.user.id)
+    .maybeSingle();
+
+  if (!profile?.is_admin) {
+    root.innerHTML = `<div class="gate"><h1>Access denied</h1><p>Your account isn't an admin on this workspace. If this is wrong, ask Zac to set <code>is_admin = true</code> on your profile.</p></div>`;
+    return;
+  }
+
+  // ── Mount admin UI ──
+  root.innerHTML = '';
+  root.appendChild(document.getElementById('tpl-admin').content.cloneNode(true));
+  document.getElementById('btn-logout').onclick = async () => {
+    await supabase.auth.signOut();
+    location.href = '/';
+  };
+
+  const alertsEl = document.getElementById('alerts');
+  function flash(kind, msg, ms = 4000) {
+    const el = document.createElement('div');
+    el.className = 'alert ' + kind;
+    el.textContent = msg;
+    alertsEl.appendChild(el);
+    if (ms) setTimeout(() => el.remove(), ms);
+  }
+  function formatMoney(cents, currency = 'USD') {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format((cents || 0) / 100);
+  }
+  function formatDate(d) {
+    if (!d) return '';
+    return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  // ── Create form ──
+  const form = document.getElementById('create-form');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btn-create');
+    btn.disabled = true;
+
+    const fd = new FormData(form);
+    const amountUsd = parseFloat(fd.get('amount'));
+    if (!amountUsd || amountUsd <= 0) {
+      flash('error', 'Amount must be greater than zero.');
+      btn.disabled = false;
+      return;
+    }
+
+    // Get next invoice number via RPC
+    const { data: numberRow, error: numErr } = await supabase.rpc('next_invoice_number');
+    if (numErr) {
+      console.error(numErr);
+      flash('error', 'Could not generate invoice number: ' + numErr.message);
+      btn.disabled = false;
+      return;
+    }
+
+    const paymentToken = cryptoRandom();
+    const amountCents = Math.round(amountUsd * 100);
+
+    const { data: inserted, error } = await supabase.from('invoices').insert({
+      invoice_number: numberRow,
+      client_name:    fd.get('client_name'),
+      client_email:   fd.get('client_email'),
+      client_company: fd.get('client_company') || null,
+      amount_cents:   amountCents,
+      subtotal_cents: amountCents,
+      currency:       'USD',
+      status:         'sent',
+      description:    fd.get('description') || null,
+      notes:          fd.get('notes') || null,
+      due_date:       fd.get('due_date') || null,
+      issued_at:      new Date().toISOString(),
+      payment_token:  paymentToken,
+      payment_token_expires_at: new Date(Date.now() + 90 * 86400 * 1000).toISOString(),
+      created_by:     session.user.id,
+    }).select().single();
+
+    btn.disabled = false;
+    if (error) {
+      flash('error', 'Insert failed: ' + error.message);
+      return;
+    }
+    form.reset();
+    flash('success', `${inserted.invoice_number} created — payment link copied to clipboard.`);
+    copyPaymentLink(paymentToken);
+    loadInvoices();
+  });
+
+  // ── List ──
+  async function loadInvoices() {
+    const listEl = document.getElementById('invoices-list');
+    const { data: rows, error } = await supabase.from('invoices')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (error) {
+      listEl.innerHTML = `<div class="alert error">${escapeHtml(error.message)}</div>`;
+      return;
+    }
+    if (!rows || rows.length === 0) {
+      listEl.innerHTML = `<div class="empty">No invoices yet. Create one on the left.</div>`;
+      return;
+    }
+    listEl.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Client</th><th>Amount</th><th>Due</th><th>Status</th><th></th>
+          </tr>
+        </thead>
+        <tbody>${rows.map((r) => `
+          <tr data-id="${r.id}">
+            <td><a href="/pay.html?token=${encodeURIComponent(r.payment_token)}" target="_blank" style="color:#ffd480; text-decoration:none">${escapeHtml(r.invoice_number)}</a></td>
+            <td>${escapeHtml(r.client_name)}<br><span style="color:var(--text-dim);font-size:0.78rem">${escapeHtml(r.client_email)}</span></td>
+            <td class="amt">${formatMoney(r.amount_cents, r.currency)}</td>
+            <td style="color:var(--text-dim)">${formatDate(r.due_date)}</td>
+            <td><span class="status status-${r.status}">${r.status}</span></td>
+            <td><div class="actions">
+              <button data-action="copy" data-token="${escapeHtml(r.payment_token || '')}">Copy link</button>
+              ${r.status !== 'voided' && r.status !== 'paid' ? `<button data-action="void" data-id="${r.id}">Void</button>` : ''}
+            </div></td>
+          </tr>
+        `).join('')}</tbody>
+      </table>
+    `;
+    listEl.querySelectorAll('button[data-action]').forEach((b) => {
+      b.addEventListener('click', () => {
+        if (b.dataset.action === 'copy') copyPaymentLink(b.dataset.token, b);
+        if (b.dataset.action === 'void') voidInvoice(b.dataset.id);
+      });
+    });
+  }
+
+  async function voidInvoice(id) {
+    if (!confirm('Void this invoice? Client link will stop working.')) return;
+    const { error } = await supabase.from('invoices').update({ status: 'voided' }).eq('id', id);
+    if (error) flash('error', error.message);
+    else { flash('success', 'Invoice voided.'); loadInvoices(); }
+  }
+
+  function copyPaymentLink(token, btnEl) {
+    const url = `${location.origin}/pay.html?token=${encodeURIComponent(token)}`;
+    navigator.clipboard.writeText(url).then(() => {
+      if (btnEl) {
+        const t = btnEl.textContent;
+        btnEl.textContent = 'Copied';
+        btnEl.classList.add('copied');
+        setTimeout(() => { btnEl.textContent = t; btnEl.classList.remove('copied'); }, 1400);
+      }
+    });
+  }
+
+  function cryptoRandom(len = 32) {
+    const arr = new Uint8Array(len);
+    crypto.getRandomValues(arr);
+    return Array.from(arr).map((b) => b.toString(36).padStart(2, '0')).join('').slice(0, len);
+  }
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  await loadInvoices();
+})();
+</script>
+
+</body>
+</html>
