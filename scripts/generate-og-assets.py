@@ -17,26 +17,78 @@ import sys
 
 PROJECT = r"C:\Users\zpzan\OneDrive\Desktop\lightningledgerz"
 SOURCE_LOGO = os.path.join(PROJECT, "LightningLedgerzLogo.png")
-ICON_FRAC = 0.46    # fraction of source height that is the icon region
+
+# Alpha threshold — pixels above this count as "part of the icon"
+ALPHA_THRESHOLD = 30
+# How many near-empty rows in a row count as a gap between icon and text
+GAP_ROW_THRESHOLD = 8
+# Ratio of opaque pixels in a row that marks it as "content"
+OPAQUE_ROW_FRAC = 0.02
+# Padding (as fraction of icon bbox) to leave around the cropped icon when
+# centering into the square canvas. 0 = skin-tight; 0.03 = 3% breathing room.
+CANVAS_PADDING_FRAC = 0.03
+
+def detect_icon_bounds(src):
+    """
+    Scan the source logo row-by-row from the top. Find the FIRST region of
+    opaque rows, terminate at the first big gap (transparent strip between
+    icon and word-mark text). Returns a bbox for just the icon.
+    """
+    w, h = src.size
+    alpha = src.split()[3]
+    px = alpha.load()
+
+    def row_has_content(y):
+        opaque = 0
+        for x in range(w):
+            if px[x, y] > ALPHA_THRESHOLD:
+                opaque += 1
+        return opaque / w >= OPAQUE_ROW_FRAC
+
+    # Skip any transparent top-padding rows
+    y_start = 0
+    while y_start < h and not row_has_content(y_start):
+        y_start += 1
+
+    # Walk down while we have content or gaps smaller than threshold
+    consecutive_empty = 0
+    y_end = y_start
+    for y in range(y_start, h):
+        if row_has_content(y):
+            y_end = y
+            consecutive_empty = 0
+        else:
+            consecutive_empty += 1
+            if consecutive_empty >= GAP_ROW_THRESHOLD:
+                break
+
+    # Horizontal bounds: use getbbox on just the icon slice
+    slice_ = src.crop((0, y_start, w, y_end + 1))
+    sbbox = slice_.getbbox() or (0, 0, slice_.width, slice_.height)
+    x0 = sbbox[0]
+    x1 = sbbox[2]
+    print(f"Detected icon region: y={y_start}..{y_end}, x={x0}..{x1}")
+    return (x0, y_start, x1, y_end + 1)
 
 def load_and_crop_icon():
     src = Image.open(SOURCE_LOGO).convert("RGBA")
     w, h = src.size
     print(f"Source: {w}x{h}")
-    # Crop a square region from the top where the icon lives
-    region_h = int(h * ICON_FRAC)
-    sq = min(region_h, w)
-    left = (w - sq) // 2
-    icon = src.crop((left, 0, left + sq, sq))
-    # Trim transparent padding
-    bbox = icon.getbbox()
-    if bbox:
-        icon = icon.crop(bbox)
-    # Re-square-pad so the icon is centered in a square canvas (prevents stretching on resize)
+
+    bbox = detect_icon_bounds(src)
+    icon = src.crop(bbox)
+
+    # Square-pad with a tiny breathing-room margin
     m = max(icon.size)
-    canvas = Image.new("RGBA", (m, m), (0, 0, 0, 0))
-    canvas.paste(icon, ((m - icon.width) // 2, (m - icon.height) // 2), icon)
-    print(f"Icon (squared): {canvas.size}")
+    pad = int(m * CANVAS_PADDING_FRAC)
+    canvas_size = m + pad * 2
+    canvas = Image.new("RGBA", (canvas_size, canvas_size), (0, 0, 0, 0))
+    canvas.paste(
+        icon,
+        ((canvas_size - icon.width) // 2, (canvas_size - icon.height) // 2),
+        icon,
+    )
+    print(f"Icon (squared, padded): {canvas.size}")
     return canvas
 
 def save_favicons(icon):
