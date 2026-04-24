@@ -17,7 +17,10 @@ import os
 import sys
 
 PROJECT = r"C:\Users\zpzan\OneDrive\Desktop\lightningledgerz"
-SOURCE_LOGO = os.path.join(PROJECT, "LightningLedgerzLogo.png")
+# Prefer the pre-cropped Google pic (transparent, icon-only). If absent,
+# fall back to cropping the icon out of the full word-mark logo.
+ICON_SOURCE_PRECROPPED = os.path.join(PROJECT, "Googlepicledgerz.png")
+SOURCE_LOGO            = os.path.join(PROJECT, "LightningLedgerzLogo.png")
 
 # Alpha threshold — pixels above this count as "part of the icon"
 ALPHA_THRESHOLD = 30
@@ -78,12 +81,20 @@ def detect_icon_bounds(src):
     return (x0, y_start, x1, y_end + 1)
 
 def load_and_crop_icon():
-    src = Image.open(SOURCE_LOGO).convert("RGBA")
-    w, h = src.size
-    print(f"Source: {w}x{h}")
-
-    bbox = detect_icon_bounds(src)
-    icon = src.crop(bbox)
+    # Prefer the pre-cropped, transparent icon if it exists — it's already
+    # exactly what we want (red Z + book, no text, no extra padding).
+    if os.path.exists(ICON_SOURCE_PRECROPPED):
+        icon = Image.open(ICON_SOURCE_PRECROPPED).convert("RGBA")
+        print(f"Using pre-cropped icon: {ICON_SOURCE_PRECROPPED} ({icon.size[0]}x{icon.size[1]})")
+        # Trim any stray transparent edges then square-pad with breathing room.
+        bbox = icon.getbbox() or (0, 0, icon.width, icon.height)
+        icon = icon.crop(bbox)
+    else:
+        src = Image.open(SOURCE_LOGO).convert("RGBA")
+        w, h = src.size
+        print(f"Falling back to cropping from full logo: {w}x{h}")
+        bbox = detect_icon_bounds(src)
+        icon = src.crop(bbox)
 
     # Square-pad with a tiny breathing-room margin
     m = max(icon.size)
@@ -120,29 +131,32 @@ def chip_favicon(icon, size):
     return chip
 
 def save_favicons(icon):
+    """
+    Save the icon directly at every favicon size with transparent background.
+    Uses the user-provided Googlepicledgerz.png as-is — no chip wrapper.
+    """
     # Google favicon guidance: prefers multiples of 48 (48, 96, 144, 192).
     # Include 16/32/64 for legacy support; 512 for PWA manifest.
     sizes = [16, 32, 48, 64, 96, 128, 144, 192, 512]
     for s in sizes:
-        chip_favicon(icon, s).save(
+        icon.resize((s, s), Image.LANCZOS).save(
             os.path.join(PROJECT, f"favicon-{s}x{s}.png"),
             optimize=True,
         )
         print(f"  favicon-{s}x{s}.png")
-    # Apple touch icon (180) — iOS composites this on the home screen
-    # and applies its own rounding, but the chip still reads clearly.
-    chip_favicon(icon, 180).save(
+    # Apple touch icon (180) — iOS composites this on the home screen.
+    icon.resize((180, 180), Image.LANCZOS).save(
         os.path.join(PROJECT, "apple-touch-icon.png"), optimize=True
     )
     print("  apple-touch-icon.png")
-    # Default favicon.png (32, chip)
-    chip_favicon(icon, 32).save(
+    # Default favicon.png (32)
+    icon.resize((32, 32), Image.LANCZOS).save(
         os.path.join(PROJECT, "favicon.png"), optimize=True
     )
     print("  favicon.png")
-    # ICO with multiple embedded sizes — chip variants
+    # ICO with multiple embedded sizes
     ico_sizes = [(16, 16), (32, 32), (48, 48)]
-    ico_images = [chip_favicon(icon, s[0]) for s in ico_sizes]
+    ico_images = [icon.resize(s, Image.LANCZOS) for s in ico_sizes]
     ico_images[0].save(
         os.path.join(PROJECT, "favicon.ico"),
         format="ICO",
