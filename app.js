@@ -782,89 +782,15 @@ document.getElementById("signin-form")?.addEventListener("submit", async (e) => 
     }
 });
 
-// Forgot Password
-document.getElementById("forgot-password")?.addEventListener("click", async () => {
-    // Check if Supabase is available
-    if (!supabase) {
-        alert("Connection error. Please refresh the page and try again.");
-        return;
-    }
-
-    const email = document.getElementById("signin-email").value.trim();
-
-    if (!email) {
-        alert("Please enter your email address first.");
-        return;
-    }
-
-    try {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + '/index.html'
-        });
-        if (error) throw error;
-        alert("Password reset email sent! Check your inbox (or spam folder).\n\nClick the link in the email within 1 hour to reset your password.");
-        document.getElementById("signin-modal").classList.add('hidden');
-    } catch (error) {
-        console.error("Reset error:", error);
-        alert("Failed to send reset email: " + error.message);
-    }
-});
-
-// Password Reset Form Handler
-document.getElementById("reset-password-form")?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    // Check if Supabase is available
-    if (!supabase) {
-        alert("Connection error. Please refresh the page and try again.");
-        return;
-    }
-
-    const newPassword = document.getElementById("new-password").value;
-    const confirmPassword = document.getElementById("confirm-password").value;
-
-    if (newPassword !== confirmPassword) {
-        alert("Passwords don't match!");
-        return;
-    }
-
-    if (newPassword.length < 6) {
-        alert("Password must be at least 6 characters long.");
-        return;
-    }
-
-    try {
-        // First check if we have a valid session
-        const { data: { session } } = await supabase.auth.getSession();
-        console.log("Current session during password reset:", session);
-
-        if (!session) {
-            alert("Your password reset link has expired. Please request a new password reset email.");
-            document.getElementById("reset-password-modal").classList.add('hidden');
-            return;
-        }
-
-        // Update the password
-        const { data, error } = await supabase.auth.updateUser({
-            password: newPassword
-        });
-
-        if (error) throw error;
-
-        console.log("Password updated successfully:", data);
-        alert("Password updated successfully! You are now signed in.");
-        document.getElementById("reset-password-modal").classList.add('hidden');
-
-        // Wait for profile to load, then redirect
-        setTimeout(() => {
-            window.location.href = "#profile";
-        }, 500);
-
-    } catch (error) {
-        console.error("Password update error:", error);
-        alert("Failed to update password: " + error.message + "\n\nPlease try requesting a new password reset link.");
-    }
-});
+// Forgot-password and reset-password flows live elsewhere:
+//   - "Forgot password?" link triggers handleForgotPassword() inline in
+//     index.html (calls supabase.auth.resetPasswordForEmail with redirect to
+//     /reset-password.html).
+//   - The actual password update happens on /reset-password.html which
+//     listens for the PASSWORD_RECOVERY auth event and calls
+//     supabase.auth.updateUser({ password }).
+// The previous handlers at this location targeted IDs that no longer
+// exist in the markup and were never firing — removed to prevent confusion.
 
 // Sign Out
 async function signOutUser() {
