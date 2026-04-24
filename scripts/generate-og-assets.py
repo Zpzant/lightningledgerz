@@ -2,16 +2,17 @@
 Generate Lightning Ledgerz brand assets for Google / social previews.
 
 Outputs (all to project root):
-  - favicon-{16,32,48,64,128,192,512}x{}.png  (icon-only, clean at small sizes)
-  - apple-touch-icon.png                      (180x180 iOS touch icon)
-  - favicon.png / favicon.ico                 (default + multi-res ICO)
-  - og-image.png                              (1200x630 social card, black-text variant)
+  - favicon-{16,32,48,64,96,128,144,192,512}x{}.png
+                              (dark-navy chip with red icon on top — pops on
+                               Google's white search card, iOS rounded tile, etc.)
+  - apple-touch-icon.png      (180x180 iOS touch icon, same chip)
+  - favicon.png / favicon.ico (default + multi-res ICO)
+  - og-image.png              (1200x630 social card, white bg, black-text word-mark)
 
-Source: crops the icon portion from LightningLedgerzLogo.png. Assumes the
-icon occupies the top ~46% of the source image — adjust ICON_FRAC if the
-source art changes.
+Source: crops the icon portion from LightningLedgerzLogo.png using alpha-channel
+detection so the crop auto-adjusts if the source art changes.
 """
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 import os
 import sys
 
@@ -27,6 +28,12 @@ OPAQUE_ROW_FRAC = 0.02
 # Padding (as fraction of icon bbox) to leave around the cropped icon when
 # centering into the square canvas. 0 = skin-tight; 0.03 = 3% breathing room.
 CANVAS_PADDING_FRAC = 0.03
+
+# Favicon chip styling — dark navy rounded square that makes the red icon
+# pop against Google's white result card. Matches site brand (#0d1424).
+CHIP_BG_COLOR         = (13, 20, 36, 255)   # navy
+CHIP_CORNER_RADIUS_FRAC = 0.18              # 18% rounded corners (iOS-tile look)
+CHIP_ICON_FILL_FRAC     = 0.72              # icon takes 72% of chip width
 
 def detect_icon_bounds(src):
     """
@@ -91,25 +98,51 @@ def load_and_crop_icon():
     print(f"Icon (squared, padded): {canvas.size}")
     return canvas
 
+def rounded_square(size, radius, fill):
+    """Make a rounded-square RGBA image that can be used as the chip background."""
+    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+    draw.rounded_rectangle((0, 0, size - 1, size - 1), radius=radius, fill=fill)
+    return img
+
+def chip_favicon(icon, size):
+    """
+    Compose a favicon chip: dark-navy rounded square with the red icon
+    centered on top. Icon is scaled to CHIP_ICON_FILL_FRAC of the chip.
+    """
+    radius = int(size * CHIP_CORNER_RADIUS_FRAC)
+    chip = rounded_square(size, radius, CHIP_BG_COLOR)
+
+    icon_target = int(size * CHIP_ICON_FILL_FRAC)
+    icon_resized = icon.resize((icon_target, icon_target), Image.LANCZOS)
+    offset = (size - icon_target) // 2
+    chip.paste(icon_resized, (offset, offset), icon_resized)
+    return chip
+
 def save_favicons(icon):
-    sizes = [16, 32, 48, 64, 128, 192, 512]
+    # Google favicon guidance: prefers multiples of 48 (48, 96, 144, 192).
+    # Include 16/32/64 for legacy support; 512 for PWA manifest.
+    sizes = [16, 32, 48, 64, 96, 128, 144, 192, 512]
     for s in sizes:
-        resized = icon.resize((s, s), Image.LANCZOS)
-        resized.save(os.path.join(PROJECT, f"favicon-{s}x{s}.png"), optimize=True)
+        chip_favicon(icon, s).save(
+            os.path.join(PROJECT, f"favicon-{s}x{s}.png"),
+            optimize=True,
+        )
         print(f"  favicon-{s}x{s}.png")
-    # Apple touch icon (180)
-    icon.resize((180, 180), Image.LANCZOS).save(
+    # Apple touch icon (180) — iOS composites this on the home screen
+    # and applies its own rounding, but the chip still reads clearly.
+    chip_favicon(icon, 180).save(
         os.path.join(PROJECT, "apple-touch-icon.png"), optimize=True
     )
     print("  apple-touch-icon.png")
-    # Default favicon.png (32)
-    icon.resize((32, 32), Image.LANCZOS).save(
+    # Default favicon.png (32, chip)
+    chip_favicon(icon, 32).save(
         os.path.join(PROJECT, "favicon.png"), optimize=True
     )
     print("  favicon.png")
-    # ICO with multiple embedded sizes
+    # ICO with multiple embedded sizes — chip variants
     ico_sizes = [(16, 16), (32, 32), (48, 48)]
-    ico_images = [icon.resize(s, Image.LANCZOS) for s in ico_sizes]
+    ico_images = [chip_favicon(icon, s[0]) for s in ico_sizes]
     ico_images[0].save(
         os.path.join(PROJECT, "favicon.ico"),
         format="ICO",

@@ -355,14 +355,19 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- Favicon — icon-only (red lightning bolt + book), crisp at every size -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="favicon-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="favicon-512x512.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <!-- Favicon — navy chip with red lightning bolt + book icon.
+         ?v=3 cache-bust so browsers fetch the new chip version instead of
+         the old icon-only cached one. Google's favicon crawler ignores this
+         but browsers respect it. -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico?v=3">
+    <link rel="icon" type="image/png" sizes="16x16"   href="favicon-16x16.png?v=3">
+    <link rel="icon" type="image/png" sizes="32x32"   href="favicon-32x32.png?v=3">
+    <link rel="icon" type="image/png" sizes="48x48"   href="favicon-48x48.png?v=3">
+    <link rel="icon" type="image/png" sizes="96x96"   href="favicon-96x96.png?v=3">
+    <link rel="icon" type="image/png" sizes="144x144" href="favicon-144x144.png?v=3">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon-192x192.png?v=3">
+    <link rel="icon" type="image/png" sizes="512x512" href="favicon-512x512.png?v=3">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
