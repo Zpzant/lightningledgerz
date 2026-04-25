@@ -7523,7 +7523,7 @@
     <!-- Navigation -->
     <nav>
         <a href="#top" class="logo" onclick="goHome()" title="Back to home">
-            <img src="Thelogo.png" alt="Lightning Ledgerz Logo">
+            <img src="Googlepicledgerz.png" alt="Lightning Ledgerz Logo">
         </a>
         <div id="user-welcome-nav" class="user-welcome" style="display: none;">
             <div id="nav-avatar" onclick="document.getElementById('logo-input').click()" title="Upload company logo" style="width:34px;height:34px;border-radius:50%;background:#e2e8f0;border:2px solid #cbd5e1;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;flex-shrink:0;">
@@ -9604,7 +9604,7 @@
     <footer>
         <div class="footer-logo">
             <a href="#top" onclick="goHome()" title="Back to home">
-                <img src="Thelogo.png" alt="Lightning Ledgerz">
+                <img src="Googlepicledgerz.png" alt="Lightning Ledgerz">
             </a>
         </div>
         <div class="footer-links">
@@ -10698,9 +10698,11 @@
                 dashboardLogo.src = logoMap[tier] || logoMap.basic;
             }
 
-            // Update all logos based on tier (including reset to basic)
-            var logos = document.querySelectorAll('.logo img, .hero-logo img, .footer-logo img');
-            logos.forEach(function(logo) {
+            // Update only the HERO logo (word-mark) based on tier — nav and
+            // footer always show the icon-only Googlepicledgerz.png and never
+            // get overridden by tier theming.
+            var heroLogos = document.querySelectorAll('.hero-logo img, .hero-logo-img');
+            heroLogos.forEach(function(logo) {
                 logo.src = logoMap[tier] || logoMap.basic;
             });
         }
@@ -10708,12 +10710,12 @@
         function resetTheme() {
             const body = document.body;
             const dashboard = document.getElementById('portal-dashboard');
-            const logos = document.querySelectorAll('.logo img, .hero-logo img, .footer-logo img');
+            const heroLogos = document.querySelectorAll('.hero-logo img, .hero-logo-img');
 
             body.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
             if (dashboard) dashboard.classList.remove('tier-basic', 'tier-gold', 'tier-diamond');
 
-            logos.forEach(logo => {
+            heroLogos.forEach(logo => {
                 logo.src = 'Thelogo.png';
             });
         }
@@ -11317,16 +11319,13 @@
         }
 
         // ── Diamond Logo Swap ──
+        // Nav logo is always the icon-only Googlepicledgerz.png regardless
+        // of tier. (Previously this swapped the nav to a tier-themed
+        // word-mark on login; that conflicts with the design where the
+        // word-mark only appears in the hero.) Kept as a no-op so any
+        // existing call sites stay safe.
         function applyDiamondLogoSwap(tier) {
-            var navLogo = document.querySelector('nav .logo img');
-            if (!navLogo) return;
-            if (tier === 'diamond') {
-                navLogo.src = 'DiamondLogo.png';
-            } else if (tier === 'gold') {
-                navLogo.src = 'thelogogold.png';
-            } else {
-                navLogo.src = 'Thelogo.png';
-            }
+            // intentionally no-op — see comment above
         }
 
         // ── Initialize Credit System on Login ──
