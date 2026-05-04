@@ -1,0 +1,202 @@
+<!--
+  Lightning Ledgerz cold-outreach email template
+  ---------------------------------------------------------------
+  Drop-in template for Smartlead / Instantly / Mailshake / Lemlist /
+  Apollo Sequences. Personalisation tokens use double-curly braces:
+      {{first_name}}     {{company}}
+  Replace these with the column-name syntax your platform uses.
+  Subject line suggestions (use these in the platform UI):
+      Quick question, {{first_name}}
+      30 days free for {{company}}'s books
+      Cornell-trained CFO for {{company}} — first month on me
+  Recommended sending settings (Smartlead / Instantly):
+      Sending domain:    a SECONDARY domain (e.g. lightningledgerz.io),
+                         NOT lightningledgerz.com — protects the main
+                         domain's reputation.
+      Volume:            ramp 10 -> 30 -> 50 / day per inbox over 3 weeks
+      Inboxes:           3 inboxes minimum (zac@..., hello@..., team@...)
+      Warmup:            14 days minimum BEFORE the first cold send
+      DKIM/SPF/DMARC:    must be green on the secondary domain
+  -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>30 days of CFO-level reporting — on me</title>
+</head>
+<body style="margin:0; padding:0; background:#f3f4f6; font-family:-apple-system,'Segoe UI','Inter',Helvetica,Arial,sans-serif; color:#1a1f36;">
+
+  <!-- Hidden preheader (shown next to subject in inbox preview) -->
+  <div style="display:none; max-height:0; overflow:hidden; opacity:0;">
+    Free month, free CFO-level report, no need to fire your current bookkeeper. Cornell MBA. 60 seconds.
+  </div>
+
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f3f4f6;">
+    <tr><td align="center" style="padding:32px 16px;">
+
+      <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="max-width:600px; background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 4px 20px rgba(13,20,36,0.06);">
+
+        <!-- Top bar / brand -->
+        <tr>
+          <td style="background:#05080f; padding:18px 28px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+              <tr>
+                <td style="vertical-align:middle;">
+                  <img src="https://lightningledgerz.com/favicon-192x192.png"
+                       width="32" height="32" alt=""
+                       style="display:inline-block; vertical-align:middle; border-radius:6px;">
+                  <span style="font-size:0.95rem; font-weight:800; color:#ffffff; letter-spacing:0.4px; margin-left:10px; vertical-align:middle;">
+                    Lightning <span style="color:#e8231a;">Ledgerz</span>
+                  </span>
+                </td>
+                <td align="right" style="vertical-align:middle; font-size:0.6rem; letter-spacing:2.5px; font-weight:700; color:#8a97ad; text-transform:uppercase;">
+                  Limited · Risk Free
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Hero / opener -->
+        <tr>
+          <td style="padding:34px 36px 14px 36px;">
+            <p style="margin:0 0 6px 0; font-size:0.95rem; line-height:1.55; color:#3c4257;">
+              Hi {{first_name}},
+            </p>
+            <p style="margin:0 0 18px 0; font-size:0.95rem; line-height:1.6; color:#3c4257;">
+              I'm Zac Prizant — Cornell MBA, Cornell undergrad, and the founder of Lightning Ledgerz. I'm taking on a small group of new clients this month at <strong>{{company}}</strong>'s level and putting up a real offer to make it easy to try us:
+            </p>
+          </td>
+        </tr>
+
+        <!-- Offer card with green CTA (Stake-style clean) -->
+        <tr>
+          <td style="padding:0 36px 8px 36px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:linear-gradient(135deg,#0c1f17 0%,#0a2a1e 100%); border-radius:12px; border:1px solid #1f7d4f;">
+              <tr>
+                <td style="padding:28px 28px 24px 28px;" align="center">
+
+                  <div style="font-size:0.62rem; letter-spacing:3px; font-weight:800; color:#42e58a; text-transform:uppercase; margin-bottom:10px;">
+                    Your Promo
+                  </div>
+                  <div style="font-size:2.05rem; font-weight:900; color:#ffffff; line-height:1.1; margin-bottom:8px; letter-spacing:-0.5px;">
+                    First Month Free
+                  </div>
+                  <div style="font-size:0.95rem; color:#cfe9d9; line-height:1.5; margin-bottom:20px; max-width:430px;">
+                    Plus <strong style="color:#42e58a;">one free CFO-level report</strong> from a Cornell MBA &amp; undergrad. Keep your current bookkeeper — only switch if you love what we deliver.
+                  </div>
+
+                  <!-- Bullet-proof button (works in Outlook) -->
+                  <table role="presentation" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td align="center" bgcolor="#22c55e" style="border-radius:100px;">
+                        <a href="https://lightningledgerz.com/promo.html?src={{first_name}}&co={{company}}"
+                           style="display:inline-block; padding:16px 38px; font-size:1rem; font-weight:800; color:#0a1a12; text-decoration:none; letter-spacing:0.5px; font-family:inherit; border-radius:100px;">
+                          Claim Your Free Month →
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <div style="font-size:0.7rem; color:#7fb695; margin-top:14px; letter-spacing:1.2px;">
+                    No credit card · No commitment · 30-day try-out
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Mini-pitch with photo -->
+        <tr>
+          <td style="padding:26px 36px 8px 36px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="96" style="padding-right:16px; vertical-align:top;">
+                  <img src="https://lightningledgerz.com/zacredtiebest.png"
+                       width="96" alt="Zac Prizant — Founder, Lightning Ledgerz"
+                       style="display:block; width:96px; border-radius:8px;">
+                </td>
+                <td style="vertical-align:top;">
+                  <p style="margin:0 0 4px 0; font-size:0.95rem; font-weight:800; color:#1a1f36;">
+                    Zac Prizant
+                  </p>
+                  <p style="margin:0 0 8px 0; font-size:0.78rem; letter-spacing:1px; color:#697386; text-transform:uppercase; font-weight:700;">
+                    Founder · Cornell MBA · Cornell BS
+                  </p>
+                  <p style="margin:0; font-size:0.88rem; line-height:1.55; color:#3c4257;">
+                    {{company}} deserves boardroom-quality financial reporting — not a spreadsheet your bookkeeper hands you the 27th of every month. I'll show you what that looks like, on me.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- What you'll get -->
+        <tr>
+          <td style="padding:24px 36px 8px 36px;">
+            <p style="margin:0 0 12px 0; font-size:0.72rem; font-weight:800; letter-spacing:2px; color:#697386; text-transform:uppercase;">
+              In your free month
+            </p>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-size:0.9rem; color:#3c4257; line-height:1.55;">
+              <tr><td style="padding:5px 0;"><span style="color:#22c55e; font-weight:900; padding-right:10px;">✓</span> Full <strong>budget vs. actual</strong> with variance commentary</td></tr>
+              <tr><td style="padding:5px 0;"><span style="color:#22c55e; font-weight:900; padding-right:10px;">✓</span> <strong>13-week cash-flow forecast</strong> custom to {{company}}</td></tr>
+              <tr><td style="padding:5px 0;"><span style="color:#22c55e; font-weight:900; padding-right:10px;">✓</span> <strong>One CFO-level deck</strong> ready to walk into your next board meeting</td></tr>
+              <tr><td style="padding:5px 0;"><span style="color:#22c55e; font-weight:900; padding-right:10px;">✓</span> Full QuickBooks clean-up if your books are messy</td></tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Risk reversal -->
+        <tr>
+          <td style="padding:24px 36px 8px 36px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#fafbfc; border:1px solid #e7e9ee; border-radius:8px;">
+              <tr>
+                <td style="padding:16px 18px; font-size:0.85rem; line-height:1.55; color:#3c4257;">
+                  <strong style="color:#1a1f36;">Don't fire your current bookkeeper.</strong> Run us in parallel for 30 days. If our report and dashboards aren't sharper than what you're getting now, walk away — keep the deck, keep the dashboards, no charge.
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Sign-off -->
+        <tr>
+          <td style="padding:22px 36px 28px 36px;">
+            <p style="margin:0 0 4px 0; font-size:0.92rem; line-height:1.55; color:#3c4257;">
+              15 minutes is all I need to show you what your numbers could look like.
+            </p>
+            <p style="margin:14px 0 4px 0; font-size:0.92rem; color:#3c4257;">
+              — Zac
+            </p>
+            <p style="margin:0; font-size:0.78rem; color:#697386;">
+              <a href="mailto:zprizant@lightningledgerz.com" style="color:#1a1f36; text-decoration:none;">zprizant@lightningledgerz.com</a>
+              &nbsp;·&nbsp;
+              <a href="tel:+17025502513" style="color:#1a1f36; text-decoration:none;">(702) 550-2513</a>
+            </p>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="background:#fafbfc; padding:18px 36px; border-top:1px solid #e7e9ee; font-size:0.7rem; color:#8a97ad; line-height:1.55;">
+            Lightning Ledgerz LLC · Sarasota, FL &nbsp;·&nbsp;
+            <a href="https://lightningledgerz.com" style="color:#697386;">lightningledgerz.com</a><br>
+            You're receiving this because we believe Lightning Ledgerz could be a fit for {{company}}.
+            <a href="{{unsubscribe_link}}" style="color:#697386;">Unsubscribe</a>.
+          </td>
+        </tr>
+
+      </table>
+
+      <p style="margin:14px 0 0 0; font-size:0.68rem; color:#8a97ad;">
+        Strike. Settle. Scale.
+      </p>
+
+    </td></tr>
+  </table>
+
+</body>
+</html>

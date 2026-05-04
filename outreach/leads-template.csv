@@ -1,0 +1,4 @@
+first_name,last_name,email,company,title,industry,city,state,website,linkedin_url,notes
+Jane,Doe,jane@acmebakery.com,Acme Bakery,Owner,Food & Beverage,Sarasota,FL,acmebakery.com,linkedin.com/in/janedoe,Family bakery — 8 employees
+John,Smith,john@gulfcoastdental.com,Gulf Coast Dental,Practice Manager,Healthcare,Tampa,FL,gulfcoastdental.com,linkedin.com/in/johnsmith,2 locations FL
+Maria,Lopez,maria@lopezconstruction.net,Lopez Construction LLC,Founder,Construction,St. Petersburg,FL,lopezconstruction.net,linkedin.com/in/marialopez,Sub for several big GCs

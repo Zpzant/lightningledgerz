@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<title>Claim Your Free Month — Lightning Ledgerz</title>
+<meta name="description" content="One free month of CFO-level reporting from a Cornell MBA & undergrad. Try Lightning Ledgerz risk-free — keep your current bookkeeper.">
+
+<!-- Reuse the same branded social preview as the homepage -->
+<meta property="og:title" content="Claim Your Free Month — Lightning Ledgerz">
+<meta property="og:description" content="30 days free, plus one CFO-level report. Cornell MBA. No credit card.">
+<meta property="og:image" content="https://lightningledgerz.com/og-image.png">
+<meta property="og:url" content="https://lightningledgerz.com/promo.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://lightningledgerz.com/og-image.png">
+
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=4">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192x192.png?v=4">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=4">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+<!-- Calendly widget script (loaded async) -->
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #05080f;
+    --panel: #0d1424;
+    --panel-light: #131b30;
+    --border: rgba(255,255,255,0.08);
+    --text: #f5f5f7;
+    --text-dim: #8a97ad;
+    --gold: #d4af37;
+    --gold-light: #f8e6a3;
+    --green: #22c55e;
+    --green-light: #42e58a;
+    --red: #e8231a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: linear-gradient(180deg, #05080f 0%, #0a1428 50%, #0b1a2a 100%);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* Background — subtle skyline + lightning vibe */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 70% 20%, rgba(232,35,26,0.08), transparent 60%),
+      radial-gradient(ellipse 80% 50% at 30% 80%, rgba(212,175,55,0.06), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  header {
+    padding: 22px 32px;
+    display: flex; justify-content: space-between; align-items: center;
+    position: relative; z-index: 2;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand img { width: 36px; height: 36px; border-radius: 8px; }
+  .brand-name { font-weight: 800; letter-spacing: 0.4px; font-size: 1rem; }
+  .brand-name .z { color: var(--red); }
+  .header-tag {
+    font-size: 0.6rem; letter-spacing: 3px; font-weight: 700;
+    color: var(--gold); text-transform: uppercase;
+  }
+
+  .hero {
+    max-width: 880px; margin: 0 auto; padding: 60px 24px 40px 24px;
+    text-align: center; position: relative; z-index: 1;
+  }
+  .pill {
+    display: inline-block;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(66, 229, 138, 0.4);
+    color: var(--green-light);
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 800;
+    font-size: clamp(2.6rem, 7vw, 4.6rem);
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    margin: 0 0 22px 0;
+    color: #ffffff;
+    text-shadow: 0 4px 30px rgba(0,0,0,0.5);
+  }
+  h1 .gold-accent {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold), #a87f1d);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .lede {
+    font-size: clamp(1rem, 2.2vw, 1.18rem);
+    line-height: 1.6;
+    color: rgba(245,245,247,0.85);
+    max-width: 640px;
+    margin: 0 auto 36px auto;
+  }
+  .cta-row {
+    display: flex; flex-wrap: wrap; gap: 14px; justify-content: center;
+    margin-bottom: 18px;
+  }
+  .btn-claim {
+    display: inline-block;
+    background: linear-gradient(135deg, #22c55e 0%, #42e58a 100%);
+    color: #0a1a12;
+    font-weight: 800;
+    padding: 18px 44px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-size: 1.05rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 10px 36px rgba(66,229,138,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none; cursor: pointer; font-family: inherit;
+  }
+  .btn-claim:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 44px rgba(66,229,138,0.55);
+  }
+  .btn-secondary {
+    display: inline-block;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 18px 28px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 600;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.45); background: rgba(255,255,255,0.04); }
+  .fineprint {
+    font-size: 0.74rem; color: var(--text-dim);
+    letter-spacing: 1.5px; text-transform: uppercase;
+  }
+
+  /* Whats-included card */
+  .features-section {
+    max-width: 980px; margin: 24px auto 0 auto; padding: 60px 24px;
+    position: relative; z-index: 1;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+  }
+  .feature-card {
+    background: rgba(15, 22, 40, 0.6);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 26px 24px;
+  }
+  .feature-card .check {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--green-light); font-weight: 900; font-size: 1.1rem;
+    margin-bottom: 14px;
+  }
+  .feature-card h3 {
+    margin: 0 0 8px 0; font-size: 1.05rem; font-weight: 700; color: var(--text);
+  }
+  .feature-card p {
+    margin: 0; font-size: 0.86rem; line-height: 1.55; color: rgba(245,245,247,0.7);
+  }
+
+  /* Founder block */
+  .founder {
+    max-width: 880px; margin: 0 auto; padding: 30px 24px 40px 24px;
+    display: grid; grid-template-columns: 140px 1fr; gap: 26px; align-items: center;
+    position: relative; z-index: 1;
+  }
+  @media (max-width: 600px) {
+    .founder { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+  }
+  .founder img {
+    width: 140px; height: 140px; border-radius: 12px; object-fit: cover;
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 30px rgba(212,175,55,0.25);
+  }
+  .founder-text h3 {
+    margin: 0 0 4px 0; font-family: 'Playfair Display', serif; font-size: 1.5rem;
+    color: var(--text);
+  }
+  .founder-text .credentials {
+    font-size: 0.7rem; letter-spacing: 2.5px; font-weight: 700;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 12px;
+  }
+  .founder-text p {
+    margin: 0; font-size: 0.95rem; line-height: 1.6; color: rgba(245,245,247,0.78);
+  }
+
+  /* Risk reversal */
+  .reversal {
+    max-width: 720px; margin: 30px auto 0 auto; padding: 0 24px;
+    position: relative; z-index: 1;
+  }
+  .reversal-card {
+    background:
+      linear-gradient(135deg, rgba(20,14,8,0.7), rgba(11,18,32,0.7));
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(212,175,55,0.4);
+    border-radius: 12px;
+    padding: 26px 28px;
+    text-align: center;
+  }
+  .reversal-card strong { color: var(--gold-light); }
+  .reversal-card p {
+    margin: 0; font-size: 0.95rem; line-height: 1.65; color: rgba(245,245,247,0.85);
+  }
+
+  /* Calendly wrapper */
+  .calendar-section {
+    max-width: 1000px; margin: 60px auto 40px auto; padding: 0 24px;
+    position: relative; z-index: 1; text-align: center;
+  }
+  .calendar-section h2 {
+    font-family: 'Playfair Display', serif; font-size: 2rem; margin: 0 0 8px 0;
+  }
+  .calendar-section p { color: rgba(245,245,247,0.7); margin: 0 0 24px 0; }
+  .calendly-inline-widget {
+    background: rgba(15,22,40,0.5); border-radius: 14px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  footer {
+    padding: 32px 24px 50px 24px; text-align: center;
+    color: var(--text-dim); font-size: 0.82rem;
+    border-top: 1px solid var(--border); margin-top: 40px;
+    position: relative; z-index: 1;
+  }
+  footer a { color: var(--text); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <img src="favicon-192x192.png?v=4" alt="">
+    <div class="brand-name">Lightning <span class="z">Ledgerz</span></div>
+  </div>
+  <div class="header-tag">Promo · Cornell-Trained CFO</div>
+</header>
+
+<section class="hero">
+  <div class="pill">First Month Free · Risk Free</div>
+  <h1>Get a CFO. <br><span class="gold-accent">For Free.</span><br>For 30 Days.</h1>
+  <p class="lede">
+    One free month of Lightning Ledgerz reporting — plus <strong>one free CFO-level report</strong>
+    from a Cornell MBA &amp; undergrad. Keep your current bookkeeper. Switch only if we deliver.
+  </p>
+  <div class="cta-row">
+    <a href="#book" class="btn-claim">Claim Your Free Month →</a>
+    <a href="https://lightningledgerz.com" class="btn-secondary">See sample reports</a>
+  </div>
+  <div class="fineprint">No credit card · No commitment · 30 day try-out</div>
+</section>
+
+<section class="features-section">
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="check">✓</div>
+      <h3>Budget vs. Actual</h3>
+      <p>Variance commentary that reads like a CFO wrote it — not a spreadsheet dump.</p>
+    </div>
+    <div class="feature-card">
+      <div class="check">✓</div>
+      <h3>13-Week Cash Flow Forecast</h3>
+      <p>Custom to your business. Updated weekly. So you stop running blind.</p>
+    </div>
+    <div class="feature-card">
+      <div class="check">✓</div>
+      <h3>Boardroom Deck</h3>
+      <p>One CFO-level deck you can walk into any board meeting with. Yours to keep.</p>
+    </div>
+    <div class="feature-card">
+      <div class="check">✓</div>
+      <h3>QuickBooks Clean-Up</h3>
+      <p>If your books are messy, we sort them. If they're clean, we make them sing.</p>
+    </div>
+    <div class="feature-card">
+      <div class="check">✓</div>
+      <h3>KPI Dashboard</h3>
+      <p>Real-time numbers that matter — not vanity metrics.</p>
+    </div>
+    <div class="feature-card">
+      <div class="check">✓</div>
+      <h3>Direct Access</h3>
+      <p>Text the founder. Cornell-trained. Talks like a human, not a spreadsheet.</p>
+    </div>
+  </div>
+</section>
+
+<section class="founder">
+  <img src="zacredtiebest.png" alt="Zac Prizant — Founder">
+  <div class="founder-text">
+    <h3>Zac Prizant</h3>
+    <div class="credentials">Founder · Cornell MBA · Cornell BS</div>
+    <p>I've spent ten years modeling businesses for boards, investors, and operators. Now I'm running it for owners who deserve boardroom-quality reporting without paying boardroom-tier salaries. Try me for thirty days, on me.</p>
+  </div>
+</section>
+
+<section class="reversal">
+  <div class="reversal-card">
+    <p>
+      <strong>Don't fire your current bookkeeper.</strong> Run us in parallel for thirty days.
+      If the report and dashboards aren't sharper than what you've got now,
+      walk away — keep the deck, keep the dashboards, no charge.
+    </p>
+  </div>
+</section>
+
+<section class="calendar-section" id="book">
+  <h2>Book your 15-minute fit-call</h2>
+  <p>Pick a time. We'll spend 15 minutes on your numbers, decide together if it's a fit.</p>
+
+  <!-- Calendly inline widget — uses Zac's existing 30-min URL -->
+  <div class="calendly-inline-widget"
+       data-url="https://calendly.com/zpzant/30min"
+       style="min-width:320px; height:680px;">
+  </div>
+  <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+</section>
+
+<footer>
+  Lightning Ledgerz LLC · Sarasota, FL &nbsp;·&nbsp;
+  <a href="mailto:zprizant@lightningledgerz.com">zprizant@lightningledgerz.com</a> &nbsp;·&nbsp;
+  <a href="tel:+17025502513">(702) 550-2513</a><br>
+  <span style="color:var(--gold); letter-spacing:2px; font-weight:700; font-size:0.7rem; margin-top:10px; display:inline-block;">STRIKE · SETTLE · SCALE</span>
+</footer>
+
+<script>
+  // Track UTM-ish source from cold-email link (?src=Joe&co=Acme) for funnel attribution
+  (function(){
+    var p = new URLSearchParams(window.location.search);
+    var src = p.get('src'), co = p.get('co');
+    if (src || co) {
+      try {
+        sessionStorage.setItem('ll_promo_src', src || '');
+        sessionStorage.setItem('ll_promo_co',  co  || '');
+      } catch(e){}
+    }
+  })();
+</script>
+
+</body>
+</html>

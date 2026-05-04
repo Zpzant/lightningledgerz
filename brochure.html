@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Lightning Ledgerz — Brochure</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  /* Print-first: optimised for "Save as PDF" at US Letter (8.5 x 11 in) */
+  @page { size: Letter; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #1a1f2e;
+    color: #1a1f36;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .download-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: #05080f; color: #f5f5f7;
+    padding: 14px 20px; text-align: center;
+    font-size: 0.9rem; letter-spacing: 0.4px;
+  }
+  .download-bar button {
+    background: linear-gradient(135deg, #e8231a, #ff4a3d);
+    color: #fff; border: none; padding: 10px 24px;
+    border-radius: 100px; font-weight: 700; font-family: inherit;
+    cursor: pointer; margin-left: 14px; font-size: 0.86rem;
+  }
+  @media print { .download-bar { display: none; } }
+
+  .brochure {
+    width: 8.5in; min-height: 11in; margin: 80px auto;
+    background: #ffffff; box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    overflow: hidden; position: relative;
+  }
+  @media print {
+    .brochure { margin: 0; box-shadow: none; width: 100%; min-height: 0; page-break-after: avoid; }
+    body { background: #fff; }
+  }
+
+  /* Page 1 — Cover + Pitch */
+  .cover {
+    background:
+      linear-gradient(160deg, #05080f 0%, #0d1b2a 60%, #1a1f2e 100%);
+    color: #f5f5f7;
+    padding: 0.7in 0.7in 0.5in 0.7in;
+    height: 11in;
+    position: relative;
+    page-break-after: always;
+  }
+  .cover::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 50% 40% at 80% 15%, rgba(232,35,26,0.12), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 20% 85%, rgba(212,175,55,0.08), transparent 60%);
+    pointer-events: none;
+  }
+  .cover > * { position: relative; z-index: 1; }
+
+  .cover-header {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid rgba(212,175,55,0.3);
+    padding-bottom: 16px; margin-bottom: 36px;
+  }
+  .cover-brand { display: flex; align-items: center; gap: 10px; }
+  .cover-brand img { width: 40px; height: 40px; border-radius: 6px; }
+  .cover-brand-name { font-size: 1.05rem; font-weight: 800; letter-spacing: 0.4px; }
+  .cover-brand-name .red { color: #e8231a; }
+  .cover-tag {
+    font-size: 0.62rem; letter-spacing: 3px; font-weight: 700;
+    color: #d4af37; text-transform: uppercase;
+  }
+
+  .cover-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 56pt; line-height: 1.02; font-weight: 800;
+    margin: 50px 0 20px 0; letter-spacing: -1.5px;
+  }
+  .cover-headline .gold {
+    background: linear-gradient(135deg, #f8e6a3, #d4af37, #a87f1d);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .cover-sub {
+    font-size: 14pt; color: rgba(245,245,247,0.85);
+    line-height: 1.55; max-width: 5.5in;
+    margin: 0 0 40px 0;
+  }
+
+  .cover-offer {
+    background:
+      linear-gradient(135deg, rgba(34,197,94,0.12), rgba(11,18,32,0.5));
+    border: 1px solid rgba(66,229,138,0.5);
+    border-radius: 10px;
+    padding: 22px 26px;
+    margin-bottom: 32px;
+  }
+  .cover-offer .badge {
+    display: inline-block;
+    font-size: 0.6rem; letter-spacing: 3px; font-weight: 800;
+    color: #42e58a; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .cover-offer h3 {
+    margin: 0 0 6px 0; font-size: 1.6rem; font-weight: 900;
+    color: #ffffff; letter-spacing: -0.5px;
+  }
+  .cover-offer p {
+    margin: 0; font-size: 0.92rem; line-height: 1.5;
+    color: rgba(245,245,247,0.85);
+  }
+
+  .cover-bullets {
+    list-style: none; padding: 0; margin: 0 0 36px 0;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px;
+  }
+  .cover-bullets li {
+    font-size: 0.92rem; color: rgba(245,245,247,0.9);
+    padding-left: 22px; position: relative;
+  }
+  .cover-bullets li::before {
+    content: "✓"; position: absolute; left: 0; color: #d4af37;
+    font-weight: 900; font-size: 1rem;
+  }
+
+  .cover-founder {
+    display: flex; align-items: center; gap: 18px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(212,175,55,0.3);
+  }
+  .cover-founder img {
+    width: 80px; height: 80px; border-radius: 8px; object-fit: cover;
+    border: 1.5px solid #d4af37;
+  }
+  .cover-founder .name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-weight: 700; margin-bottom: 2px;
+  }
+  .cover-founder .creds {
+    font-size: 0.68rem; letter-spacing: 2px; font-weight: 700;
+    color: #d4af37; text-transform: uppercase;
+  }
+
+  /* Page 2 — Services + Sample Work + Contact */
+  .inside {
+    background: #ffffff;
+    color: #1a1f36;
+    padding: 0.6in 0.7in;
+    height: 11in;
+    position: relative;
+  }
+  .inside-header {
+    border-bottom: 2px solid #1a1f36;
+    padding-bottom: 12px; margin-bottom: 22px;
+  }
+  .inside-header h2 {
+    font-family: 'Playfair Display', serif;
+    margin: 0; font-size: 26pt; font-weight: 800;
+    color: #1a1f36;
+  }
+  .inside-header .accent {
+    color: #e8231a;
+  }
+
+  .services-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px 22px;
+    margin-bottom: 26px;
+  }
+  .service-block {
+    border-left: 3px solid #e8231a;
+    padding: 4px 0 4px 14px;
+  }
+  .service-block h4 {
+    margin: 0 0 4px 0; font-size: 0.92rem; font-weight: 800; color: #1a1f36;
+  }
+  .service-block p {
+    margin: 0; font-size: 0.78rem; line-height: 1.5; color: #4a5163;
+  }
+
+  .work-section {
+    background: #f7f9fc;
+    border-left: 3px solid #d4af37;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+  }
+  .work-section h3 {
+    margin: 0 0 14px 0;
+    font-family: 'Playfair Display', serif; font-size: 14pt; color: #1a1f36;
+  }
+  .work-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+  }
+  .work-grid img {
+    width: 100%; aspect-ratio: 16/10; object-fit: cover;
+    border-radius: 4px; border: 1px solid #e7e9ee;
+  }
+  .work-caption {
+    text-align: center; font-size: 0.68rem; color: #697386;
+    margin-top: 4px; letter-spacing: 0.3px;
+  }
+
+  .pricing-strip {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
+    margin-bottom: 22px;
+  }
+  .price-card {
+    text-align: center;
+    border: 1px solid #e7e9ee; border-radius: 8px;
+    padding: 14px 12px;
+  }
+  .price-card.gold { border-color: #d4af37; background: linear-gradient(180deg,#fffaeb,#fff); }
+  .price-card.diamond { border-color: #6dd5fa; background: linear-gradient(180deg,#ecfaff,#fff); }
+  .price-card .tier {
+    font-size: 0.68rem; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; color: #697386; margin-bottom: 4px;
+  }
+  .price-card.gold .tier { color: #a87f1d; }
+  .price-card.diamond .tier { color: #0892b8; }
+  .price-card .price {
+    font-size: 1.5rem; font-weight: 900; color: #1a1f36;
+  }
+  .price-card .per { font-size: 0.7rem; color: #697386; }
+
+  .cta-strip {
+    background: linear-gradient(135deg, #05080f, #0d1b2a);
+    color: #fff; border-radius: 10px;
+    padding: 22px 26px;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 18px;
+  }
+  .cta-strip-text h3 {
+    margin: 0 0 4px 0; font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 800;
+  }
+  .cta-strip-text h3 .gold {
+    background: linear-gradient(135deg, #f8e6a3, #d4af37);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .cta-strip-text p { margin: 0; font-size: 0.82rem; opacity: 0.78; }
+  .cta-strip a {
+    background: linear-gradient(135deg, #22c55e, #42e58a);
+    color: #0a1a12; font-weight: 800;
+    padding: 12px 26px; border-radius: 100px; text-decoration: none;
+    font-size: 0.85rem; letter-spacing: 0.4px;
+    white-space: nowrap;
+  }
+
+  .contact-row {
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1.5px solid #1a1f36;
+    padding-top: 14px;
+    font-size: 0.82rem; color: #4a5163;
+  }
+  .contact-row a { color: #1a1f36; text-decoration: none; font-weight: 600; }
+  .contact-row .tagline {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; color: #d4af37;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="download-bar">
+  Lightning Ledgerz one-page brochure. <strong>To save as PDF:</strong> File → Print → Destination "Save as PDF" → Layout "Portrait" → click Save.
+  <button onclick="window.print()">Save as PDF</button>
+</div>
+
+<!-- ===== Page 1: cover ===== -->
+<div class="brochure">
+  <div class="cover">
+    <div class="cover-header">
+      <div class="cover-brand">
+        <img src="favicon-192x192.png?v=4" alt="">
+        <div class="cover-brand-name">Lightning <span class="red">Ledgerz</span></div>
+      </div>
+      <div class="cover-tag">Cornell MBA · Sarasota</div>
+    </div>
+
+    <h1 class="cover-headline">Boardroom-quality books.<br><span class="gold">For the rest of us.</span></h1>
+
+    <p class="cover-sub">
+      Lightning Ledgerz delivers fractional-CFO-level financial reporting to small &amp; mid-sized businesses
+      who deserve more than a monthly QuickBooks dump — without paying CFO salaries.
+    </p>
+
+    <div class="cover-offer">
+      <div class="badge">Limited · Risk Free</div>
+      <h3>First Month Free + One Free CFO-Level Report</h3>
+      <p>Keep your current bookkeeper. Switch only if our reporting is sharper. Cornell MBA &amp; undergrad behind every deliverable.</p>
+    </div>
+
+    <ul class="cover-bullets">
+      <li>Budget vs. Actual + variance commentary</li>
+      <li>13-Week cash flow forecast</li>
+      <li>Boardroom-ready presentation deck</li>
+      <li>QuickBooks clean-up &amp; sync</li>
+      <li>Live KPI dashboards</li>
+      <li>Direct founder access (text / call)</li>
+    </ul>
+
+    <div class="cover-founder">
+      <img src="zacredtiebest.png" alt="Zac Prizant">
+      <div>
+        <div class="name">Zac Prizant</div>
+        <div class="creds">Founder · Cornell MBA · Cornell BS</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Page 2: services + samples + pricing + CTA ===== -->
+  <div class="inside">
+    <div class="inside-header">
+      <h2>What you <span class="accent">get</span></h2>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-block">
+        <h4>FP&amp;A Advisory</h4>
+        <p>Strategic financial planning that ties your day-to-day numbers to where the business is going.</p>
+      </div>
+      <div class="service-block">
+        <h4>Financial Modeling</h4>
+        <p>Three-statement models, DCF, scenario planning. Everything you need to raise, sell, or grow.</p>
+      </div>
+      <div class="service-block">
+        <h4>KPI Dashboards</h4>
+        <p>Real-time dashboards that surface the metrics that move your business — not vanity charts.</p>
+      </div>
+      <div class="service-block">
+        <h4>Variance Analysis</h4>
+        <p>Why did margin slip? Why did cash drop? Commentary that reads like a CFO wrote it.</p>
+      </div>
+      <div class="service-block">
+        <h4>Cash Flow Forecasting</h4>
+        <p>13-week rolling forecasts so you stop running blind. Updated weekly.</p>
+      </div>
+      <div class="service-block">
+        <h4>Boardroom Decks</h4>
+        <p>McKinsey-quality slides for board meetings, investor updates, banker reviews.</p>
+      </div>
+      <div class="service-block">
+        <h4>Bookkeeping &amp; QuickBooks</h4>
+        <p>Clean books, on time, every month — so when the report runs, the numbers are right.</p>
+      </div>
+      <div class="service-block">
+        <h4>Fractional CFO</h4>
+        <p>On-call CFO for half-day or full-day engagements when you need senior judgment fast.</p>
+      </div>
+    </div>
+
+    <div class="work-section">
+      <h3>Sample work — what your reports will look like</h3>
+      <div class="work-grid">
+        <div>
+          <img src="slide-budget-vs-actual.png" alt="Budget vs Actual">
+          <div class="work-caption">Budget vs. Actual</div>
+        </div>
+        <div>
+          <img src="slide-revenue-trend.png" alt="Revenue Trend">
+          <div class="work-caption">Revenue Trend</div>
+        </div>
+        <div>
+          <img src="slide-expense-waterfall.png" alt="Expense Waterfall">
+          <div class="work-caption">Variance Waterfall</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pricing-strip">
+      <div class="price-card">
+        <div class="tier">Basic</div>
+        <div class="price">$799<span class="per">/mo</span></div>
+      </div>
+      <div class="price-card gold">
+        <div class="tier">Gold ★ Most Popular</div>
+        <div class="price">$1,299<span class="per">/mo</span></div>
+      </div>
+      <div class="price-card diamond">
+        <div class="tier">Diamond</div>
+        <div class="price">$3,999<span class="per">/mo</span></div>
+      </div>
+    </div>
+
+    <div class="cta-strip">
+      <div class="cta-strip-text">
+        <h3>Claim Your <span class="gold">First Month Free</span></h3>
+        <p>15-minute fit call. No credit card. No commitment.</p>
+      </div>
+      <a href="https://lightningledgerz.com/promo.html">Book Now →</a>
+    </div>
+
+    <div class="contact-row">
+      <div>
+        <a href="https://lightningledgerz.com">lightningledgerz.com</a>
+        &nbsp;·&nbsp;
+        <a href="mailto:zprizant@lightningledgerz.com">zprizant@lightningledgerz.com</a>
+        &nbsp;·&nbsp;
+        <a href="tel:+17025502513">(702) 550-2513</a>
+      </div>
+      <div class="tagline">Strike. Settle. Scale.</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
