@@ -1313,6 +1313,231 @@
             color: #374151;
         }
 
+        /* ============================================
+           GATSBY HOLLOW TRIM + FIRST-MONTH-FREE BANNER
+           Pricing section: transparent so the bg video shows
+           through the Art Deco filigree, dark cards on top.
+        ============================================ */
+        section#pricing.pricing-gatsby {
+            background:
+              linear-gradient(180deg, rgba(5, 8, 15, 0.55) 0%, rgba(11, 18, 32, 0.55) 100%) !important;
+            color: #f5f5f7 !important;
+            position: relative;
+            overflow: hidden;
+            padding-top: 120px !important;
+            padding-bottom: 120px !important;
+        }
+
+        .gatsby-trim {
+            position: absolute;
+            left: 0; right: 0;
+            height: 90px;
+            pointer-events: none;
+            z-index: 4;
+            opacity: 0.95;
+        }
+        .gatsby-trim-top    { top: 0; }
+        .gatsby-trim-bottom { bottom: 0; transform: scaleY(-1); }
+        .gatsby-trim svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .gatsby-trim path,
+        .gatsby-trim line,
+        .gatsby-trim polyline,
+        .gatsby-trim circle,
+        .gatsby-trim rect {
+            stroke: #d4af37;
+            stroke-width: 1.6;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.45));
+        }
+
+        /* First Month Free banner */
+        .first-month-banner {
+            position: relative;
+            z-index: 5;
+            margin: 0 auto 56px auto;
+            max-width: 880px;
+            padding: 0 20px;
+            text-align: center;
+        }
+        .first-month-frame {
+            position: relative;
+            background:
+              linear-gradient(135deg, rgba(20, 14, 8, 0.72) 0%, rgba(11, 18, 32, 0.72) 100%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 44px 40px 38px 40px;
+            border-radius: 4px;
+            border: 1px solid rgba(212, 175, 55, 0.55);
+            box-shadow:
+              0 0 0 6px rgba(212, 175, 55, 0.05),
+              0 0 0 7px rgba(212, 175, 55, 0.35),
+              0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+        .first-month-frame::before,
+        .first-month-frame::after {
+            content: "";
+            position: absolute;
+            width: 26px; height: 26px;
+            border: 2px solid #d4af37;
+        }
+        .first-month-frame::before {
+            top: -10px; left: -10px;
+            border-right: none; border-bottom: none;
+        }
+        .first-month-frame::after {
+            bottom: -10px; right: -10px;
+            border-left: none; border-top: none;
+        }
+        .first-month-flag {
+            display: inline-block;
+            font-size: 0.66rem;
+            font-weight: 800;
+            color: #d4af37;
+            letter-spacing: 5px;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+            padding: 6px 18px;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            border-radius: 100px;
+        }
+        section#pricing.pricing-gatsby .first-month-banner h2 {
+            color: #ffffff !important;
+            font-family: 'Playfair Display', 'Inter', serif !important;
+            font-size: 3.6rem !important;
+            font-weight: 800 !important;
+            line-height: 1.05 !important;
+            margin: 0 0 18px 0 !important;
+            letter-spacing: -1px;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+        }
+        .first-month-banner h2 .gold-accent {
+            background: linear-gradient(135deg, #f8e6a3 0%, #d4af37 45%, #a87f1d 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+        }
+        .first-month-banner p {
+            color: rgba(245, 245, 247, 0.92) !important;
+            font-size: 1.08rem !important;
+            line-height: 1.6 !important;
+            max-width: 620px;
+            margin: 0 auto 26px auto !important;
+        }
+        .first-month-banner p .strike {
+            color: #d4af37;
+            font-weight: 700;
+        }
+        .btn-claim-free {
+            display: inline-block;
+            background: linear-gradient(135deg, #f8e6a3 0%, #d4af37 50%, #a87f1d 100%);
+            color: #1a1a2e;
+            font-weight: 800;
+            padding: 16px 44px;
+            border-radius: 100px;
+            text-decoration: none;
+            font-size: 1.05rem;
+            letter-spacing: 0.6px;
+            box-shadow: 0 8px 28px rgba(212, 175, 55, 0.45);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+        }
+        .btn-claim-free:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 36px rgba(212, 175, 55, 0.6);
+        }
+        .first-month-fineprint {
+            margin-top: 16px;
+            font-size: 0.74rem;
+            color: rgba(212, 175, 55, 0.7);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* Dark-themed package cards inside the Gatsby pricing section */
+        section#pricing.pricing-gatsby .section-header h2 {
+            color: #ffffff !important;
+            font-family: 'Playfair Display', 'Inter', serif !important;
+        }
+        section#pricing.pricing-gatsby .section-header p {
+            color: rgba(245, 245, 247, 0.7) !important;
+        }
+        section#pricing.pricing-gatsby .package-card {
+            background:
+              linear-gradient(160deg, rgba(15, 22, 40, 0.92) 0%, rgba(8, 12, 24, 0.92) 100%) !important;
+            border: 1px solid rgba(212, 175, 55, 0.28) !important;
+            color: #f5f5f7 !important;
+            box-shadow:
+              0 4px 30px rgba(0, 0, 0, 0.5),
+              inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        section#pricing.pricing-gatsby .package-card:hover {
+            border-color: rgba(212, 175, 55, 0.7) !important;
+            box-shadow:
+              0 0 50px rgba(212, 175, 55, 0.35),
+              0 0 100px rgba(212, 175, 55, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+        }
+        section#pricing.pricing-gatsby .package-card.gold {
+            background:
+              linear-gradient(160deg, rgba(40, 30, 10, 0.92) 0%, rgba(20, 14, 6, 0.92) 100%) !important;
+            border-color: rgba(212, 175, 55, 0.55) !important;
+        }
+        section#pricing.pricing-gatsby .package-card.diamond {
+            background:
+              linear-gradient(160deg, rgba(8, 28, 40, 0.92) 0%, rgba(5, 18, 28, 0.92) 100%) !important;
+            border-color: rgba(0, 212, 255, 0.45) !important;
+        }
+        section#pricing.pricing-gatsby .package-card h3 {
+            font-family: 'Playfair Display', 'Inter', serif !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
+        section#pricing.pricing-gatsby .package-card.gold h3 {
+            background: linear-gradient(135deg, #f8e6a3, #d4af37, #a87f1d) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+        }
+        section#pricing.pricing-gatsby .package-card.diamond h3 {
+            color: #6dd5fa !important;
+            -webkit-text-fill-color: #6dd5fa !important;
+        }
+        section#pricing.pricing-gatsby .package-features li {
+            color: rgba(245, 245, 247, 0.85) !important;
+            border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        section#pricing.pricing-gatsby .package-price,
+        section#pricing.pricing-gatsby .package-trial {
+            color: #ffffff !important;
+        }
+        /* Promo input on dark bg */
+        section#pricing.pricing-gatsby .pricing-toggle-container,
+        section#pricing.pricing-gatsby .package-grid {
+            position: relative;
+            z-index: 5;
+        }
+
+        @media (max-width: 768px) {
+            section#pricing.pricing-gatsby {
+                padding-top: 90px !important;
+                padding-bottom: 90px !important;
+            }
+            section#pricing.pricing-gatsby .first-month-banner h2 {
+                font-size: 2.4rem !important;
+            }
+            .first-month-frame { padding: 32px 24px 28px 24px; }
+            .gatsby-trim { height: 64px; }
+        }
+
         /* Portal section - white gradient */
         section#portal {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.88) 100%) !important;
@@ -8254,8 +8479,60 @@
     </section>
 
 
-    <!-- Pricing Section -->
-    <section class="section" id="pricing">
+    <!-- Pricing Section — Gatsby hollow-trim treatment, video shows through -->
+    <section class="section pricing-gatsby" id="pricing">
+
+        <!-- Art Deco hollow trim — top -->
+        <div class="gatsby-trim gatsby-trim-top" aria-hidden="true">
+            <svg viewBox="0 0 1200 90" preserveAspectRatio="xMidYMax meet">
+                <!-- horizontal base lines -->
+                <line x1="0"   y1="86" x2="1200" y2="86"/>
+                <line x1="60"  y1="78" x2="1140" y2="78"/>
+                <!-- center sunburst fan -->
+                <g transform="translate(600 86)">
+                    <path d="M -54 0 A 54 54 0 0 1 54 0"/>
+                    <path d="M -38 0 A 38 38 0 0 1 38 0"/>
+                    <line x1="0"   y1="-54" x2="0"   y2="-72"/>
+                    <line x1="-22" y1="-49" x2="-29" y2="-66"/>
+                    <line x1="22"  y1="-49" x2="29"  y2="-66"/>
+                    <line x1="-40" y1="-36" x2="-54" y2="-49"/>
+                    <line x1="40"  y1="-36" x2="54"  y2="-49"/>
+                    <line x1="-50" y1="-20" x2="-68" y2="-28"/>
+                    <line x1="50"  y1="-20" x2="68"  y2="-28"/>
+                </g>
+                <!-- left chevron pattern -->
+                <g>
+                    <polyline points="80,78 92,68 104,78 116,68 128,78 140,68 152,78"/>
+                    <polyline points="180,78 192,68 204,78 216,68 228,78 240,68 252,78"/>
+                    <polyline points="280,78 292,68 304,78 316,68 328,78 340,68 352,78"/>
+                    <polyline points="380,78 392,68 404,78 416,68 428,78 440,68 452,78"/>
+                </g>
+                <!-- right chevron pattern (mirrored) -->
+                <g>
+                    <polyline points="748,78 760,68 772,78 784,68 796,78 808,68 820,78"/>
+                    <polyline points="848,78 860,68 872,78 884,68 896,78 908,68 920,78"/>
+                    <polyline points="948,78 960,68 972,78 984,68 996,78 1008,68 1020,78"/>
+                    <polyline points="1048,78 1060,68 1072,78 1084,68 1096,78 1108,68 1120,78"/>
+                </g>
+                <!-- decorative diamonds at the corners -->
+                <path d="M 50 78 L 60 70 L 70 78 L 60 86 Z"/>
+                <path d="M 1130 78 L 1140 70 L 1150 78 L 1140 86 Z"/>
+                <!-- center stepped pyramid above the fan -->
+                <path d="M 560 86 L 580 70 L 596 70 L 596 56 L 604 56 L 604 70 L 620 70 L 640 86 Z"/>
+            </svg>
+        </div>
+
+        <!-- First Month Free banner -->
+        <div class="first-month-banner">
+            <div class="first-month-frame">
+                <div class="first-month-flag">Limited Time · Risk Free</div>
+                <h2>First Month <span class="gold-accent">Free</span></h2>
+                <p>No need to <span class="strike">cancel your current bookkeeper</span> if you don't like us. Try Lightning Ledgerz for thirty days — keep what works, drop what doesn't.</p>
+                <a href="#portal" class="btn-claim-free">Claim Your Free Month</a>
+                <div class="first-month-fineprint">No Credit Card · No Commitment · No Pressure</div>
+            </div>
+        </div>
+
         <div class="section-header">
             <h2>Pricing Packages</h2>
             <p>Flexible plans designed to fit your business needs.</p>
@@ -8345,6 +8622,40 @@
         </div>
 
         <!-- guarantee removed -->
+
+        <!-- Art Deco hollow trim — bottom (mirrored via CSS scaleY) -->
+        <div class="gatsby-trim gatsby-trim-bottom" aria-hidden="true">
+            <svg viewBox="0 0 1200 90" preserveAspectRatio="xMidYMax meet">
+                <line x1="0"   y1="86" x2="1200" y2="86"/>
+                <line x1="60"  y1="78" x2="1140" y2="78"/>
+                <g transform="translate(600 86)">
+                    <path d="M -54 0 A 54 54 0 0 1 54 0"/>
+                    <path d="M -38 0 A 38 38 0 0 1 38 0"/>
+                    <line x1="0"   y1="-54" x2="0"   y2="-72"/>
+                    <line x1="-22" y1="-49" x2="-29" y2="-66"/>
+                    <line x1="22"  y1="-49" x2="29"  y2="-66"/>
+                    <line x1="-40" y1="-36" x2="-54" y2="-49"/>
+                    <line x1="40"  y1="-36" x2="54"  y2="-49"/>
+                    <line x1="-50" y1="-20" x2="-68" y2="-28"/>
+                    <line x1="50"  y1="-20" x2="68"  y2="-28"/>
+                </g>
+                <g>
+                    <polyline points="80,78 92,68 104,78 116,68 128,78 140,68 152,78"/>
+                    <polyline points="180,78 192,68 204,78 216,68 228,78 240,68 252,78"/>
+                    <polyline points="280,78 292,68 304,78 316,68 328,78 340,68 352,78"/>
+                    <polyline points="380,78 392,68 404,78 416,68 428,78 440,68 452,78"/>
+                </g>
+                <g>
+                    <polyline points="748,78 760,68 772,78 784,68 796,78 808,68 820,78"/>
+                    <polyline points="848,78 860,68 872,78 884,68 896,78 908,68 920,78"/>
+                    <polyline points="948,78 960,68 972,78 984,68 996,78 1008,68 1020,78"/>
+                    <polyline points="1048,78 1060,68 1072,78 1084,68 1096,78 1108,68 1120,78"/>
+                </g>
+                <path d="M 50 78 L 60 70 L 70 78 L 60 86 Z"/>
+                <path d="M 1130 78 L 1140 70 L 1150 78 L 1140 86 Z"/>
+                <path d="M 560 86 L 580 70 L 596 70 L 596 56 L 604 56 L 604 70 L 620 70 L 640 86 Z"/>
+            </svg>
+        </div>
     </section>
 
     <!-- Lightbox -->
