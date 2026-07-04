@@ -452,16 +452,6 @@
             border: none;
         }
 
-        .video-background video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            pointer-events: none;
-        }
-
         .video-overlay {
             position: fixed;
             top: 0;
@@ -1374,7 +1364,7 @@
         }
         .first-month-banner h2 {
             color: #ffffff !important;
-            font-family: var(--font-primary) !important;
+            font-family: 'Playfair Display', 'Inter', serif !important;
             font-size: 3.6rem !important;
             font-weight: 800 !important;
             line-height: 1.05 !important;
@@ -1463,6 +1453,7 @@
         }
         .frame-cutout-left  { left: 24px; }
         .frame-cutout-right { right: 24px; }
+        .frame-cutout video,
         .frame-cutout .cutout-fallback {
             position: absolute;
             inset: 0;
@@ -1477,30 +1468,6 @@
             background:
               linear-gradient(135deg, #b78b1f 0%, #f8e6a3 35%, #d4af37 70%, #5a3d10 100%);
             opacity: 0.85;
-        }
-        /* Each Z is a true window onto the ONE background video: a fixed,
-           viewport-aligned clone of that footage, clipped to the icon
-           silhouette. Because it is sized/positioned exactly like the fixed
-           background video and JS-synced to it, the Z shows the same frame at
-           the same scale — it reads as see-through glass, not a second video.
-           JS sets mask-position/size so each window tracks its marker. */
-        .cutout-video {
-            position: fixed;
-            inset: 0;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            z-index: 1;
-            pointer-events: none;
-            -webkit-mask-image: url("Googlepicledgerz.png");
-                    mask-image: url("Googlepicledgerz.png");
-            -webkit-mask-repeat: no-repeat;
-                    mask-repeat: no-repeat;
-            -webkit-mask-mode: alpha;
-                    mask-mode: alpha;
-            /* hidden until JS aligns the mask over a marker */
-            -webkit-mask-position: -9999px -9999px;
-                    mask-position: -9999px -9999px;
         }
 
         @media (max-width: 768px) {
@@ -6472,10 +6439,8 @@
             display: flex;
             width: max-content;
             height: 100%;
-            animation: scrollBanner 48s linear infinite;
+            animation: scrollBanner 80s linear infinite;
             will-change: transform;
-            transform: translateZ(0);
-            backface-visibility: hidden;
         }
         .scroll-banner-track:hover { animation-play-state: paused; }
 
@@ -6925,7 +6890,6 @@
 
         @media (max-width: 768px) {
             .scroll-banner-section { height: 86px; }
-            .scroll-banner-track { animation-duration: 32s; }
             .sb-block { height: 86px; }
             .sb-logo { padding: 0 22px; min-width: 160px; }
             .sb-logo-img { width: 24px; height: 24px; }
@@ -7676,28 +7640,51 @@
     </style>
 </head>
 <body>
-    <!-- Video Background - native muted INLINE video: autoplays in the background on iPhone/iPad (iframes can't) -->
+    <!-- Video Background - Using iframe for universal compatibility including iOS -->
     <div class="video-background">
-        <video id="bg-video" autoplay loop muted playsinline webkit-playsinline preload="auto" poster="og-image.png">
-            <source src="background-video.mp4" type="video/mp4">
-        </video>
+        <iframe
+            id="bg-video"
+            src="https://streamable.com/e/0ek0up?autoplay=1&nocontrols=1&loop=1&muted=1"
+            frameborder="0"
+            allow="autoplay; fullscreen"
+            allowfullscreen>
+        </iframe>
+        <!-- iOS play button — only shows on iPhone/iPad where autoplay fails -->
+        <div id="ios-play-btn" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5;cursor:pointer;text-align:center;" onclick="iosPlayVideo()">
+            <div style="width:80px;height:80px;border-radius:50%;background:rgba(232,35,26,0.9);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 4px 30px rgba(0,0,0,0.4);backdrop-filter:blur(4px);">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <div style="color:#fff;font-size:0.85rem;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Tap to Play</div>
+        </div>
     </div>
     <div class="video-overlay"></div>
     <script>
-    // iOS only autoplays video that is muted + playsinline, and sometimes defers the start.
-    // Force play on load and on the first user gesture as a fallback.
+    // iOS detection — show play button only on iPhone/iPad
     (function() {
-        var v = document.getElementById('bg-video');
-        if (!v) return;
-        v.muted = true;                  // required for iOS autoplay
-        v.setAttribute('muted', '');
-        var tryPlay = function() { var p = v.play(); if (p && p.catch) p.catch(function(){}); };
-        tryPlay();
-        v.addEventListener('canplay', tryPlay, { once: true });
-        ['touchstart', 'click', 'scroll'].forEach(function(evt) {
-            document.addEventListener(evt, tryPlay, { once: true, passive: true });
-        });
+        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        if (isIOS) {
+            var playBtn = document.getElementById('ios-play-btn');
+            var iframe = document.getElementById('bg-video');
+            if (playBtn) playBtn.style.display = 'block';
+            // Don't load the iframe src until user taps (saves bandwidth + avoids stall)
+            if (iframe) {
+                iframe.dataset.src = iframe.src;
+                iframe.src = '';
+            }
+        }
     })();
+    function iosPlayVideo() {
+        var iframe = document.getElementById('bg-video');
+        var playBtn = document.getElementById('ios-play-btn');
+        if (iframe && iframe.dataset.src) {
+            iframe.src = iframe.dataset.src;
+        }
+        if (playBtn) {
+            playBtn.style.opacity = '0';
+            playBtn.style.transition = 'opacity 0.5s';
+            setTimeout(function() { playBtn.style.display = 'none'; }, 500);
+        }
+    }
     </script>
 
     <!-- Navigation -->
@@ -7830,84 +7817,9 @@
                 </div>
             </div>
             <div class="saas-hero-image">
-                <img src="dynamicdashboards.png" alt="Lightning Ledgerz — live financial dashboards & reports">
+                <img src="zacfullsuitnoback.png" alt="Zac Prizant - FP&A Expert">
             </div>
         </div>
-    </section>
-
-    <!-- ============ LIVE REPORT SHOWCASE — auto-sifting report preview ============ -->
-    <section class="rb-showcase" id="live-preview">
-        <style>
-            .rb-showcase{background:linear-gradient(180deg,#f7f9fc,#eef2f8);padding:70px 20px 80px;position:relative;z-index:2;}
-            .rb-head{text-align:center;max-width:720px;margin:0 auto 38px;}
-            .rb-kicker{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#e8231a;background:rgba(232,35,26,.08);padding:6px 14px;border-radius:30px;margin-bottom:16px;}
-            .rb-head h2{font-size:2.2rem;color:#0f2440;margin:0 0 12px;font-weight:800;line-height:1.15;}
-            .rb-head p{color:#4a6a8a;font-size:1.05rem;margin:0;}
-            .rb-stage{max-width:920px;margin:0 auto;}
-            .rb-frame{background:#0f1626;border-radius:14px;box-shadow:0 30px 70px -20px rgba(15,36,64,.45),0 0 0 1px rgba(15,36,64,.06);overflow:hidden;}
-            .rb-bar{display:flex;gap:7px;padding:13px 16px;background:#0b1120;border-bottom:1px solid rgba(255,255,255,.06);}
-            .rb-bar span{width:11px;height:11px;border-radius:50%;background:#33405a;}
-            .rb-bar span:nth-child(1){background:#ff5f57;}
-            .rb-bar span:nth-child(2){background:#febc2e;}
-            .rb-bar span:nth-child(3){background:#28c840;}
-            .rb-screen{position:relative;width:100%;aspect-ratio:16/10;background:#fff;overflow:hidden;}
-            .rb-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;opacity:0;transform:scale(1.06);transition:opacity 1s ease,transform 6s ease;}
-            .rb-slide.active{opacity:1;transform:scale(1);z-index:1;}
-            .rb-build{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(110deg,transparent 35%,rgba(120,180,255,.18) 50%,transparent 65%);background-size:250% 100%;animation:rbSweep 3s ease-in-out infinite;}
-            @keyframes rbSweep{0%{background-position:140% 0;}100%{background-position:-40% 0;}}
-            .rb-dots{display:flex;justify-content:center;gap:9px;margin-top:22px;flex-wrap:wrap;}
-            .rb-dots button{width:9px;height:9px;border-radius:50%;border:none;background:#c2cede;cursor:pointer;padding:0;transition:all .25s;}
-            .rb-dots button.on{background:#e8231a;width:26px;border-radius:5px;}
-            .rb-cta{text-align:center;margin-top:34px;}
-            @media(max-width:768px){.rb-head h2{font-size:1.6rem;}.rb-head p{font-size:.95rem;}}
-        </style>
-        <div class="rb-head">
-            <span class="rb-kicker">⚡ Live Preview</span>
-            <h2>Watch your numbers come to life</h2>
-            <p>Dashboards, forecasts, and board-ready slides — built automatically from your books and refreshed in seconds.</p>
-        </div>
-        <div class="rb-stage">
-            <div class="rb-frame">
-                <div class="rb-bar"><span></span><span></span><span></span></div>
-                <div class="rb-screen" id="rb-screen">
-                    <img class="rb-slide active" src="slide-revenue-trend.png" alt="Revenue trend dashboard">
-                    <img class="rb-slide" src="dynamicdashboards.png" alt="KPI dashboard">
-                    <img class="rb-slide" src="slide-profit-margin.png" alt="Profit margin analysis">
-                    <img class="rb-slide" src="slide-expense-waterfall.png" alt="Expense waterfall">
-                    <img class="rb-slide" src="slide-revenue-by-customer.png" alt="Revenue by customer">
-                    <img class="rb-slide" src="slide-budget-vs-actual.png" alt="Budget vs actual">
-                    <div class="rb-build"></div>
-                </div>
-            </div>
-            <div class="rb-dots" id="rb-dots"></div>
-        </div>
-        <div class="rb-cta">
-            <a href="#pricing" class="btn-saas-primary">See the Packages →</a>
-        </div>
-        <script>
-        (function(){
-            var screen=document.getElementById('rb-screen');
-            if(!screen)return;
-            var slides=screen.querySelectorAll('.rb-slide');
-            var dotsWrap=document.getElementById('rb-dots');
-            var i=0,timer=null;
-            slides.forEach(function(_,idx){
-                var b=document.createElement('button');
-                if(idx===0)b.className='on';
-                b.addEventListener('click',function(){go(idx);reset();});
-                dotsWrap.appendChild(b);
-            });
-            var dots=dotsWrap.querySelectorAll('button');
-            function go(n){
-                slides[i].classList.remove('active');dots[i].classList.remove('on');
-                i=(n+slides.length)%slides.length;
-                slides[i].classList.add('active');dots[i].classList.add('on');
-            }
-            function next(){go(i+1);}
-            function reset(){clearInterval(timer);timer=setInterval(next,2800);}
-            reset();
-        })();
-        </script>
     </section>
 
     <!-- Editorial billboard banner — tight, classy -->
@@ -8521,82 +8433,21 @@
                 <a href="#portal" class="btn-claim-free">Claim Your Free Month</a>
                 <div class="first-month-fineprint">No Credit Card · No Commitment · No Pressure</div>
 
-                <!-- Z-icon "windows": gold-gradient fallback markers, also
-                     used as position anchors for the see-through clones. -->
+                <!-- Z-icon "windows" — icon-shaped cutouts showing background video -->
                 <div class="frame-cutout frame-cutout-left" aria-hidden="true">
                     <div class="cutout-fallback"></div>
+                    <video autoplay loop muted playsinline preload="auto" onerror="this.style.display='none'">
+                        <source src="background-video.mp4" type="video/mp4">
+                    </video>
                 </div>
                 <div class="frame-cutout frame-cutout-right" aria-hidden="true">
                     <div class="cutout-fallback"></div>
+                    <video autoplay loop muted playsinline preload="auto" onerror="this.style.display='none'">
+                        <source src="background-video.mp4" type="video/mp4">
+                    </video>
                 </div>
-                <!-- Fixed, viewport-aligned clones of the ONE background video,
-                     clipped to each Z and JS-synced to #bg-video so the windows
-                     show the exact same footage playing behind the site. -->
-                <video class="cutout-video" data-cutout="left" autoplay loop muted playsinline preload="auto" aria-hidden="true" onerror="this.style.display='none'">
-                    <source src="background-video.mp4" type="video/mp4">
-                </video>
-                <video class="cutout-video" data-cutout="right" autoplay loop muted playsinline preload="auto" aria-hidden="true" onerror="this.style.display='none'">
-                    <source src="background-video.mp4" type="video/mp4">
-                </video>
             </div>
         </div>
-        <script>
-        /* See-through Z windows: lock the two clip clones to the master
-           background video and keep their Z masks aligned to the markers so
-           each window reveals the one background video, in sync and to scale. */
-        (function () {
-            var bg = document.getElementById('bg-video');
-            var clones = document.querySelectorAll('.first-month-frame .cutout-video');
-            if (!clones.length) return;
-            var markers = {
-                left:  document.querySelector('.frame-cutout-left'),
-                right: document.querySelector('.frame-cutout-right')
-            };
-            function placeMasks() {
-                for (var i = 0; i < clones.length; i++) {
-                    var v = clones[i];
-                    var m = markers[v.getAttribute('data-cutout')];
-                    if (!m) continue;
-                    var r = m.getBoundingClientRect();
-                    var pos = r.left + 'px ' + r.top + 'px';
-                    var size = r.width + 'px ' + r.height + 'px';
-                    v.style.webkitMaskPosition = pos; v.style.maskPosition = pos;
-                    v.style.webkitMaskSize = size;    v.style.maskSize = size;
-                }
-            }
-            var ticking = false;
-            function onScroll() {
-                if (ticking) return;
-                ticking = true;
-                requestAnimationFrame(function () { placeMasks(); ticking = false; });
-            }
-            function sync() {
-                if (!bg) return;
-                for (var i = 0; i < clones.length; i++) {
-                    var v = clones[i];
-                    if (Math.abs(v.currentTime - bg.currentTime) > 0.15) {
-                        try { v.currentTime = bg.currentTime; } catch (e) {}
-                    }
-                    if (v.paused) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
-                }
-            }
-            window.addEventListener('scroll', onScroll, { passive: true });
-            window.addEventListener('resize', onScroll);
-            window.addEventListener('load', function () { placeMasks(); sync(); });
-            if (bg) { bg.addEventListener('play', sync); }
-            setInterval(sync, 500);
-            // iOS (esp. Low Power Mode) only starts video on a user gesture —
-            // mirror the main bg-video fallback for the clones.
-            ['touchstart', 'click', 'scroll'].forEach(function (evt) {
-                window.addEventListener(evt, sync, { once: true, passive: true });
-            });
-            for (var i = 0; i < clones.length; i++) {
-                clones[i].muted = true;
-                clones[i].setAttribute('muted', '');
-            }
-            placeMasks();
-        })();
-        </script>
 
         <div class="section-header">
             <h2>Pricing Packages</h2>
@@ -9234,9 +9085,9 @@
                 <p style="font-size: 0.85rem; font-style: italic; color: #4a6a8a;">Zac Prizant (right) with twin brother, Max, Yale SOM</p>
             </div>
             <div class="about-text">
-                <h3 style="text-align:center;">Zac Prizant | Cornell MPS · MBA Candidate, London Business School</h3>
+                <h3 style="text-align:center;">Zac Prizant | Cornell MPS in Management</h3>
                 <p>I believe the best financial insights come from human expertise, paired with automation that makes analysis faster, clearer, and more repeatable. With experience across hospitality, private equity, and corporate FP&A, I deliver analysis that drives real decisions.</p>
-                <p>I've sat on every side of the table—closing over $600 million in deals on both the buy and sell side, managing portfolios of over $1 billion, transforming budgeting operations across 75-property portfolios, and launching a fractional CFO division from the ground up.</p>
+                <p>I've sat on every side of the table—closing over $500 million in deals on both the buy and sell side, managing portfolios of over $1 billion, transforming budgeting operations across 75-property portfolios, and launching a fractional CFO division from the ground up.</p>
                 <p>I know what works because I've built the systems myself—automating over 15,000 hours of manual work and turning 8-hour budget cycles into 7-minute ones. What I enjoy most is bringing clarity to businesses that need it.</p>
 
                 <div class="credentials">
@@ -9257,7 +9108,7 @@
                         <div class="credential-label">Portfolio Budgeted</div>
                     </div>
                     <div class="credential-item">
-                        <div class="credential-number">$600M+</div>
+                        <div class="credential-number">$500M+</div>
                         <div class="credential-label">Transactions Closed</div>
                     </div>
                 </div>
@@ -9266,11 +9117,6 @@
                 <img src="zacteamcornell.png?v=1" alt="Zac Prizant at Cornell" style="margin-bottom: 5px;">
                 <p style="font-size: 0.85rem; font-style: italic; color: #4a6a8a;">Zac advising investment bankers and consultants at Cornell Johnson Graduate School of Management</p>
             </div>
-        </div>
-
-        <div style="text-align: center; max-width: 760px; margin: 50px auto 0 auto;">
-            <img src="zac_mps.jpg" alt="Zac Prizant working through live financials with a team" style="width: 100%; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.25); margin-bottom: 8px;">
-            <p style="font-size: 0.85rem; font-style: italic; color: #4a6a8a;">Zac walking a team through live financials at Cornell</p>
         </div>
 
         <!-- Core Values -->
@@ -10221,7 +10067,7 @@
         const DEMO_PASSWORD = 'demo123';
         const ADMIN_EMAIL = 'zprizant@lightningledgerz.com';
         const ADMIN_EMAILS = ['zprizant@lightningledgerz.com', 'zpzant@gmail.com', 'team.elitecpapartners@gmail.com'];
-        const CALENDLY_URL = 'https://calendly.com/zpzant/30min';
+        const CALENDLY_URL = 'https://calendly.com/zprizant'; // Update with your real Calendly link
         const ZAC_PHONE = '+17025502513';
 
         // Stripe checkout URLs for each plan (monthly and yearly)
