@@ -1,0 +1,72 @@
+name: Supabase keep-alive
+
+# Pings the Supabase project twice a week so it never auto-pauses on the
+# free tier (Supabase pauses projects after ~7 days of inactivity).
+#
+# Cadence: Monday + Thursday at 14:37 UTC. Random minute helps us miss
+# GitHub Actions' peak-of-hour congestion. Worst-case gap between pings
+# is ~3 days, well inside the 7-day pause window.
+#
+# What this means:
+#   - You no longer have to do anything to keep the project alive.
+#   - If you ever pause the project intentionally, just disable this
+#     workflow from the Actions tab.
+#   - You can trigger a manual ping any time via "Run workflow" in
+#     the Actions tab (workflow_dispatch trigger below).
+
+on:
+  schedule:
+    - cron: '37 14 * * 1,4'   # Mon + Thu at 14:37 UTC
+  workflow_dispatch:           # allow manual trigger from the Actions tab
+
+# Don't run more than one ping at a time
+concurrency:
+  group: supabase-keepalive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      # Anon key is already public (it's in the site's HTML by design),
+      # so safe to inline. URL is fixed for this project.
+      SUPABASE_URL: https://uxicgilvxcqpoxavilxp.supabase.co
+      SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4aWNnaWx2eGNxcG94YXZpbHhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzYwNzYsImV4cCI6MjA3NjY1MjA3Nn0.W6_iO15HAxjzvNfp_FHWSS0HYOpaJb7-oC-Z3_KaZaw
+
+    steps:
+      - name: Ping Auth (GoTrue health)
+        run: |
+          set -euo pipefail
+          echo "Pinging $SUPABASE_URL/auth/v1/health ..."
+          http_code=$(curl -s -o /tmp/auth.json -w "%{http_code}" \
+            --max-time 15 --retry 2 --retry-delay 3 \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            "$SUPABASE_URL/auth/v1/health")
+          echo "HTTP $http_code"
+          cat /tmp/auth.json || true
+          if [ "$http_code" != "200" ]; then
+            echo "::warning::Auth health returned $http_code (expected 200). Project may be paused — go resume it in the Supabase dashboard."
+            exit 1
+          fi
+
+      - name: Ping PostgREST (DB activity)
+        run: |
+          set -euo pipefail
+          echo "Pinging $SUPABASE_URL/rest/v1/ ..."
+          http_code=$(curl -s -o /tmp/rest.json -w "%{http_code}" \
+            --max-time 15 --retry 2 --retry-delay 3 \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            "$SUPABASE_URL/rest/v1/profiles?select=id&limit=1")
+          echo "HTTP $http_code"
+          cat /tmp/rest.json || true
+          # 200 with data or 401 with RLS-permission-denied both prove the
+          # DB responded; only 5xx / network errors should fail us.
+          if [ "$http_code" -ge 500 ]; then
+            echo "::warning::PostgREST returned $http_code — Postgres is down."
+            exit 1
+          fi
+
+      - name: Done
+        run: echo "Keep-alive ping complete — project should stay active for at least another 7 days."
