@@ -1254,6 +1254,23 @@
             transition: box-shadow 0.3s ease, transform 0.3s ease !important;
         }
 
+        /* Tier logo bands (gold + diamond lockups need a dark backdrop) */
+        .tier-logo-band {
+            background: linear-gradient(155deg, #10254a 0%, #0B1A33 60%, #081226 100%);
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin: 2px 0 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(201, 162, 39, 0.35);
+        }
+        .tier-logo-band img {
+            height: 82px;
+            width: auto;
+            display: block;
+        }
+
         section#pricing .package-card:hover {
             box-shadow: 0 0 40px rgba(255, 51, 51, 0.5), 0 0 80px rgba(255, 51, 51, 0.3) !important;
             transform: translateY(-8px) !important;
@@ -7817,7 +7834,7 @@
                 </div>
             </div>
             <div class="saas-hero-image">
-                <img src="zacfullsuitnoback.png" alt="Zac Prizant - FP&A Expert">
+                <img src="zacredtiebest.png" alt="Zac Prizant - FP&A Expert">
             </div>
         </div>
     </section>
@@ -7867,6 +7884,26 @@
                 <div class="sb-block sb-logo" style="--brand:#3776AB">
                     <img class="sb-logo-img" alt="" src="https://api.iconify.design/logos/python.svg" onerror="this.remove()">
                     <span class="sb-logo-name">Python</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#13B5EA">
+                    <img class="sb-logo-img" alt="" src="https://api.iconify.design/simple-icons/xero.svg?color=%2313B5EA" onerror="this.remove()">
+                    <span class="sb-logo-name">Xero</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#00D639">
+                    <img class="sb-logo-img" alt="" src="https://api.iconify.design/simple-icons/sage.svg?color=%2300D639" onerror="this.remove()">
+                    <span class="sb-logo-name">Sage</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#F45D48">
+                    <img class="sb-logo-img" alt="" src="https://api.iconify.design/simple-icons/gusto.svg?color=%23F45D48" onerror="this.remove()">
+                    <span class="sb-logo-name">Gusto</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#E4572E">
+                    <img class="sb-logo-img" alt="" src="https://api.iconify.design/mdi/silverware-fork-knife.svg?color=%23E4572E" onerror="this.remove()">
+                    <span class="sb-logo-name">Restaurant365</span>
                 </div>
 
                 <div class="sb-block sb-finale">
@@ -8104,6 +8141,26 @@
                 <div class="sb-block sb-logo" style="--brand:#3776AB">
                     <img class="sb-logo-img" alt="" src="https://api.iconify.design/logos/python.svg" onerror="this.remove()">
                     <span class="sb-logo-name">Python</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#13B5EA">
+                    <img class="sb-logo-img" alt="" src="https://api.iconify.design/simple-icons/xero.svg?color=%2313B5EA" onerror="this.remove()">
+                    <span class="sb-logo-name">Xero</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#00D639">
+                    <img class="sb-logo-img" alt="" src="https://api.iconify.design/simple-icons/sage.svg?color=%2300D639" onerror="this.remove()">
+                    <span class="sb-logo-name">Sage</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#F45D48">
+                    <img class="sb-logo-img" alt="" src="https://api.iconify.design/simple-icons/gusto.svg?color=%23F45D48" onerror="this.remove()">
+                    <span class="sb-logo-name">Gusto</span>
+                </div>
+
+                <div class="sb-block sb-logo" style="--brand:#E4572E">
+                    <img class="sb-logo-img" alt="" src="https://api.iconify.design/mdi/silverware-fork-knife.svg?color=%23E4572E" onerror="this.remove()">
+                    <span class="sb-logo-name">Restaurant365</span>
                 </div>
 
                 <div class="sb-block sb-finale">
@@ -8502,6 +8559,7 @@
             <div class="package-card gold" id="gold-card">
                 <div class="package-popular">Most Popular</div>
                 <h3>✨ Gold Package</h3>
+                <div class="tier-logo-band"><img src="thelogogold_trim.png" alt="Lightning Ledgerz Gold" loading="lazy"></div>
                 <div class="package-price" id="gold-price">
                     <span class="monthly-price">$1,299/month</span>
                     <span class="yearly-price">$1,039/month<div class="yearly-savings">12-month commitment • Save $3,120/year</div></span>
@@ -8520,6 +8578,7 @@
 
             <div class="package-card diamond" id="diamond-card">
                 <h3>💎 Diamond Package</h3>
+                <div class="tier-logo-band"><img src="DiamondLogo_trim.png" alt="Lightning Ledgerz Diamond" loading="lazy"></div>
                 <div class="package-price" id="diamond-price">
                     <span class="monthly-price">$3,999/month</span>
                     <span class="yearly-price">$3,199/month<div class="yearly-savings">12-month commitment • Save $9,600/year</div></span>
@@ -8802,6 +8861,7 @@
                 <h3>Reset Your Password</h3>
                 <p>Enter your email and I'll send you a reset link.</p>
                 <input type="email" class="form-input" id="forgot-email" placeholder="you@company.com">
+                <div class="ll-captcha"></div>
                 <button class="form-submit" onclick="handleForgotPassword()" id="forgot-submit-btn">Send Reset Link</button>
             </div>
 
@@ -9204,6 +9264,7 @@
                     <input type="password" class="form-input" id="login-password" placeholder="••••••••" required>
                 </div>
                 <a class="forgot-link" onclick="openForgotPasswordModal()">Forgot password?</a>
+                <div class="ll-captcha"></div>
                 <button type="submit" class="form-submit">Sign In</button>
             </form>
 
@@ -9240,6 +9301,7 @@
                     <input type="checkbox" id="register-terms" required>
                     <label for="register-terms">I agree to the <a href="javascript:void(0)" class="form-link" onclick="openLegalModal(event, 'terms'); return false;">Terms of Service</a> and <a href="javascript:void(0)" class="form-link" onclick="openLegalModal(event, 'privacy'); return false;">Privacy Policy</a></label>
                 </div>
+                <div class="ll-captcha"></div>
                 <button type="submit" class="form-submit form-submit-green">Get Started</button>
             </form>
         </div>
@@ -10084,8 +10146,35 @@
             }
         };
 
-        // Stripe subscription links — direct billing, no free trial
-        // Create these in Stripe: Products → Payment Links
+        // ── CAPTCHA (Cloudflare Turnstile) ──────────────────────────────
+        // 1) Get a free site key + secret at dash.cloudflare.com → Turnstile
+        // 2) Paste the SITE key below
+        // 3) In Supabase → Auth → Attack Protection: enable Captcha (Turnstile)
+        //    and paste the SECRET key there.
+        // Empty key = CAPTCHA off, everything works exactly as before.
+        const LL_TURNSTILE_SITE_KEY = '';
+        window.LL_CAPTCHA_TOKEN = null;
+        (function initCaptcha() {
+            if (!LL_TURNSTILE_SITE_KEY) return;
+            var s = document.createElement('script');
+            s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=llTurnstileReady';
+            s.async = true; s.defer = true;
+            window.llTurnstileReady = function () {
+                document.querySelectorAll('.ll-captcha').forEach(function (el) {
+                    window.turnstile.render(el, {
+                        sitekey: LL_TURNSTILE_SITE_KEY,
+                        callback: function (token) { window.LL_CAPTCHA_TOKEN = token; },
+                        'expired-callback': function () { window.LL_CAPTCHA_TOKEN = null; }
+                    });
+                });
+            };
+            document.head.appendChild(s);
+        })();
+
+        // Stripe subscription links — the 3 monthly links are LIVE. To match the
+        // site's "First Month Free" promise, edit each Payment Link's subscription
+        // settings in Stripe and add a 30-day free trial (Products → Payment Links).
+        // Yearly links still need to be created (amounts in STRIPE_URLS comments).
         // Set success URL to: https://lightningledgerz.com?trial=success&plan=PLANNAME
         const STRIPE_TRIAL_URLS = {
             basic:   'STRIPE_BASIC_URL',    // $799/mo subscription
@@ -10504,9 +10593,9 @@
             if (!supabase) { await new Promise(r => waitForSupabase(r, 20)); }
             if (!supabase) { showToast('Server not ready. Try again in a moment.', 'error'); btn.textContent = 'Send Reset Link'; btn.disabled = false; return; }
             try {
-                const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                    redirectTo: 'https://lightningledgerz.com/reset-password.html'
-                });
+                const resetOptions = { redirectTo: 'https://lightningledgerz.com/reset-password.html' };
+                if (window.LL_CAPTCHA_TOKEN) resetOptions.captchaToken = window.LL_CAPTCHA_TOKEN;
+                const { error } = await supabase.auth.resetPasswordForEmail(email, resetOptions);
                 if (error) throw error;
                 _lastForgotEmail = email;
                 document.getElementById('forgot-email-shown').textContent = email;
@@ -10734,7 +10823,7 @@
             var planActionBtn = document.getElementById('plan-action-btn');
             var tokenDisplay = document.getElementById('token-display');
             var tokenCount = document.getElementById('token-count');
-            var tokenLimits = { none: 0, basic: 2, gold: 5, diamond: 999 };
+            var tokenLimits = { none: 0, basic: 2, gold: 5, diamond: 10 };
             var tokens = tokenLimits[tier] || 0;
 
             if (tier === 'none') {
@@ -11060,8 +11149,8 @@
                 userTokensRemaining = 0;
             }
 
-            // Step 2: Check if a new 30-day billing cycle has started
-            if (tier !== 'none' && tier !== 'diamond' && supabase && currentUserData?.id) {
+            // Step 2: Check if a new 30-day billing cycle has started (all paid tiers refill; balances never roll over)
+            if (tier !== 'none' && supabase && currentUserData?.id) {
                 var paymentStart = profile?.payment_start_date;
                 if (!paymentStart) {
                     // No payment date yet — if they have a tier, set it now
@@ -11858,17 +11947,10 @@
                     `
                 };
 
-                const response = await fetch('https://api.resend.com/emails', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer re_UCWQV5bx_BrU63SdgrK1Tvzfdve93PFHM'
-                    },
-                    body: JSON.stringify(emailData)
+                const { data: result } = await supabase.functions.invoke('send-email', {
+                    body: { to: emailData.to, subject: emailData.subject, html: emailData.html }
                 });
-
-                const result = await response.json();
-                if (result.id) {
+                if (result && result.id) {
                     console.log('Upload notification email sent:', result.id);
                 } else {
                     console.error('Email send error:', result);
@@ -12366,17 +12448,10 @@
                     `
                 };
 
-                const response = await fetch('https://api.resend.com/emails', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer re_UCWQV5bx_BrU63SdgrK1Tvzfdve93PFHM'
-                    },
-                    body: JSON.stringify(emailData)
+                const { data: result } = await supabase.functions.invoke('send-email', {
+                    body: { to: emailData.to, subject: emailData.subject, html: emailData.html }
                 });
-
-                const result = await response.json();
-                if (result.id) {
+                if (result && result.id) {
                     console.log('Credential notification sent:', result.id);
                 } else {
                     console.error('Credential email error:', result);
@@ -13263,11 +13338,8 @@
 
         async function sendNDAConfirmationEmail(toEmail, userName, company, repName, signedDate) {
             try {
-                await fetch('https://api.resend.com/emails', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer re_UCWQV5bx_BrU63SdgrK1Tvzfdve93PFHM' },
-                    body: JSON.stringify({
-                        from: 'Lightning Ledgerz <noreply@lightningledgerz.com>',
+                await supabase.functions.invoke('send-email', {
+                    body: {
                         to: [toEmail],
                         subject: 'Your Lightning Ledgerz Client Agreement — Signed ' + signedDate,
                         html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;padding:32px;border-radius:12px;">
@@ -13287,18 +13359,15 @@
                             <p style="color:#555;font-size:0.9rem;">Looking forward to working with you.</p>
                             <p style="color:#333;"><strong>— Zac Prizant</strong><br><span style="color:#888;font-size:0.85rem;">Founder & CEO, Lightning Ledgerz LLC<br>(702) 550-2513 · lightningledgerz.com</span></p>
                         </div>`
-                    })
+                    }
                 });
             } catch(e) { console.error('NDA client email error:', e); }
         }
 
         async function sendNDANotificationToZac(userEmail, userName, company, repName, signedDate) {
             try {
-                await fetch('https://api.resend.com/emails', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer re_UCWQV5bx_BrU63SdgrK1Tvzfdve93PFHM' },
-                    body: JSON.stringify({
-                        from: 'Lightning Ledgerz Portal <noreply@lightningledgerz.com>',
+                await supabase.functions.invoke('send-email', {
+                    body: {
                         to: [ADMIN_EMAIL],
                         subject: '✅ Agreement Signed: ' + company + ' (' + repName + ')',
                         html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;padding:32px;border-radius:12px;">
@@ -13311,7 +13380,7 @@
                             </div>
                             <p style="color:#555;">Log in to the admin dashboard to view their profile and uploads.</p>
                         </div>`
-                    })
+                    }
                 });
             } catch(e) { console.error('NDA Zac notification error:', e); }
         }
@@ -14211,7 +14280,7 @@
             var tbody = document.getElementById('admin-users-body');
             var tierColors = { basic: '#e8231a', gold: '#d4a017', diamond: '#7c3aed' };
             var tierBg = { basic: '#fef2f2', gold: '#fefce8', diamond: '#f5f3ff' };
-            var tokenLimits = { none: 0, basic: 2, gold: 5, diamond: 999 };
+            var tokenLimits = { none: 0, basic: 2, gold: 5, diamond: 10 };
             var svcLabels = { bookkeeping: 'BK', 'ar-ap': 'AR/AP', tax: 'Tax', payroll: 'Pay', cfo: 'CFO', formation: 'Form' };
             var svcColors = { bookkeeping: '#2563eb', 'ar-ap': '#059669', tax: '#dc2626', payroll: '#d97706', cfo: '#7c3aed', formation: '#0891b2' };
 
@@ -14259,7 +14328,7 @@
                     '<td>' + svcHTML + '</td>' +
                     '<td style="text-align:center;font-weight:600;">' + rData.total + '</td>' +
                     '<td>' + reportHTML + '</td>' +
-                    '<td style="text-align:center;">' + tokensUsed + '/' + (tokenLimits[tier] === 999 ? '&infin;' : tokenLimits[tier]) + '</td>' +
+                    '<td style="text-align:center;">' + tokensUsed + '/' + tokenLimits[tier] + '</td>' +
                     '<td style="text-align:center;">' + (qbConnected ? '<span style="color:#2e7d32;font-weight:700;">&#10003;</span>' : '<span style="color:#ccc;">&#10007;</span>') + '</td>' +
                     '<td style="text-align:center;font-weight:600;">' + fCount + '</td>' +
                     '<td style="font-size:0.72rem;">' + (u.created_at ? new Date(u.created_at).toLocaleDateString() : '-') + '</td>' +
