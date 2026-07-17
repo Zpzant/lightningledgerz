@@ -6387,7 +6387,7 @@
             object-fit: cover;
             object-position: top center;
             margin-bottom: 0;
-            margin-right: calc(-30vw - 100px);
+            margin-right: 12vw;   /* was calc(-30vw - 100px): compensated for the old (wrong) anchor container */
             filter: drop-shadow(0 15px 50px rgba(0,0,0,0.2));
         }
 
@@ -7755,7 +7755,7 @@
             })();
             </script>
             <div class="contact-dropdown" style="position:relative;">
-                <button onclick="this.parentElement.classList.toggle('open')" style="background:transparent;color:#fff;padding:8px 18px;border-radius:8px;border:2px solid rgba(255,255,255,0.4);font-family:inherit;font-weight:700;font-size:0.85rem;letter-spacing:0.3px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#fff';this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.4)';this.style.background='transparent'">Contact Us ▾</button>
+                <button onclick="this.parentElement.classList.toggle('open')" style="background:transparent;color:#fff;padding:8px 18px;border-radius:24px;border:2px solid rgba(255,255,255,0.4);font-family:inherit;font-weight:700;font-size:0.85rem;letter-spacing:0.3px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#fff';this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.4)';this.style.background='transparent'">Contact Us ▾</button>
                 <div class="contact-dropdown-menu" style="display:none;position:absolute;top:110%;right:0;background:#fff;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.15);padding:10px 0;min-width:260px;z-index:999;">
                     <a href="tel:+17025502513" style="display:flex;align-items:center;gap:10px;padding:12px 20px;color:#1e3a5f;text-decoration:none;font-size:0.9rem;font-weight:600;text-shadow:none;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">☎ (702) 550-2513</a>
                     <a href="mailto:info@lightningledgerz.com" style="display:flex;align-items:center;gap:10px;padding:12px 20px;color:#1e3a5f;text-decoration:none;font-size:0.9rem;font-weight:600;text-shadow:none;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">✉ info@lightningledgerz.com</a>
@@ -7770,7 +7770,7 @@
                 <a href="javascript:void(0)" onclick="scrollToPortalStep('step-services')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)';this.style.color=getTierHoverColor();this.querySelector('span').style.background='#fff'" onmouseout="this.style.opacity='0.8';this.style.background='transparent';this.style.color='#fff';this.querySelector('span').style.background='rgba(255,255,255,0.25)'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">1</span> Bookkeeping</a>
                 <a href="javascript:void(0)" onclick="scrollToPortalStep('step-report-catalog')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)';this.style.color=getTierHoverColor();this.querySelector('span').style.background='#fff'" onmouseout="this.style.opacity='0.8';this.style.background='transparent';this.style.color='#fff';this.querySelector('span').style.background='rgba(255,255,255,0.25)'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">2</span> Order Report</a>
                 <a href="javascript:void(0)" onclick="scrollToPortalStep('step-upload')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)';this.style.color=getTierHoverColor();this.querySelector('span').style.background='#fff'" onmouseout="this.style.opacity='0.8';this.style.background='transparent';this.style.color='#fff';this.querySelector('span').style.background='rgba(255,255,255,0.25)'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">3</span> Upload</a>
-                <a href="javascript:void(0)" onclick="scrollToPortalStep('platform-integrations')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)';this.style.color=getTierHoverColor();this.querySelector('span').style.background='#fff'" onmouseout="this.style.opacity='0.8';this.style.background='transparent';this.style.color='#fff';this.querySelector('span').style.background='rgba(255,255,255,0.25)'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">4</span> QuickBooks</a>
+                <a href="javascript:void(0)" onclick="scrollToPortalStep('platform-integrations')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)';this.style.color=getTierHoverColor();this.querySelector('span').style.background='#fff'" onmouseout="this.style.opacity='0.8';this.style.background='transparent';this.style.color='#fff';this.querySelector('span').style.background='rgba(255,255,255,0.25)'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">4</span> Connect QuickBooks</a>
                 <a href="javascript:void(0)" onclick="scrollToPortalStep('step-my-reports')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)';this.style.color=getTierHoverColor();this.querySelector('span').style.background='#fff'" onmouseout="this.style.opacity='0.8';this.style.background='transparent';this.style.color='#fff';this.querySelector('span').style.background='rgba(255,255,255,0.25)'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">5</span> My Reports</a>
                 <a href="javascript:void(0)" onclick="scrollToPortalStep('step-call')" class="portal-nav-link" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.68rem;font-weight:700;color:#fff;opacity:0.8;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.opacity='1';this.style.background='rgba(255,255,255,0.12)';this.style.color=getTierHoverColor();this.querySelector('span').style.background='#fff'" onmouseout="this.style.opacity='0.8';this.style.background='transparent';this.style.color='#fff';this.querySelector('span').style.background='rgba(255,255,255,0.25)'"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:800;">6</span> Schedule Call</a>
             </div>
@@ -7793,7 +7793,7 @@
                         <a href="javascript:void(0)" onclick="scrollToPortalStep('step-services');this.closest('.contact-dropdown').classList.remove('open')" style="display:block;padding:8px 20px;color:#1e3a5f;text-decoration:none;font-size:0.82rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">① Bookkeeping</a>
                         <a href="javascript:void(0)" onclick="scrollToPortalStep('step-report-catalog');this.closest('.contact-dropdown').classList.remove('open')" style="display:block;padding:8px 20px;color:#1e3a5f;text-decoration:none;font-size:0.82rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">② Order Report</a>
                         <a href="javascript:void(0)" onclick="scrollToPortalStep('step-upload');this.closest('.contact-dropdown').classList.remove('open')" style="display:block;padding:8px 20px;color:#1e3a5f;text-decoration:none;font-size:0.82rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">③ Upload</a>
-                        <a href="javascript:void(0)" onclick="scrollToPortalStep('platform-integrations');this.closest('.contact-dropdown').classList.remove('open')" style="display:block;padding:8px 20px;color:#1e3a5f;text-decoration:none;font-size:0.82rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">④ QuickBooks</a>
+                        <a href="javascript:void(0)" onclick="scrollToPortalStep('platform-integrations');this.closest('.contact-dropdown').classList.remove('open')" style="display:block;padding:8px 20px;color:#1e3a5f;text-decoration:none;font-size:0.82rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">④ Connect QuickBooks</a>
                         <a href="javascript:void(0)" onclick="scrollToPortalStep('step-my-reports');this.closest('.contact-dropdown').classList.remove('open')" style="display:block;padding:8px 20px;color:#1e3a5f;text-decoration:none;font-size:0.82rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">⑤ My Reports</a>
                         <a href="javascript:void(0)" onclick="scrollToPortalStep('step-call');this.closest('.contact-dropdown').classList.remove('open')" style="display:block;padding:8px 20px;color:#1e3a5f;text-decoration:none;font-size:0.82rem;font-weight:600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">⑥ Schedule Call</a>
                     </div>
@@ -7833,9 +7833,9 @@
                     <a href="#portal" class="btn-saas-secondary">Get Started</a>
                 </div>
             </div>
-            <div class="saas-hero-image">
-                <img src="zacredtiebest.png" alt="Zac Prizant - FP&A Expert">
-            </div>
+        </div>
+        <div class="saas-hero-image">
+            <img src="zacredtiebest_v2.png" alt="Zac Prizant - FP&A Expert">
         </div>
     </section>
 
@@ -9651,18 +9651,33 @@
                     </div>
                 </div>
 
-                <!-- STEP 4: Connect QuickBooks -->
+                <!-- STEP 4: Connect Your Accounting Platform -->
                 <div class="portal-step-card" id="platform-integrations">
                     <div class="portal-step-header">
                         <div class="portal-step-number">4</div>
-                        <h4>Connect QuickBooks</h4>
+                        <h4>Connect Your Accounting Platform</h4>
                     </div>
                     <div class="portal-step-body" style="text-align:center;">
-                        <p style="font-size:0.88rem;color:#666;margin-bottom:16px;">Connect your QuickBooks account for faster, integrated reporting. We pull your financials directly — no manual uploads, no back-and-forth.</p>
-                        <a href="javascript:void(0)" onclick="connectQuickBooksOAuth()" id="qb-connect-btn-portal" style="display:inline-flex;align-items:center;gap:10px;background:#2CA01C;color:#fff;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-size:0.95rem;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 15px rgba(44,160,28,0.3);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
-                            <svg viewBox="0 0 40 40" width="24" height="24"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M13 12v16M13 12c0-2.2 1.8-4 4-4h2c2.2 0 4 1.8 4 4v8c0 2.2-1.8 4-4 4h-2" stroke="#2CA01C" stroke-width="2.5" fill="none"/><path d="M27 28V12M27 28c0 2.2-1.8 4-4 4h-2c-2.2 0-4-1.8-4-4v-8c0-2.2 1.8-4 4-4h2" stroke="#2CA01C" stroke-width="2.5" fill="none"/></svg>
+                        <p style="font-size:0.88rem;color:#666;margin-bottom:16px;">Link your books and we pull your financials directly — no manual uploads, no back-and-forth.</p>
+                        <a href="javascript:void(0)" onclick="connectQuickBooksOAuth()" id="qb-connect-btn-portal" style="display:inline-flex;align-items:center;gap:12px;background:#2CA01C;color:#fff;padding:18px 42px;border-radius:12px;text-decoration:none;font-weight:800;font-size:1.12rem;cursor:pointer;transition:all 0.2s;box-shadow:0 6px 22px rgba(44,160,28,0.4);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 28px rgba(44,160,28,0.5)'" onmouseout="this.style.transform='';this.style.boxShadow='0 6px 22px rgba(44,160,28,0.4)'">
+                            <svg viewBox="0 0 40 40" width="32" height="32"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M13 12v16M13 12c0-2.2 1.8-4 4-4h2c2.2 0 4 1.8 4 4v8c0 2.2-1.8 4-4 4h-2" stroke="#2CA01C" stroke-width="2.5" fill="none"/><path d="M27 28V12M27 28c0 2.2-1.8 4-4 4h-2c-2.2 0-4-1.8-4-4v-8c0-2.2 1.8-4 4-4h2" stroke="#2CA01C" stroke-width="2.5" fill="none"/></svg>
                             Connect QuickBooks
                         </a>
+                        <div style="margin:16px 0 4px;">
+                            <a href="javascript:void(0)" onclick="var p=document.getElementById('platform-picker');p.style.display=p.style.display==='none'?'block':'none';" style="display:inline-flex;align-items:center;gap:6px;color:#1e3a5f;font-size:0.85rem;font-weight:700;text-decoration:none;padding:8px 18px;border:1.5px solid #d0d7e5;border-radius:24px;">Use a different platform &#9662;</a>
+                        </div>
+                        <div id="platform-picker" style="display:none;margin:12px auto 4px;max-width:520px;">
+                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;">
+                                <a href="javascript:void(0)" onclick="requestPlatform('Xero')" class="alt-platform-chip" style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;text-decoration:none;color:#1e3a5f;font-size:0.8rem;font-weight:700;" onmouseover="this.style.borderColor='#13B5EA'" onmouseout="this.style.borderColor='#e2e8f0'"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#13B5EA"/><text x="12" y="16.5" font-size="12" font-weight="800" fill="#fff" text-anchor="middle" font-family="Arial">X</text></svg>Xero</a>
+                                <a href="javascript:void(0)" onclick="requestPlatform('FreshBooks')" class="alt-platform-chip" style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;text-decoration:none;color:#1e3a5f;font-size:0.8rem;font-weight:700;" onmouseover="this.style.borderColor='#0075DD'" onmouseout="this.style.borderColor='#e2e8f0'"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#0075DD"/><text x="12" y="16" font-size="9.5" font-weight="800" fill="#fff" text-anchor="middle" font-family="Arial">FB</text></svg>FreshBooks</a>
+                                <a href="javascript:void(0)" onclick="requestPlatform('Wave')" class="alt-platform-chip" style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;text-decoration:none;color:#1e3a5f;font-size:0.8rem;font-weight:700;" onmouseover="this.style.borderColor='#1455FE'" onmouseout="this.style.borderColor='#e2e8f0'"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#1455FE"/><text x="12" y="16.5" font-size="12" font-weight="800" fill="#fff" text-anchor="middle" font-family="Arial">W</text></svg>Wave</a>
+                                <a href="javascript:void(0)" onclick="requestPlatform('Sage')" class="alt-platform-chip" style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;text-decoration:none;color:#1e3a5f;font-size:0.8rem;font-weight:700;" onmouseover="this.style.borderColor='#00D639'" onmouseout="this.style.borderColor='#e2e8f0'"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#00D639"/><text x="12" y="16.5" font-size="12" font-weight="800" fill="#fff" text-anchor="middle" font-family="Arial">S</text></svg>Sage</a>
+                                <a href="javascript:void(0)" onclick="requestPlatform('Zoho Books')" class="alt-platform-chip" style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;text-decoration:none;color:#1e3a5f;font-size:0.8rem;font-weight:700;" onmouseover="this.style.borderColor='#E42527'" onmouseout="this.style.borderColor='#e2e8f0'"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#E42527"/><text x="12" y="16.5" font-size="12" font-weight="800" fill="#fff" text-anchor="middle" font-family="Arial">Z</text></svg>Zoho Books</a>
+                                <a href="javascript:void(0)" onclick="requestPlatform('NetSuite')" class="alt-platform-chip" style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;text-decoration:none;color:#1e3a5f;font-size:0.8rem;font-weight:700;" onmouseover="this.style.borderColor='#125580'" onmouseout="this.style.borderColor='#e2e8f0'"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#125580"/><text x="12" y="16" font-size="9.5" font-weight="800" fill="#fff" text-anchor="middle" font-family="Arial">NS</text></svg>NetSuite</a>
+                                <a href="javascript:void(0)" onclick="requestPlatform('spreadsheets / other')" class="alt-platform-chip" style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;text-decoration:none;color:#1e3a5f;font-size:0.8rem;font-weight:700;" onmouseover="this.style.borderColor='#217346'" onmouseout="this.style.borderColor='#e2e8f0'"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#217346"/><text x="12" y="16.5" font-size="11" font-weight="800" fill="#fff" text-anchor="middle" font-family="Arial">⇪</text></svg>Other / Excel</a>
+                            </div>
+                            <div id="platform-request-msg" style="display:none;margin-top:12px;padding:10px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:0.8rem;color:#166534;"></div>
+                        </div>
                         <div id="connected-platforms-badges" style="display:none; margin:14px 0 4px;">
                             <div id="connected-badges-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
                         </div>
@@ -13724,6 +13739,33 @@
                 + '&scope=' + encodeURIComponent(QB_SCOPES)
                 + '&state=' + encodeURIComponent(state);
             window.location.href = authUrl;
+        }
+
+        // Client picked a non-QuickBooks accounting platform: confirm + notify Zac.
+        function requestPlatform(platform) {
+            var msg = document.getElementById('platform-request-msg');
+            if (msg) {
+                msg.style.display = 'block';
+                msg.textContent = '✓ Got it — we onboard ' + platform + ' accounts personally. ' +
+                    'We\'ll set up the connection together on your kickoff call (or reply to any of our emails to do it sooner).';
+            }
+            showToast(platform + ' request received!', 'success');
+            try {
+                var who = (currentUserData && currentUserData.email) ? currentUserData.email : 'anonymous visitor';
+                fetch('https://uxicgilvxcqpoxavilxp.supabase.co/functions/v1/send-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+                    },
+                    body: JSON.stringify({
+                        to: 'zprizant@lightningledgerz.com',
+                        subject: 'Portal: ' + who + ' wants to connect ' + platform,
+                        text: who + ' clicked "' + platform + '" in the Connect Your Accounting Platform step. Follow up to onboard their books.'
+                    })
+                });
+            } catch (e) { /* notification is best-effort */ }
         }
 
         // ===========================================

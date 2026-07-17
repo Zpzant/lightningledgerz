@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Lightning Ledgerz — Report Command Center</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="qbo-transform.js"></script>
+<script src="qb-report-renderer.js"></script>
+<script src="qb-demo-data.js"></script>
+<style>
+  :root{--navy:#0B1A33;--navy2:#122648;--gold:#C9A227;--goldhi:#E9CF87;--ink:#16233A;--muted:#5A6B85;--paper:#F7F3EA;--red:#e23b2e}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',Calibri,Arial,sans-serif;background:#EDEFF3;color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(155deg,#10254a,#0B1A33 60%,#081226);color:#F2EDDF;padding:18px 28px;display:flex;align-items:center;gap:18px}
+  header img{width:64px}
+  header .t{font-family:Georgia,serif;font-size:20px;font-weight:700}
+  header .s{font-size:11px;letter-spacing:.22em;color:var(--goldhi);text-transform:uppercase}
+  header .who{margin-left:auto;font-size:12.5px;color:#AEBBD0}
+  header button{background:none;border:1px solid rgba(201,162,39,.5);color:var(--goldhi);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px}
+  main{max-width:1160px;margin:26px auto;padding:0 20px}
+  .card{background:#fff;border:1px solid #E2E5EA;border-top:3px solid var(--gold);box-shadow:0 8px 26px rgba(22,35,58,.07);padding:22px 26px;margin-bottom:22px}
+  .card h2{font-family:Georgia,serif;font-size:19px;margin-bottom:2px}
+  .card .sub{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+  label{display:block;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 0 5px}
+  input,select,textarea{width:100%;padding:9px 12px;border:1px solid #CBD2DE;border-radius:7px;font-size:14px;font-family:inherit;background:#fff}
+  input:focus,select:focus,textarea:focus{outline:2px solid rgba(201,162,39,.45)}
+  .row{display:flex;gap:16px}.row>div{flex:1}
+  .btn{display:inline-block;border:none;border-radius:8px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px}
+  .btn.gold{background:linear-gradient(90deg,#B08A1E,#D9BC5E);color:#0B1A33}
+  .btn.navy{background:var(--navy);color:#fff}
+  .btn.red{background:var(--red);color:#fff}
+  .btn.ghost{background:#fff;border:1px solid #CBD2DE;color:var(--ink)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;text-align:left;color:#8A6D12;border-bottom:1.5px solid var(--gold);padding:8px 10px;background:rgba(201,162,39,.06)}
+  td{padding:9px 10px;border-bottom:1px solid #EDEFF3}
+  .pill{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:3px 10px;border-radius:12px}
+  .pill.ok{background:#E5F4EA;color:#1F7A4D}.pill.warn{background:#FCEEE9;color:#A33C3C}
+  #log{font-family:Consolas,monospace;font-size:12px;background:#0B1A33;color:#B9C6DC;border-radius:8px;padding:12px 16px;margin-top:14px;white-space:pre-wrap;display:none;max-height:180px;overflow-y:auto}
+  #preview-frame{width:100%;height:760px;border:1px solid #CBD2DE;border-radius:8px;background:#fff;margin-top:16px;display:none}
+  .hide{display:none!important}
+  /* login */
+  #login-view{max-width:400px;margin:70px auto}
+  .err{color:var(--red);font-size:13px;margin-top:10px;min-height:18px}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="Thelogo.png" alt="Lightning Ledgerz">
+  <div>
+    <div class="s">Internal · Admin Only</div>
+    <div class="t">Report Command Center</div>
+  </div>
+  <div class="who" id="who"></div>
+  <button id="btn-logout" class="hide" onclick="doLogout()">Sign out</button>
+</header>
+
+<main>
+  <!-- ============ LOGIN ============ -->
+  <div id="login-view">
+    <div class="card">
+      <h2>Admin Sign-In</h2>
+      <div class="sub">Use your Lightning Ledgerz portal account</div>
+      <label>Email</label><input id="li-email" type="email" autocomplete="username">
+      <label>Password</label><input id="li-pass" type="password" autocomplete="current-password">
+      <button class="btn gold" onclick="doLogin()">Sign In</button>
+      <div class="err" id="li-err"></div>
+    </div>
+  </div>
+
+  <!-- ============ APP ============ -->
+  <div id="app-view" class="hide">
+
+    <div class="card">
+      <h2>QuickBooks Connections</h2>
+      <div class="sub">Companies whose books we can pull live</div>
+      <table>
+        <thead><tr><th>Company (Realm ID)</th><th>Connected By</th><th>Last Refresh</th><th>Status</th></tr></thead>
+        <tbody id="conn-rows"><tr><td colspan="4" style="color:var(--muted)">Loading…</td></tr></tbody>
+      </table>
+      <button class="btn navy" onclick="connectQB()">+ Connect a QuickBooks Company</button>
+      <button class="btn ghost" onclick="loadConnections()">Refresh List</button>
+      <div style="font-size:11.5px;color:var(--muted);margin-top:8px">
+        The connect flow finishes on lightningledgerz.com/callback.html — make sure you're logged into the portal there with this same account.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Build a Report</h2>
+      <div class="sub">Pull live QuickBooks data → branded Lightning Ledgerz pack</div>
+      <div class="row">
+        <div>
+          <label>Company</label>
+          <select id="g-conn"></select>
+        </div>
+        <div>
+          <label>Period</label>
+          <select id="g-period" onchange="onPeriodChange()">
+            <option value="last_month">Last Month</option>
+            <option value="this_month">This Month (to date)</option>
+            <option value="last_quarter">Last Quarter</option>
+            <option value="ytd">Year to Date</option>
+            <option value="t12">Trailing 12 Months</option>
+            <option value="custom">Custom…</option>
+          </select>
+        </div>
+        <div id="g-custom" class="hide">
+          <label>Start</label><input id="g-start" type="date">
+        </div>
+        <div id="g-custom2" class="hide">
+          <label>End</label><input id="g-end" type="date">
+        </div>
+      </div>
+      <button class="btn gold" id="btn-build" onclick="buildReport()">⚡ Pull Data &amp; Build Report</button>
+      <div id="log"></div>
+      <iframe id="preview-frame" title="Report preview"></iframe>
+      <div id="preview-actions" class="hide">
+        <button class="btn ghost" onclick="downloadHTML()">Download HTML</button>
+        <button class="btn ghost" onclick="printPDF()">Print / Save as PDF</button>
+      </div>
+    </div>
+
+    <div class="card" id="publish-card" style="opacity:.45;pointer-events:none">
+      <h2>Publish to Client Portal</h2>
+      <div class="sub">Drops the report into the client's "My Reports" — they see it instantly</div>
+      <div class="row">
+        <div>
+          <label>Client</label>
+          <select id="p-client"></select>
+        </div>
+        <div>
+          <label>Report Title</label>
+          <input id="p-title" placeholder="June 2026 Financial Pack">
+        </div>
+      </div>
+      <label>Description (optional)</label>
+      <textarea id="p-desc" rows="2" placeholder="Monthly financial pack built from live QuickBooks data."></textarea>
+      <button class="btn red" id="btn-publish" onclick="publishReport()">Publish Report</button>
+      <div class="err" id="p-msg"></div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+"use strict";
+/* ---------------- config (same values used across the site) ---------------- */
+var SUPABASE_URL = "https://uxicgilvxcqpoxavilxp.supabase.co";
+var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4aWNnaWx2eGNxcG94YXZpbHhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzYwNzYsImV4cCI6MjA3NjY1MjA3Nn0.W6_iO15HAxjzvNfp_FHWSS0HYOpaJb7-oC-Z3_KaZaw";
+var QB_CLIENT_ID = "ABxl1RhrTrtUsFGcdET6nuocD76EoC3NMKVPtpoRBGgPJkOOBE";
+var QB_SCOPES = "com.intuit.quickbooks.accounting com.intuit.quickbooks.payment";
+// Always finish OAuth on the live site (its callback.html is registered with Intuit
+// and already deployed) — works even when this page runs from localhost.
+var QB_REDIRECT_URI = "https://lightningledgerz.com/callback.html";
+
+var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+var me = null, lastReportHTML = null, lastCompanyName = null, lastPeriodLabel = null;
+
+/* ---------------- auth ---------------- */
+async function boot() {
+  var s = await sb.auth.getSession();
+  if (s.data.session) { await enter(s.data.session.user); }
+}
+async function doLogin() {
+  var err = document.getElementById("li-err"); err.textContent = "";
+  var r = await sb.auth.signInWithPassword({
+    email: document.getElementById("li-email").value.trim(),
+    password: document.getElementById("li-pass").value,
+  });
+  if (r.error) { err.textContent = r.error.message; return; }
+  await enter(r.data.user);
+}
+async function enter(user) {
+  var ok = (user.email || "").toLowerCase() === "zpzant@gmail.com";
+  if (!ok) {
+    var p = await sb.from("profiles").select("is_admin").eq("id", user.id).maybeSingle();
+    ok = p.data && p.data.is_admin === true;
+  }
+  if (!ok) {
+    document.getElementById("li-err").textContent = "This account is not an admin.";
+    await sb.auth.signOut(); return;
+  }
+  me = user;
+  document.getElementById("login-view").classList.add("hide");
+  document.getElementById("app-view").classList.remove("hide");
+  document.getElementById("btn-logout").classList.remove("hide");
+  document.getElementById("who").textContent = user.email;
+  loadConnections(); loadClients();
+}
+async function doLogout() { await sb.auth.signOut(); location.reload(); }
+
+/* ---------------- edge function helper ---------------- */
+async function qbApi(payload) {
+  // Practice mode: the demo company answers locally with realistic fake data.
+  if (payload && payload.realmId === window.QBDemoData.DEMO_REALM) {
+    return window.QBDemoData.call(payload);
+  }
+  var r = await sb.functions.invoke("qb-api", { body: payload });
+  if (r.error) {
+    var detail = "";
+    try { detail = await r.error.context.json().then(function(j){ return j.error; }); } catch (e) {}
+    throw new Error(detail || r.error.message || "qb-api call failed");
+  }
+  if (r.data && r.data.error) throw new Error(r.data.error);
+  return r.data;
+}
+
+/* ---------------- connections ---------------- */
+async function loadConnections() {
+  var tb = document.getElementById("conn-rows");
+  tb.innerHTML = '<tr><td colspan="4" style="color:var(--muted)">Loading…</td></tr>';
+  var conns = [window.QBDemoData.connectionRow];   // practice company is always available
+  var loadErr = null;
+  try {
+    var data = await qbApi({ action: "connections" });
+    conns = conns.concat(data.connections || []);
+  } catch (e) {
+    loadErr = e;
+  }
+  var sel = document.getElementById("g-conn");
+  tb.innerHTML = conns.map(function (c) {
+    var demo = c.realm_id === window.QBDemoData.DEMO_REALM;
+    var alive = c.refresh_expires_at && new Date(c.refresh_expires_at) > new Date();
+    var label = demo ? "🎓 " + window.QBDemoData.companyName : c.realm_id;
+    return "<tr><td><b>" + label + "</b></td><td>" + (c.owner_email || "—") +
+      "</td><td>" + (c.updated_at ? new Date(c.updated_at).toLocaleString() : "—") +
+      '</td><td><span class="pill ' + (alive ? "ok" : "warn") + '">' +
+      (demo ? "PRACTICE" : (alive ? "ACTIVE" : "RECONNECT NEEDED")) + "</span></td></tr>";
+  }).join("");
+  if (loadErr) {
+    tb.innerHTML += '<tr><td colspan="4" style="color:var(--red)">Live connections unavailable: ' + loadErr.message +
+      " (the practice company above still works)</td></tr>";
+  }
+  sel.innerHTML = conns.map(function (c) {
+    var demo = c.realm_id === window.QBDemoData.DEMO_REALM;
+    var label = demo ? "🎓 " + window.QBDemoData.companyName : c.realm_id + (c.owner_email ? " · " + c.owner_email : "");
+    return '<option value="' + c.realm_id + '">' + label + "</option>";
+  }).join("");
+}
+function connectQB() {
+  var url = "https://appcenter.intuit.com/connect/oauth2" +
+    "?client_id=" + encodeURIComponent(QB_CLIENT_ID) +
+    "&redirect_uri=" + encodeURIComponent(QB_REDIRECT_URI) +
+    "&response_type=code" +
+    "&scope=" + encodeURIComponent(QB_SCOPES) +
+    "&state=" + encodeURIComponent(me.id);
+  window.open(url, "_blank");
+}
+
+/* ---------------- period math ---------------- */
+function iso(d) { return d.toISOString().slice(0, 10); }
+function periodRange() {
+  var now = new Date(), y = now.getFullYear(), m = now.getMonth();
+  var v = document.getElementById("g-period").value;
+  if (v === "custom") {
+    return { start: document.getElementById("g-start").value, end: document.getElementById("g-end").value, label: "Custom Period" };
+  }
+  if (v === "this_month") {
+    return { start: iso(new Date(Date.UTC(y, m, 1))), end: iso(now),
+      label: now.toLocaleDateString("en-US", { month: "long", year: "numeric" }) + " (to date)" };
+  }
+  if (v === "last_month") {
+    var s = new Date(Date.UTC(y, m - 1, 1)), e = new Date(Date.UTC(y, m, 0));
+    return { start: iso(s), end: iso(e), label: s.toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" }) };
+  }
+  if (v === "last_quarter") {
+    var q = Math.floor(m / 3);
+    var s2 = new Date(Date.UTC(y, (q - 1) * 3, 1)), e2 = new Date(Date.UTC(y, q * 3, 0));
+    return { start: iso(s2), end: iso(e2), label: "Q" + (q === 0 ? 4 : q) + " " + (q === 0 ? y - 1 : y) };
+  }
+  if (v === "ytd") {
+    return { start: iso(new Date(Date.UTC(y, 0, 1))), end: iso(now), label: y + " Year to Date" };
+  }
+  // trailing 12
+  var s3 = new Date(Date.UTC(y, m - 11, 1));
+  return { start: iso(s3), end: iso(now), label: "Trailing 12 Months" };
+}
+function onPeriodChange() {
+  var custom = document.getElementById("g-period").value === "custom";
+  document.getElementById("g-custom").classList.toggle("hide", !custom);
+  document.getElementById("g-custom2").classList.toggle("hide", !custom);
+}
+
+/* ---------------- build ---------------- */
+function log(msg) {
+  var el = document.getElementById("log");
+  el.style.display = "block";
+  el.textContent += msg + "\n";
+  el.scrollTop = el.scrollHeight;
+}
+async function buildReport() {
+  var realmId = document.getElementById("g-conn").value;
+  if (!realmId) { alert("Connect a QuickBooks company first."); return; }
+  var p = periodRange();
+  if (!p.start || !p.end) { alert("Pick start and end dates."); return; }
+  var btn = document.getElementById("btn-build"); btn.disabled = true;
+  document.getElementById("log").textContent = "";
+  document.getElementById("preview-frame").style.display = "none";
+  document.getElementById("preview-actions").classList.add("hide");
+  try {
+    log("Company info…");
+    var info = await qbApi({ action: "company", realmId: realmId });
+    lastCompanyName = (info.CompanyInfo && info.CompanyInfo.CompanyName) || ("Company " + realmId);
+    lastPeriodLabel = p.label;
+    log("→ " + lastCompanyName);
+
+    // trailing-12 window for the revenue trend chart
+    var endD = new Date(p.end + "T00:00:00Z");
+    var t12start = iso(new Date(Date.UTC(endD.getUTCFullYear(), endD.getUTCMonth() - 11, 1)));
+
+    log("Profit & Loss (" + p.start + " → " + p.end + ")…");
+    var plRaw = await qbApi({ action: "report", realmId: realmId, params: { name: "ProfitAndLoss",
+      query: { start_date: p.start, end_date: p.end, accounting_method: "Accrual" } } });
+
+    log("P&L trailing-12 by month…");
+    var plT12 = null;
+    try {
+      plT12 = await qbApi({ action: "report", realmId: realmId, params: { name: "ProfitAndLoss",
+        query: { start_date: t12start, end_date: p.end, summarize_column_by: "Month", accounting_method: "Accrual" } } });
+    } catch (e) { log("  (skipped: " + e.message + ")"); }
+
+    log("Balance Sheet…");
+    var bs = null;
+    try { bs = await qbApi({ action: "report", realmId: realmId, params: { name: "BalanceSheet",
+      query: { start_date: p.start, end_date: p.end } } }); } catch (e) { log("  (skipped: " + e.message + ")"); }
+
+    log("Cash Flow…");
+    var cf = null;
+    try { cf = await qbApi({ action: "report", realmId: realmId, params: { name: "CashFlow",
+      query: { start_date: p.start, end_date: p.end } } }); } catch (e) { log("  (skipped: " + e.message + ")"); }
+
+    log("Revenue by customer…");
+    var ci = null;
+    try { ci = await qbApi({ action: "report", realmId: realmId, params: { name: "CustomerIncome",
+      query: { start_date: p.start, end_date: p.end } } }); } catch (e) { log("  (skipped: " + e.message + ")"); }
+
+    log("Rendering…");
+    var T = window.QBOTransform;
+    lastReportHTML = window.QBReportRenderer.build({
+      companyName: lastCompanyName,
+      periodLabel: p.label,
+      pl: T.normalize(plRaw),
+      plTrailing: plT12 ? T.normalize(plT12) : null,
+      bs: bs ? T.normalize(bs) : null,
+      cf: cf ? T.normalize(cf) : null,
+      custIncome: ci ? T.normalize(ci) : null,
+    });
+    var fr = document.getElementById("preview-frame");
+    fr.srcdoc = lastReportHTML;
+    fr.style.display = "block";
+    document.getElementById("preview-actions").classList.remove("hide");
+    var pc = document.getElementById("publish-card");
+    pc.style.opacity = "1"; pc.style.pointerEvents = "auto";
+    var t = document.getElementById("p-title");
+    if (!t.value) t.value = lastCompanyName + " — " + p.label + " Financial Pack";
+    log("✓ Report ready. Preview below, publish when happy.");
+  } catch (e) {
+    log("ERROR: " + e.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+function downloadHTML() {
+  if (!lastReportHTML) return;
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([lastReportHTML], { type: "text/html" }));
+  a.download = (lastCompanyName || "report").replace(/[^a-z0-9]+/gi, "_") + "_" +
+    (lastPeriodLabel || "").replace(/[^a-z0-9]+/gi, "_") + ".html";
+  a.click();
+}
+function printPDF() {
+  var fr = document.getElementById("preview-frame");
+  if (fr && fr.contentWindow) fr.contentWindow.print();
+}
+
+/* ---------------- publish ---------------- */
+async function loadClients() {
+  var sel = document.getElementById("p-client");
+  var r = await sb.from("profiles").select("id, email, full_name").order("email");
+  var rows = r.data || [];
+  sel.innerHTML = rows.map(function (p) {
+    var label = (p.full_name ? p.full_name + " · " : "") + (p.email || p.id);
+    return '<option value="' + p.id + '">' + label + "</option>";
+  }).join("") || '<option value="">no profiles visible</option>';
+}
+async function publishReport() {
+  var msg = document.getElementById("p-msg"); msg.textContent = "";
+  if (!lastReportHTML) { msg.textContent = "Build a report first."; return; }
+  var clientId = document.getElementById("p-client").value;
+  var title = document.getElementById("p-title").value.trim() || "Financial Report";
+  if (!clientId) { msg.textContent = "Pick a client."; return; }
+  var btn = document.getElementById("btn-publish"); btn.disabled = true;
+  try {
+    var blob = new Blob([lastReportHTML], { type: "text/html" });
+    var path = clientId + "/reports/" + Date.now() + "_" +
+      title.replace(/[^a-z0-9]+/gi, "_").slice(0, 60) + ".html";
+    var up = await sb.storage.from("client-files").upload(path, blob, { upsert: true, contentType: "text/html" });
+    if (up.error) throw up.error;
+    var pu = sb.storage.from("client-files").getPublicUrl(path);
+    var fileUrl = (pu.data && pu.data.publicUrl) || "";
+    var ins = await sb.from("user_reports").insert({
+      user_id: clientId,
+      report_name: title,
+      report_description: document.getElementById("p-desc").value.trim() || null,
+      file_path: path,
+      file_url: fileUrl,
+      file_size: blob.size,
+      uploaded_by: me.id,
+    });
+    if (ins.error) throw ins.error;
+    msg.style.color = "#1F7A4D";
+    msg.textContent = "✓ Published — the client now sees \"" + title + "\" in their portal.";
+  } catch (e) {
+    msg.style.color = "";
+    msg.textContent = "Error: " + (e.message || e);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+boot();
+</script>
+</body>
+</html>
