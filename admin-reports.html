@@ -337,6 +337,19 @@ async function buildReport() {
     try { ci = await qbApi({ action: "report", realmId: realmId, params: { name: "CustomerIncome",
       query: { start_date: p.start, end_date: p.end } } }); } catch (e) { log("  (skipped: " + e.message + ")"); }
 
+    log("Budget vs. actual…");
+    var bva = null;
+    try {
+      var budgetQ = null;
+      try {
+        budgetQ = await qbApi({ action: "query", realmId: realmId, params: { q: "select * from Budget" } });
+      } catch (eq) { /* practice mode & some companies have no Budget entity */ }
+      var budgets = budgetQ && budgetQ.QueryResponse && budgetQ.QueryResponse.Budget;
+      var bq = { start_date: p.start, end_date: p.end };
+      if (budgets && budgets.length) bq.budget_id = budgets[0].Id;
+      bva = await qbApi({ action: "report", realmId: realmId, params: { name: "BudgetVsActuals", query: bq } });
+    } catch (e) { log("  (no budget in QuickBooks — skipped: " + e.message + ")"); }
+
     log("Rendering…");
     var T = window.QBOTransform;
     lastReportHTML = window.QBReportRenderer.build({
@@ -347,6 +360,7 @@ async function buildReport() {
       bs: bs ? T.normalize(bs) : null,
       cf: cf ? T.normalize(cf) : null,
       custIncome: ci ? T.normalize(ci) : null,
+      bva: bva ? T.normalize(bva) : null,
     });
     var fr = document.getElementById("preview-frame");
     fr.srcdoc = lastReportHTML;

@@ -123,6 +123,34 @@
   var COMPANY_INFO = { CompanyInfo: { CompanyName: COMPANY, LegalAddr: { City: "Las Vegas", CountrySubDivisionCode: "NV" } } };
 
   /** Same surface as the qb-api edge function, so the admin page can swap it in. */
+  // Budget vs Actual — H1 2026 vs the owner's QuickBooks budget.
+  // Shape mirrors QBO BudgetVsActuals: last column group is the period total
+  // with Actual / Budget / Over Budget / % of Budget columns.
+  var BVA = {
+    Header: { ReportName: "BudgetVsActuals", StartPeriod: "2026-01-01", EndPeriod: "2026-06-30", Currency: "USD" },
+    Columns: { Column: [col(""), col("Actual"), col("Budget"), col("Over Budget"), col("% of Budget")] },
+    Rows: { Row: [
+      section("Income", [
+        line("Room Revenue",      [1029200, 980000, 49200, "105.02%"]),
+        line("Food & Beverage",   [ 359600, 372000, -12400, "96.67%"]),
+        line("Events & Catering", [ 180200, 150000, 30200, "120.13%"]),
+      ], "Total Income",          [1569000, 1502000, 67000, "104.46%"]),
+      section("Cost of Goods Sold", [
+        line("F&B Cost of Sales", [ 137200, 130200, 7000, "105.38%"]),
+        line("Event Supplies",    [  60800,  52500, 8300, "115.81%"]),
+      ], "Total Cost of Goods Sold", [198000, 182700, 15300, "108.37%"]),
+      line("Gross Profit",        [1371000, 1319300, 51700, "103.92%"]),
+      section("Expenses", [
+        line("Payroll",           [ 543800, 528000, 15800, "102.99%"]),
+        line("Rent & Utilities",  [ 156600, 156000,   600, "100.38%"]),
+        line("Marketing",         [  87400,  96000, -8600, "91.04%"]),
+        line("Insurance",         [  64200,  60000,  4200, "107.00%"]),
+      ], "Total Expenses",        [ 852000, 840000, 12000, "101.43%"]),
+      line("Net Operating Income",[ 519000, 479300, 39700, "108.28%"]),
+      line("Net Income",          [ 507400, 468500, 38900, "108.30%"]),
+    ] },
+  };
+
   function call(payload) {
     var action = payload && payload.action;
     if (action === "company") return Promise.resolve(COMPANY_INFO);
@@ -132,6 +160,7 @@
       if (name === "BalanceSheet") return Promise.resolve(BS);
       if (name === "CashFlow") return Promise.resolve(CF);
       if (name === "CustomerIncome") return Promise.resolve(CI);
+      if (name === "BudgetVsActuals") return Promise.resolve(BVA);
       return Promise.reject(new Error("demo: report not stocked: " + name));
     }
     return Promise.reject(new Error("demo: unsupported action " + action));
